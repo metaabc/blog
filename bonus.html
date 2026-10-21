@@ -719,6 +719,49 @@ h1{
 }
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+/* ---------- 下拉更新 ---------- */
+.ptr{
+  position:fixed;
+  top:calc(6px + env(safe-area-inset-top,0px));
+  left:50%;
+  transform:translate(-50%,-48px);
+  height:31px;
+  padding:0 13px 0 8px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:0 4px 14px rgba(51,61,67,.13);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  opacity:0;
+  font-size:11.5px;
+  font-weight:700;
+  color:var(--ink2);
+  letter-spacing:.4px;
+  white-space:nowrap;
+  pointer-events:none;
+  z-index:80;
+  transition:transform .2s ease,opacity .2s;
+}
+.ptr.on{opacity:1}
+.ptr.drag{transition:opacity .12s}
+.ptr-ico{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:19px;height:19px;
+  border-radius:50%;
+  background:var(--accent-soft);
+  font-size:10px;
+  line-height:1;
+  color:var(--accent);
+  transition:transform .18s;
+}
+.ptr.ready .ptr-ico{transform:rotate(180deg)}
+.ptr.spin .ptr-ico{animation:ptrspin .66s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+
 /* ---------- 關閉說明 ---------- */
 .bye{
   position:fixed;
@@ -890,6 +933,8 @@ h1{
   <div id="payTable"></div>
   <div class="foot-note" id="statsNote">全部週次合計 · 金額單位 MOP$ · 滿減券不計入餘額</div>
 </div>
+
+<div class="ptr" id="ptr"><span class="ptr-ico">↓</span><span id="ptrTxt">下拉更新</span></div>
 
 <!-- 關閉說明 -->
 <div class="bye" id="bye">
@@ -1260,6 +1305,81 @@ appEl.addEventListener('touchend',function(e){
   commitPending();
   shiftWeek(dx>0?-1:1,true);
 },{passive:true});
+
+/* ---------------- pull to refresh ---------------- */
+var ptrOn=false,ptrX=0,ptrY=0,ptrDy=0,ptrBusy=false;
+
+function ptrEl(){ return $('ptr'); }
+
+function ptrReset(){
+  var el=ptrEl();
+  el.className='ptr';
+  el.style.transform='';
+  $('ptrTxt').textContent='下拉更新';
+}
+
+appEl.addEventListener('touchstart',function(e){
+  if(ptrBusy||e.touches.length!==1) return;
+  if(document.querySelector('.sheet.on')) return;
+  var t=e.target;
+  var g=t.closest?t.closest('.grid'):null;
+  if(g&&g.scrollTop>0) return;
+  ptrX=e.touches[0].clientX;
+  ptrY=e.touches[0].clientY;
+  ptrDy=0;
+  ptrOn=true;
+},{passive:true});
+
+appEl.addEventListener('touchmove',function(e){
+  if(!ptrOn||ptrBusy) return;
+  var t=e.touches[0];
+  var dy=t.clientY-ptrY;
+  var dx=Math.abs(t.clientX-ptrX);
+  if(dx>dy*1.2&&dx>12){ ptrOn=false; ptrReset(); return; }
+  if(dy<=6) return;
+  ptrDy=dy;
+  var el=ptrEl();
+  el.classList.add('on','drag');
+  var off=-48+Math.min(dy*0.62,48);
+  el.style.transform='translate(-50%,'+off+'px)';
+  if(dy>=64){
+    el.classList.add('ready');
+    $('ptrTxt').textContent='放開即更新';
+  }else{
+    el.classList.remove('ready');
+    $('ptrTxt').textContent='下拉更新';
+  }
+},{passive:true});
+
+appEl.addEventListener('touchend',function(){
+  if(!ptrOn||ptrBusy){ ptrOn=false; return; }
+  ptrOn=false;
+  if(ptrDy<64){ ptrReset(); return; }
+  doReload();
+},{passive:true});
+
+appEl.addEventListener('touchcancel',function(){
+  if(ptrOn){ ptrOn=false; ptrReset(); }
+},{passive:true});
+
+function doReload(){
+  ptrBusy=true;
+  var el=ptrEl();
+  el.className='ptr on spin';
+  el.style.transform='translate(-50%,0)';
+  $('ptrTxt').textContent='更新中…';
+  setTimeout(function(){
+    try{
+      if(location.protocol==='http:'||location.protocol==='https:'){
+        var u=location.href.split('#')[0];
+        u+=(u.indexOf('?')<0?'?':'&')+'r='+Date.now();
+        location.replace(u);
+        return;
+      }
+    }catch(e){}
+    try{ location.reload(); }catch(e2){}
+  },280);
+}
 
 /* ---------------- pay quick sheet ---------------- */
 var qPi=-1;
