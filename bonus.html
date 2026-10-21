@@ -487,19 +487,19 @@ h1{
 .switch.on .sw-r{background:#d19d68}
 .switch.on .sw-r::after{transform:translateX(20px)}
 
-/* 面額選擇 */
+/* 面額選擇：3 欄，滿減獨佔一行 */
 .opts{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:8px;
 }
 .opt{
-  padding:15px 2px;
+  padding:16px 2px;
   border-radius:13px;
   border:1.5px solid var(--line);
   background:#fff;
   color:var(--ink2);
-  font-size:16px;
+  font-size:16.5px;
   font-weight:700;
   font-variant-numeric:tabular-nums;
   letter-spacing:-.2px;
@@ -528,11 +528,13 @@ h1{
   box-shadow:none;
 }
 .opt.full{
+  grid-column:1 / -1;
   font-size:13px;
   font-weight:600;
   color:#b3813f;
   border-color:#ecd9bd;
   background:#fdf7ee;
+  padding:13px 2px;
 }
 .opt.full.on{
   background:#dda868;
@@ -598,8 +600,15 @@ h1{
   color:#b0b7bb;
   letter-spacing:.3px;
 }
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.chip{
+.ver{
+  margin-top:15px;
+  text-align:center;
+  font-size:10px;
+  color:#c3bcb3;
+  letter-spacing:.4px;
+}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chip{
   border:1.5px solid var(--line);
   background:#fff;
   color:#b0b7bb;
@@ -850,6 +859,7 @@ h1{
     <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
     <button class="btn danger" id="delWeekBtn">刪除本週</button>
   </div>
+  <div class="ver">版本 2026-10-22 · 面額 5 種</div>
 </div>
 
 <!-- 統計 -->
@@ -903,7 +913,7 @@ h1{
 var PAYS=['中銀','工商','國際','廣發','大豐','支付寶','MPay','UePay'];
 var PER=3;
 var TOTAL_CELLS=PAYS.length*PER;
-var AMTS=[10,20,30,50,100,200];
+var AMTS=[10,20,50,100,200];
 var KEY='coupon_book_v1';
 var $=function(id){return document.getElementById(id);};
 
