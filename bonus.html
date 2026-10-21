@@ -28,6 +28,9 @@
   --gray-tx:#a9b0b3;
   --orange:#b8763e;
   --orange-bg:#faf0e5;
+  --red:#ac676a;
+  --red-bg:#fbeceb;
+  --red-line:#f2d3d1;
   --kb:0px;
 }
 html,body{height:100%;margin:0;padding:0}
@@ -267,6 +270,13 @@ h1{
   border:1.5px solid var(--line);
   color:var(--gray-tx);
 }
+/* 金額 ≥50 且尚未使用：淺紅提醒 */
+.cell.fresh.big{
+  background:var(--red-bg);
+  border:1.5px solid var(--red-line);
+  color:var(--red);
+}
+.cell.fresh.big .tag{background:#f6e2e0;color:#a86164}
 .cell.used .v{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#c3c8ca}
 .tag{
   position:absolute;
@@ -338,6 +348,69 @@ h1{
   border:1.5px solid #e6e1d8;
   color:#5d6b66;
 }
+
+/* ---------- export & share ---------- */
+.hbtns{display:flex;gap:6px;flex:0 0 auto}
+.hbtns .icon-btn{width:36px;height:36px}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.exp-card{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:2px;
+  padding:12px 11px;
+  border-radius:14px;
+  border:1.5px solid var(--line);
+  background:#fff;
+  text-align:left;
+  transition:background .13s,border-color .13s;
+}
+.exp-card:active{background:var(--bg2);border-color:#ddd6cc}
+.exp-card .ei{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:26px;
+  height:22px;
+  margin-bottom:5px;
+  padding:0 6px;
+  border-radius:7px;
+  background:var(--accent-soft);
+  color:var(--accent);
+  font-size:12px;
+  font-weight:700;
+  font-style:normal;
+  letter-spacing:0;
+}
+.exp-card b{font-size:12.5px;font-weight:700;letter-spacing:.2px;color:var(--ink)}
+.exp-card em{font-size:10.5px;font-style:normal;color:var(--muted);line-height:1.3}
+.exp-preview{
+  margin-top:14px;
+  padding:8px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#f7f5f1;
+}
+.exp-preview img{display:block;width:100%;height:auto;border-radius:9px;background:#fff}
+.exp-btns{display:flex;gap:8px;margin-top:9px}
+.exp-btns .btn{flex:1;padding:12px 0;font-size:13.5px;text-align:center}
+.exp-more{margin-top:13px;font-size:11.5px;color:var(--muted);letter-spacing:.2px}
+.exp-more summary{padding:9px 0;cursor:pointer}
+.exp-more textarea{
+  width:100%;
+  height:110px;
+  margin-top:4px;
+  padding:9px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  color:var(--ink2);
+  font-size:11px;
+  line-height:1.5;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  resize:vertical;
+}
+.exp-more .btn{width:100%;margin-top:8px;padding:11px 0;font-size:13px;text-align:center}
 .btn{
   border-radius:13px;
   padding:13px 14px;
@@ -566,6 +639,9 @@ h1{
 .qv.is-fresh{background:var(--green-bg);border-color:var(--green-line)}
 .qv.is-fresh .qa{color:var(--green)}
 .qv.is-fresh .qn{color:#7d9a8e}
+.qv.is-big{background:var(--red-bg);border-color:var(--red-line)}
+.qv.is-big .qa{color:var(--red)}
+.qv.is-big .qn{color:#b98a8c}
 .qv.is-used{background:var(--gray-bg);border-color:var(--line)}
 .qv.is-used .qa{color:var(--gray-tx);text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#c3c8ca}
 .qv.is-blank .qa{font-size:12.5px;font-weight:500;color:#c0b9b0}
@@ -604,6 +680,7 @@ h1{
   margin-top:15px;
   text-align:center;
   font-size:10px;
+  line-height:1.8;
   color:#c3bcb3;
   letter-spacing:.4px;
 }
@@ -826,7 +903,12 @@ h1{
       <h1>消費券簡易記</h1>
       <p class="sub" id="weekSub">第 1 週</p>
     </div>
-    <button class="icon-btn" id="menuBtn" aria-label="本週設定">⋯</button>
+    <div class="hbtns">
+      <button class="icon-btn" id="shareBtn" aria-label="匯出與分享">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V3.6"/><path d="M7.4 8.2 12 3.6l4.6 4.6"/><path d="M5 14.5v4.4a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-4.4"/></svg>
+      </button>
+      <button class="icon-btn" id="menuBtn" aria-label="本週設定">⋯</button>
+    </div>
   </header>
 
   <div class="weekbar" id="weekbar"></div>
@@ -902,7 +984,7 @@ h1{
     <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
     <button class="btn danger" id="delWeekBtn">刪除本週</button>
   </div>
-  <div class="ver">版本 2026-10-22 · 面額 5 種</div>
+  <div class="ver">版本 2026-10-22 · 面額 5 種 · 可匯出／分享<br>綠＝未用　淺紅＝未用且 ≥50　灰＝已用</div>
 </div>
 
 <!-- 統計 -->
@@ -932,6 +1014,53 @@ h1{
   <div class="sec">按支付抽券統計</div>
   <div id="payTable"></div>
   <div class="foot-note" id="statsNote">全部週次合計 · 金額單位 MOP$ · 滿減券不計入餘額</div>
+</div>
+
+<!-- 匯出與分享 -->
+<div class="sheet" id="expSheet">
+  <div class="sheet-head">
+    <h3>匯出與分享</h3>
+    <button class="x" data-close>✕</button>
+  </div>
+  <div class="lbl" id="expInfo">本週 · MOP$0</div>
+  <div class="exp-grid">
+    <button class="exp-card" id="expImgBtn">
+      <i class="ei">▤</i>
+      <b>本週表格圖片</b>
+      <em>PNG 圖片，可分享到 WhatsApp／微信</em>
+    </button>
+    <button class="exp-card" id="expCsvBtn">
+      <i class="ei">▦</i>
+      <b>CSV 表格</b>
+      <em>Excel、Numbers 直接開啟</em>
+    </button>
+    <button class="exp-card" id="expJsonBtn">
+      <i class="ei">{ }</i>
+      <b>JSON 備份</b>
+      <em>全部週次，可轉移到新手機</em>
+    </button>
+    <button class="exp-card" id="impBtn">
+      <i class="ei">↥</i>
+      <b>匯入備份</b>
+      <em>以備份檔取代目前資料</em>
+    </button>
+  </div>
+  <input type="file" id="impFile" accept=".json,application/json" style="display:none">
+
+  <div class="exp-preview" id="expPreview" style="display:none">
+    <img id="expImgEl" alt="本週表格圖片">
+    <div class="exp-btns">
+      <button class="btn ghost" id="saveImgBtn">儲存圖片</button>
+      <button class="btn primary" id="shareImgBtn">分享</button>
+    </div>
+  </div>
+
+  <details class="exp-more">
+    <summary>其他：複製文字數據（貼到記事本／聊天）</summary>
+    <textarea id="expText" readonly></textarea>
+    <button class="btn ghost" id="copyTxtBtn">複製文字</button>
+  </details>
+  <div class="sheet-foot">圖片與檔案都在手機本機產生，不會上傳到任何伺服器</div>
 </div>
 
 <div class="ptr" id="ptr"><span class="ptr-ico">↓</span><span id="ptrTxt">下拉更新</span></div>
@@ -1153,7 +1282,9 @@ function renderGrid(){
       var has=hasVal(c);
       var b=document.createElement('button');
       b.type='button';
-      b.className='cell '+(has?(c.u?'used':'fresh'):'empty');
+      var cAmt=has?(+c.a||0):0;
+      var big=has&&!c.u&&cAmt>=TIME_MIN;
+      b.className='cell '+(has?(c.u?'used':'fresh')+(big?' big':''):'empty');
       b.dataset.pi=pi;
       b.dataset.i=i;
       if(has){
@@ -1400,7 +1531,7 @@ function renderQuick(){
     var c=w.cells[qPi*PER+i];
     var has=hasVal(c);
     var a=has?(+c.a||0):0;
-    var cls=has?(c.u?'is-used':'is-fresh'):'is-blank';
+    var cls=has?(c.u?'is-used':(a>=TIME_MIN?'is-big':'is-fresh')):'is-blank';
     var val=has?(a>0?('MOP$'+num(a)):(c.f?'滿減':'—')):'未記錄';
     html+='<div class="qrow">'+
       '<button type="button" class="qv '+cls+'" data-i="'+i+'">'+
@@ -1697,6 +1828,439 @@ function renderStats(){
   });
   $('payTable').innerHTML=html;
 }
+
+/* ================= 匯出與分享 ================= */
+var imgURL='';
+
+function p2(n){ return (n<10?'0':'')+n; }
+function stampFile(){
+  var d=new Date();
+  return d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'_'+p2(d.getHours())+p2(d.getMinutes());
+}
+function stampRead(){
+  var d=new Date();
+  return d.getFullYear()+'/'+p2(d.getMonth()+1)+'/'+p2(d.getDate())+' '+p2(d.getHours())+':'+p2(d.getMinutes());
+}
+function safeName(s){
+  return String(s).replace(/[\\/:*?"<>|\s]+/g,'_');
+}
+
+function weekAgg(w){
+  var t=0,u=0,f=0,n=0;
+  for(var i=0;i<w.cells.length;i++){
+    var c=w.cells[i];
+    if(!hasVal(c)) continue;
+    n++;
+    t+=(+c.a||0);
+    if(c.u) u+=(+c.a||0);
+    if(c.f) f++;
+  }
+  return {t:t,u:u,left:t-u,f:f,n:n};
+}
+
+/* ---- CSV ---- */
+function csvCell(v){
+  var s=String(v==null?'':v);
+  return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+}
+function csvLine(arr){ return arr.map(csvCell).join(','); }
+
+function buildCSV(){
+  var out=[];
+  out.push(csvLine(['消費券簡易記 · 匯出時間 '+stampRead()]));
+  out.push('');
+  out.push(csvLine(['週次','支付','第幾次','金額(MOP)','狀態','滿減券','錄入時間']));
+  S.weeks.forEach(function(w){
+    for(var pi=0;pi<PAYS.length;pi++){
+      for(var k=0;k<PER;k++){
+        var c=w.cells[pi*PER+k];
+        if(!hasVal(c)) continue;
+        var a=+c.a||0;
+        var st=(c.f&&a<=0)?'滿減':(c.u?'已用':'未用');
+        out.push(csvLine([
+          w.name,PAYS[pi],'第 '+(k+1)+' 次',
+          a>0?num(a):'',st,c.f?'是':'否',
+          (c.t&&a>=TIME_MIN)?fmtTime(c.t):''
+        ]));
+      }
+    }
+  });
+  out.push('');
+  out.push(csvLine(['週次','抽到總額','已用','未用餘額','滿減(張)','筆數']));
+  var T={t:0,u:0,f:0,n:0};
+  S.weeks.forEach(function(w){
+    var g=weekAgg(w);
+    T.t+=g.t; T.u+=g.u; T.f+=g.f; T.n+=g.n;
+    out.push(csvLine([w.name,num(g.t),num(g.u),num(g.left),g.f,g.n]));
+  });
+  out.push(csvLine(['總計',num(T.t),num(T.u),num(T.t-T.u),T.f,T.n]));
+  return out.join('\r\n');
+}
+
+/* ---- 純文字（好貼到聊天）---- */
+function buildText(){
+  var w=curW(),g=weekAgg(w),out=[];
+  out.push('消費券記　'+w.name);
+  out.push('抽到 MOP$'+num(g.t)+'　已用 MOP$'+num(g.u)+'　未用 MOP$'+num(g.left)+'　滿減 '+g.f+' 張');
+  out.push('');
+  visiblePays(w).forEach(function(pi){
+    var parts=[];
+    for(var k=0;k<PER;k++){
+      var c=w.cells[pi*PER+k];
+      if(!hasVal(c)) continue;
+      var a=+c.a||0, s='';
+      if(a>0) s=num(a);
+      if(c.f) s=s?s+'+減':'滿減';
+      if(c.u&&a>0) s+='(已用)';
+      parts.push(s);
+    }
+    out.push(PAYS[pi]+'　'+(parts.length?parts.join('　'):'—'));
+  });
+  return out.join('\n');
+}
+
+/* ---- 下載 ---- */
+function downloadBlob(blob,name){
+  var ok=false;
+  try{
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url; a.download=name; a.rel='noopener';
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){
+      try{ URL.revokeObjectURL(url); }catch(e){}
+      if(a.parentNode) a.parentNode.removeChild(a);
+    },4000);
+    ok=true;
+  }catch(e){}
+  return ok;
+}
+
+/* ---- 產生表格圖片 ---- */
+var IMG_FONT='"PingFang TC","Hiragino Sans TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",sans-serif';
+
+function rr(ctx,x,y,w,h,r){
+  r=Math.min(r,w/2,h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function buildImage(){
+  var w=curW(),g=weekAgg(w),show=visiblePays(w);
+  if(!show.length){
+    show=[];
+    for(var q=0;q<PAYS.length;q++) show.push(q);
+  }
+  var W=700,PAD=26,NAME_W=112,GAP=8,ROW_H=62;
+  var cellW=(W-PAD*2-NAME_W-GAP*3)/3;
+  var y0=26;
+  var sumY=y0+64;
+  var headY=sumY+82;
+  var rowsY=headY+30;
+  var H=rowsY+show.length*(ROW_H+GAP)-GAP+56;
+
+  var dpr=2;
+  var cv=document.createElement('canvas');
+  cv.width=W*dpr; cv.height=H*dpr;
+  var ctx=cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.textBaseline='middle';
+
+  ctx.fillStyle='#fbfaf8';
+  ctx.fillRect(0,0,W,H);
+
+  /* 標題 */
+  ctx.textAlign='left';
+  ctx.fillStyle='#333d43';
+  ctx.font='700 26px '+IMG_FONT;
+  ctx.fillText('消費券記',PAD,y0+14);
+
+  ctx.textAlign='right';
+  ctx.fillStyle='#5e686e';
+  ctx.font='600 17px '+IMG_FONT;
+  ctx.fillText(w.name,W-PAD,y0+14);
+
+  ctx.textAlign='left';
+  ctx.fillStyle='#a8afb4';
+  ctx.font='12.5px '+IMG_FONT;
+  ctx.fillText('匯出時間 '+stampRead()+'　·　共 '+S.weeks.length+' 週',PAD,y0+44);
+
+  /* 三張小卡 */
+  var cw=(W-PAD*2-GAP*2)/3;
+  var cards=[
+    {l:'抽到總額',v:'MOP$'+num(g.t),c:'#333d43'},
+    {l:'未用餘額',v:'MOP$'+num(g.left),c:'#3f6a5b'},
+    {l:'滿減券',v:String(g.f)+' 張',c:'#b8763e'}
+  ];
+  cards.forEach(function(cd,i){
+    var x=PAD+i*(cw+GAP);
+    ctx.fillStyle='#fff';
+    rr(ctx,x,sumY,cw,72,14); ctx.fill();
+    ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle='#8f989e';
+    ctx.font='11.5px '+IMG_FONT;
+    ctx.textAlign='left';
+    ctx.fillText(cd.l,x+13,sumY+21);
+    ctx.fillStyle=cd.c;
+    ctx.font='700 20px '+IMG_FONT;
+    ctx.fillText(cd.v,x+13,sumY+48);
+  });
+
+  /* 表頭 */
+  ctx.fillStyle='#98a1a6';
+  ctx.font='11.5px '+IMG_FONT;
+  ctx.textAlign='left';
+  ctx.fillText('支付',PAD+12,headY+2);
+  for(var k=0;k<PER;k++){
+    var cx=PAD+NAME_W+GAP+k*(cellW+GAP);
+    ctx.textAlign='center';
+    ctx.fillText('第 '+(k+1)+' 次',cx+cellW/2,headY+2);
+  }
+
+  /* 每一行 */
+  show.forEach(function(pi,ri){
+    var ry=rowsY+ri*(ROW_H+GAP);
+
+    ctx.fillStyle='#fff';
+    rr(ctx,PAD,ry,NAME_W,ROW_H,13); ctx.fill();
+    ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
+
+    ctx.textAlign='center';
+    ctx.fillStyle='#333d43';
+    ctx.font='700 15px '+IMG_FONT;
+    ctx.fillText(PAYS[pi],PAD+NAME_W/2,ry+ROW_H/2-1);
+
+    /* 該行滿減張數 */
+    var fc=0;
+    for(var m=0;m<PER;m++){
+      var cm=w.cells[pi*PER+m];
+      if(hasVal(cm)&&cm.f) fc++;
+    }
+    if(fc){
+      var bw=15;
+      ctx.fillStyle='#b8763e';
+      rr(ctx,PAD+NAME_W-bw-6,ry+6,bw,14,7); ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.font='700 9px '+IMG_FONT;
+      ctx.fillText(String(fc),PAD+NAME_W-bw/2-6,ry+13.5);
+    }
+
+    for(var k2=0;k2<PER;k2++){
+      var c=w.cells[pi*PER+k2];
+      var x=PAD+NAME_W+GAP+k2*(cellW+GAP);
+      var has=hasVal(c);
+      var a=has?(+c.a||0):0;
+      var full=has&&!!c.f;
+      var used=has&&!!c.u;
+      var fill='#f7f5f1',stroke='#eeeae3',txt='#c9c2ba';
+
+      if(has&&a>0&&used){ fill='#f4f2ef'; stroke='#e5e0d8'; txt='#a9b0b3'; }
+      else if(has&&a>=TIME_MIN){ fill='#fbecec'; stroke='#f2d3d1'; txt='#a26163'; }
+      else if(has&&a>0){ fill='#e7f1ea'; stroke='#c6dcd0'; txt='#35624f'; }
+      else if(has&&full){ fill='#faf0e5'; stroke='#ecd9bd'; txt='#b8763e'; }
+
+      ctx.fillStyle=fill;
+      rr(ctx,x,ry,cellW,ROW_H,13); ctx.fill();
+      ctx.strokeStyle=stroke; ctx.lineWidth=1.4; ctx.stroke();
+
+      if(!has){
+        ctx.fillStyle='#cdc6bd';
+        ctx.font='15px '+IMG_FONT;
+        ctx.textAlign='center';
+        ctx.fillText('—',x+cellW/2,ry+ROW_H/2);
+        continue;
+      }
+
+      if(a>0){
+        ctx.fillStyle=txt;
+        ctx.font='700 21px '+IMG_FONT;
+        ctx.textAlign='center';
+        var label=num(a);
+        ctx.fillText(label,x+cellW/2,ry+ROW_H/2);
+        if(used){
+          var tw=ctx.measureText(label).width;
+          ctx.strokeStyle=txt; ctx.lineWidth=1.4;
+          ctx.beginPath();
+          ctx.moveTo(x+cellW/2-tw/2-2,ry+ROW_H/2);
+          ctx.lineTo(x+cellW/2+tw/2+2,ry+ROW_H/2);
+          ctx.stroke();
+        }
+        if(full){
+          var pw=19,ph=16;
+          ctx.fillStyle='#c07f42';
+          rr(ctx,x+cellW-pw-6,ry+6,pw,ph,7); ctx.fill();
+          ctx.fillStyle='#fff';
+          ctx.font='700 10.5px '+IMG_FONT;
+          ctx.textAlign='center';
+          ctx.fillText('減',x+cellW-pw/2-6,ry+6+ph/2+0.5);
+        }
+      }else{
+        ctx.fillStyle=txt;
+        ctx.font='700 15px '+IMG_FONT;
+        ctx.textAlign='center';
+        ctx.fillText('滿減',x+cellW/2,ry+ROW_H/2+(c.t?4:0));
+      }
+
+      if(c.t&&a>=TIME_MIN){
+        ctx.fillStyle='#a9b0b3';
+        ctx.font='9.5px '+IMG_FONT;
+        ctx.textAlign='right';
+        ctx.fillText(fmtTime(c.t),x+cellW-8,ry+ROW_H-13);
+      }
+    }
+  });
+
+  /* 底部 */
+  ctx.textAlign='center';
+  ctx.fillStyle='#b0b7bb';
+  ctx.font='11px '+IMG_FONT;
+  ctx.fillText('綠＝未用　淺紅＝未用且≥50　灰＝已用　·　滿減不計入金額',W/2,H-26);
+
+  return cv;
+}
+
+/* dataURL → Blob（不必依賴異步的 toBlob，較穩定） */
+function dataURLToBlob(d){
+  var parts=String(d).split(',');
+  var mime=(parts[0].match(/:(.*?);/)||[,'image/png'])[1];
+  var bin=atob(parts[1]);
+  var n=bin.length,u8=new Uint8Array(n);
+  for(var i=0;i<n;i++) u8[i]=bin.charCodeAt(i);
+  return new Blob([u8],{type:mime});
+}
+function curImgBlob(){
+  if(!imgURL) return null;
+  try{ return dataURLToBlob(imgURL); }catch(e){ return null; }
+}
+
+/* ---- 開面板 ---- */
+$('shareBtn').addEventListener('click',function(){
+  var w=curW(),g=weekAgg(w);
+  $('expInfo').textContent=w.name+'　·　MOP$'+num(g.t)+'　·　共 '+S.weeks.length+' 週 · '+g.n+' 筆';
+  $('expText').value=buildText();
+  $('expPreview').style.display='none';
+  imgURL='';
+  openSheet('expSheet');
+});
+
+/* ---- 圖片 ---- */
+$('expImgBtn').addEventListener('click',function(){
+  try{
+    var cv=buildImage();
+    imgURL=cv.toDataURL('image/png');
+    $('expImgEl').src=imgURL;
+    $('expPreview').style.display='block';
+    setTimeout(function(){
+      try{ $('expPreview').scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
+    },60);
+  }catch(e){
+    toast('圖片產生失敗，可改用 CSV');
+  }
+});
+
+$('saveImgBtn').addEventListener('click',function(){
+  var blob=curImgBlob();
+  if(!blob){ toast('請先生成圖片'); return; }
+  var name='消費券_'+safeName(curW().name)+'_'+stampFile()+'.png';
+  if(downloadBlob(blob,name)) toast('已儲存，可到相簿或下載資料夾查看');
+  else toast('請長按上方圖片儲存');
+});
+
+$('shareImgBtn').addEventListener('click',function(){
+  var blob=curImgBlob();
+  if(!blob){ toast('請先生成圖片'); return; }
+  var name='消費券_'+safeName(curW().name)+'_'+stampFile()+'.png';
+  var file=null;
+  try{ file=new File([blob],name,{type:'image/png'}); }catch(e){}
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:'消費券記 '+curW().name}).catch(function(){});
+    return;
+  }
+  if(navigator.share){
+    navigator.share({title:'消費券記 '+curW().name,text:buildText()}).catch(function(){});
+    return;
+  }
+  if(downloadBlob(blob,name)){
+    toast('已儲存圖片，可到相簿分享');
+  }else{
+    toast('請長按上方圖片儲存');
+  }
+});
+
+/* ---- CSV / JSON ---- */
+$('expCsvBtn').addEventListener('click',function(){
+  var csv='\uFEFF'+buildCSV();
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  var name='消費券記帳_'+stampFile()+'.csv';
+  if(downloadBlob(blob,name)) toast('已匯出 CSV，可用 Excel 開啟');
+  else toast('匯出失敗，請用「複製文字」');
+});
+
+$('expJsonBtn').addEventListener('click',function(){
+  var txt=JSON.stringify(S,null,2);
+  var blob=new Blob([txt],{type:'application/json;charset=utf-8'});
+  var name='消費券備份_'+stampFile()+'.json';
+  if(downloadBlob(blob,name)) toast('已匯出備份，可在新手機匯入');
+  else toast('匯出失敗，請用「複製文字」');
+});
+
+/* ---- 複製文字 ---- */
+$('copyTxtBtn').addEventListener('click',function(){
+  var el=$('expText');
+  el.focus();
+  el.select();
+  var done=false;
+  try{ done=document.execCommand('copy'); }catch(e){}
+  if(done){ toast('已複製文字'); return; }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(el.value).then(function(){
+      toast('已複製文字');
+    }).catch(function(){
+      toast('已選取，請長按複製');
+    });
+    return;
+  }
+  toast('已選取，請長按複製');
+});
+
+/* ---- 匯入 ---- */
+$('impBtn').addEventListener('click',function(){
+  $('impFile').value='';
+  $('impFile').click();
+});
+
+$('impFile').addEventListener('change',function(){
+  var f=this.files&&this.files[0];
+  if(!f) return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    var d=null;
+    try{ d=JSON.parse(String(rd.result)); }catch(e){}
+    if(!d||!Array.isArray(d.weeks)||!d.weeks.length){
+      toast('檔案格式不正確');
+      return;
+    }
+    var cnt=d.weeks.length;
+    if(!window.confirm('匯入會以備份檔（'+cnt+' 週）取代目前全部資料，確定嗎？')){
+      return;
+    }
+    try{
+      localStorage.setItem(KEY,JSON.stringify(d));
+      location.reload();
+    }catch(e){
+      toast('匯入失敗，儲存空間可能不足');
+    }
+  };
+  rd.onerror=function(){ toast('讀取檔案失敗'); };
+  rd.readAsText(f);
+});
 
 $('statsBtn').addEventListener('click',function(){
   renderStats();
