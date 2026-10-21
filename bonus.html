@@ -710,6 +710,51 @@ h1{
 }
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+/* ---------- 關閉說明 ---------- */
+.bye{
+  position:fixed;
+  inset:0;
+  background:rgba(51,61,67,.42);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:26px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s;
+  z-index:95;
+}
+.bye.on{opacity:1;pointer-events:auto}
+.bye-card{
+  width:100%;
+  max-width:304px;
+  background:var(--card);
+  border-radius:20px;
+  padding:22px 20px 16px;
+  text-align:center;
+  box-shadow:0 14px 40px rgba(51,61,67,.2);
+  transform:translateY(10px);
+  transition:transform .22s;
+}
+.bye.on .bye-card{transform:translateY(0)}
+.bye-ico{
+  width:42px;height:42px;
+  margin:0 auto 12px;
+  border-radius:50%;
+  background:var(--green-bg);
+  color:var(--green);
+  font-size:19px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.bye-card h4{margin:0 0 8px;font-size:15px;color:var(--ink);letter-spacing:.5px}
+.bye-card p{margin:0;font-size:12.5px;line-height:1.8;color:var(--muted)}
+.bye-card p b{color:var(--ink2);font-weight:700}
+.bye-btns{display:flex;gap:8px;margin-top:16px}
+.bye-btns .btn{flex:1;padding:12px 0;font-size:13.5px}
+
 @media (max-height:680px){
   .sum-val{font-size:19px}
   .grid{gap:5px}
@@ -834,6 +879,19 @@ h1{
   <div class="sec">按支付抽券統計</div>
   <div id="payTable"></div>
   <div class="foot-note" id="statsNote">全部週次合計 · 金額單位 MOP$ · 滿減券不計入餘額</div>
+</div>
+
+<!-- 關閉說明 -->
+<div class="bye" id="bye">
+  <div class="bye-card">
+    <div class="bye-ico">✓</div>
+    <h4>記錄已儲存</h4>
+    <p>手機瀏覽器基於安全，不允許網頁自行關閉。<br>請按瀏覽器分頁上的 <b>✕</b>；也可在分頁清單把本頁向左滑走。</p>
+    <div class="bye-btns">
+      <button class="btn ghost" id="byeBack">返回</button>
+      <button class="btn primary" id="byeRetry">再試一次</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1515,13 +1573,41 @@ $('statsBtn').addEventListener('click',function(){
   openSheet('statsSheet');
 });
 
-/* 首頁「關閉」：關閉網頁（資料已即時存檔，關掉不會遺失） */
-$('closeBtn').addEventListener('click',function(){
+/* 首頁「關閉」：先嘗試關閉視窗，做不到就明確教用戶怎樣關（資料已即時存檔） */
+function attemptClose(){
   try{ window.close(); }catch(e){}
-  /* 多數手機瀏覽器不允許程式關閉分頁，退回提示 */
+  try{ if(window.top && window.top!==window) window.top.close(); }catch(e){}
+}
+
+function showBye(){
+  var b=$('bye');
+  if(!b) return;
+  b.classList.add('on');
+  try{ document.activeElement.blur(); }catch(e){}
+}
+
+$('closeBtn').addEventListener('click',function(){
+  attemptClose();
   setTimeout(function(){
-    toast('如未關閉，請按瀏覽器分頁的 ✕');
-  },360);
+    if(document.hidden) return;
+    showBye();
+  },380);
+});
+
+$('byeBack').addEventListener('click',function(){
+  $('bye').classList.remove('on');
+});
+
+$('byeRetry').addEventListener('click',function(){
+  attemptClose();
+  setTimeout(function(){
+    if(document.hidden) return;
+    toast('仍未能關閉，請按分頁上的 ✕');
+  },380);
+});
+
+$('bye').addEventListener('click',function(e){
+  if(e.target===$('bye')) $('bye').classList.remove('on');
 });
 
 /* ---------------- sheet control ---------------- */
