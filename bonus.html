@@ -329,6 +329,15 @@ h1{
   margin-top:-2px;
 }
 .footer{flex:0 0 auto;display:flex;gap:8px}
+.btn.ghost.close-btn{
+  flex:0 0 auto;
+  padding:13px 15px;
+  font-size:13px;
+  letter-spacing:.8px;
+  background:#f2efe9;
+  border:1.5px solid #e6e1d8;
+  color:#5d6b66;
+}
 .btn{
   border-radius:13px;
   padding:13px 14px;
@@ -589,7 +598,6 @@ h1{
   color:#b0b7bb;
   letter-spacing:.3px;
 }
-
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .chip{
   border:1.5px solid var(--line);
@@ -751,6 +759,7 @@ h1{
 
   <div class="footer">
     <button class="btn primary" id="statsBtn">統計 · 累計與按支付</button>
+    <button class="btn ghost close-btn" id="closeBtn" aria-label="關閉網頁">關閉</button>
   </div>
 </div>
 
@@ -1504,6 +1513,15 @@ function renderStats(){
 $('statsBtn').addEventListener('click',function(){
   renderStats();
   openSheet('statsSheet');
+});
+
+/* 首頁「關閉」：關閉網頁（資料已即時存檔，關掉不會遺失） */
+$('closeBtn').addEventListener('click',function(){
+  try{ window.close(); }catch(e){}
+  /* 多數手機瀏覽器不允許程式關閉分頁，退回提示 */
+  setTimeout(function(){
+    toast('如未關閉，請按瀏覽器分頁的 ✕');
+  },360);
 });
 
 /* ---------------- sheet control ---------------- */
