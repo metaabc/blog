@@ -482,11 +482,6 @@ h1{
 .fav-add .btn{flex:0 0 auto;padding:11px 16px;font-size:13.5px;border-radius:12px}
 .fav-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 2px}
 .fav-tools .fw{font-size:11px;color:var(--muted)}
-.fav-tools .selbtn{
-  font-size:12px;font-weight:700;color:var(--accent);
-  padding:5px 10px;border-radius:9px;background:var(--accent-soft);
-}
-.fav-tools .selbtn:active{opacity:.8}
 .fav-list{
   max-height:44vh;
   overflow-y:auto;
@@ -526,17 +521,17 @@ h1{
 }
 .fav-txt:focus{background:#f4f9f6;box-shadow:0 0 0 2px #d8e7df;padding:5px 7px}
 .fav-cb{
-  display:none;
+  display:flex;
   flex:0 0 auto;
-  width:19px;height:19px;
-  border-radius:50%;
+  width:20px;height:20px;
+  border-radius:6px;
   border:1.6px solid #d8d4cc;
-  font-size:10px;color:#fff;
+  background:#fff;
+  font-size:11px;color:#fff;
   align-items:center;justify-content:center;
+  transition:background .12s,border-color .12s;
 }
-.fav-list.selmode .fav-cb{display:flex}
-.fav-list.selmode .fav-grip{display:none}
-.fav-cb.on{background:var(--accent);border-color:var(--accent)}
+.fav-list .fav-cb.on{background:var(--accent);border-color:var(--accent)}
 .fav-item.on .fav-txt{color:var(--accent);font-weight:600}
 .fav-item.drag{
   background:#f6fbf8;
@@ -566,6 +561,8 @@ h1{
 }
 .fav-bar .btn.danger[data-armed="1"]{background:#b56b62;color:#fff}
 .fav-bar .btn:disabled{opacity:.45;pointer-events:none}
+.stats-bar{display:flex;margin-top:12px}
+.stats-bar .btn{flex:1;text-align:center;padding:12px 0;font-size:13.5px}
 /* 分享方式：長圖／文字 */
 .fav-ways{display:none;gap:8px;margin-top:10px}
 .fav-ways.on{display:flex}
@@ -1142,6 +1139,13 @@ h1{
   <div class="sec">按支付抽券統計</div>
   <div id="payTable"></div>
   <div class="foot-note" id="statsNote">全部週次合計 · 金額單位 MOP$ · 滿減券不計入餘額</div>
+  <div class="stats-bar">
+    <button class="btn ghost" id="statsImgBtn" type="button">分享累計圖</button>
+  </div>
+  <div class="fav-prev" id="statsPrev">
+    <img id="statsPrevImg" alt="累計統計圖">
+    <div class="fp-tip">長按圖片可儲存到相簿，或直接轉發</div>
+  </div>
 </div>
 
 <!-- 匯出與分享 -->
@@ -1205,7 +1209,6 @@ h1{
   </div>
   <div class="fav-tools">
     <span class="fw" id="favCount">0 筆收藏</span>
-    <button class="selbtn" id="favSelBtn" type="button">選取</button>
   </div>
   <div class="fav-list" id="favList"></div>
   <div class="fav-empty" id="favEmpty">還沒有收藏<br>上面輸入商家及優惠，一筆一行</div>
@@ -1218,9 +1221,9 @@ h1{
     </button>
   </div>
   <div class="fav-bar">
-    <span class="sel-info" id="favSelInfo">拖 ☰ 排序 · 點字修改</span>
-    <button class="btn ghost" id="favShareBtn" type="button">分享</button>
     <button class="btn danger" id="favDelBtn" type="button">刪除</button>
+    <span class="sel-info" id="favSelInfo">勾選後按刪除</span>
+    <button class="btn ghost" id="favShareBtn" type="button">分享</button>
   </div>
   <div class="fav-prev" id="favPrev">
     <img id="favPrevImg" alt="收藏清單長圖">
@@ -2388,6 +2391,114 @@ function buildFavImage(){
   return cv;
 }
 
+/* ---- 累計統計圖（同一套手機比例：540×2，最少 9:16） ---- */
+function buildStatsImage(){
+  var agg={t:0,u:0,f:0,c:0};
+  var per=PAYS.map(function(){return {n:0,t:0,u:0,f:0};});
+
+  S.weeks.forEach(function(w){
+    w.cells.forEach(function(c,idx){
+      if(!hasVal(c)) return;
+      var a=+c.a||0, pi=Math.floor(idx/PER);
+      agg.t+=a; if(c.u) agg.u+=a; if(c.f) agg.f++;
+      if(a>0) agg.c++;
+      per[pi].n++; per[pi].t+=a;
+      if(c.u) per[pi].u+=a;
+      if(c.f) per[pi].f++;
+    });
+  });
+
+  var rows=PAYS.map(function(p,i){ return {p:p,i:i,d:per[i]}; });
+  rows.sort(function(A,B){
+    if(B.d.t!==A.d.t) return B.d.t-A.d.t;
+    if(B.d.n!==A.d.n) return B.d.n-A.d.n;
+    if(B.d.u!==A.d.u) return B.d.u-A.d.u;
+    return A.i-B.i;
+  });
+  var maxT=0;
+  rows.forEach(function(r){ if(r.d.t>maxT) maxT=r.d.t; });
+  if(maxT<=0) maxT=1;
+
+  var W=540,DPR=2,PAD=30;
+  var minH=Math.round(W*16/9);
+  var HERO=104,SEC=38,ROW=56,GAP=6;
+  var rowsH=rows.length*ROW+(rows.length-1)*GAP;
+  var blockH=96+HERO+SEC+rowsH+48;
+  var H=Math.max(Math.round(blockH+52),minH);
+  var startY=Math.max(26,(H-blockH)/2);
+
+  var cv=document.createElement('canvas');
+  cv.width=W*DPR; cv.height=H*DPR;
+  var ctx=cv.getContext('2d');
+  ctx.scale(DPR,DPR);
+  ctx.textBaseline='middle';
+
+  var bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#fdfcfa'); bg.addColorStop(1,'#f4f1ea');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  ctx.textAlign='left';
+  ctx.fillStyle='#333d43'; ctx.font='700 24px '+IMG_FONT;
+  ctx.fillText('累計統計',PAD,startY+24);
+  ctx.fillStyle='#a8afb4'; ctx.font='12px '+IMG_FONT;
+  ctx.fillText('共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券 · '+stampRead(),PAD,startY+50);
+
+  /* 主卡：累計／已用／未用 */
+  var cyy=startY+70;
+  ctx.fillStyle='#fff';
+  rr(ctx,PAD,cyy,W-PAD*2,HERO,16); ctx.fill();
+  ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
+
+  ctx.textAlign='left';
+  ctx.fillStyle='#8f989e'; ctx.font='11.5px '+IMG_FONT;
+  ctx.fillText('累計抽到消費券',PAD+18,cyy+26);
+  ctx.fillStyle='#333d43'; ctx.font='700 34px '+IMG_FONT;
+  ctx.fillText('MOP$'+num(agg.t),PAD+18,cyy+64);
+
+  ctx.textAlign='right';
+  ctx.fillStyle='#8f989e'; ctx.font='11px '+IMG_FONT;
+  ctx.fillText('已用 MOP$'+num(agg.u),W-PAD-18,cyy+42);
+  ctx.fillStyle='#4a7f66'; ctx.font='600 12px '+IMG_FONT;
+  ctx.fillText('未用 MOP$'+num(agg.t-agg.u),W-PAD-18,cyy+68);
+
+  /* 按支付條形 */
+  var sy=cyy+HERO+22;
+  ctx.textAlign='left'; ctx.fillStyle='#98a1a6'; ctx.font='11.5px '+IMG_FONT;
+  ctx.fillText('按支付（累計由高到低）',PAD+2,sy);
+
+  var barX=PAD+70,barW=W-PAD*2-70-72;
+  var yy=sy+18;
+  rows.forEach(function(r){
+    var d=r.d;
+    ctx.textAlign='left'; ctx.fillStyle='#333d43'; ctx.font='13.5px '+IMG_FONT;
+    ctx.fillText(r.p,PAD+2,yy+ROW/2);
+
+    var by=yy+ROW/2-5;
+    ctx.fillStyle='#eef1ec';
+    rr(ctx,barX,by,barW,10,5); ctx.fill();
+
+    if(d.t>0){
+      var wpx=Math.max(barW*(d.t/maxT),5);
+      ctx.fillStyle='#a9c3b6';                 /* 淺綠＝未用（全長） */
+      rr(ctx,barX,by,wpx,10,5); ctx.fill();
+      var uw=barW*(d.u/maxT);
+      if(uw>0){
+        ctx.fillStyle='#3f6a5b';               /* 深綠＝已用（疊左邊） */
+        rr(ctx,barX,by,Math.max(uw,4),10,5); ctx.fill();
+      }
+    }
+
+    ctx.textAlign='right'; ctx.fillStyle='#333d43'; ctx.font='700 13px '+IMG_FONT;
+    ctx.fillText(num(d.t),W-PAD,yy+ROW/2);
+    yy+=ROW+GAP;
+  });
+
+  ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
+  ctx.fillText('深綠＝已用　淺綠＝未用　·　滿減 '+agg.f+' 張　·　消費券速記',W/2,startY+blockH-18);
+
+  return cv;
+}
+
 /* dataURL → Blob（不必依賴異步的 toBlob，較穩定） */
 function dataURLToBlob(d){
   var parts=String(d).split(',');
@@ -2526,11 +2637,39 @@ $('impFile').addEventListener('change',function(){
 
 $('statsBtn').addEventListener('click',function(){
   renderStats();
+  $('statsPrev').classList.remove('on');
   openSheet('statsSheet');
 });
 
+/* 累計頁：一鍵出圖分享 */
+$('statsImgBtn').addEventListener('click',function(){
+  var cv;
+  try{ cv=buildStatsImage(); }
+  catch(e){ toast('圖片產生失敗'); return; }
+
+  var url=cv.toDataURL('image/png');
+  $('statsPrevImg').src=url;
+  $('statsPrev').classList.add('on');
+  setTimeout(function(){
+    try{ $('statsPrev').scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
+  },60);
+
+  var blob=null;
+  try{ blob=dataURLToBlob(url); }catch(e){}
+  var name='累計統計_'+stampFile()+'.png';
+  var file=null;
+  if(blob){ try{ file=new File([blob],name,{type:'image/png'}); }catch(e){} }
+
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:'累計統計'}).catch(function(){});
+    return;
+  }
+  if(blob&&downloadBlob(blob,name)){ toast('圖已下載，也可長按上方圖片儲存'); return; }
+  toast('請長按上方圖片儲存或轉發');
+});
+
 /* ---------------- 收藏清單 ---------------- */
-var favSelMode=false,favSel={};
+var favSel={};
 
 function favs(){
   if(!Array.isArray(S.favs)) S.favs=[];
@@ -2540,15 +2679,11 @@ function favSelIds(){
   return Object.keys(favSel).filter(function(k){ return favSel[k]; });
 }
 function updateFavBar(){
-  var n=favSelMode?favSelIds().length:0;
-  $('favSelBtn').textContent=favSelMode?'取消':'選取';
-  $('favDelBtn').disabled=!favSelMode||!n;
+  var n=favSelIds().length;
   $('favDelBtn').dataset.armed='';
+  $('favDelBtn').disabled=!n;
   $('favDelBtn').textContent=n?('刪除 '+n+' 筆'):'刪除';
-  $('favSelInfo').textContent=favSelMode
-    ?(n?('已選 '+n+' 筆'):'點項目選取')
-    :'拖 ☰ 排序 · 點字修改';
-  $('favShareBtn').style.display=favSelMode?'none':'';
+  $('favSelInfo').textContent=n?('已勾選 '+n+' 筆'):'勾選後按刪除';
   $('favCount').textContent=favs().length+' 筆收藏';
 }
 
@@ -2556,7 +2691,6 @@ function renderFavs(){
   var list=$('favList'),arr=favs();
   $('favPrev').classList.remove('on');
   $('favWays').classList.remove('on');
-  list.classList.toggle('selmode',favSelMode);
   list.innerHTML='';
   arr.forEach(function(f){
     var li=document.createElement('div');
@@ -2576,14 +2710,13 @@ function renderFavs(){
     tx.className='fav-txt';
     tx.textContent=f.text;
     tx.addEventListener('click',function(e){
-      if(favSelMode) return;
       e.stopPropagation();
       startFavEdit(tx,f);
     });
 
     li.appendChild(cb); li.appendChild(grip); li.appendChild(tx);
+    /* 點行任何空白／方格＝勾選 */
     li.addEventListener('click',function(){
-      if(!favSelMode) return;
       favSel[f.id]=!favSel[f.id];
       li.classList.toggle('on',!!favSel[f.id]);
       cb.classList.toggle('on',!!favSel[f.id]);
@@ -2636,7 +2769,6 @@ function addFav(){
 /* 拖拉排序：按住左邊 ☰ 上下拖，放手即存 */
 function bindFavDrag(li,grip){
   grip.addEventListener('pointerdown',function(e){
-    if(favSelMode) return;
     if(e.pointerType==='mouse'&&e.button!==0) return;
     e.preventDefault();
     var list=$('favList');
@@ -2727,7 +2859,6 @@ function copyText(t){
 }
 
 $('favBtn').addEventListener('click',function(){
-  favSelMode=false;
   favSel={};
   $('favInp').value='';
   renderFavs();
@@ -2739,15 +2870,9 @@ $('favInp').addEventListener('keydown',function(e){
   if(e.key==='Enter'){ e.preventDefault(); addFav(); }
 });
 
-$('favSelBtn').addEventListener('click',function(){
-  favSelMode=!favSelMode;
-  favSel={};
-  renderFavs();
-});
-
 $('favDelBtn').addEventListener('click',function(){
   var ids=favSelIds();
-  if(!ids.length){ toast('請先選取項目'); return; }
+  if(!ids.length){ toast('請先勾選項目'); return; }
   var btn=this;
   if(btn.dataset.armed!=='1'){
     btn.dataset.armed='1';
@@ -2759,7 +2884,6 @@ $('favDelBtn').addEventListener('click',function(){
   }
   S.favs=favs().filter(function(f){ return ids.indexOf(f.id)<0; });
   favSel={};
-  favSelMode=false;
   save();
   renderFavs();
   toast('已刪除 '+ids.length+' 筆');
