@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#faf9f7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>消費券簡易記</title>
+<title>消費券速記</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
 :root{
@@ -159,6 +159,31 @@ h1{
   color:var(--ink);
 }
 .sum-val.green{color:var(--green)}
+.sum-line{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0}
+.sum-line .sum-val{min-width:0}
+/* 本週有 100／200 大額券：總額右側靠右標「神助」（放大到看得清） */
+.lucky-badge{
+  flex:0 0 auto;
+  display:none;
+  font-size:12.5px;
+  font-weight:800;
+  letter-spacing:.3px;
+  color:#8a5711;
+  background:linear-gradient(180deg,#fdf2dc,#f8e0b7);
+  border:1px solid #e5bd7f;
+  border-radius:9px;
+  padding:3px 7px;
+  line-height:1.25;
+  white-space:nowrap;
+  box-shadow:0 1px 3px rgba(170,120,40,.16);
+}
+.lucky-badge.on{display:inline-block}
+/* 有神助標籤時金額稍收一級，確保手機一行放得下 */
+.summary.has-lucky .sum-line .sum-val{font-size:19px;letter-spacing:-.6px}
+@media (max-width:374px){
+  .lucky-badge{font-size:11px;padding:2px 6px}
+  .summary.has-lucky .sum-line .sum-val{font-size:17.5px}
+}
 .meta{
   display:flex;
   align-items:center;
@@ -339,14 +364,14 @@ h1{
   margin-top:-2px;
 }
 .footer{flex:0 0 auto;display:flex;gap:8px}
-.btn.ghost.close-btn{
+.btn.ghost.fav-btn{
   flex:0 0 auto;
-  padding:13px 15px;
+  padding:13px 14px;
   font-size:13px;
-  letter-spacing:.8px;
-  background:#f2efe9;
-  border:1.5px solid #e6e1d8;
-  color:#5d6b66;
+  letter-spacing:.5px;
+  background:#fbf4e5;
+  border:1.5px solid #ecdcbb;
+  color:#8a6a33;
 }
 
 /* ---------- export & share ---------- */
@@ -427,6 +452,17 @@ h1{
   box-shadow:0 3px 12px rgba(63,106,91,.22);
 }
 .btn.ghost{background:#f4f2ef;color:var(--ink2)}
+/* 已用的格子改回未用（只在已用時出現） */
+.btn.unuse{
+  display:none;
+  width:100%;
+  margin-top:14px;
+  background:#f4f2ef;
+  color:var(--ink2);
+  font-size:13px;
+  padding:11px 14px;
+}
+.btn.unuse.show{display:block}
 .btn.small{padding:11px 15px;font-size:13px;background:var(--accent);color:#fff;flex:0 0 auto;border-radius:12px}
 .btn.danger{
   display:block;
@@ -439,6 +475,139 @@ h1{
   padding:12px;
 }
 .btn.danger[data-armed="1"]{background:#b56b62;color:#fff;border-color:#b56b62}
+
+/* ---------- 收藏清單 ---------- */
+.fav-add{display:flex;gap:8px}
+.fav-add .inp{flex:1;min-width:0;padding:11px 13px;font-size:14.5px;font-weight:600}
+.fav-add .btn{flex:0 0 auto;padding:11px 16px;font-size:13.5px;border-radius:12px}
+.fav-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 2px}
+.fav-tools .fw{font-size:11px;color:var(--muted)}
+.fav-tools .selbtn{
+  font-size:12px;font-weight:700;color:var(--accent);
+  padding:5px 10px;border-radius:9px;background:var(--accent-soft);
+}
+.fav-tools .selbtn:active{opacity:.8}
+.fav-list{
+  max-height:44vh;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  margin:0 -2px;
+  padding:0 2px;
+}
+.fav-item{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 2px 10px 0;
+  border-bottom:1px solid var(--line2);
+  background:var(--card);
+}
+.fav-item:last-child{border-bottom-color:transparent}
+.fav-grip{
+  flex:0 0 auto;
+  width:24px;height:38px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#c7cdcf;
+  touch-action:none;
+  -webkit-user-select:none;user-select:none;
+  letter-spacing:-1px;
+}
+.fav-grip:active{color:var(--accent)}
+.fav-txt{
+  flex:1;min-width:0;
+  font-size:13.5px;line-height:1.5;color:var(--ink);
+  word-break:break-word;
+  padding:2px 0;
+  outline:none;
+  border-radius:7px;
+  -webkit-user-select:text;user-select:text;
+}
+.fav-txt:focus{background:#f4f9f6;box-shadow:0 0 0 2px #d8e7df;padding:5px 7px}
+.fav-cb{
+  display:none;
+  flex:0 0 auto;
+  width:19px;height:19px;
+  border-radius:50%;
+  border:1.6px solid #d8d4cc;
+  font-size:10px;color:#fff;
+  align-items:center;justify-content:center;
+}
+.fav-list.selmode .fav-cb{display:flex}
+.fav-list.selmode .fav-grip{display:none}
+.fav-cb.on{background:var(--accent);border-color:var(--accent)}
+.fav-item.on .fav-txt{color:var(--accent);font-weight:600}
+.fav-item.drag{
+  background:#f6fbf8;
+  border-radius:10px;
+  border-bottom-color:transparent;
+  box-shadow:0 8px 20px rgba(51,61,67,.16);
+  z-index:5;
+}
+.fav-empty{
+  display:none;
+  text-align:center;
+  font-size:12px;
+  line-height:1.8;
+  color:#b4bbbe;
+  padding:24px 0 20px;
+}
+.fav-bar{display:flex;align-items:center;gap:8px;margin-top:10px}
+.fav-bar .sel-info{flex:1;font-size:11.5px;color:var(--muted)}
+.fav-bar .btn{
+  display:inline-block;
+  width:auto;
+  flex:0 0 auto;
+  margin:0;
+  padding:10px 13px;
+  font-size:12.5px;
+  border-radius:11px;
+}
+.fav-bar .btn.danger[data-armed="1"]{background:#b56b62;color:#fff}
+.fav-bar .btn:disabled{opacity:.45;pointer-events:none}
+/* 分享方式：長圖／文字 */
+.fav-ways{display:none;gap:8px;margin-top:10px}
+.fav-ways.on{display:flex}
+.fav-ways .way{
+  flex:1;min-width:0;
+  text-align:left;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1.5px solid var(--line);
+  background:#fbfaf8;
+  transition:background .13s,border-color .13s;
+}
+.fav-ways .way:active{background:var(--bg2);border-color:#ddd6cc}
+.fav-ways .way b{
+  display:block;
+  font-size:13px;font-weight:700;
+  color:var(--ink);letter-spacing:.3px;
+}
+.fav-ways .way em{
+  display:block;
+  margin-top:2px;
+  font-size:10.5px;
+  font-style:normal;
+  color:var(--muted);
+  line-height:1.35;
+}
+.fav-prev{display:none;margin-top:12px}
+.fav-prev.on{display:block}
+.fav-prev img{
+  display:block;
+  width:100%;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fbfaf8;
+}
+.fav-prev .fp-tip{
+  margin-top:7px;
+  text-align:center;
+  font-size:10.5px;
+  color:#b0b7bb;
+  letter-spacing:.3px;
+}
 
 /* ---------- sheets ---------- */
 .mask{
@@ -839,51 +1008,6 @@ h1{
 .ptr.spin .ptr-ico{animation:ptrspin .66s linear infinite}
 @keyframes ptrspin{to{transform:rotate(360deg)}}
 
-/* ---------- 關閉說明 ---------- */
-.bye{
-  position:fixed;
-  inset:0;
-  background:rgba(51,61,67,.42);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:26px;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .2s;
-  z-index:95;
-}
-.bye.on{opacity:1;pointer-events:auto}
-.bye-card{
-  width:100%;
-  max-width:304px;
-  background:var(--card);
-  border-radius:20px;
-  padding:22px 20px 16px;
-  text-align:center;
-  box-shadow:0 14px 40px rgba(51,61,67,.2);
-  transform:translateY(10px);
-  transition:transform .22s;
-}
-.bye.on .bye-card{transform:translateY(0)}
-.bye-ico{
-  width:42px;height:42px;
-  margin:0 auto 12px;
-  border-radius:50%;
-  background:var(--green-bg);
-  color:var(--green);
-  font-size:19px;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.bye-card h4{margin:0 0 8px;font-size:15px;color:var(--ink);letter-spacing:.5px}
-.bye-card p{margin:0;font-size:12.5px;line-height:1.8;color:var(--muted)}
-.bye-card p b{color:var(--ink2);font-weight:700}
-.bye-btns{display:flex;gap:8px;margin-top:16px}
-.bye-btns .btn{flex:1;padding:12px 0;font-size:13.5px}
-
 @media (max-height:680px){
   .sum-val{font-size:19px}
   .grid{gap:5px}
@@ -900,7 +1024,7 @@ h1{
 <div class="app">
   <header>
     <div>
-      <h1>消費券簡易記</h1>
+      <h1>消費券速記</h1>
       <p class="sub" id="weekSub">第 1 週</p>
     </div>
     <div class="hbtns">
@@ -913,7 +1037,7 @@ h1{
 
   <div class="weekbar" id="weekbar"></div>
 
-  <section class="summary">
+  <section class="summary" id="sumBox">
     <div class="sum-row">
       <div class="sum-item">
         <div class="sum-label">未用消費券餘額</div>
@@ -921,7 +1045,10 @@ h1{
       </div>
       <div class="sum-item">
         <div class="sum-label">本週抽到總額</div>
-        <div class="sum-val" id="vTotal">MOP$0</div>
+        <div class="sum-line">
+          <div class="sum-val" id="vTotal">MOP$0</div>
+          <span class="lucky-badge" id="vLucky">神助</span>
+        </div>
       </div>
     </div>
     <div class="meta">
@@ -934,11 +1061,11 @@ h1{
 
   <div class="grid" id="grid"></div>
 
-  <div class="hint">點支付名＝快捷　·　點格＝已用/改額　·　左右滑＝換週</div>
+  <div class="hint">點支付名＝快捷　·　點格＝已用，再點＝改額　·　滑動換週</div>
 
   <div class="footer">
     <button class="btn primary" id="statsBtn">統計 · 累計與按支付</button>
-    <button class="btn ghost close-btn" id="closeBtn" aria-label="關閉網頁">關閉</button>
+    <button class="btn ghost fav-btn" id="favBtn" aria-label="我的收藏">★ 收藏</button>
   </div>
 </div>
 
@@ -952,6 +1079,7 @@ h1{
   </div>
   <div class="lbl">消費券金額（MOP$）</div>
   <div class="opts" id="optAmt"></div>
+  <button class="btn unuse" id="unuseBtn" type="button">改回未用</button>
   <div class="sheet-foot">點選即儲存　·　最後一格為滿 12 減券，不計入金額</div>
 </div>
 
@@ -1065,17 +1193,40 @@ h1{
 
 <div class="ptr" id="ptr"><span class="ptr-ico">↓</span><span id="ptrTxt">下拉更新</span></div>
 
-<!-- 關閉說明 -->
-<div class="bye" id="bye">
-  <div class="bye-card">
-    <div class="bye-ico">✓</div>
-    <h4>記錄已儲存</h4>
-    <p>手機瀏覽器基於安全，不允許網頁自行關閉。<br>請按瀏覽器分頁上的 <b>✕</b>；也可在分頁清單把本頁向左滑走。</p>
-    <div class="bye-btns">
-      <button class="btn ghost" id="byeBack">返回</button>
-      <button class="btn primary" id="byeRetry">再試一次</button>
-    </div>
+<!-- 收藏清單 -->
+<div class="sheet" id="favSheet">
+  <div class="sheet-head">
+    <h3>我的收藏</h3>
+    <button class="x" data-close>✕</button>
   </div>
+  <div class="fav-add">
+    <input class="inp" id="favInp" type="text" maxlength="90" enterkeyhint="done" autocomplete="off" placeholder="商家＋優惠">
+    <button class="btn primary" id="favAddBtn" type="button">新增</button>
+  </div>
+  <div class="fav-tools">
+    <span class="fw" id="favCount">0 筆收藏</span>
+    <button class="selbtn" id="favSelBtn" type="button">選取</button>
+  </div>
+  <div class="fav-list" id="favList"></div>
+  <div class="fav-empty" id="favEmpty">還沒有收藏<br>上面輸入商家及優惠，一筆一行</div>
+  <div class="fav-ways" id="favWays">
+    <button class="way" type="button" data-way="img">
+      <b>長圖</b><em>圖片，發群最清楚</em>
+    </button>
+    <button class="way" type="button" data-way="text">
+      <b>文字清單</b><em>可貼上、可再改</em>
+    </button>
+  </div>
+  <div class="fav-bar">
+    <span class="sel-info" id="favSelInfo">拖 ☰ 排序 · 點字修改</span>
+    <button class="btn ghost" id="favShareBtn" type="button">分享</button>
+    <button class="btn danger" id="favDelBtn" type="button">刪除</button>
+  </div>
+  <div class="fav-prev" id="favPrev">
+    <img id="favPrevImg" alt="收藏清單長圖">
+    <div class="fp-tip">長按圖片可儲存到相簿，或直接轉發</div>
+  </div>
+  <div class="sheet-foot">收藏只存在這部手機　·　可選長圖或文字清單分享</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1123,6 +1274,13 @@ function loadState(){
           if(!w.name) w.name='未命名';
         });
         if(!d.v||d.v<2){ d.weeks.reverse(); d.v=2; }
+        /* 收藏清單（舊資料沒有這個欄位） */
+        if(!Array.isArray(d.favs)) d.favs=[];
+        d.favs=d.favs.filter(function(f){
+          return f&&typeof f.text==='string'&&f.text.trim();
+        }).map(function(f){
+          return {id:f.id||uid(),text:String(f.text).replace(/\s+/g,' ').trim().slice(0,200),t:+f.t||0};
+        });
         var found=false;
         for(var i=0;i<d.weeks.length;i++){ if(d.weeks[i].id===d.cur){ found=true; break; } }
         if(!found) d.cur=d.weeks[0].id;
@@ -1131,7 +1289,7 @@ function loadState(){
     }
   }catch(e){}
   var w=newWeek(1);
-  return {v:2,weeks:[w],cur:w.id};
+  return {v:2,weeks:[w],cur:w.id,favs:[]};
 }
 
 function save(){
@@ -1163,7 +1321,8 @@ function fmtTime(ts){
   var d=new Date(ts);
   return two(d.getHours())+':'+two(d.getMinutes());
 }
-var TIME_MIN=50;
+var TIME_MIN=50;      /* 金額 ≥50 才記錄並顯示錄入時間 */
+var LUCKY_MIN=100;    /* 抽到 100 / 200 大額券，標「神助」 */
 
 /* ---------------- render ---------------- */
 function renderAll(){ renderTabs(); renderSummary(); renderGrid(); }
@@ -1196,7 +1355,7 @@ function renderTabs(){
 
 function renderSummary(){
   var w=curW();
-  var total=0,used=0,full=0,filled=0,hSum=0,hCnt=0;
+  var total=0,used=0,full=0,filled=0,hSum=0,hCnt=0,lucky=0;
   var hide=w.hide||[];
 
   w.cells.forEach(function(c,idx){
@@ -1206,6 +1365,7 @@ function renderSummary(){
     total+=a;
     if(c.u) used+=a;
     if(c.f) full++;
+    if(a>=LUCKY_MIN) lucky++;
     if(hide.indexOf(Math.floor(idx/PER))>=0){ hSum+=a; hCnt++; }
   });
 
@@ -1215,6 +1375,11 @@ function renderSummary(){
   $('vCount').textContent='已填 '+filled+'/'+TOTAL_CELLS;
   $('vBar').style.width=(filled/TOTAL_CELLS*100)+'%';
   $('vFull').textContent='滿減 '+(full?full+' 張':'—');
+  /* 神助：1 張只寫「神助」，2 張起顯示倍數「神助 ×2」 */
+  $('vLucky').classList.toggle('on',lucky>0);
+  $('vLucky').textContent=lucky>=2?('神助 ×'+lucky):'神助';
+  $('vLucky').title=lucky>0?('本週有 '+lucky+' 張 100／200 大額券'):'';
+  $('sumBox').classList.toggle('has-lucky',lucky>0);
 
   var note=$('hNote');
   if(hCnt>0){
@@ -1312,42 +1477,17 @@ function renderGrid(){
 }
 
 /* ---------------- tap logic ---------------- */
-var pending=null;
 var lpTimer=null,lpFired=false;
 
-function toggle(pi,i){
+/* 點格子：空白＝改額　·　未用＝標記已用　·　已用再點＝改額 */
+function handleTap(pi,i){
   var w=curW(),c=w.cells[pi*PER+i];
-  if(!hasVal(c)) return;
-  c.u=!c.u;
+  if(!hasVal(c)){ openEdit(pi,i); return; }
+  if(c.u){ openEdit(pi,i); return; }
+  c.u=true;
   save();
   renderSummary();
   renderGrid();
-}
-function commitPending(){
-  if(pending){
-    clearTimeout(pending.timer);
-    var p=pending;
-    pending=null;
-    toggle(p.pi,p.i);
-  }
-}
-function handleTap(pi,i){
-  var w=curW(),c=w.cells[pi*PER+i];
-  if(!hasVal(c)){ commitPending(); openEdit(pi,i); return; }
-  var key=pi+'-'+i;
-  if(pending&&pending.key===key){
-    clearTimeout(pending.timer);
-    pending=null;
-    openEdit(pi,i);
-    return;
-  }
-  commitPending();
-  pending={key:key,pi:pi,i:i,timer:null};
-  pending.timer=setTimeout(function(){
-    var p=pending;
-    pending=null;
-    if(p) toggle(p.pi,p.i);
-  },235);
 }
 
 $('grid').addEventListener('click',function(e){
@@ -1355,7 +1495,6 @@ $('grid').addEventListener('click',function(e){
   var p=e.target.closest?e.target.closest('.pay'):null;
   if(p){
     if(lpFired){ lpFired=false; return; }
-    commitPending();
     openQuick(+p.dataset.pi);
     return;
   }
@@ -1372,7 +1511,6 @@ $('grid').addEventListener('touchstart',function(e){
   var pi=+b.dataset.pi,i=+b.dataset.i;
   lpTimer=setTimeout(function(){
     lpFired=true;
-    commitPending();
     openEdit(pi,i);
   },620);
 },{passive:true});
@@ -1433,7 +1571,6 @@ appEl.addEventListener('touchend',function(e){
   var dx=t.clientX-swX, dy=t.clientY-swY;
   if(Math.abs(dx)<56||Math.abs(dx)<Math.abs(dy)*1.5) return;
   swipeGuard=Date.now();
-  commitPending();
   shiftWeek(dx>0?-1:1,true);
 },{passive:true});
 
@@ -1622,11 +1759,12 @@ function openEdit(pi,i,fromQuick){
   qFrom=!!fromQuick;
   editing={pi:pi,i:i,a:(c&&+c.a)||0,f:!!(c&&c.f)};
   $('editTitle').textContent=PAYS[pi]+'　·　第 '+(i+1)+' 次';
+  $('unuseBtn').classList.toggle('show',!!(c&&c.u));
   syncEditUI();
   openSheet('editSheet');
 }
 
-function writeCell(touchTime){
+function writeCell(touchTime,asUnused){
   var w=curW(), idx=editing.pi*PER+editing.i;
   var old=w.cells[idx];
   var a=+editing.a||0;
@@ -1636,7 +1774,9 @@ function writeCell(touchTime){
     var t=old?(+old.t||0):0;
     if(a<TIME_MIN) t=0;
     else if(touchTime) t=Date.now();
-    w.cells[idx]={a:a,f:!!editing.f,u:old?!!old.u:false,t:t};
+    /* 重新選金額＝重抽／改額，一律回到「未用」 */
+    var u=asUnused?false:(old?!!old.u:false);
+    w.cells[idx]={a:a,f:!!editing.f,u:u,t:t};
   }
   save();
   renderSummary();
@@ -1646,7 +1786,7 @@ function writeCell(touchTime){
 function pickAmount(v){
   if(!editing) return;
   editing.a=v;
-  writeCell(true);
+  writeCell(true,true);   /* 改額後＝未用 */
   afterPick();
 }
 
@@ -1670,6 +1810,21 @@ function afterPick(){
   }
   closeSheet();
 }
+
+/* 已用 → 改回未用（點格子已改為「已用再點＝改額」，復原由此按鈕提供） */
+$('unuseBtn').addEventListener('click',function(){
+  if(!editing) return;
+  var w=curW(), idx=editing.pi*PER+editing.i;
+  var c=w.cells[idx];
+  if(hasVal(c)&&c.u){
+    c.u=false;
+    save();
+    renderSummary();
+    renderGrid();
+    toast('已改回未用');
+  }
+  closeSheet();
+});
 
 /* ---------------- 週管理 ---------------- */
 function nextWeekNum(){
@@ -1867,7 +2022,7 @@ function csvLine(arr){ return arr.map(csvCell).join(','); }
 
 function buildCSV(){
   var out=[];
-  out.push(csvLine(['消費券簡易記 · 匯出時間 '+stampRead()]));
+  out.push(csvLine(['消費券速記 · 匯出時間 '+stampRead()]));
   out.push('');
   out.push(csvLine(['週次','支付','第幾次','金額(MOP)','狀態','滿減券','錄入時間']));
   S.weeks.forEach(function(w){
@@ -1900,7 +2055,7 @@ function buildCSV(){
 /* ---- 純文字（好貼到聊天）---- */
 function buildText(){
   var w=curW(),g=weekAgg(w),out=[];
-  out.push('消費券記　'+w.name);
+  out.push('消費券速記　'+w.name);
   out.push('抽到 MOP$'+num(g.t)+'　已用 MOP$'+num(g.u)+'　未用 MOP$'+num(g.left)+'　滿減 '+g.f+' 張');
   out.push('');
   visiblePays(w).forEach(function(pi){
@@ -1980,7 +2135,7 @@ function buildImage(){
   ctx.textAlign='left';
   ctx.fillStyle='#333d43';
   ctx.font='700 26px '+IMG_FONT;
-  ctx.fillText('消費券記',PAD,y0+14);
+  ctx.fillText('消費券速記',PAD,y0+14);
 
   ctx.textAlign='right';
   ctx.fillStyle='#5e686e';
@@ -1994,6 +2149,8 @@ function buildImage(){
 
   /* 三張小卡 */
   var cw=(W-PAD*2-GAP*2)/3;
+  var luckyN=0;
+  w.cells.forEach(function(c){ if(hasVal(c)&&(+c.a||0)>=LUCKY_MIN) luckyN++; });
   var cards=[
     {l:'抽到總額',v:'MOP$'+num(g.t),c:'#333d43'},
     {l:'未用餘額',v:'MOP$'+num(g.left),c:'#3f6a5b'},
@@ -2011,6 +2168,21 @@ function buildImage(){
     ctx.fillStyle=cd.c;
     ctx.font='700 20px '+IMG_FONT;
     ctx.fillText(cd.v,x+13,sumY+48);
+
+    /* 有 100／200 大額券：抽到總額卡片右上角標「神助」／「神助 ×N」 */
+    if(i===0&&luckyN){
+      var lkTxt=luckyN>=2?('神助 ×'+luckyN):'神助';
+      ctx.font='800 12px '+IMG_FONT;
+      var lw=ctx.measureText(lkTxt).width+16, lh=20, ly=sumY+9;
+      var gr=ctx.createLinearGradient(0,ly,0,ly+lh);
+      gr.addColorStop(0,'#fdf2dc'); gr.addColorStop(1,'#f8e0b7');
+      ctx.fillStyle=gr;
+      rr(ctx,x+cw-lw-9,ly,lw,lh,10); ctx.fill();
+      ctx.strokeStyle='#e5bd7f'; ctx.lineWidth=1; ctx.stroke();
+      ctx.fillStyle='#8a5711';
+      ctx.textAlign='center';
+      ctx.fillText(lkTxt,x+cw-lw/2-9,ly+lh/2+0.5);
+    }
   });
 
   /* 表頭 */
@@ -2126,6 +2298,96 @@ function buildImage(){
   return cv;
 }
 
+/* ---- 收藏清單長圖：寬度按手機比例（540 邏輯 px ×2 = 1080px），最少 9:16 ---- */
+function wrapText(ctx,text,maxW){
+  var lines=[],cur='';
+  for(var i=0;i<text.length;i++){
+    var ch=text.charAt(i);
+    var t=cur+ch;
+    if(ctx.measureText(t).width>maxW&&cur){ lines.push(cur); cur=ch; }
+    else cur=t;
+  }
+  if(cur) lines.push(cur);
+  return lines.length?lines:[''];
+}
+
+function buildFavImage(){
+  var arr=favs();
+  var W=540,DPR=2,PAD=30,CX=PAD+16,GAP=10,CARD_PADY=16,LH=22;
+  var txtX=CX+34;                       /* 序號圓 22 + 間距 12 */
+  var maxTxtW=W-PAD*2-16-34-16;
+  var HEAD=74;                          /* 標題區高度 */
+
+  var probe=document.createElement('canvas').getContext('2d');
+  var items=[];
+  arr.forEach(function(f){
+    probe.font='14px '+IMG_FONT;
+    var lines=wrapText(probe,f.text,maxTxtW);
+    if(lines.length>8){ lines=lines.slice(0,8); lines[7]=lines[7].slice(0,-1)+'…'; }
+    items.push({lines:lines,h:CARD_PADY*2+lines.length*LH});
+  });
+
+  var cardsH=0;
+  items.forEach(function(it){ cardsH+=it.h+GAP; });
+  if(items.length) cardsH-=GAP;
+
+  /* 內容不足 9:16（手機豎屏比例）時，把卡片拉高填滿，每張最多 +60 */
+  var minH=Math.round(W*16/9);
+  if(items.length&&HEAD+cardsH+46<minH){
+    var add=Math.min((minH-HEAD-cardsH-46)*0.72,items.length*60);
+    var per=add/items.length;
+    items.forEach(function(it){ it.h+=per; });
+    cardsH+=add;
+  }
+
+  var blockH=HEAD+cardsH+46;
+  var H=Math.max(Math.round(blockH+56),minH);
+  var startY=Math.max(28,(H-blockH)/2);
+
+  var cv=document.createElement('canvas');
+  cv.width=W*DPR; cv.height=H*DPR;
+  var ctx=cv.getContext('2d');
+  ctx.scale(DPR,DPR);
+  ctx.textBaseline='middle';
+
+  var bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#fdfcfa'); bg.addColorStop(1,'#f4f1ea');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  ctx.textAlign='left';
+  ctx.fillStyle='#333d43'; ctx.font='700 24px '+IMG_FONT;
+  ctx.fillText('我的收藏',PAD,startY+24);
+  ctx.fillStyle='#a8afb4'; ctx.font='12px '+IMG_FONT;
+  ctx.fillText('共 '+arr.length+' 筆 · '+stampRead(),PAD,startY+50);
+
+  var y=startY+HEAD;
+  items.forEach(function(it,i){
+    ctx.fillStyle='#fff';
+    rr(ctx,PAD,y,W-PAD*2,it.h,13); ctx.fill();
+    ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
+
+    /* 文字與序號在卡片內垂直居中 */
+    var textTop=y+it.h/2-(it.lines.length-1)*LH/2;
+
+    ctx.beginPath(); ctx.arc(CX+11,textTop,11,0,Math.PI*2);
+    ctx.fillStyle='#eaf1ed'; ctx.fill();
+    ctx.fillStyle='#3f6a5b'; ctx.font='700 11px '+IMG_FONT;
+    ctx.textAlign='center';
+    ctx.fillText(String(i+1),CX+11,textTop+.5);
+
+    ctx.textAlign='left'; ctx.fillStyle='#333d43'; ctx.font='14px '+IMG_FONT;
+    it.lines.forEach(function(ln,k){
+      ctx.fillText(ln,txtX,textTop+k*LH);
+    });
+    y+=it.h+GAP;
+  });
+
+  ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
+  ctx.fillText('消費券速記 · 收藏清單',W/2,startY+HEAD+cardsH+30);
+
+  return cv;
+}
+
 /* dataURL → Blob（不必依賴異步的 toBlob，較穩定） */
 function dataURLToBlob(d){
   var parts=String(d).split(',');
@@ -2180,11 +2442,11 @@ $('shareImgBtn').addEventListener('click',function(){
   var file=null;
   try{ file=new File([blob],name,{type:'image/png'}); }catch(e){}
   if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
-    navigator.share({files:[file],title:'消費券記 '+curW().name}).catch(function(){});
+    navigator.share({files:[file],title:'消費券速記 '+curW().name}).catch(function(){});
     return;
   }
   if(navigator.share){
-    navigator.share({title:'消費券記 '+curW().name,text:buildText()}).catch(function(){});
+    navigator.share({title:'消費券速記 '+curW().name,text:buildText()}).catch(function(){});
     return;
   }
   if(downloadBlob(blob,name)){
@@ -2198,7 +2460,7 @@ $('shareImgBtn').addEventListener('click',function(){
 $('expCsvBtn').addEventListener('click',function(){
   var csv='\uFEFF'+buildCSV();
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  var name='消費券記帳_'+stampFile()+'.csv';
+  var name='消費券速記_'+stampFile()+'.csv';
   if(downloadBlob(blob,name)) toast('已匯出 CSV，可用 Excel 開啟');
   else toast('匯出失敗，請用「複製文字」');
 });
@@ -2267,41 +2529,294 @@ $('statsBtn').addEventListener('click',function(){
   openSheet('statsSheet');
 });
 
-/* 首頁「關閉」：先嘗試關閉視窗，做不到就明確教用戶怎樣關（資料已即時存檔） */
-function attemptClose(){
-  try{ window.close(); }catch(e){}
-  try{ if(window.top && window.top!==window) window.top.close(); }catch(e){}
+/* ---------------- 收藏清單 ---------------- */
+var favSelMode=false,favSel={};
+
+function favs(){
+  if(!Array.isArray(S.favs)) S.favs=[];
+  return S.favs;
+}
+function favSelIds(){
+  return Object.keys(favSel).filter(function(k){ return favSel[k]; });
+}
+function updateFavBar(){
+  var n=favSelMode?favSelIds().length:0;
+  $('favSelBtn').textContent=favSelMode?'取消':'選取';
+  $('favDelBtn').disabled=!favSelMode||!n;
+  $('favDelBtn').dataset.armed='';
+  $('favDelBtn').textContent=n?('刪除 '+n+' 筆'):'刪除';
+  $('favSelInfo').textContent=favSelMode
+    ?(n?('已選 '+n+' 筆'):'點項目選取')
+    :'拖 ☰ 排序 · 點字修改';
+  $('favShareBtn').style.display=favSelMode?'none':'';
+  $('favCount').textContent=favs().length+' 筆收藏';
 }
 
-function showBye(){
-  var b=$('bye');
+function renderFavs(){
+  var list=$('favList'),arr=favs();
+  $('favPrev').classList.remove('on');
+  $('favWays').classList.remove('on');
+  list.classList.toggle('selmode',favSelMode);
+  list.innerHTML='';
+  arr.forEach(function(f){
+    var li=document.createElement('div');
+    li.className='fav-item'+(favSel[f.id]?' on':'');
+    li.dataset.id=f.id;
+
+    var cb=document.createElement('i');
+    cb.className='fav-cb'+(favSel[f.id]?' on':'');
+    cb.textContent='✓';
+
+    var grip=document.createElement('i');
+    grip.className='fav-grip';
+    grip.textContent='☰';
+    grip.addEventListener('click',function(e){ e.stopPropagation(); });
+
+    var tx=document.createElement('div');
+    tx.className='fav-txt';
+    tx.textContent=f.text;
+    tx.addEventListener('click',function(e){
+      if(favSelMode) return;
+      e.stopPropagation();
+      startFavEdit(tx,f);
+    });
+
+    li.appendChild(cb); li.appendChild(grip); li.appendChild(tx);
+    li.addEventListener('click',function(){
+      if(!favSelMode) return;
+      favSel[f.id]=!favSel[f.id];
+      li.classList.toggle('on',!!favSel[f.id]);
+      cb.classList.toggle('on',!!favSel[f.id]);
+      updateFavBar();
+    });
+    bindFavDrag(li,grip);
+
+    list.appendChild(li);
+  });
+  $('favEmpty').style.display=arr.length?'none':'block';
+  list.style.display=arr.length?'':'none';
+  updateFavBar();
+}
+
+/* 點文字即改：直接在原位編輯，離開焦點自動儲存 */
+function startFavEdit(tx,f){
+  if(tx.isContentEditable) return;
+  tx.contentEditable='true';
+  tx.focus();
+  try{
+    var r=document.createRange(); r.selectNodeContents(tx);
+    var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  }catch(e){}
+  var done=false;
+  tx.addEventListener('blur',function(){
+    if(done) return; done=true;
+    tx.contentEditable='false';
+    var v=tx.textContent.replace(/\s+/g,' ').trim().slice(0,200);
+    if(!v){ tx.textContent=f.text; return; }
+    if(v!==f.text){ f.text=v; save(); toast('已更新收藏'); }
+    tx.textContent=v;
+  });
+  tx.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); tx.blur(); }
+  });
+}
+
+function addFav(){
+  var el=$('favInp');
+  var v=el.value.replace(/\s+/g,' ').trim();
+  if(!v){ toast('請先輸入商家及優惠'); el.focus(); return; }
+  favs().unshift({id:uid(),text:v.slice(0,200),t:Date.now()});
+  el.value='';
+  save();
+  renderFavs();
+  $('favList').scrollTop=0;
+  toast('已加入收藏');
+}
+
+/* 拖拉排序：按住左邊 ☰ 上下拖，放手即存 */
+function bindFavDrag(li,grip){
+  grip.addEventListener('pointerdown',function(e){
+    if(favSelMode) return;
+    if(e.pointerType==='mouse'&&e.button!==0) return;
+    e.preventDefault();
+    var list=$('favList');
+    var startY=e.clientY;
+    li.classList.add('drag');
+    try{ grip.setPointerCapture(e.pointerId); }catch(err){}
+
+    function apply(ev){ li.style.transform='translateY('+(ev.clientY-startY)+'px)'; }
+
+    function onMove(ev){
+      apply(ev);
+      var next=li.nextElementSibling;
+      if(next){
+        var nr=next.getBoundingClientRect();
+        if(ev.clientY>nr.top+nr.height/2){
+          var t0=li.getBoundingClientRect().top;
+          list.insertBefore(next,li);
+          startY+=li.getBoundingClientRect().top-t0;
+          apply(ev);
+        }
+      }
+      var prev=li.previousElementSibling;
+      if(prev){
+        var pr=prev.getBoundingClientRect();
+        if(ev.clientY<pr.top+pr.height/2){
+          var u0=li.getBoundingClientRect().top;
+          list.insertBefore(li,prev);
+          startY+=li.getBoundingClientRect().top-u0;
+          apply(ev);
+        }
+      }
+    }
+    function onUp(){
+      grip.removeEventListener('pointermove',onMove);
+      grip.removeEventListener('pointerup',onUp);
+      grip.removeEventListener('pointercancel',onUp);
+      li.classList.remove('drag');
+      li.style.transform='';
+      try{ grip.releasePointerCapture(e.pointerId); }catch(err){}
+      syncFavOrder();
+    }
+    grip.addEventListener('pointermove',onMove);
+    grip.addEventListener('pointerup',onUp);
+    grip.addEventListener('pointercancel',onUp);
+  });
+}
+
+function syncFavOrder(){
+  var ids=[];
+  [].forEach.call($('favList').children,function(el){ ids.push(el.dataset.id); });
+  S.favs=favs().slice().sort(function(a,b){
+    return ids.indexOf(a.id)-ids.indexOf(b.id);
+  });
+  save();
+  toast('排序已儲存');
+}
+
+function favText(){
+  var arr=favs();
+  var out=['我的收藏 · '+arr.length+' 筆'];
+  arr.forEach(function(f,i){ out.push((i+1)+'. '+f.text); });
+  return out.join('\n');
+}
+
+function copyText(t){
+  var ta=document.createElement('textarea');
+  ta.value=t;
+  ta.setAttribute('readonly','');
+  ta.style.position='fixed';
+  ta.style.top='-1000px';
+  ta.style.opacity='0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  var ok=false;
+  try{ ok=document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  if(ok){ toast('清單已複製，可直接貼上'); return; }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){
+      toast('清單已複製，可直接貼上');
+    }).catch(function(){
+      toast('複製失敗，請長按選取文字');
+    });
+    return;
+  }
+  toast('複製失敗，請長按選取文字');
+}
+
+$('favBtn').addEventListener('click',function(){
+  favSelMode=false;
+  favSel={};
+  $('favInp').value='';
+  renderFavs();
+  openSheet('favSheet');
+});
+
+$('favAddBtn').addEventListener('click',addFav);
+$('favInp').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){ e.preventDefault(); addFav(); }
+});
+
+$('favSelBtn').addEventListener('click',function(){
+  favSelMode=!favSelMode;
+  favSel={};
+  renderFavs();
+});
+
+$('favDelBtn').addEventListener('click',function(){
+  var ids=favSelIds();
+  if(!ids.length){ toast('請先選取項目'); return; }
+  var btn=this;
+  if(btn.dataset.armed!=='1'){
+    btn.dataset.armed='1';
+    btn.textContent='確認刪除 '+ids.length+' 筆';
+    setTimeout(function(){
+      if(btn.dataset.armed==='1'){ btn.dataset.armed=''; updateFavBar(); }
+    },2600);
+    return;
+  }
+  S.favs=favs().filter(function(f){ return ids.indexOf(f.id)<0; });
+  favSel={};
+  favSelMode=false;
+  save();
+  renderFavs();
+  toast('已刪除 '+ids.length+' 筆');
+});
+
+/* 分享方式一：長圖（手機比例） */
+function favShareImage(){
+  var arr=favs();
+  var cv;
+  try{ cv=buildFavImage(); }
+  catch(e){ copyText(favText()); return; }
+
+  var url=cv.toDataURL('image/png');
+  $('favPrevImg').src=url;
+  $('favPrev').classList.add('on');
+  setTimeout(function(){
+    try{ $('favPrev').scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
+  },60);
+
+  var blob=null;
+  try{ blob=dataURLToBlob(url); }catch(e){}
+  var name='收藏清單_'+stampFile()+'.png';
+  var file=null;
+  if(blob){ try{ file=new File([blob],name,{type:'image/png'}); }catch(e){} }
+
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:'我的收藏'}).catch(function(){});
+    return;
+  }
+  if(blob&&downloadBlob(blob,name)){ toast('長圖已下載，也可長按上方圖片儲存'); return; }
+  toast('請長按上方長圖儲存或轉發');
+}
+
+/* 分享方式二：純文字清單 */
+function favShareText(){
+  var text=favText();
+  if(navigator.share){
+    navigator.share({title:'我的收藏',text:text}).catch(function(err){
+      if(err&&err.name==='AbortError') return;   /* 用戶自己取消，不再複製 */
+      copyText(text);
+    });
+    return;
+  }
+  copyText(text);
+}
+
+$('favShareBtn').addEventListener('click',function(){
+  if(!favs().length){ toast('收藏還是空的'); return; }
+  $('favWays').classList.toggle('on');
+});
+
+$('favWays').addEventListener('click',function(e){
+  var b=e.target.closest?e.target.closest('.way'):null;
   if(!b) return;
-  b.classList.add('on');
-  try{ document.activeElement.blur(); }catch(e){}
-}
-
-$('closeBtn').addEventListener('click',function(){
-  attemptClose();
-  setTimeout(function(){
-    if(document.hidden) return;
-    showBye();
-  },380);
-});
-
-$('byeBack').addEventListener('click',function(){
-  $('bye').classList.remove('on');
-});
-
-$('byeRetry').addEventListener('click',function(){
-  attemptClose();
-  setTimeout(function(){
-    if(document.hidden) return;
-    toast('仍未能關閉，請按分頁上的 ✕');
-  },380);
-});
-
-$('bye').addEventListener('click',function(e){
-  if(e.target===$('bye')) $('bye').classList.remove('on');
+  $('favWays').classList.remove('on');
+  if(b.dataset.way==='img') favShareImage();
+  else favShareText();
 });
 
 /* ---------------- sheet control ---------------- */
