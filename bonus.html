@@ -209,6 +209,7 @@ h1{
   transition:width .3s ease;
 }
 .meta .full-txt{color:var(--orange);font-weight:600}
+.meta .pend-txt{color:#5b7f8e;font-weight:600}
 .hnote{
   margin-top:7px;
   padding-top:7px;
@@ -302,6 +303,13 @@ h1{
   color:var(--red);
 }
 .cell.fresh.big .tag{background:#f6e2e0;color:#a86164}
+/* 待抽獎：已記低但未抽，不計金額 */
+.cell.pending{
+  background:#eef4f6;
+  border:1.5px dashed #c2d6de;
+  color:#5b7f8e;
+}
+.cell.pending .v.word{font-size:clamp(11px,3.2vw,12.5px);letter-spacing:0}
 .cell.used .v{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#c3c8ca}
 .tag{
   position:absolute;
@@ -767,13 +775,36 @@ h1{
   box-shadow:none;
 }
 .opt.full{
-  grid-column:1 / -1;
+  flex:1;
   font-size:13px;
   font-weight:600;
   color:#b3813f;
   border-color:#ecd9bd;
   background:#fdf7ee;
   padding:13px 2px;
+}
+/* 底部一行：待抽獎 ｜ 滿減 */
+.opt-row{
+  grid-column:1 / -1;
+  display:flex;
+  gap:8px;
+}
+.opt.pending{
+  flex:1;
+  font-size:13px;
+  font-weight:600;
+  color:#5b7f8e;
+  border-color:#c9dbe2;
+  border-style:dashed;
+  background:#f1f6f8;
+  padding:13px 2px;
+}
+.opt.pending.on{
+  background:#6d92a1;
+  border-color:#6d92a1;
+  border-style:solid;
+  color:#fff;
+  box-shadow:none;
 }
 .opt.full.on{
   background:#dda868;
@@ -811,14 +842,17 @@ h1{
 .qv.is-used{background:var(--gray-bg);border-color:var(--line)}
 .qv.is-used .qa{color:var(--gray-tx);text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#c3c8ca}
 .qv.is-blank .qa{font-size:12.5px;font-weight:500;color:#c0b9b0}
+.qv.is-pend{background:#eef4f6;border-color:#c9dbe2;border-style:dashed}
+.qv.is-pend .qa{font-size:12.5px;color:#5b7f8e;letter-spacing:0}
+.qv.is-pend .qn{color:#88a3ad}
 .qops{display:flex;gap:6px;align-items:stretch}
 .qop{
-  min-width:52px;
-  padding:0 9px;
+  min-width:46px;
+  padding:0 7px;
   border:1.5px solid var(--line);
   border-radius:12px;
   background:#fff;
-  font-size:12px;
+  font-size:11.5px;
   font-weight:700;
   color:#7b858a;
   transition:background .13s,border-color .13s,color .13s,transform .1s;
@@ -1050,6 +1084,7 @@ h1{
     </div>
     <div class="meta">
       <span id="vCount">已填 0/24</span>
+      <span class="pend-txt" id="vPend" style="display:none">待抽 0</span>
       <div class="bar"><i id="vBar"></i></div>
       <span class="full-txt" id="vFull">滿減 0</span>
     </div>
@@ -1077,7 +1112,7 @@ h1{
   <div class="lbl">消費券金額（MOP$）</div>
   <div class="opts" id="optAmt"></div>
   <button class="btn unuse" id="unuseBtn" type="button">改回未用</button>
-  <div class="sheet-foot">點選即儲存　·　最後一格為滿 12 減券，不計入金額</div>
+  <div class="sheet-foot">點選即儲存　·　待抽獎＝記低但未抽，不計金額　·　滿減不計入金額</div>
 </div>
 
 <!-- 支付快捷 -->
@@ -1088,7 +1123,7 @@ h1{
   </div>
   <div class="lbl">三格狀態 · 點按鈕即時套用</div>
   <div class="qrows" id="qrows"></div>
-  <div class="sheet-foot">點左邊格可改金額　·　滿減為滿 12 減券，不計入金額</div>
+  <div class="sheet-foot">點左邊格可改金額　·　待抽＝尚未抽　·　滿減不計入金額</div>
 </div>
 
 <!-- 本週設定 -->
@@ -1266,8 +1301,9 @@ function loadState(){
             if(!c) return null;
             var a=+c.a||0;
             var f=(typeof c.f==='boolean')?c.f:((+c.f||0)>0);
-            if(a<=0&&!f) return null;
-            return {a:a,f:f,u:!!c.u,t:+c.t||0};
+            var p=!!c.p;
+            if(a<=0&&!f&&!p) return null;
+            return {a:a,f:f,u:p?false:!!c.u,t:p?0:(+c.t||0),p:p};
           });
           if(!Array.isArray(w.hide)){
             w.hide=[];
@@ -1318,7 +1354,8 @@ function money(v){
   p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');
   return p.join('.');
 }
-function hasVal(c){ return !!(c&&((+c.a||0)>0||c.f)); }
+function hasVal(c){ return !!(c&&((+c.a||0)>0||c.f||c.p)); }
+function isPend(c){ return !!(c&&c.p); }
 function two(n){ return (n<10?'0':'')+n; }
 function fmtTime(ts){
   var d=new Date(ts);
@@ -1358,11 +1395,12 @@ function renderTabs(){
 
 function renderSummary(){
   var w=curW();
-  var total=0,used=0,full=0,filled=0,hSum=0,hCnt=0,lucky=0;
+  var total=0,used=0,full=0,filled=0,hSum=0,hCnt=0,lucky=0,pend=0;
   var hide=w.hide||[];
 
   w.cells.forEach(function(c,idx){
     if(!hasVal(c)) return;
+    if(c.p){ pend++; return; }
     filled++;
     var a=+c.a||0;
     total+=a;
@@ -1376,6 +1414,8 @@ function renderSummary(){
   $('vRemain').textContent='MOP$'+money(total-used);
   $('vTotal').textContent='MOP$'+money(total);
   $('vCount').textContent='已填 '+filled+'/'+TOTAL_CELLS;
+  $('vPend').style.display=pend?'':'none';
+  $('vPend').textContent='· 待抽 '+pend;
   $('vBar').style.width=(filled/TOTAL_CELLS*100)+'%';
   $('vFull').textContent='滿減 '+(full?full+' 張':'—');
   /* 神助：1 張只寫「神助」，2 張起顯示倍數「神助 ×2」 */
@@ -1448,14 +1488,18 @@ function renderGrid(){
     for(var i=0;i<PER;i++){
       var c=w.cells[pi*PER+i];
       var has=hasVal(c);
+      var pend=isPend(c);
       var b=document.createElement('button');
       b.type='button';
       var cAmt=has?(+c.a||0):0;
-      var big=has&&!c.u&&cAmt>=TIME_MIN;
-      b.className='cell '+(has?(c.u?'used':'fresh')+(big?' big':''):'empty');
+      var big=has&&!pend&&!c.u&&cAmt>=TIME_MIN;
+      b.className='cell '+(has?(pend?'pending':(c.u?'used':'fresh')+(big?' big':'')):'empty');
       b.dataset.pi=pi;
       b.dataset.i=i;
-      if(has){
+      if(pend){
+        b.innerHTML='<span class="v word">待抽獎</span>';
+        b.setAttribute('aria-label','待抽獎，點擊可改');
+      }else if(has){
         var amt=+c.a||0;
         var html;
         if(amt>0){
@@ -1482,10 +1526,11 @@ function renderGrid(){
 /* ---------------- tap logic ---------------- */
 var lpTimer=null,lpFired=false;
 
-/* 點格子：空白＝改額　·　未用＝標記已用　·　已用再點＝改額 */
+/* 點格子：空白＝改額　·　待抽獎＝改額　·　未用＝標記已用　·　已用再點＝改額 */
 function handleTap(pi,i){
   var w=curW(),c=w.cells[pi*PER+i];
   if(!hasVal(c)){ openEdit(pi,i); return; }
+  if(c.p){ openEdit(pi,i); return; }
   if(c.u){ openEdit(pi,i); return; }
   c.u=true;
   save();
@@ -1670,17 +1715,20 @@ function renderQuick(){
   for(var i=0;i<PER;i++){
     var c=w.cells[qPi*PER+i];
     var has=hasVal(c);
-    var a=has?(+c.a||0):0;
-    var cls=has?(c.u?'is-used':(a>=TIME_MIN?'is-big':'is-fresh')):'is-blank';
-    var val=has?(a>0?('MOP$'+num(a)):(c.f?'滿減':'—')):'未記錄';
+    var pend=isPend(c);
+    var hasAmt=has&&!pend&&(((+c.a||0)>0)||!!c.f);
+    var a=has&&!pend?(+c.a||0):0;
+    var cls=pend?'is-pend':(has?(c.u?'is-used':(a>=TIME_MIN?'is-big':'is-fresh')):'is-blank');
+    var val=pend?'待抽獎':(has?(a>0?('MOP$'+num(a)):(c.f?'滿減':'—')):'未記錄');
     html+='<div class="qrow">'+
       '<button type="button" class="qv '+cls+'" data-i="'+i+'">'+
         '<span class="qn">第 '+(i+1)+' 次</span>'+
         '<span class="qa">'+val+'</span>'+
       '</button>'+
       '<div class="qops">'+
-        '<button type="button" class="qop'+(has&&c.f?' on':'')+'" data-i="'+i+'" data-act="full">滿減</button>'+
-        '<button type="button" class="qop'+(has&&c.u?' on':'')+'" data-i="'+i+'" data-act="used"'+(has?'':' disabled')+'>已用</button>'+
+        '<button type="button" class="qop'+(pend?' on':'')+'" data-i="'+i+'" data-act="pending"'+(hasAmt?' disabled':'')+'>待抽</button>'+
+        '<button type="button" class="qop'+(has&&!pend&&c.f?' on':'')+'" data-i="'+i+'" data-act="full"'+(pend?' disabled':'')+'>滿減</button>'+
+        '<button type="button" class="qop'+(has&&c.u?' on':'')+'" data-i="'+i+'" data-act="used"'+(has&&!pend?'':' disabled')+'>已用</button>'+
         '<button type="button" class="qop" data-i="'+i+'" data-act="clear"'+(has?'':' disabled')+'>留空</button>'+
       '</div>'+
     '</div>';
@@ -1695,13 +1743,17 @@ function quickAct(i,act){
   if(act==='clear'){
     if(!hasVal(c)) return;
     w.cells[idx]=null;
+  }else if(act==='pending'){
+    if(c&&c.p){ w.cells[idx]=null; }
+    else if(!hasVal(c)||!(((+c.a||0)>0)||c.f)){ w.cells[idx]={a:0,f:false,u:false,t:0,p:true}; }
+    else return;
   }else if(act==='full'){
-    var a=(c&&+c.a)||0;
-    var f=!(c&&c.f);
+    var a=(c&&!c.p&&+c.a)||0;
+    var f=!(c&&!c.p&&c.f);
     if(a<=0&&!f){ w.cells[idx]=null; }
-    else{ w.cells[idx]={a:a,f:f,u:c?!!c.u:false,t:c?(+c.t||0):0}; }
+    else{ w.cells[idx]={a:a,f:f,u:c?!!c.u:false,t:c?(+c.t||0):0,p:false}; }
   }else if(act==='used'){
-    if(!hasVal(c)) return;
+    if(!hasVal(c)||c.p) return;
     c.u=!c.u;
   }else{
     return;
@@ -1727,19 +1779,33 @@ function buildOpts(){
   box.innerHTML='';
   var list=[{v:0,label:'留空',zero:true}];
   AMTS.forEach(function(v){ list.push({v:v,label:String(v)}); });
-  list.push({v:'full',label:'滿減',full:true});
   list.forEach(function(o){
     var b=document.createElement('button');
     b.type='button';
-    b.className='opt'+(o.zero?' zero':'')+(o.full?' full':'');
+    b.className='opt'+(o.zero?' zero':'');
     b.textContent=o.label;
     b.dataset.v=String(o.v);
-    b.addEventListener('click',function(){
-      if(o.full) pickFull();
-      else pickAmount(o.v);
-    });
+    b.addEventListener('click',function(){ pickAmount(o.v); });
     box.appendChild(b);
   });
+  /* 底部一行：待抽獎（未抽） ｜ 滿減 */
+  var row=document.createElement('div');
+  row.className='opt-row';
+  var bp=document.createElement('button');
+  bp.type='button';
+  bp.className='opt pending';
+  bp.textContent='待抽獎';
+  bp.dataset.v='pending';
+  bp.addEventListener('click',pickPending);
+  var bf=document.createElement('button');
+  bf.type='button';
+  bf.className='opt full';
+  bf.textContent='滿減';
+  bf.dataset.v='full';
+  bf.addEventListener('click',pickFull);
+  row.appendChild(bp);
+  row.appendChild(bf);
+  box.appendChild(row);
 }
 buildOpts();
 
@@ -1747,20 +1813,22 @@ function syncEditUI(){
   if(!editing) return;
   var box=$('optAmt');
   var pureFull=!!editing.f&&(+editing.a||0)<=0;
-  for(var k=0;k<box.children.length;k++){
-    var b=box.children[k];
+  var purePend=!!editing.p;
+  [].forEach.call(box.querySelectorAll('.opt'),function(b){
     if(b.dataset.v==='full'){
-      b.classList.toggle('on',pureFull);
+      b.classList.toggle('on',!purePend&&pureFull);
+    }else if(b.dataset.v==='pending'){
+      b.classList.toggle('on',purePend);
     }else{
-      b.classList.toggle('on',!pureFull&&(+b.dataset.v)===(+editing.a||0));
+      b.classList.toggle('on',!purePend&&!pureFull&&(+b.dataset.v)===(+editing.a||0));
     }
-  }
+  });
 }
 
 function openEdit(pi,i,fromQuick){
   var w=curW(),c=w.cells[pi*PER+i];
   qFrom=!!fromQuick;
-  editing={pi:pi,i:i,a:(c&&+c.a)||0,f:!!(c&&c.f)};
+  editing={pi:pi,i:i,a:(c&&+c.a)||0,f:!!(c&&c.f),p:!!(c&&c.p)};
   $('editTitle').textContent=PAYS[pi]+'　·　第 '+(i+1)+' 次';
   $('unuseBtn').classList.toggle('show',!!(c&&c.u));
   syncEditUI();
@@ -1771,7 +1839,7 @@ function writeCell(touchTime,asUnused){
   var w=curW(), idx=editing.pi*PER+editing.i;
   var old=w.cells[idx];
   var a=+editing.a||0;
-  if(a<=0 && !editing.f){
+  if(a<=0 && !editing.f && !editing.p){
     w.cells[idx]=null;
   }else{
     var t=old?(+old.t||0):0;
@@ -1779,7 +1847,7 @@ function writeCell(touchTime,asUnused){
     else if(touchTime) t=Date.now();
     /* 重新選金額＝重抽／改額，一律回到「未用」 */
     var u=asUnused?false:(old?!!old.u:false);
-    w.cells[idx]={a:a,f:!!editing.f,u:u,t:t};
+    w.cells[idx]={a:a,f:!!editing.f,u:editing.p?false:u,t:editing.p?0:t,p:!!editing.p};
   }
   save();
   renderSummary();
@@ -1789,8 +1857,22 @@ function writeCell(touchTime,asUnused){
 function pickAmount(v){
   if(!editing) return;
   editing.a=v;
+  editing.p=false;
   writeCell(true,true);   /* 改額後＝未用 */
   afterPick();
+}
+
+/* 待抽獎：已記低但未抽（無金額，不計入總額與統計）；已標記則再點取消 */
+function pickPending(){
+  if(!editing) return;
+  var w=curW(), c=w.cells[editing.pi*PER+editing.i];
+  var isP=!!(c&&c.p);
+  editing.a=0;
+  editing.f=false;
+  editing.p=!isP;
+  writeCell(false);
+  if(!isP){ afterPick(); return; }
+  syncEditUI();
 }
 
 /* 最後一格：滿 12 減券（無金額，不計入統計）；已是滿減則再點取消 */
@@ -1799,6 +1881,7 @@ function pickFull(){
   var w=curW(), c=w.cells[editing.pi*PER+editing.i];
   var isFull=!!(c&&c.f&&(+c.a||0)<=0);
   editing.a=0;
+  editing.p=false;
   editing.f=!isFull;
   writeCell(false);
   if(!isFull){ afterPick(); return; }
@@ -1944,7 +2027,7 @@ $('delWeekBtn').addEventListener('click',function(){
 
 /* ---------------- stats ---------------- */
 function renderStats(){
-  var agg={t:0,u:0,f:0,c:0};
+  var agg={t:0,u:0,f:0,c:0,p:0};
   var per=PAYS.map(function(){return {n:0,t:0,u:0,f:0};});
 
   S.weeks.forEach(function(w){
@@ -1952,6 +2035,7 @@ function renderStats(){
       if(!hasVal(c)) return;
       var a=+c.a||0;
       var pi=Math.floor(idx/PER);
+      if(c.p){ agg.p++; return; }
       agg.t+=a; if(c.u) agg.u+=a; if(c.f) agg.f++;
       if(a>0){ agg.c++; per[pi].n++; }
       per[pi].t+=a;
@@ -1964,7 +2048,7 @@ function renderStats(){
   $('sUsed').textContent='MOP$'+money(agg.u);
   $('sRemain').textContent='MOP$'+money(agg.t-agg.u);
   $('sFull').textContent=agg.f+' 張';
-  $('statsNote').textContent='共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券 · 按累計由高到低 · 滿減券另計，不計入金額';
+  $('statsNote').textContent='共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券'+(agg.p?' · 待抽 '+agg.p+' 次':'')+' · 按累計由高到低 · 滿減券另計，不計入金額';
 
   var html='<div class="tbl-head"><span>支付</span><span class="r">次數</span><span class="r">抽到</span><span class="r">已用</span><span class="r">滿減</span></div>';
   var rows=PAYS.map(function(p,i){ return {p:p,i:i,d:per[i]}; });
@@ -2004,16 +2088,17 @@ function safeName(s){
 }
 
 function weekAgg(w){
-  var t=0,u=0,f=0,n=0;
+  var t=0,u=0,f=0,n=0,p=0;
   for(var i=0;i<w.cells.length;i++){
     var c=w.cells[i];
     if(!hasVal(c)) continue;
+    if(c.p){ p++; continue; }
     n++;
     t+=(+c.a||0);
     if(c.u) u+=(+c.a||0);
     if(c.f) f++;
   }
-  return {t:t,u:u,left:t-u,f:f,n:n};
+  return {t:t,u:u,left:t-u,f:f,n:n,p:p};
 }
 
 /* ---- CSV ---- */
@@ -2034,7 +2119,7 @@ function buildCSV(){
         var c=w.cells[pi*PER+k];
         if(!hasVal(c)) continue;
         var a=+c.a||0;
-        var st=(c.f&&a<=0)?'滿減':(c.u?'已用':'未用');
+        var st=c.p?'待抽獎':((c.f&&a<=0)?'滿減':(c.u?'已用':'未用'));
         out.push(csvLine([
           w.name,PAYS[pi],'第 '+(k+1)+' 次',
           a>0?num(a):'',st,c.f?'是':'否',
@@ -2067,6 +2152,7 @@ function buildText(){
       var c=w.cells[pi*PER+k];
       if(!hasVal(c)) continue;
       var a=+c.a||0, s='';
+      if(c.p){ parts.push('待抽獎'); continue; }
       if(a>0) s=num(a);
       if(c.f) s=s?s+'+減':'滿減';
       if(c.u&&a>0) s+='(已用)';
@@ -2112,6 +2198,7 @@ function rr(ctx,x,y,w,h,r){
 
 function buildImage(){
   var w=curW(),g=weekAgg(w),show=visiblePays(w);
+  var pendN=g.p;   /* 待抽獎次數 */
   if(!show.length){
     show=[];
     for(var q=0;q<PAYS.length;q++) show.push(q);
@@ -2148,7 +2235,7 @@ function buildImage(){
   ctx.textAlign='left';
   ctx.fillStyle='#a8afb4';
   ctx.font='12.5px '+IMG_FONT;
-  ctx.fillText('匯出時間 '+stampRead()+'　·　共 '+S.weeks.length+' 週',PAD,y0+44);
+  ctx.fillText('匯出時間 '+stampRead()+'　·　共 '+S.weeks.length+' 週'+(pendN?'　·　待抽 '+pendN+' 次':''),PAD,y0+44);
 
   /* 三張小卡 */
   var cw=(W-PAD*2-GAP*2)/3;
@@ -2231,25 +2318,38 @@ function buildImage(){
       var c=w.cells[pi*PER+k2];
       var x=PAD+NAME_W+GAP+k2*(cellW+GAP);
       var has=hasVal(c);
-      var a=has?(+c.a||0):0;
-      var full=has&&!!c.f;
-      var used=has&&!!c.u;
+      var pend=isPend(c);
+      var a=has&&!pend?(+c.a||0):0;
+      var full=has&&!pend&&!!c.f;
+      var used=has&&!pend&&!!c.u;
       var fill='#f7f5f1',stroke='#eeeae3',txt='#c9c2ba';
 
-      if(has&&a>0&&used){ fill='#f4f2ef'; stroke='#e5e0d8'; txt='#a9b0b3'; }
+      if(pend){ fill='#eef4f6'; stroke='#c2d6de'; txt='#5b7f8e'; }
+      else if(has&&a>0&&used){ fill='#f4f2ef'; stroke='#e5e0d8'; txt='#a9b0b3'; }
       else if(has&&a>=TIME_MIN){ fill='#fbecec'; stroke='#f2d3d1'; txt='#a26163'; }
       else if(has&&a>0){ fill='#e7f1ea'; stroke='#c6dcd0'; txt='#35624f'; }
       else if(has&&full){ fill='#faf0e5'; stroke='#ecd9bd'; txt='#b8763e'; }
 
       ctx.fillStyle=fill;
       rr(ctx,x,ry,cellW,ROW_H,13); ctx.fill();
-      ctx.strokeStyle=stroke; ctx.lineWidth=1.4; ctx.stroke();
+      ctx.strokeStyle=stroke; ctx.lineWidth=1.4;
+      if(pend) ctx.setLineDash([4,3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
 
       if(!has){
         ctx.fillStyle='#cdc6bd';
         ctx.font='15px '+IMG_FONT;
         ctx.textAlign='center';
         ctx.fillText('—',x+cellW/2,ry+ROW_H/2);
+        continue;
+      }
+
+      if(pend){
+        ctx.fillStyle=txt;
+        ctx.font='700 15px '+IMG_FONT;
+        ctx.textAlign='center';
+        ctx.fillText('待抽獎',x+cellW/2,ry+ROW_H/2);
         continue;
       }
 
@@ -2296,7 +2396,7 @@ function buildImage(){
   ctx.textAlign='center';
   ctx.fillStyle='#b0b7bb';
   ctx.font='11px '+IMG_FONT;
-  ctx.fillText('綠＝未用　淺紅＝未用且≥50　灰＝已用　·　滿減不計入金額',W/2,H-26);
+  ctx.fillText('綠＝未用　淺紅＝未用且≥50　灰＝已用　藍＝待抽獎　·　滿減不計入金額',W/2,H-26);
 
   return cv;
 }
