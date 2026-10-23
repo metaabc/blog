@@ -230,6 +230,7 @@ h1{
   overflow-y:auto;
   padding-bottom:1px;
   scrollbar-width:none;
+  margin-block:auto;   /* 行數少時整塊上下居中，不會把每行拉高 */
 }
 .grid::-webkit-scrollbar{display:none}
 .empty-tip{
@@ -1276,6 +1277,8 @@ h1{
 var PAYS=['中銀','工商','國際','廣發','大豐','支付寶','MPay','UePay'];
 var PER=3;
 var TOTAL_CELLS=PAYS.length*PER;
+var ROW_MAX=60;    /* 每行最大高度：隱藏渠道後不留大片空白 */
+var ROW_GAP=6;
 var AMTS=[10,20,50,100,200];
 var KEY='coupon_book_v1';
 var $=function(id){return document.getElementById(id);};
@@ -1454,11 +1457,15 @@ function renderGrid(){
 
   if(!show.length){
     g.style.gridTemplateRows='1fr';
+    g.style.maxHeight='';
     g.innerHTML='<div class="empty-tip">目前隱藏了全部支付渠道<span>右上「⋯」→ 顯示的支付渠道 可重新開啟</span></div>';
     return;
   }
 
   g.style.gridTemplateRows='repeat('+show.length+',minmax(33px,1fr))';
+  /* 每行最多 ROW_MAX：隱藏渠道後剩餘行不會被拉高 */
+  var gp=parseFloat(getComputedStyle(g).rowGap)||ROW_GAP;
+  g.style.maxHeight=(show.length*ROW_MAX+(show.length-1)*gp)+'px';
 
   var frag=document.createDocumentFragment();
 
@@ -1922,12 +1929,15 @@ function nextWeekNum(){
   return max+1;
 }
 function addWeek(){
+  /* 沿用最新一週（＝上週）的支付渠道設定，不用每週重設 */
+  var prev=S.weeks[0]||null;
   var w=newWeek(nextWeekNum());
+  if(prev&&Array.isArray(prev.hide)) w.hide=prev.hide.slice();
   S.weeks.unshift(w);
   S.cur=w.id;
   save();
   renderAll();
-  toast('已新增「'+w.name+'」');
+  toast('已新增「'+w.name+'」（沿用上週渠道）');
 }
 
 $('menuBtn').addEventListener('click',function(){
