@@ -230,7 +230,7 @@ h1{
   overflow-y:auto;
   padding-bottom:1px;
   scrollbar-width:none;
-  margin-block:auto;   /* 行數少時整塊上下居中，不會把每行拉高 */
+  margin:0 0 auto;   /* 行數少時靠上排，剩餘空間留在下方 */
 }
 .grid::-webkit-scrollbar{display:none}
 .empty-tip{
@@ -326,8 +326,15 @@ h1{
   letter-spacing:0;
 }
 .cell.used .tag{background:#eeeae4;color:#bbb5ad}
-.pay{position:relative}
+.pay{position:relative;cursor:grab;touch-action:none}
 .pay:active{background:#f1eee9;border-color:#d9d3ca}
+.row.drag{position:relative;z-index:6;filter:drop-shadow(0 5px 10px rgba(90,78,60,.22))}
+.row.drag .pay{
+  cursor:grabbing;
+  background:#f6f2ea;
+  border-color:#d5cec3;
+}
+.row.drag .cell{opacity:.86}
 .pay.has-full{
   background:#fdf7ee;
   border-color:#ecd9bd;
@@ -372,9 +379,10 @@ h1{
   letter-spacing:.3px;
   margin-top:-2px;
 }
-.footer{flex:0 0 auto;display:flex;gap:8px}
+.footer{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.footer .btn{flex:1 1 0;min-width:0}
 .btn.ghost.fav-btn{
-  flex:0 0 auto;
+  flex:1 1 0;
   padding:13px 14px;
   font-size:13px;
   letter-spacing:.5px;
@@ -1094,11 +1102,11 @@ h1{
 
   <div class="grid" id="grid"></div>
 
-  <div class="hint">點支付名＝快捷　·　點格＝已用，再點＝改額　·　滑動換週</div>
+  <div class="hint">拖支付名＝排序　·　點格＝已用／再點改額　·　滑動換週</div>
 
   <div class="footer">
-    <button class="btn primary" id="statsBtn">統計 · 累計與按支付</button>
     <button class="btn ghost fav-btn" id="favBtn" aria-label="我的收藏">★ 收藏</button>
+    <button class="btn primary" id="statsBtn">統計</button>
   </div>
 </div>
 
@@ -1140,7 +1148,7 @@ h1{
   </div>
   <div class="sec">顯示的支付渠道</div>
   <div class="chips" id="payChips"></div>
-  <div class="chips-tip">點一下切換顯示／隱藏，隱藏後不佔位置，資料仍保留。</div>
+  <div class="chips-tip">點一下切換顯示／隱藏，隱藏後不佔位置，資料仍保留。<br>首頁按住支付名上下拖，可調整排列次序。</div>
   <div style="margin-top:18px">
     <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
     <button class="btn danger" id="delWeekBtn">刪除本週</button>
@@ -1275,6 +1283,7 @@ h1{
 'use strict';
 
 var PAYS=['中銀','工商','國際','廣發','大豐','支付寶','MPay','UePay'];
+var DEF_ORDER=PAYS.map(function(_,i){return i;});
 var PER=3;
 var TOTAL_CELLS=PAYS.length*PER;
 var ROW_MAX=60;    /* 每行最大高度：隱藏渠道後不留大片空白 */
@@ -1289,6 +1298,22 @@ var S=loadState();
 function uid(){return Math.random().toString(36).slice(2,9);}
 function newWeek(n){
   return {id:uid(),name:'第 '+n+' 週',cells:new Array(TOTAL_CELLS).fill(null),hide:[]};
+}
+
+/* 支付順序：w.order 為 PAYS 索引的排列；缺漏／重複／越界一律補齊 */
+function normOrder(arr){
+  var out=[],seen={};
+  if(Array.isArray(arr)){
+    arr.forEach(function(v){
+      v=+v;
+      if(v>=0&&v<PAYS.length&&!seen[v]){ seen[v]=1; out.push(v); }
+    });
+  }
+  for(var i=0;i<PAYS.length;i++){ if(!seen[i]) out.push(i); }
+  return out;
+}
+function payOrder(w){
+  return normOrder(w&&w.order);
 }
 
 function loadState(){
@@ -1312,6 +1337,13 @@ function loadState(){
             w.hide=[];
           }else{
             w.hide=w.hide.filter(function(i){return i>=0&&i<PAYS.length;});
+          }
+          /* 支付顯示順序（舊資料沒有這個欄位＝用預設次序） */
+          if(Array.isArray(w.order)){
+            w.order=normOrder(w.order);
+            if(w.order.join(',')===DEF_ORDER.join(',')) delete w.order;
+          }else{
+            delete w.order;
           }
           if(!w.name) w.name='未命名';
         });
@@ -1438,11 +1470,7 @@ function renderSummary(){
 
 function paysVisible(w){
   var hide=(w&&w.hide)||[];
-  var out=[];
-  for(var i=0;i<PAYS.length;i++){
-    if(hide.indexOf(i)<0) out.push(i);
-  }
-  return out;
+  return payOrder(w).filter(function(pi){ return hide.indexOf(pi)<0; });
 }
 
 /* 首頁維持固定的 8 間支付順序（不按留空或金額重排） */
@@ -1472,6 +1500,7 @@ function renderGrid(){
   show.forEach(function(pi){
     var row=document.createElement('div');
     row.className='row';
+    row.dataset.pi=pi;
 
     var nm=document.createElement('button');
     nm.type='button';
@@ -1491,6 +1520,7 @@ function renderGrid(){
       nm.textContent=PAYS[pi];
     }
     row.appendChild(nm);
+    bindRowDrag(row,nm);
 
     for(var i=0;i<PER;i++){
       var c=w.cells[pi*PER+i];
@@ -1530,6 +1560,102 @@ function renderGrid(){
   g.appendChild(frag);
 }
 
+/* ---------------- 拖拉支付名：調整支付順序 ---------------- */
+var payDragGuard=0,payDragging=false;
+
+function bindRowDrag(row,nm){
+  nm.addEventListener('pointerdown',function(e){
+    if(e.pointerType==='mouse'&&e.button!==0) return;
+    var g=$('grid'),pid=e.pointerId,startY=e.clientY,active=false,stop={done:false};
+    try{ nm.setPointerCapture(pid); }catch(err){}
+
+    function apply(ev){ row.style.transform='translateY('+(ev.clientY-startY)+'px)'; }
+
+    function onMove(ev){
+      if(ev.pointerId!==pid) return;
+      if(!active){
+        if(Math.abs(ev.clientY-startY)<8) return;
+        active=true;
+        payDragging=true;
+        row.classList.add('drag');
+        g.classList.add('dragmode');
+        if(navigator.vibrate){ try{ navigator.vibrate(8); }catch(err){} }
+      }
+      if(ev.cancelable) ev.preventDefault();
+      apply(ev);
+      /* 一次移動可跨越多行，才會跟手 */
+      var guard=0;
+      while(guard++<20){
+        var next=row.nextElementSibling;
+        if(!next) break;
+        var nr=next.getBoundingClientRect();
+        if(ev.clientY<=nr.top+nr.height/2) break;
+        var t0=row.getBoundingClientRect().top;
+        g.insertBefore(next,row);
+        startY+=row.getBoundingClientRect().top-t0;
+      }
+      apply(ev);
+      guard=0;
+      while(guard++<20){
+        var prev=row.previousElementSibling;
+        if(!prev) break;
+        var pr=prev.getBoundingClientRect();
+        if(ev.clientY>=pr.top+pr.height/2) break;
+        var u0=row.getBoundingClientRect().top;
+        g.insertBefore(row,prev);
+        startY+=row.getBoundingClientRect().top-u0;
+      }
+      apply(ev);
+    }
+
+    function onUp(){
+      if(stop.done) return;
+      stop.done=true;
+      nm.removeEventListener('pointermove',onMove);
+      nm.removeEventListener('pointerup',onUp);
+      nm.removeEventListener('pointercancel',onUp);
+      window.removeEventListener('pointerup',onUp);
+      window.removeEventListener('pointercancel',onUp);
+      try{ nm.releasePointerCapture(pid); }catch(err){}
+      if(!active) return;                 /* 沒拖動＝當普通點擊，開快捷面板 */
+      row.classList.remove('drag');
+      row.style.transform='';
+      g.classList.remove('dragmode');
+      payDragging=false;
+      payDragGuard=Date.now();
+      syncPayOrder();
+    }
+
+    nm.addEventListener('pointermove',onMove);
+    nm.addEventListener('pointerup',onUp);
+    nm.addEventListener('pointercancel',onUp);
+    /* 保險：手指／滑鼠在畫面外放開時仍收得到 */
+    window.addEventListener('pointerup',onUp);
+    window.addEventListener('pointercancel',onUp);
+  });
+}
+
+/* 依畫面上的前後次序寫回 w.order；仍隱藏的支付保留原本的相對位置 */
+function syncPayOrder(){
+  var w=curW(),g=$('grid');
+  var vis=[];
+  [].forEach.call(g.children,function(el){
+    if(el.classList&&el.classList.contains('row')) vis.push(+el.dataset.pi);
+  });
+  if(!vis.length) return;
+  var old=payOrder(w),out=[],vi=0;
+  old.forEach(function(pi){
+    if(vis.indexOf(pi)>=0&&vi<vis.length) out.push(vis[vi++]);
+    else out.push(pi);
+  });
+  while(vi<vis.length) out.push(vis[vi++]);
+  w.order=normOrder(out);
+  save();
+  renderChips();
+  renderGrid();
+  toast('支付順序已更新');
+}
+
 /* ---------------- tap logic ---------------- */
 var lpTimer=null,lpFired=false;
 
@@ -1547,6 +1673,7 @@ function handleTap(pi,i){
 
 $('grid').addEventListener('click',function(e){
   if(Date.now()-swipeGuard<420) return;
+  if(Date.now()-payDragGuard<420) return;
   var p=e.target.closest?e.target.closest('.pay'):null;
   if(p){
     if(lpFired){ lpFired=false; return; }
@@ -1621,6 +1748,7 @@ appEl.addEventListener('touchmove',function(e){
 appEl.addEventListener('touchend',function(e){
   if(!swOn) return;
   swOn=false;
+  if(Date.now()-payDragGuard<420) return;   /* 剛拖完支付名，不要順便換週 */
   if(!swMoved) return;
   var t=e.changedTouches[0];
   var dx=t.clientX-swX, dy=t.clientY-swY;
@@ -1929,15 +2057,16 @@ function nextWeekNum(){
   return max+1;
 }
 function addWeek(){
-  /* 沿用最新一週（＝上週）的支付渠道設定，不用每週重設 */
+  /* 沿用最新一週（＝上週）的支付渠道與排列次序，不用每週重設 */
   var prev=S.weeks[0]||null;
   var w=newWeek(nextWeekNum());
   if(prev&&Array.isArray(prev.hide)) w.hide=prev.hide.slice();
+  if(prev&&Array.isArray(prev.order)) w.order=prev.order.slice();
   S.weeks.unshift(w);
   S.cur=w.id;
   save();
   renderAll();
-  toast('已新增「'+w.name+'」（沿用上週渠道）');
+  toast('已新增「'+w.name+'」（沿用上週渠道與順序）');
 }
 
 $('menuBtn').addEventListener('click',function(){
@@ -1951,11 +2080,11 @@ function renderChips(){
   var hide=w.hide||[];
   var box=$('payChips');
   box.innerHTML='';
-  PAYS.forEach(function(p,pi){
+  payOrder(w).forEach(function(pi){
     var b=document.createElement('button');
     b.type='button';
     b.className='chip'+(hide.indexOf(pi)<0?' on':'');
-    b.textContent=p;
+    b.textContent=PAYS[pi];
     b.addEventListener('click',function(){ toggleHide(pi); });
     box.appendChild(b);
   });
