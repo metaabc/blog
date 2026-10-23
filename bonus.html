@@ -1300,7 +1300,7 @@ function newWeek(n){
   return {id:uid(),name:'第 '+n+' 週',cells:new Array(TOTAL_CELLS).fill(null),hide:[]};
 }
 
-/* 支付順序：w.order 為 PAYS 索引的排列；缺漏／重複／越界一律補齊 */
+/* 支付順序：S.order 為 PAYS 索引的排列（全域共用）；缺漏／重複／越界一律補齊 */
 function normOrder(arr){
   var out=[],seen={};
   if(Array.isArray(arr)){
@@ -1312,8 +1312,19 @@ function normOrder(arr){
   for(var i=0;i<PAYS.length;i++){ if(!seen[i]) out.push(i); }
   return out;
 }
+/* 週自己有設定就用週的；否則退回「最後一次排好的全域次序」；再沒有＝預設 */
 function payOrder(w){
-  return normOrder(w&&w.order);
+  return normOrder(S.order||(w&&w.order));
+}
+/* 最新一週＝週次數字最大者（避免陣列次序被反轉或刪除後取錯） */
+function newestWeek(){
+  var best=null,bn=-1;
+  (S.weeks||[]).forEach(function(w){
+    var m=/(\d+)/.exec(w&&w.name||'');
+    var n=m?parseInt(m[1],10):-1;
+    if(best===null||n>=bn){ bn=n; best=w; }
+  });
+  return best||S.weeks[0]||null;
 }
 
 function loadState(){
@@ -1338,16 +1349,24 @@ function loadState(){
           }else{
             w.hide=w.hide.filter(function(i){return i>=0&&i<PAYS.length;});
           }
-          /* 支付顯示順序（舊資料沒有這個欄位＝用預設次序） */
-          if(Array.isArray(w.order)){
-            w.order=normOrder(w.order);
-            if(w.order.join(',')===DEF_ORDER.join(',')) delete w.order;
-          }else{
-            delete w.order;
-          }
+          /* 支付顯示順序已改為全域設定，逐週的舊欄位稍後統一搬移 */
           if(!w.name) w.name='未命名';
         });
         if(!d.v||d.v<2){ d.weeks.reverse(); d.v=2; }
+        /* 全域支付次序：所有週共用（拖一次，每週都一樣，新週自動沿用） */
+        var legacy=null;
+        d.weeks.forEach(function(w){
+          if(!legacy&&Array.isArray(w.order)&&w.order.length) legacy=w.order;
+          delete w.order;
+        });
+        if(Array.isArray(d.order)&&d.order.length){
+          d.order=normOrder(d.order);
+        }else if(legacy){
+          d.order=normOrder(legacy);
+        }else{
+          d.order=null;
+        }
+        if(!d.order||d.order.join(',')===DEF_ORDER.join(',')) delete d.order;
         /* 收藏清單（舊資料沒有這個欄位） */
         if(!Array.isArray(d.favs)) d.favs=[];
         d.favs=d.favs.filter(function(f){
@@ -1584,6 +1603,7 @@ function bindRowDrag(row,nm){
       if(ev.cancelable) ev.preventDefault();
       apply(ev);
       /* 一次移動可跨越多行，才會跟手 */
+      var moved=false;
       var guard=0;
       while(guard++<20){
         var next=row.nextElementSibling;
@@ -1593,6 +1613,7 @@ function bindRowDrag(row,nm){
         var t0=row.getBoundingClientRect().top;
         g.insertBefore(next,row);
         startY+=row.getBoundingClientRect().top-t0;
+        moved=true;
       }
       apply(ev);
       guard=0;
@@ -1604,8 +1625,11 @@ function bindRowDrag(row,nm){
         var u0=row.getBoundingClientRect().top;
         g.insertBefore(row,prev);
         startY+=row.getBoundingClientRect().top-u0;
+        moved=true;
       }
       apply(ev);
+      /* 一改次序即刻存檔：即使 pointerup / pointercancel 沒收到，排序也不會白做 */
+      if(moved) commitOrder(true);
     }
 
     function onUp(){
@@ -1614,6 +1638,7 @@ function bindRowDrag(row,nm){
       nm.removeEventListener('pointermove',onMove);
       nm.removeEventListener('pointerup',onUp);
       nm.removeEventListener('pointercancel',onUp);
+      nm.removeEventListener('lostpointercapture',onUp);
       window.removeEventListener('pointerup',onUp);
       window.removeEventListener('pointercancel',onUp);
       try{ nm.releasePointerCapture(pid); }catch(err){}
@@ -1629,32 +1654,48 @@ function bindRowDrag(row,nm){
     nm.addEventListener('pointermove',onMove);
     nm.addEventListener('pointerup',onUp);
     nm.addEventListener('pointercancel',onUp);
+    nm.addEventListener('lostpointercapture',onUp);
     /* 保險：手指／滑鼠在畫面外放開時仍收得到 */
     window.addEventListener('pointerup',onUp);
     window.addEventListener('pointercancel',onUp);
   });
 }
 
-/* 依畫面上的前後次序寫回 w.order；仍隱藏的支付保留原本的相對位置 */
-function syncPayOrder(){
-  var w=curW(),g=$('grid');
-  var vis=[];
+/* 依畫面上的前後次序寫回全域次序；仍隱藏的支付保留原本的相對位置 */
+function domOrder(){
+  var g=$('grid'),vis=[];
+  if(!g) return vis;
   [].forEach.call(g.children,function(el){
     if(el.classList&&el.classList.contains('row')) vis.push(+el.dataset.pi);
   });
-  if(!vis.length) return;
-  var old=payOrder(w),out=[],vi=0;
-  old.forEach(function(pi){
+  return vis;
+}
+/* quiet=true：拖拉過程中即時存檔，不重繪、不提示 */
+function commitOrder(quiet){
+  var w=curW(),vis=domOrder();
+  if(!vis.length) return false;
+  var before=payOrder(w).join(',');
+  var out=[],vi=0;
+  payOrder(w).forEach(function(pi){
     if(vis.indexOf(pi)>=0&&vi<vis.length) out.push(vis[vi++]);
     else out.push(pi);
   });
   while(vi<vis.length) out.push(vis[vi++]);
-  w.order=normOrder(out);
+  var no=normOrder(out),key=no.join(',');
+  if(key===DEF_ORDER.join(',')){
+    delete S.order;          /* 回到預設次序＝不留資料 */
+  }else{
+    S.order=no.slice();      /* 全域次序：每週共用，新週自動沿用 */
+  }
+  if(w&&w.order) delete w.order;
   save();
+  if(quiet) return true;
   renderChips();
   renderGrid();
-  toast('支付順序已更新');
+  if(key!==before) toast('支付順序已更新');
+  return true;
 }
+function syncPayOrder(){ return commitOrder(false); }
 
 /* ---------------- tap logic ---------------- */
 var lpTimer=null,lpFired=false;
@@ -2057,16 +2098,15 @@ function nextWeekNum(){
   return max+1;
 }
 function addWeek(){
-  /* 沿用最新一週（＝上週）的支付渠道與排列次序，不用每週重設 */
-  var prev=S.weeks[0]||null;
+  /* 沿用最新一週（＝上週）的支付渠道；支付排序本身是全域設定，新週自然一樣 */
+  var prev=newestWeek();
   var w=newWeek(nextWeekNum());
   if(prev&&Array.isArray(prev.hide)) w.hide=prev.hide.slice();
-  if(prev&&Array.isArray(prev.order)) w.order=prev.order.slice();
   S.weeks.unshift(w);
   S.cur=w.id;
   save();
   renderAll();
-  toast('已新增「'+w.name+'」（沿用上週渠道與順序）');
+  toast('已新增「'+w.name+'」（沿用上週渠道與支付順序）');
 }
 
 $('menuBtn').addEventListener('click',function(){
@@ -3239,6 +3279,15 @@ if(window.visualViewport){
   window.visualViewport.addEventListener('scroll',syncKB);
 }
 window.addEventListener('resize',syncKB);
+
+/* 拖拉中若被系統打斷（切 App、鎖屏），先把目前畫面次序落地 */
+function flushDragOrder(){
+  if(payDragging){ try{ commitOrder(true); }catch(e){} }
+}
+window.addEventListener('pagehide',flushDragOrder);
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden) flushDragOrder();
+});
 
 /* ---------------- boot ---------------- */
 renderAll();
