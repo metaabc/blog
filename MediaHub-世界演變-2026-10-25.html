@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>世界演變</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#fff; --line:#e8eaef; --line2:#f0f2f6;
+    --text:#1e2432; --sub:#6b7280; --mute:#9aa1ae;
+    --brand:#e11d48; --brand-soft:#fff1f4; --indigo:#4f46e5;
+    --sh:0 1px 2px rgba(16,24,40,.04),0 8px 24px -16px rgba(16,24,40,.18);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text); min-height:100vh;
+    font:14px/1.55 -apple-system,"Segoe UI",Roboto,"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+
+  /* ---------- 頂部 ---------- */
+  .top{
+    position:sticky; top:0; z-index:30; display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    padding:14px 22px; background:rgba(255,255,255,.92); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:11px; min-width:0; flex:1}
+  .logo{
+    width:38px; height:38px; flex:0 0 auto; border-radius:12px; display:grid; place-items:center;
+    background:linear-gradient(135deg,#fb7185,#e11d48); color:#fff; font-size:15px;
+    box-shadow:0 6px 16px -6px rgba(225,29,72,.6);
+  }
+  .brand h1{margin:0; font-size:16.5px; font-weight:700; letter-spacing:.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .brand p{margin:1px 0 0; font-size:11.5px; color:var(--mute)}
+  .tools{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .inp{
+    height:34px; border:1px solid var(--line); background:#fff; border-radius:9px;
+    padding:0 11px; font-size:13px; color:var(--text); outline:none; font-family:inherit;
+  }
+  .inp:focus{border-color:#c7cbd6; box-shadow:0 0 0 3px rgba(79,70,229,.08)}
+  #q{width:210px}
+  .sel{padding-right:6px; cursor:pointer}
+
+  /* ---------- 版面 ---------- */
+  main{display:flex; gap:18px; align-items:flex-start; padding:18px 22px 30px; max-width:1500px; margin:0 auto}
+  .side{
+    flex:0 0 216px; position:sticky; top:76px; max-height:calc(100vh - 96px); overflow:auto;
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:7px; box-shadow:var(--sh);
+  }
+  .side.hide{display:none}
+  .pl{
+    display:flex; align-items:center; gap:8px; width:100%; text-align:left;
+    border:0; background:none; font:inherit; color:var(--text); cursor:pointer;
+    padding:9px 10px; border-radius:9px; font-size:13px;
+  }
+  .pl:hover{background:var(--line2)}
+  .pl.on{background:var(--brand-soft); color:#a3123a; font-weight:600}
+  .pl b{flex:1; font-weight:inherit; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .pl i{font-style:normal; font-size:11px; color:var(--mute); flex:0 0 auto}
+
+  .main{flex:1; min-width:0}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(232px,1fr)); gap:14px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    cursor:pointer; transition:.15s; box-shadow:var(--sh); display:flex; flex-direction:column;
+  }
+  .card:hover{transform:translateY(-2px); border-color:#dfe3ea; box-shadow:0 14px 30px -20px rgba(16,24,40,.45)}
+  .cover{position:relative; aspect-ratio:16/9; background:#eceef3; overflow:hidden}
+  .cover img{width:100%; height:100%; object-fit:cover; display:block}
+  .cover .play{
+    position:absolute; inset:0; display:grid; place-items:center; opacity:0; transition:.15s;
+    background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.34));
+  }
+  .card:hover .play{opacity:1}
+  .cover .play span{
+    width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.94); color:#e11d48;
+    display:grid; place-items:center; font-size:16px; box-shadow:0 6px 18px rgba(0,0,0,.25);
+  }
+  .dur{
+    position:absolute; right:6px; bottom:6px; background:rgba(15,18,25,.82); color:#fff;
+    font-size:11px; padding:1px 6px; border-radius:5px; letter-spacing:.3px;
+  }
+  .body{padding:10px 11px 11px; display:flex; flex-direction:column; gap:5px; flex:1}
+  .body b{font-size:13px; line-height:1.45; font-weight:600; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+  .body .sub{font-size:11.5px; color:var(--mute); display:flex; gap:7px; align-items:center; flex-wrap:wrap}
+  .body .sub em{font-style:normal; color:#c2c7d0}
+  .acts{display:flex; gap:5px; margin-top:auto; padding-top:6px; flex-wrap:wrap}
+  .mini{
+    border:1px solid var(--line); background:#fff; color:var(--sub); font:inherit; font-size:11.5px;
+    padding:3px 9px; border-radius:7px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;
+    white-space:nowrap; line-height:1.5;
+  }
+  .mini:hover{border-color:#cfd4de; color:var(--text); background:#fafbfc}
+  .empty{padding:70px 20px; text-align:center; color:var(--mute); font-size:13px; display:none}
+  footer{text-align:center; color:#b3b9c4; font-size:11px; padding:8px 0 26px}
+
+  /* ---------- 播放器 ---------- */
+  .player{
+    position:fixed; inset:0; z-index:90; display:none; place-items:center;
+    background:rgba(14,17,23,.72); backdrop-filter:blur(4px); padding:20px;
+  }
+  .player.show{display:grid}
+  .pbox{
+    width:min(1000px,100%); background:#fff; border-radius:16px; overflow:hidden;
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.7); display:flex; flex-direction:column; max-height:94vh;
+  }
+  .phead{display:flex; align-items:center; gap:12px; padding:11px 14px; border-bottom:1px solid var(--line)}
+  .phead b{flex:1; font-size:13.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .popen{
+    flex:0 0 auto; text-decoration:none; font-size:12px; color:#fff; background:var(--brand);
+    padding:6px 11px; border-radius:8px; white-space:nowrap;
+  }
+  .popen:hover{background:#c2123d}
+  .x{flex:0 0 auto; border:0; background:none; font-size:16px; color:var(--mute); cursor:pointer; padding:2px 5px; border-radius:7px}
+  .x:hover{background:var(--line2); color:var(--text)}
+  .pframe{position:relative; width:100%; aspect-ratio:16/9; background:#000}
+  .pframe iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+  .pnav{display:flex; align-items:center; gap:10px; padding:9px 14px; border-top:1px solid var(--line); background:#fbfbfc}
+  .pnav button{
+    border:1px solid var(--line); background:#fff; font:inherit; font-size:12px; color:var(--sub);
+    padding:5px 11px; border-radius:8px; cursor:pointer;
+  }
+  .pnav button:hover:not(:disabled){border-color:#cfd4de; color:var(--text)}
+  .pnav button:disabled{opacity:.4; cursor:default}
+  .pnav span{flex:1; text-align:center; font-size:11.5px; color:var(--mute)}
+
+  .warn{
+    display:none; max-width:1500px; margin:0 auto; padding:9px 22px; font-size:12px; line-height:1.6;
+    color:#8a5306; background:#fff8e8; border-bottom:1px solid #f5e2b8;
+  }
+  .warn.show{display:block}
+
+  @media (hover:none){
+    .cover .play{opacity:.85}
+  }
+
+  @media (max-width:860px){    main{flex-direction:column; padding:12px}
+    .side{position:static; flex:0 0 auto; width:100%; max-height:none; display:flex; gap:6px; overflow-x:auto; padding:6px}
+    .side.hide{display:none}
+    .pl{width:auto; white-space:nowrap; border-radius:8px}
+    .pl i{display:none}
+    #q{width:100%}
+    .tools{width:100%}
+    .top{padding:11px 14px}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="logo">▶</span>
+    <div style="min-width:0">
+      <h1 id="title">世界演變</h1>
+      <p id="meta"></p>
+    </div>
+  </div>
+  <div class="tools">
+    <input id="q" class="inp" type="search" placeholder="搜尋標題或頻道…" autocomplete="off">
+    <select id="sort" class="inp sel">
+      <option value="order">原順序</option>
+      <option value="new">新 → 舊</option>
+      <option value="old">舊 → 新</option>
+    </select>
+  </div>
+</header>
+
+<div class="warn" id="fileWarn">目前是用「本機檔案」直接開啟，YouTube 會拒絕內嵌播放。把這個檔案上傳到網站空間即可正常播放，或點卡片上的「↗ 原網址」直接去 YouTube 看。</div>
+
+<main>
+  <nav class="side" id="side"></nav>
+  <section class="main">
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty">沒有符合的影片</div>
+  </section>
+</main>
+
+<footer>由 MediaHub 匯出 · 2026-10-25</footer>
+
+<div class="player" id="player">
+  <div class="pbox">
+    <div class="phead">
+      <b id="pTitle">—</b>
+      <a class="popen" id="pOpen" href="#" target="_blank" rel="noopener">↗ 在 YouTube 開啟</a>
+      <button class="x" id="pClose" title="關閉">✕</button>
+    </div>
+    <div class="pframe">
+      <iframe id="pFrame" src="about:blank" title="播放器"
+        allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <div class="pnav">
+      <button id="pPrev">← 上一部</button>
+      <span id="pIdx"></span>
+      <button id="pNext">下一部 →</button>
+    </div>
+  </div>
+</div>
+
+<script id="mh-data" type="application/json">{"title":"世界演變","exportedAt":1792862659716,"scope":"one","playlists":[{"id":"0eb67a80","title":"世界演變","videos":[{"id":"bPDIDEaZmqc","title":"【法國暴亂】一場學生示威，引爆80萬人上街？｜左右派互相指責，邊個有理據？｜究竟邊個要負責？｜法國高中生真正訴求？｜揭示法國深層矛盾","duration":0,"channel":"mingjai14","addedAt":1792854564049}]}]}</script>
+<script>
+(function(){
+  "use strict";
+  var DATA = JSON.parse(document.getElementById("mh-data").textContent);
+  var PLS = (DATA.playlists || []).filter(function(p){ return p.videos && p.videos.length; });
+
+  var curPl = 0, q = "", sort = "order";
+  var $ = function(id){ return document.getElementById(id); };
+
+  function esc(s){ return String(s == null ? "" : s); }
+  function fmtDur(sec){
+    sec = Number(sec) || 0;
+    if(!sec) return "";
+    var h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = Math.floor(sec%60);
+    var mm = h ? (m<10?"0":"")+m : String(m);
+    return (h ? h+":" : "") + mm + ":" + (s<10?"0":"")+s;
+  }
+  function fmtDate(ts){
+    if(!ts) return "";
+    var d = new Date(Number(ts));
+    if(isNaN(d.getTime())) return "";
+    return d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0"+d.getDate()).slice(-2);
+  }
+  function ytUrl(id){ return "https://www.youtube.com/watch?v=" + id; }
+  function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/mqdefault.jpg"; }
+  function embed(id){ return "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0&modestbranding=1"; }
+
+  /* ---------- 目前的影片清單 ---------- */
+  function curVideos(){
+    if(!PLS.length) return [];
+    var arr = PLS[curPl].videos.slice();
+    if(sort === "new") arr.sort(function(a,b){ return (b.addedAt||0) - (a.addedAt||0); });
+    else if(sort === "old") arr.sort(function(a,b){ return (a.addedAt||0) - (b.addedAt||0); });
+    var kw = q.trim().toLowerCase();
+    if(kw){
+      arr = arr.filter(function(v){
+        return (esc(v.title) + " " + esc(v.channel)).toLowerCase().indexOf(kw) >= 0;
+      });
+    }
+    return arr;
+  }
+
+  /* ---------- 側欄 ---------- */
+  function renderSide(){
+    var side = $("side");
+    if(PLS.length < 2){ side.classList.add("hide"); side.innerHTML = ""; return; }
+    side.classList.remove("hide");
+    side.innerHTML = "";
+    PLS.forEach(function(p, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "pl" + (i === curPl ? " on" : "");
+      var name = document.createElement("b");
+      name.textContent = esc(p.title);
+      var n = document.createElement("i");
+      n.textContent = p.videos.length + " 部";
+      b.appendChild(name); b.appendChild(n);
+      b.addEventListener("click", function(){
+        curPl = i;
+        renderSide();
+        renderGrid();
+      });
+      side.appendChild(b);
+    });
+  }
+
+  /* ---------- 卡片 ---------- */
+  function renderGrid(){
+    var grid = $("grid");
+    var list = curVideos();
+    grid.innerHTML = "";
+    $("empty").style.display = list.length ? "none" : "block";
+
+    var total = PLS.reduce(function(a,p){ return a + p.videos.length; }, 0);
+    $("meta").textContent = PLS.length > 1
+      ? PLS.length + " 個清單 · 共 " + total + " 部 · 目前在「" + esc(PLS[curPl].title) + "」"
+      : "共 " + list.length + " 部";
+    if(q.trim()) $("meta").textContent = "搜尋「" + q.trim() + "」· 找到 " + list.length + " 部";
+
+    list.forEach(function(v, i){
+      var card = document.createElement("div");
+      card.className = "card";
+
+      var cover = document.createElement("div");
+      cover.className = "cover";
+      var img = document.createElement("img");
+      img.loading = "lazy";
+      img.src = thumb(v.id);
+      img.alt = "";
+      var play = document.createElement("div");
+      play.className = "play";
+      var tri = document.createElement("span");
+      tri.textContent = "▶";
+      play.appendChild(tri);
+      cover.appendChild(img);
+      cover.appendChild(play);
+      var dur = fmtDur(v.duration);
+      if(dur){
+        var d = document.createElement("span");
+        d.className = "dur";
+        d.textContent = dur;
+        cover.appendChild(d);
+      }
+
+      var body = document.createElement("div");
+      body.className = "body";
+      var t = document.createElement("b");
+      t.textContent = esc(v.title);
+      var sub = document.createElement("div");
+      sub.className = "sub";
+      var ch = document.createElement("span");
+      ch.textContent = esc(v.channel) || "YouTube";
+      sub.appendChild(ch);
+      var when = fmtDate(v.addedAt);
+      if(when){
+        var em = document.createElement("em");
+        em.textContent = "·";
+        sub.appendChild(em);
+        var dt = document.createElement("span");
+        dt.textContent = when;
+        sub.appendChild(dt);
+      }
+
+      var acts = document.createElement("div");
+      acts.className = "acts";
+      var bYt = document.createElement("button");
+      bYt.type = "button";
+      bYt.className = "mini";
+      bYt.textContent = "↗ 原網址";
+      bYt.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        window.open(ytUrl(v.id), "_blank", "noopener");
+      });
+      var bPlay = document.createElement("button");
+      bPlay.type = "button";
+      bPlay.className = "mini";
+      bPlay.style.cssText = "margin-left:auto;border-color:#f5ccd6;color:#c2123d";
+      bPlay.textContent = "▶ 播放";
+      bPlay.addEventListener("click", function(ev){ ev.stopPropagation(); openPlayer(i, list); });
+      acts.appendChild(bYt); acts.appendChild(bPlay);
+      body.appendChild(t); body.appendChild(sub); body.appendChild(acts);
+      card.appendChild(cover); card.appendChild(body);
+      card.addEventListener("click", function(){ openPlayer(i, list); });
+
+      grid.appendChild(card);
+    });
+  }
+
+  /* ---------- 播放器 ---------- */
+  var queue = [], at = -1;
+
+  function openPlayer(i, list){
+    queue = list || curVideos();
+    at = i;
+    paint();
+    $("player").classList.add("show");
+    document.body.style.overflow = "hidden";
+  }
+  function paint(){
+    var v = queue[at];
+    if(!v) return;
+    $("pTitle").textContent = esc(v.title);
+    $("pOpen").href = ytUrl(v.id);
+    $("pFrame").src = embed(v.id);
+    $("pIdx").textContent = (at + 1) + " / " + queue.length;
+    $("pPrev").disabled = at <= 0;
+    $("pNext").disabled = at >= queue.length - 1;
+  }
+  function closePlayer(){
+    $("player").classList.remove("show");
+    $("pFrame").src = "about:blank";
+    document.body.style.overflow = "";
+  }
+  function step(d){
+    var n = at + d;
+    if(n < 0 || n >= queue.length) return;
+    at = n;
+    paint();
+  }
+
+  $("pClose").addEventListener("click", closePlayer);
+  $("pPrev").addEventListener("click", function(){ step(-1); });
+  $("pNext").addEventListener("click", function(){ step(1); });
+  $("player").addEventListener("click", function(ev){
+    if(ev.target === $("player")) closePlayer();
+  });
+  document.addEventListener("keydown", function(ev){
+    if(!$("player").classList.contains("show")) return;
+    if(ev.key === "Escape") closePlayer();
+    else if(ev.key === "ArrowLeft") step(-1);
+    else if(ev.key === "ArrowRight") step(1);
+  });
+
+  /* ---------- 搜尋 / 排序 ---------- */
+  var qTimer = null;
+  $("q").addEventListener("input", function(){
+    clearTimeout(qTimer);
+    var val = $("q").value;
+    qTimer = setTimeout(function(){ q = val; renderGrid(); }, 160);
+  });
+  $("sort").addEventListener("change", function(){
+    sort = $("sort").value;
+    renderGrid();
+  });
+
+  /* ---------- 啟動 ---------- */
+  if(location.protocol === "file:") $("fileWarn").classList.add("show");
+  if(!PLS.length){
+    $("meta").textContent = "這份匯出沒有任何影片";
+    $("empty").style.display = "block";
+    $("empty").textContent = "這份分享沒有任何影片";
+  }else{
+    renderSide();
+    renderGrid();
+  }
+})();
+</script>
+</body>
+</html>
