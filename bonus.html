@@ -218,7 +218,7 @@ h1{
   border-radius:0 0 4px 4px;
   background:linear-gradient(90deg,var(--accent) 0%,var(--gold) 58%,#59bfb0 100%);
 }
-/* 兩個金額同一行，下面一條進度條＝已用 ÷ 抽到總額 */
+/* 兩個金額同一行，下面一條進度條＝已消 ÷ 抽到總額 */
 .sum-row{display:flex;align-items:baseline;gap:11px}
 .sum-item{
   flex:1 1 0;
@@ -575,38 +575,6 @@ h1{
 
 
 /* ---------- export & share ---------- */
-.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.exp-card{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:2px;
-  padding:12px 11px;
-  border-radius:14px;
-  border:1.5px solid var(--line);
-  background:#fff;
-  text-align:left;
-  transition:background .13s,border-color .13s;
-}
-.exp-card:active{background:var(--bg2);border-color:#ddd6cc}
-.exp-card .ei{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:26px;
-  height:22px;
-  margin-bottom:5px;
-  padding:0 6px;
-  border-radius:7px;
-  background:var(--accent-soft);
-  color:var(--accent);
-  font-size:12px;
-  font-weight:700;
-  font-style:normal;
-  letter-spacing:0;
-}
-.exp-card b{font-size:12.5px;font-weight:700;letter-spacing:.2px;color:var(--ink)}
-.exp-card em{font-size:10.5px;font-style:normal;color:var(--muted);line-height:1.3}
 .exp-preview{
   margin-top:14px;
   padding:8px;
@@ -614,26 +582,17 @@ h1{
   border-radius:14px;
   background:#fdf6ee;
 }
-.exp-preview img{display:block;width:100%;height:auto;border-radius:9px;background:#fff}
+.exp-preview img{
+  display:block;
+  width:auto;
+  max-width:100%;
+  max-height:56vh;
+  margin:0 auto;
+  border-radius:9px;
+  background:#fff;
+}
 .exp-btns{display:flex;gap:8px;margin-top:9px}
 .exp-btns .btn{flex:1;padding:12px 0;font-size:13.5px;text-align:center}
-.exp-more{margin-top:13px;font-size:11.5px;color:var(--muted);letter-spacing:.2px}
-.exp-more summary{padding:9px 0;cursor:pointer}
-.exp-more textarea{
-  width:100%;
-  height:110px;
-  margin-top:4px;
-  padding:9px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:#fff;
-  color:var(--ink2);
-  font-size:11px;
-  line-height:1.5;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  resize:vertical;
-}
-.exp-more .btn{width:100%;margin-top:8px;padding:11px 0;font-size:13px;text-align:center}
 .btn{
   border-radius:13px;
   padding:13px 14px;
@@ -650,7 +609,7 @@ h1{
   box-shadow:0 3px 12px rgba(63,106,91,.22);
 }
 .btn.ghost{background:var(--accent-soft);color:#a83258;border:1px solid #f7d7e3}
-/* 已用的格子改回未用（只在已用時出現） */
+/* 已消的格子改回未用（只在已消時出現） */
 .btn.unuse{
   display:none;
   width:100%;
@@ -1088,8 +1047,8 @@ h1{
 }
 .chip.on{
   background:var(--accent-soft);
-  border-color:#bdd6c9;
-  color:var(--accent);
+  border-color:#f7d7e3;
+  color:#a83258;
 }
 .chip.on::before{
   content:"✓";
@@ -1098,6 +1057,14 @@ h1{
   font-weight:700;
 }
 .chip:active{transform:scale(.96)}
+.chip.dragging{
+  opacity:.9;
+  transform:scale(1.06);
+  box-shadow:0 5px 14px rgba(194,59,106,.22);
+  border-color:var(--accent);
+  transition:none;
+}
+.chips.dragmode .chip{transition:background .1s,border-color .1s}
 .chips-tip{
   margin-top:8px;
   font-size:10.5px;
@@ -1106,11 +1073,35 @@ h1{
 }
 .sec{
   margin:17px 0 2px;
+  display:flex;
+  align-items:center;
+  gap:7px;
   font-size:11px;
   font-weight:700;
   color:var(--ink2);
   letter-spacing:.6px;
 }
+.sec-top{margin-top:2px}
+.lbl-top{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:18px 0 0;
+  font-size:11.5px;
+}
+.btn.wide{width:100%;padding:13px 10px;font-size:13.5px;text-align:center}
+.sec-tag{
+  font-size:9.5px;
+  font-weight:800;
+  color:#a83258;
+  background:var(--accent-soft);
+  border:1px solid #f7d7e3;
+  border-radius:6px;
+  padding:1.5px 6px;
+  letter-spacing:.2px;
+}
+.btn-row{display:flex;gap:8px;margin-top:7px}
+.btn-row .btn{flex:1 1 0;min-width:0;padding:12px 6px;font-size:13px;white-space:nowrap}
 
 /* ---------- stats ---------- */
 .stat4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -1279,7 +1270,7 @@ h1{
 
   <div class="grid" id="grid"></div>
 
-  <div class="hint">拖支付名＝排序　·　點格＝已用／再點改額　·　滑動換週</div>
+  <div class="hint">拖支付名＝排序　·　點格＝已消／再點改額　·　滑動換週</div>
 
   <div class="weekdock" id="weekdock">
     <button class="wnav" id="wPrev" type="button" aria-label="上一週"><span class="ar">‹</span>上週</button>
@@ -1337,22 +1328,19 @@ h1{
 <!-- 本週設定 -->
 <div class="sheet" id="menuSheet">
   <div class="sheet-head">
-    <h3>本週設定</h3>
+    <h3>設定</h3>
     <button class="x" data-close>✕</button>
   </div>
-  <div class="lbl">週名稱</div>
-  <div class="row-inline">
-    <input class="inp" id="inWeekName" type="text" maxlength="14" placeholder="例：第 3 週 / 10月第2週">
-    <button class="btn small" id="renameBtn">儲存</button>
-  </div>
-  <div class="sec">顯示的支付渠道</div>
+
+  <div class="lbl lbl-top">顯示的支付渠道<span class="sec-tag">套用所有週</span></div>
   <div class="chips" id="payChips"></div>
-  <div class="chips-tip">點一下切換顯示／隱藏，隱藏後不佔位置，資料仍保留。<br>首頁按住支付名上下拖，可調整排列次序。</div>
-  <div style="margin-top:18px">
-    <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
-    <div class="chips-tip" style="margin-top:12px">固定十週：用底部的「上週／下週」或下拉清單切換，資料各自獨立。</div>
-  </div>
-  <div class="ver">版本 2026-10-26g · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
+  <div class="chips-tip">點一下隱藏／顯示　·　按住拖動可換次序<br>十週共用；隱藏的資料仍計入統計</div>
+
+  <div class="lbl lbl-top">匯出</div>
+  <button class="btn ghost wide" id="expCsvBtn" type="button">匯出 CSV 表格</button>
+  <div class="chips-tip" style="margin-top:8px">含全部週　·　Excel／Numbers 可開</div>
+
+  <div class="ver">版本 2026-10-26l · 面額 5 種<br>綠＝未用　紅＝未用且 ≥50　灰＝已消</div>
 </div>
 
 <!-- 統計 -->
@@ -1363,25 +1351,25 @@ h1{
   </div>
   <div class="stat4">
     <div class="st">
-      <div class="l">累計抽到消費券</div>
+      <div class="l">抽到總額</div>
       <div class="n" id="sTotal">MOP$0</div>
     </div>
     <div class="st">
-      <div class="l">已扣（已用）總額</div>
+      <div class="l">已消總額</div>
       <div class="n" id="sUsed">MOP$0</div>
     </div>
     <div class="st">
-      <div class="l">未用餘額</div>
+      <div class="l">未用券額</div>
       <div class="n g" id="sRemain">MOP$0</div>
     </div>
     <div class="st">
-      <div class="l">滿 12 減券（張）</div>
+      <div class="l">滿減券（張）</div>
       <div class="n o" id="sFull">0</div>
     </div>
   </div>
   <div class="sec">按支付抽券統計</div>
   <div id="payTable"></div>
-  <div class="foot-note" id="statsNote">全部週次合計 · 金額單位 MOP$ · 滿減券不計入餘額</div>
+  <div class="foot-note" id="statsNote">全部週次合計 · 金額單位 MOP$ · 滿減券不計入總額</div>
   <div class="stats-bar">
     <button class="btn ghost" id="statsImgBtn" type="button">分享累計圖</button>
   </div>
@@ -1391,51 +1379,21 @@ h1{
   </div>
 </div>
 
-<!-- 匯出與分享 -->
+<!-- 分享 -->
 <div class="sheet" id="expSheet">
   <div class="sheet-head">
-    <h3>匯出與分享</h3>
+    <h3>分享本週表格</h3>
     <button class="x" data-close>✕</button>
   </div>
   <div class="lbl" id="expInfo">本週 · MOP$0</div>
-  <div class="exp-grid">
-    <button class="exp-card" id="expImgBtn">
-      <i class="ei">▤</i>
-      <b>本週表格圖片</b>
-      <em>PNG 圖片，可分享到 WhatsApp／微信</em>
-    </button>
-    <button class="exp-card" id="expCsvBtn">
-      <i class="ei">▦</i>
-      <b>CSV 表格</b>
-      <em>Excel、Numbers 直接開啟</em>
-    </button>
-    <button class="exp-card" id="expJsonBtn">
-      <i class="ei">{ }</i>
-      <b>JSON 備份</b>
-      <em>全部週次，可轉移到新手機</em>
-    </button>
-    <button class="exp-card" id="impBtn">
-      <i class="ei">↥</i>
-      <b>匯入備份</b>
-      <em>以備份檔取代目前資料</em>
-    </button>
-  </div>
-  <input type="file" id="impFile" accept=".json,application/json" style="display:none">
-
-  <div class="exp-preview" id="expPreview" style="display:none">
+  <div class="exp-preview" id="expPreview">
     <img id="expImgEl" alt="本週表格圖片">
     <div class="exp-btns">
-      <button class="btn ghost" id="saveImgBtn">儲存圖片</button>
-      <button class="btn primary" id="shareImgBtn">分享</button>
+      <button class="btn ghost" id="saveImgBtn" type="button">儲存圖片</button>
+      <button class="btn primary" id="shareImgBtn" type="button">分享</button>
     </div>
   </div>
-
-  <details class="exp-more">
-    <summary>其他：複製文字數據（貼到記事本／聊天）</summary>
-    <textarea id="expText" readonly></textarea>
-    <button class="btn ghost" id="copyTxtBtn">複製文字</button>
-  </details>
-  <div class="sheet-foot">圖片與檔案都在手機本機產生，不會上傳到任何伺服器</div>
+  <div class="sheet-foot">按「分享」即彈出系統選單，直接選 WhatsApp／微信；圖片在本機產生，不會上傳</div>
 </div>
 
 <div class="ptr" id="ptr"><span class="ptr-ico">↓</span><span id="ptrTxt">下拉更新</span></div>
@@ -1496,7 +1454,7 @@ var S=ensureWeeks(loadState(),10);
 
 function uid(){return Math.random().toString(36).slice(2,9);}
 function newWeek(n){
-  return {id:uid(),name:'第 '+n+' 週',cells:new Array(TOTAL_CELLS).fill(null),hide:[]};
+  return {id:uid(),name:'第 '+n+' 週',cells:new Array(TOTAL_CELLS).fill(null)};
 }
 /* 固定十週：不足就補（沿用現有渠道設定），已有資料與自訂名稱一律不動 */
 function ensureWeeks(s,want){
@@ -1508,12 +1466,11 @@ function ensureWeeks(s,want){
     if(m) used[+m[1]]=1;
   });
   if(s.weeks.length<want){
-    var ref=s.weeks[0];
     for(var n=1;n<=want;n++){
       if(s.weeks.length>=want) break;
       if(used[n]) continue;
       var w=newWeek(n);
-      if(ref&&Array.isArray(ref.hide)) w.hide=ref.hide.slice();
+
       s.weeks.push(w); used[n]=1;
     }
   }
@@ -1551,6 +1508,7 @@ function newestWeek(){
 }
 
 function loadState(){
+  var oldHide=null,curHide=null;
   try{
     var raw=localStorage.getItem(KEY);
     if(raw){
@@ -1567,12 +1525,12 @@ function loadState(){
             if(a<=0&&!f&&!p) return null;
             return {a:a,f:f,u:p?false:!!c.u,t:p?0:(+c.t||0),p:p};
           });
-          if(!Array.isArray(w.hide)){
-            w.hide=[];
-          }else{
-            w.hide=w.hide.filter(function(i){return i>=0&&i<PAYS.length;});
+          if(Array.isArray(w.hide)){
+            var hh=w.hide.filter(function(i){return i>=0&&i<PAYS.length;});
+            if(w.id===d.cur) curHide=hh;
+            else if(oldHide===null) oldHide=hh;
           }
-          /* 支付顯示順序已改為全域設定，逐週的舊欄位稍後統一搬移 */
+          delete w.hide;
           if(!w.name) w.name='未命名';
         });
         if(!d.v||d.v<2){ d.weeks.reverse(); d.v=2; }
@@ -1590,6 +1548,14 @@ function loadState(){
           d.order=null;
         }
         if(!d.order||d.order.join(',')===DEF_ORDER.join(',')) delete d.order;
+        /* 支付渠道顯示改為全域設定：沿用舊資料（當前週優先）的隱藏清單 */
+        if(Array.isArray(d.hide)){
+          d.hide=d.hide.filter(function(i){return i>=0&&i<PAYS.length;});
+        }else if(Array.isArray(curHide)||Array.isArray(oldHide)){
+          d.hide=(curHide||oldHide).slice();
+        }else{
+          d.hide=[];
+        }
         /* 收藏清單（舊資料沒有這個欄位） */
         if(!Array.isArray(d.favs)) d.favs=[];
         d.favs=d.favs.filter(function(f){
@@ -1605,7 +1571,7 @@ function loadState(){
     }
   }catch(e){}
   var w=newWeek(1);
-  return {v:2,weeks:[w],cur:w.id,favs:[]};
+  return {v:2,weeks:[w],cur:w.id,favs:[],hide:[]};
 }
 
 function save(){
@@ -1711,7 +1677,7 @@ function goWeek(delta,anim){
 function renderSummary(){
   var w=curW();
   var total=0,used=0,full=0,filled=0,hSum=0,hCnt=0,lucky=0,pend=0;
-  var hide=w.hide||[];
+  var hide=hideList();
 
   w.cells.forEach(function(c,idx){
     if(!hasVal(c)) return;
@@ -1745,7 +1711,7 @@ function renderSummary(){
   $('vBarUsed').style.width=usedPct.toFixed(1)+'%';
   /* 未記錄時不顯示副標（不留「尚未…」字樣） */
   $('vSub').innerHTML=total>0
-    ? '已用 <b>MOP$'+money(used)+'</b>　'+Math.round(usedPct)+'%'
+    ? '已消 <b>MOP$'+money(used)+'</b>　'+Math.round(usedPct)+'%'
     : '';
   /* 待抽／滿減：有才顯示，避免干擾 */
   $('metaRow').style.display=(pend||full)?'flex':'none';
@@ -1767,8 +1733,13 @@ function renderSummary(){
   }
 }
 
+/* 支付渠道顯示／隱藏＝全域設定，所有週共用 */
+function hideList(){
+  if(!Array.isArray(S.hide)) S.hide=[];
+  return S.hide;
+}
 function paysVisible(w){
-  var hide=(w&&w.hide)||[];
+  var hide=hideList();
   return payOrder(w).filter(function(pi){ return hide.indexOf(pi)<0; });
 }
 
@@ -1980,7 +1951,7 @@ function syncPayOrder(){ return commitOrder(false); }
 /* ---------------- tap logic ---------------- */
 var lpTimer=null,lpFired=false;
 
-/* 點格子：空白＝改額　·　待抽獎＝改額　·　未用＝標記已用　·　已用再點＝改額 */
+/* 點格子：空白＝改額　·　待抽獎＝改額　·　未用＝標記已消　·　已消再點＝改額 */
 function handleTap(pi,i){
   var w=curW(),c=w.cells[pi*PER+i];
   if(!hasVal(c)){ openEdit(pi,i); return; }
@@ -2171,7 +2142,7 @@ function renderQuick(){
       '<div class="qops">'+
         '<button type="button" class="qop'+(pend?' on':'')+'" data-i="'+i+'" data-act="pending"'+(hasAmt?' disabled':'')+'>待抽</button>'+
         '<button type="button" class="qop'+(has&&!pend&&c.f?' on':'')+'" data-i="'+i+'" data-act="full"'+(pend?' disabled':'')+'>滿減</button>'+
-        '<button type="button" class="qop'+(has&&c.u?' on':'')+'" data-i="'+i+'" data-act="used"'+(has&&!pend?'':' disabled')+'>已用</button>'+
+        '<button type="button" class="qop'+(has&&c.u?' on':'')+'" data-i="'+i+'" data-act="used"'+(has&&!pend?'':' disabled')+'>已消</button>'+
         '<button type="button" class="qop" data-i="'+i+'" data-act="clear"'+(has?'':' disabled')+'>留空</button>'+
       '</div>'+
     '</div>';
@@ -2340,7 +2311,7 @@ function afterPick(){
   closeSheet();
 }
 
-/* 已用 → 改回未用（點格子已改為「已用再點＝改額」，復原由此按鈕提供） */
+/* 已消 → 改回未用（點格子已改為「已消再點＝改額」，復原由此按鈕提供） */
 $('unuseBtn').addEventListener('click',function(){
   if(!editing) return;
   var w=curW(), idx=editing.pi*PER+editing.i;
@@ -2356,28 +2327,20 @@ $('unuseBtn').addEventListener('click',function(){
 });
 
 /* ---------------- 週管理 ---------------- */
-function nextWeekNum(){
-  var max=0;
-  S.weeks.forEach(function(w){
-    var m=String(w.name).match(/(\d+)/);
-    if(m){ var n=parseInt(m[1],10); if(n>max) max=n; }
-  });
-  return max+1;
-}
 $('menuBtn').addEventListener('click',function(){
-  $('inWeekName').value=curW().name;
   renderChips();
   openSheet('menuSheet');
 });
 
 function renderChips(){
   var w=curW();
-  var hide=w.hide||[];
+  var hide=hideList();
   var box=$('payChips');
   box.innerHTML='';
   payOrder(w).forEach(function(pi){
     var b=document.createElement('button');
     b.type='button';
+    b.dataset.pi=pi;
     b.className='chip'+(hide.indexOf(pi)<0?' on':'');
     b.textContent=PAYS[pi];
     b.addEventListener('click',function(){ toggleHide(pi); });
@@ -2387,62 +2350,103 @@ function renderChips(){
 
 function toggleHide(pi){
   var w=curW();
-  if(!Array.isArray(w.hide)) w.hide=[];
-  var k=w.hide.indexOf(pi);
+  var hide=hideList();
+  var k=hide.indexOf(pi);
   if(k<0){
-    if(PAYS.length-(w.hide.length+1)<1){ toast('至少要顯示一間'); return; }
-    var cnt=0;
-    for(var i=0;i<PER;i++){ if(hasVal(w.cells[pi*PER+i])) cnt++; }
-    w.hide.push(pi);
-    if(cnt>0) toast('已隱藏，'+PAYS[pi]+' 的 '+cnt+' 筆資料仍計入統計');
+    if(PAYS.length-(hide.length+1)<1){ toast('至少要顯示一間'); return; }
+    hide.push(pi);
+    toast('已隱藏「'+PAYS[pi]+'」，所有週一併套用');
   }else{
-    w.hide.splice(k,1);
+    hide.splice(k,1);
+    toast('已顯示「'+PAYS[pi]+'」，所有週一併套用');
   }
+  save();
+  renderChips();
+  renderAll();
+}
+
+/* 設定頁渠道：按住拖動＝調整支付次序（全域，十週共用） */
+(function bindChipDrag(){
+  var box=$('payChips');
+  var drag=null,pid=null,moved=false,sx=0,sy=0,lastEnd=0;
+
+  function chipAt(x,y,skip){
+    var kids=[].slice.call(box.children);
+    for(var i=0;i<kids.length;i++){
+      var el=kids[i];
+      if(el===skip) continue;
+      var r=el.getBoundingClientRect();
+      if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom) return el;
+    }
+    return null;
+  }
+  function reset(){
+    if(drag) drag.classList.remove('dragging');
+    box.classList.remove('dragmode');
+    drag=null; pid=null;
+  }
+  function finish(){
+    if(!drag) return;
+    if(moved){ lastEnd=Date.now(); applyChipOrder(); }
+    reset();
+  }
+
+  box.addEventListener('pointerdown',function(e){
+    if(e.pointerType==='mouse'&&e.button!==0) return;
+    var el=e.target.closest?e.target.closest('.chip'):null;
+    if(!el) return;
+    drag=el; pid=e.pointerId; moved=false; sx=e.clientX; sy=e.clientY;
+  });
+  box.addEventListener('pointermove',function(e){
+    if(!drag||e.pointerId!==pid) return;
+    if(!moved){
+      if(Math.abs(e.clientX-sx)<9&&Math.abs(e.clientY-sy)<9) return;
+      moved=true;
+      drag.classList.add('dragging');
+      box.classList.add('dragmode');
+      if(navigator.vibrate){ try{ navigator.vibrate(8); }catch(err){} }
+    }
+    if(e.cancelable) e.preventDefault();
+    var over=chipAt(e.clientX,e.clientY,drag);
+    if(over){
+      var r=over.getBoundingClientRect();
+      var after=(e.clientY>r.top+r.height*0.62)||
+                (Math.abs(e.clientY-(r.top+r.height/2))<r.height*0.3&&e.clientX>r.left+r.width/2);
+      box.insertBefore(drag,after?over.nextSibling:over);
+    }
+  },{passive:false});
+  box.addEventListener('pointerup',finish);
+  box.addEventListener('pointercancel',finish);
+  box.addEventListener('lostpointercapture',finish);
+  window.addEventListener('pointerup',function(e){ if(drag&&e.pointerId===pid) finish(); });
+  window.addEventListener('pointercancel',function(){ if(drag) finish(); });
+  /* 拖完不要誤觸「隱藏／顯示」 */
+  box.addEventListener('click',function(e){
+    if(Date.now()-lastEnd<350){ e.preventDefault(); e.stopPropagation(); }
+  },true);
+})();
+
+function chipOrder(){
+  var out=[];
+  [].forEach.call($('payChips').children,function(el){
+    if(el.dataset&&el.dataset.pi!=null&&el.dataset.pi!=='') out.push(+el.dataset.pi);
+  });
+  return out;
+}
+function applyChipOrder(){
+  var arr=chipOrder();
+  if(arr.length!==PAYS.length) return;
+  var no=normOrder(arr);
+  if(no.join(',')===DEF_ORDER.join(',')) delete S.order;
+  else S.order=no.slice();
+  var w=curW();
+  if(w&&w.order) delete w.order;
   save();
   renderChips();
   renderSummary();
   renderGrid();
+  toast('支付次序已更新，十週共用');
 }
-
-$('renameBtn').addEventListener('click',function(){
-  var v=$('inWeekName').value.trim();
-  if(!v){ toast('請輸入週名稱'); return; }
-  curW().name=v;
-  save();
-  renderAll();
-  closeSheet();
-  toast('已重新命名');
-});
-
-function armButton(btn,label,fn){
-  if(btn.dataset.armed==='1'){
-    btn.dataset.armed='0';
-    btn.textContent=btn.dataset.label||label;
-    clearTimeout(btn._t);
-    fn();
-    return;
-  }
-  btn.dataset.armed='1';
-  btn.dataset.label=label;
-  btn.textContent='再點一次確認';
-  clearTimeout(btn._t);
-  btn._t=setTimeout(function(){
-    btn.dataset.armed='0';
-    btn.textContent=label;
-  },3200);
-}
-
-$('clearWeekBtn').addEventListener('click',function(){
-  var btn=this;
-  armButton(btn,'清空本週資料',function(){
-    curW().cells=new Array(TOTAL_CELLS).fill(null);
-    save();
-    renderSummary();
-    renderGrid();
-    closeSheet();
-    toast('本週資料已清空');
-  });
-});
 
 /* ---------------- stats ---------------- */
 function renderStats(){
@@ -2467,9 +2471,9 @@ function renderStats(){
   $('sUsed').textContent='MOP$'+money(agg.u);
   $('sRemain').textContent='MOP$'+money(agg.t-agg.u);
   $('sFull').textContent=agg.f+' 張';
-  $('statsNote').textContent='共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券'+(agg.p?' · 待抽 '+agg.p+' 次':'')+' · 按累計由高到低 · 滿減券另計，不計入金額';
+  $('statsNote').textContent='共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券'+(agg.p?' · 待抽 '+agg.p+' 次':'')+' · 按抽到總額由高到低 · 滿減券另計，不計入金額';
 
-  var html='<div class="tbl-head"><span>支付</span><span class="r">次數</span><span class="r">抽到</span><span class="r">已用</span><span class="r">滿減</span></div>';
+  var html='<div class="tbl-head"><span>支付</span><span class="r">次數</span><span class="r">抽到</span><span class="r">已消</span><span class="r">滿減</span></div>';
   var rows=PAYS.map(function(p,i){ return {p:p,i:i,d:per[i]}; });
   rows.sort(function(A,B){
     if(B.d.t!==A.d.t) return B.d.t-A.d.t;
@@ -2538,7 +2542,7 @@ function buildCSV(){
         var c=w.cells[pi*PER+k];
         if(!hasVal(c)) continue;
         var a=+c.a||0;
-        var st=c.p?'待抽獎':((c.f&&a<=0)?'滿減':(c.u?'已用':'未用'));
+        var st=c.p?'待抽獎':((c.f&&a<=0)?'滿減':(c.u?'已消':'未用'));
         out.push(csvLine([
           w.name,PAYS[pi],'第 '+(k+1)+' 次',
           a>0?num(a):'',st,c.f?'是':'否',
@@ -2548,7 +2552,7 @@ function buildCSV(){
     }
   });
   out.push('');
-  out.push(csvLine(['週次','抽到總額','已用','未用餘額','滿減(張)','筆數']));
+  out.push(csvLine(['週次','抽到總額','已消','未用券額','滿減(張)','筆數']));
   var T={t:0,u:0,f:0,n:0};
   S.weeks.forEach(function(w){
     var g=weekAgg(w);
@@ -2563,7 +2567,7 @@ function buildCSV(){
 function buildText(){
   var w=curW(),g=weekAgg(w),out=[];
   out.push('消費連環賞　'+w.name);
-  out.push('抽到 MOP$'+num(g.t)+'　已用 MOP$'+num(g.u)+'　未用 MOP$'+num(g.left)+'　滿減 '+g.f+' 張');
+  out.push('抽到 MOP$'+num(g.t)+'　已消 MOP$'+num(g.u)+'　未用 MOP$'+num(g.left)+'　滿減 '+g.f+' 張');
   out.push('');
   visiblePays(w).forEach(function(pi){
     var parts=[];
@@ -2574,7 +2578,7 @@ function buildText(){
       if(c.p){ parts.push('待抽獎'); continue; }
       if(a>0) s=num(a);
       if(c.f) s=s?s+'+減':'滿減';
-      if(c.u&&a>0) s+='(已用)';
+      if(c.u&&a>0) s+='(已消)';
       parts.push(s);
     }
     out.push(PAYS[pi]+'　'+(parts.length?parts.join('　'):'—'));
@@ -2677,7 +2681,7 @@ function buildImage(){
   ctx.font='12px '+IMG_FONT;
   ctx.fillText('匯出時間 '+stampRead()+'　·　共 '+S.weeks.length+' 週'+(pendN?'　·　待抽 '+pendN+' 次':''),PAD,y0+46);
 
-  /* 摘要卡：未用券額 ／ 抽到總額 ＋ 一條已用進度條（與首頁一致） */
+  /* 摘要卡：未用券額 ／ 抽到總額 ＋ 一條已消進度條（與首頁一致） */
   var cardW=W-PAD*2, cxL=PAD+18, cxR=W-PAD-18;
   ctx.fillStyle='#fff';
   rr(ctx,PAD,cardY,cardW,cardH,16); ctx.fill();
@@ -2720,7 +2724,7 @@ function buildImage(){
   ctx.textAlign='left';
   ctx.fillStyle='#b0a49b';
   ctx.font='11px '+IMG_FONT;
-  ctx.fillText('已用 MOP$'+money(g.u)+'　'+Math.round(pct*100)+'%',barX+barW+11,barY+4);
+  ctx.fillText('已消 MOP$'+money(g.u)+'　'+Math.round(pct*100)+'%',barX+barW+11,barY+4);
 
   var luckyN=0;
   w.cells.forEach(function(c){ if(hasVal(c)&&(+c.a||0)>=LUCKY_MIN) luckyN++; });
@@ -2846,7 +2850,7 @@ function buildImage(){
   ctx.textAlign='center';
   ctx.fillStyle='#b0b7bb';
   ctx.font='11px '+IMG_FONT;
-  ctx.fillText('綠＝未用　紅＝未用且≥50　灰＝已用　藍＝待抽獎　·　滿減 '+g.f+' 張'+(luckyN?'　·　神助 ×'+luckyN:'')+'　·　消費連環賞',W/2,H-24);
+  ctx.fillText('綠＝未用　紅＝未用且≥50　灰＝已消　藍＝待抽獎　·　滿減 '+g.f+' 張'+(luckyN?'　·　神助 ×'+luckyN:'')+'　·　消費連環賞',W/2,H-24);
 
   return cv;
 }
@@ -2991,7 +2995,7 @@ function buildStatsImage(){
   ctx.fillStyle='#a89b93'; ctx.font='12px '+IMG_FONT;
   ctx.fillText('共 '+S.weeks.length+' 週　·　'+agg.c+' 筆金額券　·　'+stampRead(),PAD,startY+50);
 
-  /* 主卡：累計／已用／未用 */
+  /* 主卡：抽到總額／已消／未用券額 */
   var cyy=startY+70;
   ctx.fillStyle='#fff';
   rr(ctx,PAD,cyy,W-PAD*2,HERO,16); ctx.fill();
@@ -2999,20 +3003,20 @@ function buildStatsImage(){
 
   ctx.textAlign='left';
   ctx.fillStyle='#967f89'; ctx.font='11.5px '+IMG_FONT;
-  ctx.fillText('累計抽到消費券',PAD+18,cyy+26);
+  ctx.fillText('抽到總額',PAD+18,cyy+26);
   ctx.fillStyle='#3b2530'; ctx.font='700 34px '+IMG_FONT;
   ctx.fillText('MOP$'+money(agg.t),PAD+18,cyy+64);
 
   ctx.textAlign='right';
   ctx.fillStyle='#967f89'; ctx.font='11px '+IMG_FONT;
-  ctx.fillText('已用 MOP$'+money(agg.u),W-PAD-18,cyy+42);
+  ctx.fillText('已消 MOP$'+money(agg.u),W-PAD-18,cyy+42);
   ctx.fillStyle='#4a7f66'; ctx.font='600 12px '+IMG_FONT;
-  ctx.fillText('未用 MOP$'+money(agg.t-agg.u),W-PAD-18,cyy+68);
+  ctx.fillText('未用券額 MOP$'+money(agg.t-agg.u),W-PAD-18,cyy+68);
 
   /* 按支付條形 */
   var sy=cyy+HERO+22;
   ctx.textAlign='left'; ctx.fillStyle='#967f89'; ctx.font='11.5px '+IMG_FONT;
-  ctx.fillText('按支付（累計由高到低）',PAD+2,sy);
+  ctx.fillText('按支付（抽到總額由高到低）',PAD+2,sy);
 
   var barX=PAD+70,barW=W-PAD*2-70-72;
   var yy=sy+18;
@@ -3031,7 +3035,7 @@ function buildStatsImage(){
       rr(ctx,barX,by,wpx,10,5); ctx.fill();
       var uw=barW*(d.u/maxT);
       if(uw>0){
-        ctx.fillStyle='#c23b6a';               /* 深綠＝已用（疊左邊） */
+        ctx.fillStyle='#c23b6a';               /* 深色＝已消（疊左邊） */
         rr(ctx,barX,by,Math.max(uw,4),10,5); ctx.fill();
       }
     }
@@ -3042,7 +3046,7 @@ function buildStatsImage(){
   });
 
   ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
-  ctx.fillText('深色＝已用　淺色＝未用　·　滿減 '+agg.f+' 張　·　消費連環賞',W/2,startY+blockH-18);
+  ctx.fillText('深色＝已消　淺色＝未用　·　滿減 '+agg.f+' 張　·　消費連環賞',W/2,startY+blockH-18);
 
   return cv;
 }
@@ -3061,126 +3065,66 @@ function curImgBlob(){
   try{ return dataURLToBlob(imgURL); }catch(e){ return null; }
 }
 
-/* ---- 開面板 ---- */
-$('shareBtn').addEventListener('click',function(){
+/* ---- 分享：一按即出圖並彈出系統分享選單（直接選 WhatsApp／微信） ---- */
+function shareFileName(){
+  return '消費券_'+safeName(curW().name)+'_'+stampFile()+'.png';
+}
+function makeShareImage(){
+  var cv=buildImage();
+  imgURL=cv.toDataURL('image/png');
+  $('expImgEl').src=imgURL;
   var w=curW(),g=weekAgg(w);
   $('expInfo').textContent=w.name+'　·　MOP$'+num(g.t)+'　·　共 '+S.weeks.length+' 週 · '+g.n+' 筆';
-  $('expText').value=buildText();
-  $('expPreview').style.display='none';
-  imgURL='';
-  openSheet('expSheet');
-});
+}
+function imgFile(){
+  var blob=curImgBlob();
+  if(!blob) return null;
+  try{ return new File([blob],shareFileName(),{type:'image/png'}); }catch(e){ return null; }
+}
+function canShareFile(f){
+  return !!(f&&navigator.share&&navigator.canShare&&navigator.canShare({files:[f]}));
+}
 
-/* ---- 圖片 ---- */
-$('expImgBtn').addEventListener('click',function(){
-  try{
-    var cv=buildImage();
-    imgURL=cv.toDataURL('image/png');
-    $('expImgEl').src=imgURL;
-    $('expPreview').style.display='block';
-    setTimeout(function(){
-      try{ $('expPreview').scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
-    },60);
-  }catch(e){
-    toast('圖片產生失敗，可改用 CSV');
-  }
+$('shareBtn').addEventListener('click',function(){
+  try{ makeShareImage(); }catch(e){ toast('圖片產生失敗'); return; }
+  var f=imgFile();
+  if(!canShareFile(f)){ openSheet('expSheet'); return; }   /* 不支援檔案分享 → 開面板，圖已備好 */
+  navigator.share({files:[f],title:'消費連環賞 '+curW().name}).catch(function(err){
+    if(err&&err.name==='AbortError') return;                /* 用戶取消，不再打擾 */
+    openSheet('expSheet');
+  });
 });
 
 $('saveImgBtn').addEventListener('click',function(){
   var blob=curImgBlob();
-  if(!blob){ toast('請先生成圖片'); return; }
-  var name='消費券_'+safeName(curW().name)+'_'+stampFile()+'.png';
-  if(downloadBlob(blob,name)) toast('已儲存，可到相簿或下載資料夾查看');
+  if(!blob){ toast('圖片還沒準備好'); return; }
+  if(downloadBlob(blob,shareFileName())) toast('已儲存，可到相簿或下載資料夾查看');
   else toast('請長按上方圖片儲存');
 });
 
 $('shareImgBtn').addEventListener('click',function(){
   var blob=curImgBlob();
-  if(!blob){ toast('請先生成圖片'); return; }
-  var name='消費券_'+safeName(curW().name)+'_'+stampFile()+'.png';
-  var file=null;
-  try{ file=new File([blob],name,{type:'image/png'}); }catch(e){}
-  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
-    navigator.share({files:[file],title:'消費連環賞 '+curW().name}).catch(function(){});
+  if(!blob){ toast('圖片還沒準備好'); return; }
+  var f=imgFile();
+  if(canShareFile(f)){
+    navigator.share({files:[f],title:'消費連環賞 '+curW().name}).catch(function(){});
     return;
   }
   if(navigator.share){
     navigator.share({title:'消費連環賞 '+curW().name,text:buildText()}).catch(function(){});
     return;
   }
-  if(downloadBlob(blob,name)){
-    toast('已儲存圖片，可到相簿分享');
-  }else{
-    toast('請長按上方圖片儲存');
-  }
+  if(downloadBlob(blob,shareFileName())) toast('已儲存圖片，可到相簿分享');
+  else toast('請長按上方圖片儲存');
 });
 
-/* ---- CSV / JSON ---- */
+/* ---- CSV（設定面板內） ---- */
 $('expCsvBtn').addEventListener('click',function(){
   var csv='\uFEFF'+buildCSV();
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   var name='消費連環賞_'+stampFile()+'.csv';
   if(downloadBlob(blob,name)) toast('已匯出 CSV，可用 Excel 開啟');
-  else toast('匯出失敗，請用「複製文字」');
-});
-
-$('expJsonBtn').addEventListener('click',function(){
-  var txt=JSON.stringify(S,null,2);
-  var blob=new Blob([txt],{type:'application/json;charset=utf-8'});
-  var name='消費券備份_'+stampFile()+'.json';
-  if(downloadBlob(blob,name)) toast('已匯出備份，可在新手機匯入');
-  else toast('匯出失敗，請用「複製文字」');
-});
-
-/* ---- 複製文字 ---- */
-$('copyTxtBtn').addEventListener('click',function(){
-  var el=$('expText');
-  el.focus();
-  el.select();
-  var done=false;
-  try{ done=document.execCommand('copy'); }catch(e){}
-  if(done){ toast('已複製文字'); return; }
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(el.value).then(function(){
-      toast('已複製文字');
-    }).catch(function(){
-      toast('已選取，請長按複製');
-    });
-    return;
-  }
-  toast('已選取，請長按複製');
-});
-
-/* ---- 匯入 ---- */
-$('impBtn').addEventListener('click',function(){
-  $('impFile').value='';
-  $('impFile').click();
-});
-
-$('impFile').addEventListener('change',function(){
-  var f=this.files&&this.files[0];
-  if(!f) return;
-  var rd=new FileReader();
-  rd.onload=function(){
-    var d=null;
-    try{ d=JSON.parse(String(rd.result)); }catch(e){}
-    if(!d||!Array.isArray(d.weeks)||!d.weeks.length){
-      toast('檔案格式不正確');
-      return;
-    }
-    var cnt=d.weeks.length;
-    if(!window.confirm('匯入會以備份檔（'+cnt+' 週）取代目前全部資料，確定嗎？')){
-      return;
-    }
-    try{
-      localStorage.setItem(KEY,JSON.stringify(d));
-      location.reload();
-    }catch(e){
-      toast('匯入失敗，儲存空間可能不足');
-    }
-  };
-  rd.onerror=function(){ toast('讀取檔案失敗'); };
-  rd.readAsText(f);
+  else toast('匯出失敗，請稍後再試');
 });
 
 $('statsBtn').addEventListener('click',function(){
