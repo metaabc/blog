@@ -124,11 +124,17 @@ h1{
   box-shadow:0 2px 8px rgba(63,106,91,.22);
 }
 .wtab.wadd{
-  color:var(--accent);
+  color:#b32d5e;
+  font-size:14.5px;
+  font-weight:800;
+  padding:7px 16px 8px;
+  border-width:1.5px;
   border-style:dashed;
-  border-color:#cfe0d8;
-  background:#f6faf8;
+  border-color:#f0bcd0;
+  background:var(--accent-soft);
+  letter-spacing:.5px;
 }
+.wtab.wadd:active{background:#fadce9}
 
 /* ---------- summary（數字 + 進度條） ---------- */
 .summary{
@@ -137,7 +143,7 @@ h1{
   background:linear-gradient(180deg,#ffffff 0%,#fffdfb 100%);
   border:1px solid var(--line);
   border-radius:18px;
-  padding:14px 14px 12px;
+  padding:12px 14px 11px;
   box-shadow:0 2px 10px rgba(190,120,90,.07);
   overflow:hidden;
 }
@@ -147,64 +153,94 @@ h1{
   left:0;right:0;top:0;height:3px;
   background:linear-gradient(90deg,var(--accent) 0%,var(--gold) 58%,#59bfb0 100%);
 }
-.sum-row{display:flex;gap:14px;align-items:flex-start}
-.sum-item{flex:1 1 0;min-width:0}
-.sum-item+.sum-item{padding-left:14px;border-left:1px solid var(--line2)}
-.sum-head{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0}
-.sum-label{
-  font-size:13.5px;
-  color:var(--ink2);
-  letter-spacing:.6px;
-  font-weight:700;
-  margin-bottom:4px;
-  white-space:nowrap;
-}
-.sum-val{
+/* 兩個金額同一行，下面一條進度條＝已用 ÷ 抽到總額 */
+.sum-row{display:flex;align-items:baseline;gap:11px}
+.sum-item{
+  flex:1 1 0;
+  min-width:0;
   display:flex;
   align-items:baseline;
-  gap:3px;
+  gap:5px;
+  overflow:hidden;
+}
+.sum-label{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:13.5px;
+  color:var(--ink);
+  letter-spacing:.2px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.sum-label::before{
+  content:'';
+  width:6px;height:6px;
+  border-radius:50%;
+  flex:0 0 auto;
+}
+.remain .sum-label::before{background:var(--green)}
+.total .sum-label::before{background:var(--accent)}
+.sum-val{
+  flex:1 1 auto;
+  display:flex;
+  align-items:baseline;
+  justify-content:flex-end;
+  gap:2px;
   min-width:0;
   font-variant-numeric:tabular-nums;
 }
-.sum-val .cur{font-size:10.5px;font-weight:700;color:var(--muted)}
 .sum-val b{
-  font-size:clamp(21px,6.2vw,27px);
+  font-size:clamp(20px,5.8vw,26px);
   font-weight:800;
   letter-spacing:-.6px;
-  line-height:1.15;
+  line-height:1.1;
   white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+}
+.sum-item+.sum-item{
+  padding-left:10px;
+  border-left:1px solid var(--line2);
 }
 .sum-item.remain .sum-val b{color:var(--green)}
 .sum-item.total .sum-val b{color:var(--accent)}
-/* 進度條 */
+/* 一條進度條＋右側小字 */
+.sum-foot{display:flex;align-items:center;gap:7px;margin-top:9px}
 .pbar{
-  height:6px;
+  flex:1 1 auto;
+  min-width:40px;
+  height:9px;
   border-radius:99px;
-  background:#f6ece3;
+  background:#f3e8df;
   overflow:hidden;
-  margin:8px 0 5px;
+  box-shadow:inset 0 1px 2px rgba(150,110,85,.10);
 }
 .pbar>i{
   display:block;
   height:100%;
   width:0;
   border-radius:99px;
+  background:linear-gradient(90deg,#e884ab,var(--accent));
   transition:width .35s ease;
 }
-.remain .pbar>i{background:linear-gradient(90deg,#69c8b7,var(--green))}
-.total .pbar>i{background:linear-gradient(90deg,var(--accent2),var(--accent))}
 .sum-sub{
-  font-size:10px;
+  flex:0 0 auto;
+  font-size:10.5px;
   color:var(--muted);
   letter-spacing:.2px;
   font-variant-numeric:tabular-nums;
   white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
-.sum-sub b{color:var(--ink2);font-weight:700}
+.sum-sub:empty{display:none}
+.sum-sub b{color:var(--ink2);font-weight:800}
+/* 超窄機（≤340）再收一級，確保兩組金額不擠壓 */
+@media (max-width:340px){
+  .sum-row{gap:8px}
+  .sum-label{font-size:12.5px;gap:0}
+  .sum-label::before{display:none}
+  .sum-item+.sum-item{padding-left:7px}
+  .sum-val b{font-size:19px}
+}
 /* 本週有 100／200 大額券：標「神助」 */
 .lucky-badge{
   flex:0 0 auto;
@@ -220,6 +256,7 @@ h1{
   line-height:1.35;
   white-space:nowrap;
   box-shadow:0 1px 3px rgba(190,140,40,.16);
+  align-self:center;
 }
 .lucky-badge.on{display:inline-block}
 @media (max-width:374px){
@@ -286,7 +323,7 @@ h1{
 
 .row{
   display:grid;
-  grid-template-columns:54px 1fr 1fr 1fr;
+  grid-template-columns:62px 1fr 1fr 1fr;
   gap:6px;
   min-height:0;
 }
@@ -294,13 +331,16 @@ h1{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:11.5px;
-  font-weight:600;
-  color:#7c868c;
+  font-size:13px;
+  font-weight:700;
+  color:#6f7a80;
   background:#fbfaf8;
   border:1px solid var(--line);
   border-radius:11px;
-  letter-spacing:-.2px;
+  letter-spacing:-.3px;
+  padding:0 2px;
+  text-align:center;
+  line-height:1.15;
   overflow:hidden;
 }
 .cell{
@@ -415,38 +455,59 @@ h1{
   letter-spacing:.3px;
   margin-top:-2px;
 }
-/* 底部菜單：四個 tab（收藏／統計／分享／設定） */
+/* 底部菜單：四個 tab（收藏／統計／分享／設定），各自配色 */
 .tabbar{
   flex:0 0 auto;
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:2px;
+  gap:5px;
   margin:0 -12px calc(-8px - env(safe-area-inset-bottom,0px));
-  padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
-  background:rgba(255,255,255,.94);
-  -webkit-backdrop-filter:saturate(1.4) blur(8px);
-  backdrop-filter:saturate(1.4) blur(8px);
-  border-top:1px solid var(--line);
-  box-shadow:0 -4px 16px rgba(150,100,80,.07);
+  padding:8px 9px calc(8px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,#fffdfb 0%,#fff6ee 100%);
+  border-top:1px solid #f2e2d6;
+  box-shadow:0 -6px 18px rgba(160,110,90,.10);
 }
 .tab{
+  --tc:#c23b6a;
+  --tb:#fdeaf2;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:2px;
+  gap:3px;
   padding:6px 2px 5px;
-  border-radius:12px;
-  color:#9c8791;
-  font-size:10.5px;
-  font-weight:600;
-  letter-spacing:.3px;
-  transition:color .15s,background .15s;
+  border-radius:14px;
+  color:#8d7b82;
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:.4px;
+  border:1px solid transparent;
+  transition:color .15s,background .15s,border-color .15s,transform .12s;
 }
-.tab svg{width:21px;height:21px;display:block}
-.tab.on{color:var(--accent);background:var(--accent-soft)}
-.tab.on svg{stroke-width:2.1}
-.tab:active{background:var(--accent-soft)}
+.tab svg{
+  width:22px;
+  height:22px;
+  padding:5px;
+  box-sizing:content-box;
+  border-radius:11px;
+  background:var(--tb);
+  color:var(--tc);
+  display:block;
+  transition:background .15s,color .15s;
+}
+.tab.t-fav{--tc:#bf860f;--tb:#fdf1d5}
+.tab.t-stats{--tc:#2b8b79;--tb:#e1f4ed}
+.tab.t-share{--tc:#c23b6a;--tb:#fde6ef}
+.tab.t-menu{--tc:#5578ad;--tb:#e8effa}
+.tab.on{
+  color:#fff;
+  background:var(--tc);
+  border-color:var(--tc);
+  box-shadow:0 4px 12px rgba(120,60,80,.22);
+}
+.tab.on svg{background:#fff;color:var(--tc)}
+.tab.on svg path,.tab.on svg circle{stroke-width:2}
+.tab:active{transform:translateY(1px)}
 
 
 /* ---------- export & share ---------- */
@@ -1105,7 +1166,8 @@ h1{
 @keyframes ptrspin{to{transform:rotate(360deg)}}
 
 @media (max-height:680px){
-  .sum-val{font-size:19px}
+  .sum-val b{font-size:22px}
+  .row{grid-template-columns:58px 1fr 1fr 1fr}
   .grid{gap:5px}
   .row{gap:5px}
   h1{font-size:17px}
@@ -1129,20 +1191,18 @@ h1{
   <section class="summary" id="sumBox">
     <div class="sum-row">
       <div class="sum-item remain">
-        <div class="sum-label">未用券額</div>
-        <div class="sum-val"><span class="cur">MOP$</span><b id="vRemain">0</b></div>
-        <div class="pbar"><i id="vBarRemain"></i></div>
-        <div class="sum-sub" id="vRemainSub">尚未記錄</div>
+        <span class="sum-label">未用券額</span>
+        <span class="sum-val"><b id="vRemain">0</b></span>
       </div>
       <div class="sum-item total">
-        <div class="sum-head">
-          <div class="sum-label">抽到總額</div>
-          <span class="lucky-badge" id="vLucky">神助</span>
-        </div>
-        <div class="sum-val"><span class="cur">MOP$</span><b id="vTotal">0</b></div>
-        <div class="pbar"><i id="vBarUsed"></i></div>
-        <div class="sum-sub" id="vTotalSub">尚未抽到</div>
+        <span class="sum-label">抽到總額</span>
+        <span class="sum-val"><b id="vTotal">0</b></span>
       </div>
+    </div>
+    <div class="sum-foot">
+      <div class="pbar"><i id="vBarUsed"></i></div>
+      <div class="sum-sub" id="vSub"></div>
+      <span class="lucky-badge" id="vLucky">神助</span>
     </div>
     <div class="meta" id="metaRow">
       <span class="pill pend" id="vPend" style="display:none">待抽 0</span>
@@ -1156,19 +1216,19 @@ h1{
   <div class="hint">拖支付名＝排序　·　點格＝已用／再點改額　·　滑動換週</div>
 
   <nav class="tabbar" id="tabbar">
-    <button type="button" class="tab" id="favBtn" aria-label="我的收藏">
+    <button type="button" class="tab t-fav" id="favBtn" aria-label="我的收藏">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4l2.7 5.5 6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.3 9.8l6-.9z"/></svg>
       <span>收藏</span>
     </button>
-    <button type="button" class="tab" id="statsBtn" aria-label="統計">
+    <button type="button" class="tab t-stats" id="statsBtn" aria-label="統計">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M7.2 20v-5.6"/><path d="M12 20V7.4"/><path d="M16.8 20v-9.2"/></svg>
       <span>統計</span>
     </button>
-    <button type="button" class="tab" id="shareBtn" aria-label="分享">
+    <button type="button" class="tab t-share" id="shareBtn" aria-label="分享">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V3.6"/><path d="M7.4 8.2 12 3.6l4.6 4.6"/><path d="M5 14.5v4.4a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-4.4"/></svg>
       <span>分享</span>
     </button>
-    <button type="button" class="tab" id="menuBtn" aria-label="設定">
+    <button type="button" class="tab t-menu" id="menuBtn" aria-label="設定">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.4a1.5 1.5 0 0 0 .3 1.7l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.5 1.5 0 0 0-1.7-.3 1.5 1.5 0 0 0-.9 1.4v.2a1.9 1.9 0 1 1-3.8 0v-.1a1.5 1.5 0 0 0-.9-1.4 1.5 1.5 0 0 0-1.7.3l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.5 1.5 0 0 0 .3-1.7 1.5 1.5 0 0 0-1.4-.9h-.2a1.9 1.9 0 1 1 0-3.8h.1a1.5 1.5 0 0 0 1.4-.9 1.5 1.5 0 0 0-.3-1.7l-.1-.1a1.9 1.9 0 1 1 2.7-2.7l.1.1a1.5 1.5 0 0 0 1.7.3h.1a1.5 1.5 0 0 0 .9-1.4v-.2a1.9 1.9 0 1 1 3.8 0v.1a1.5 1.5 0 0 0 .9 1.4 1.5 1.5 0 0 0 1.7-.3l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.5 1.5 0 0 0-.3 1.7v.1a1.5 1.5 0 0 0 1.4.9h.2a1.9 1.9 0 1 1 0 3.8h-.1a1.5 1.5 0 0 0-1.4.9z"/></svg>
       <span>設定</span>
     </button>
@@ -1218,7 +1278,7 @@ h1{
     <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
     <button class="btn danger" id="delWeekBtn">刪除本週</button>
   </div>
-  <div class="ver">版本 2026-10-26 · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
+  <div class="ver">版本 2026-10-26a · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
 </div>
 
 <!-- 統計 -->
@@ -1531,19 +1591,15 @@ function renderSummary(){
 
   var remain=total-used;
   var usedPct=total>0?(used/total*100):0;
-  var remainPct=total>0?(remain/total*100):0;
 
   $('vRemain').textContent=money(remain);
   $('vTotal').textContent=money(total);
-  /* 兩條進度條：左＝未用佔比（越用越短），右＝已用佔比（越用越長） */
-  $('vBarRemain').style.width=remainPct.toFixed(1)+'%';
+  /* 一條進度條：(抽到總額 － 未用券額) ÷ 抽到總額 */
   $('vBarUsed').style.width=usedPct.toFixed(1)+'%';
-  $('vRemainSub').innerHTML=total>0
-    ? '已用 <b>MOP$'+money(used)+'</b>　·　剩 '+Math.round(remainPct)+'%'
-    : '尚未記錄';
-  $('vTotalSub').innerHTML=total>0
-    ? '共 <b>'+filled+'</b> 張　·　已用 '+Math.round(usedPct)+'%'
-    : '尚未抽到';
+  /* 未記錄時不顯示副標（不留「尚未…」字樣） */
+  $('vSub').innerHTML=total>0
+    ? '已用 <b>MOP$'+money(used)+'</b>　'+Math.round(usedPct)+'%'
+    : '';
   /* 待抽／滿減：有才顯示，避免干擾 */
   $('metaRow').style.display=(pend||full)?'flex':'none';
   $('vPend').style.display=pend?'inline-flex':'none';
