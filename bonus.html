@@ -127,87 +127,78 @@ h1{
 }
 .icon-btn:active{background:var(--bg2)}
 
-/* ---------- week tabs（移至底部菜單上方，可左右滑／按箭咀翻） ---------- */
+/* ---------- 週選擇（底部菜單上方）：上週 ‹ 下拉選單 › 下週 ---------- */
 .weekdock{
   flex:0 0 auto;
   display:flex;
   align-items:center;
-  gap:1px;
+  gap:6px;
   margin:0 -12px -8px;
-  padding:9px 5px;
+  padding:9px 10px;
   background:linear-gradient(180deg,#fffdfb 0%,#fff8f1 100%);
   border-top:1px solid #f2e2d6;
 }
-.weekbar{
-  flex:1 1 auto;
-  min-width:0;
-  display:flex;
-  gap:6px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  padding:0 2px;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-  touch-action:pan-y;
-  overscroll-behavior-x:contain;
-  cursor:grab;
-}
-.weekbar::-webkit-scrollbar{display:none}
-.weekbar.dragging{cursor:grabbing}
-.weekbar.dragging .wtab{pointer-events:none}
-/* 左右箭咀：只在週數超出可用寬度時出現 */
-.warrow{
+.wnav{
   flex:0 0 auto;
-  width:27px;
-  height:32px;
-  padding:0;
+  height:34px;
+  padding:0 11px;
   display:flex;
   align-items:center;
   justify-content:center;
+  gap:3px;
   border:1px solid var(--line);
-  border-radius:10px;
+  border-radius:11px;
   background:var(--card);
-  color:#a58e98;
-  font-size:16px;
-  line-height:1;
-  font-weight:700;
-  transition:background .15s,color .15s,opacity .15s;
-}
-.warrow:active{background:var(--accent-soft);color:#a83258}
-.warrow:disabled{opacity:.3}
-.weekdock.noarrow .warrow{display:none}
-.wtab{
-  flex:0 0 auto;
-  padding:7px 13px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:var(--card);
-  color:var(--muted);
-  font-size:12.5px;
-  font-weight:600;
+  color:#8a6f7a;
+  font-size:13px;
+  font-weight:800;
   letter-spacing:.2px;
   white-space:nowrap;
-  transition:background .16s,color .16s,border-color .16s;
+  transition:background .15s,color .15s,opacity .15s;
 }
-.wtab.on{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#fff;
-  font-weight:700;
-  box-shadow:0 2px 8px rgba(63,106,91,.22);
+.wnav .ar{font-size:15px;line-height:1;font-weight:700;color:#b09aa4}
+.wnav:active{background:var(--accent-soft);color:#a83258}
+.wnav:disabled{opacity:.34}
+.wnav:disabled:active{background:var(--card)}
+/* 下拉選單：白底膠囊＋粉色箭頭 */
+.wsel{
+  position:relative;
+  flex:1 1 auto;
+  min-width:0;
 }
-.wtab.wadd{
-  color:#b32d5e;
-  font-size:14.5px;
-  font-weight:800;
-  padding:7px 16px 8px;
-  border-width:1.5px;
-  border-style:dashed;
-  border-color:#f0bcd0;
+.wsel select{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:34px;
+  padding:0 30px 0 12px;
+  border:1px solid #f0c9d8;
+  border-radius:11px;
   background:var(--accent-soft);
-  letter-spacing:.5px;
+  color:#a83258;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.3px;
+  text-align:center;
+  text-align-last:center;
+  outline:none;
+  box-shadow:inset 0 1px 0 #fff;
 }
-.wtab.wadd:active{background:#fadce9}
+.wsel select:focus{border-color:var(--accent)}
+.wsel::after{
+  content:'';
+  position:absolute;
+  right:13px;
+  top:50%;
+  width:7px;
+  height:7px;
+  margin-top:-6px;
+  border-right:2px solid #c23b6a;
+  border-bottom:2px solid #c23b6a;
+  transform:rotate(45deg);
+  pointer-events:none;
+}
 
 /* ---------- summary（數字 + 進度條） ---------- */
 .summary{
@@ -1291,9 +1282,11 @@ h1{
   <div class="hint">拖支付名＝排序　·　點格＝已用／再點改額　·　滑動換週</div>
 
   <div class="weekdock" id="weekdock">
-    <button class="warrow" id="wPrev" type="button" aria-label="向左看其他週">‹</button>
-    <div class="weekbar" id="weekbar"></div>
-    <button class="warrow" id="wNext" type="button" aria-label="向右看其他週">›</button>
+    <button class="wnav" id="wPrev" type="button" aria-label="上一週"><span class="ar">‹</span>上週</button>
+    <div class="wsel">
+      <select id="weekSel" aria-label="選擇週數"></select>
+    </div>
+    <button class="wnav" id="wNext" type="button" aria-label="下一週">下週<span class="ar">›</span></button>
   </div>
 
   <nav class="tabbar" id="tabbar">
@@ -1357,9 +1350,9 @@ h1{
   <div class="chips-tip">點一下切換顯示／隱藏，隱藏後不佔位置，資料仍保留。<br>首頁按住支付名上下拖，可調整排列次序。</div>
   <div style="margin-top:18px">
     <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
-    <button class="btn danger" id="delWeekBtn">刪除本週</button>
+    <div class="chips-tip" style="margin-top:12px">固定十週：用底部的「上週／下週」或下拉清單切換，資料各自獨立。</div>
   </div>
-  <div class="ver">版本 2026-10-26f · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
+  <div class="ver">版本 2026-10-26g · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
 </div>
 
 <!-- 統計 -->
@@ -1499,11 +1492,35 @@ var KEY='coupon_book_v1';
 var $=function(id){return document.getElementById(id);};
 
 /* ---------------- state ---------------- */
-var S=loadState();
+var S=ensureWeeks(loadState(),10);
 
 function uid(){return Math.random().toString(36).slice(2,9);}
 function newWeek(n){
   return {id:uid(),name:'第 '+n+' 週',cells:new Array(TOTAL_CELLS).fill(null),hide:[]};
+}
+/* 固定十週：不足就補（沿用現有渠道設定），已有資料與自訂名稱一律不動 */
+function ensureWeeks(s,want){
+  want=want||10;
+  s.weeks=sortWeeks(s.weeks||[]);
+  var used={};
+  s.weeks.forEach(function(w){
+    var m=/^第\s*(\d+)\s*週$/.exec(String(w&&w.name||'').trim());
+    if(m) used[+m[1]]=1;
+  });
+  if(s.weeks.length<want){
+    var ref=s.weeks[0];
+    for(var n=1;n<=want;n++){
+      if(s.weeks.length>=want) break;
+      if(used[n]) continue;
+      var w=newWeek(n);
+      if(ref&&Array.isArray(ref.hide)) w.hide=ref.hide.slice();
+      s.weeks.push(w); used[n]=1;
+    }
+  }
+  var ok=false;
+  s.weeks.forEach(function(w){ if(w.id===s.cur) ok=true; });
+  if(!ok) s.cur=(s.weeks[0]||{}).id;
+  return s;
 }
 
 /* 支付順序：S.order 為 PAYS 索引的排列（全域共用）；缺漏／重複／越界一律補齊 */
@@ -1627,120 +1644,68 @@ var LUCKY_MIN=100;    /* 抽到 100 / 200 大額券，標「神助」 */
 /* ---------------- render ---------------- */
 function renderAll(){ renderTabs(); renderSummary(); renderGrid(); }
 
+/* 週清單：依「第 N 週」的數字由舊到新排（自訂名稱排最後，保持原次序） */
+function weekNum(w){
+  var m=/(\d+)/.exec(String(w&&w.name||''));
+  return m?parseInt(m[1],10):null;
+}
+function sortWeeks(arr){
+  var out=(arr||[]).slice();
+  out.sort(function(a,b){
+    var na=weekNum(a),nb=weekNum(b);
+    if(na===null&&nb===null) return 0;
+    if(na===null) return 1;
+    if(nb===null) return -1;
+    return na-nb;
+  });
+  return out;
+}
+function weekList(){ return sortWeeks(S.weeks||[]); }
+function weekPos(){
+  var l=weekList();
+  for(var i=0;i<l.length;i++){ if(l[i].id===S.cur) return i; }
+  return 0;
+}
+
+/* 週選擇：下拉清單顯示全部週，左右分別是上週／下週 */
 function renderTabs(){
-  var bar=$('weekbar');
-  bar.innerHTML='';
-  S.weeks.forEach(function(w){
-    var b=document.createElement('button');
-    b.type='button';
-    b.className='wtab'+(w.id===S.cur?' on':'');
-    b.textContent=w.name;
-    b.addEventListener('click',function(){
-      if(S.cur!==w.id){ S.cur=w.id; save(); renderAll(); }
-    });
-    bar.appendChild(b);
+  var sel=$('weekSel');
+  if(!sel) return;
+  var l=weekList();
+  sel.innerHTML='';
+  l.forEach(function(w){
+    var o=document.createElement('option');
+    o.value=w.id;
+    o.textContent=w.name;
+    sel.appendChild(o);
   });
-  var add=document.createElement('button');
-  add.type='button';
-  add.className='wtab wadd';
-  add.textContent='＋ 新增';
-  add.addEventListener('click',addWeek);
-  /* 新增按鈕固定放最左，週標籤在它右邊往後排 */
-  bar.insertBefore(add,bar.firstChild);
-
-  var on=bar.querySelector('.wtab.on');
-  if(on&&on.scrollIntoView){
-    try{ on.scrollIntoView({inline:'nearest',block:'nearest'}); }catch(e){}
-  }
-  syncWeekArrows();
+  sel.value=S.cur;
+  var i=weekPos();
+  $('wPrev').disabled=(i<=0);
+  $('wNext').disabled=(i>=l.length-1);
 }
 
-/* ---------------- 週欄左右翻頁（箭咀 + 手勢滑動） ---------------- */
-function weekStep(){
-  var bar=$('weekbar');
-  return Math.max(110,Math.round(bar.clientWidth*0.72));
+/* -1＝上一週（較早）、+1＝下一週（較後） */
+function goWeek(delta,anim){
+  var l=weekList(), i=weekPos()+delta;
+  if(i<0){ toast('已是第一週'); return; }
+  if(i>=l.length){ toast('已是最後一週'); return; }
+  S.cur=l[i].id;
+  save();
+  renderAll();
+  if(anim) animGrid(delta);
 }
-function syncWeekArrows(){
-  var bar=$('weekbar'),dock=$('weekdock');
-  if(!bar||!dock) return;
-  var max=bar.scrollWidth-bar.clientWidth;
-  var over=max>2;
-  dock.classList.toggle('noarrow',!over);
-  var prev=$('wPrev'),next=$('wNext');
-  prev.disabled=!over||bar.scrollLeft<=1;
-  next.disabled=!over||bar.scrollLeft>=max-1;
-}
-function scrollWeekBar(dir){
-  var bar=$('weekbar');
-  var max=Math.max(0,bar.scrollWidth-bar.clientWidth);
-  var from=bar.scrollLeft;
-  var to=Math.max(0,Math.min(max,from+dir*weekStep()));
-  if(Math.abs(to-from)<1){ syncWeekArrows(); return; }
-  var dur=200,t0=0,done=false;
-  function finish(){ if(done) return; done=true; bar.scrollLeft=to; syncWeekArrows(); }
-  function step(ts){
-    if(done) return;
-    if(!t0) t0=ts;
-    var k=Math.min(1,(ts-t0)/dur);
-    bar.scrollLeft=from+(to-from)*(1-Math.pow(1-k,3));
-    if(k<1) requestAnimationFrame(step); else finish();
-  }
-  requestAnimationFrame(step);
-  setTimeout(function(){ if(Math.abs(bar.scrollLeft-to)>1) finish(); },dur+80);
-}
-(function bindWeekDock(){
-  var bar=$('weekbar');
-  bar.addEventListener('scroll',syncWeekArrows,{passive:true});
-  $('wPrev').addEventListener('click',function(){ scrollWeekBar(-1); });
-  $('wNext').addEventListener('click',function(){ scrollWeekBar(1); });
-  window.addEventListener('resize',function(){ setTimeout(syncWeekArrows,60); });
 
-  /* 手指按住週欄左右拖＝直接移動捲軸（不靠瀏覽器原生橫向捲動，避免被 touch-action 擋住） */
-  var down=false,pid=null,sx=0,sy=0,sl=0,moved=false,dragEnd=0;
-  function detach(){
-    window.removeEventListener('pointermove',onMove);
-    window.removeEventListener('pointerup',onUp,true);
-    window.removeEventListener('pointercancel',onUp,true);
-  }
-  function stopDrag(){ down=false; pid=null; bar.classList.remove('dragging'); detach(); }
-  function onMove(e){
-    if(!down||e.pointerId!==pid) return;
-    var dx=e.clientX-sx, dy=e.clientY-sy;
-    if(!moved){
-      if(Math.abs(dx)<5) return;
-      if(Math.abs(dx)<Math.abs(dy)+2){ stopDrag(); return; }  /* 偏直向＝交回頁面 */
-      moved=true;
-      bar.classList.add('dragging');
-    }
-    if(e.cancelable) e.preventDefault();
-    bar.scrollLeft=sl-dx;
-    syncWeekArrows();
-  }
-  function onUp(e){
-    if(!down||(e.pointerId!=null&&e.pointerId!==pid)) return;
-    if(moved) dragEnd=Date.now();
-    stopDrag();
-    syncWeekArrows();
-  }
-  bar.addEventListener('pointerdown',function(e){
-    if(e.pointerType==='mouse'&&e.button!==0) return;
-    down=true; pid=e.pointerId; sx=e.clientX; sy=e.clientY; sl=bar.scrollLeft; moved=false;
-    window.addEventListener('pointermove',onMove,{passive:false});
-    window.addEventListener('pointerup',onUp,true);
-    window.addEventListener('pointercancel',onUp,true);
+(function bindWeekPicker(){
+  $('wPrev').addEventListener('click',function(){ goWeek(-1,true); });
+  $('wNext').addEventListener('click',function(){ goWeek(1,true); });
+  $('weekSel').addEventListener('change',function(){
+    var v=this.value;
+    if(!v||v===S.cur) return;
+    var from=weekPos();
+    S.cur=v; save(); renderAll();
+    animGrid(weekPos()>from?1:-1);
   });
-  /* 剛拖完不要誤觸週標籤 */
-  bar.addEventListener('click',function(e){
-    if(Date.now()-dragEnd<320){ e.preventDefault(); e.stopPropagation(); dragEnd=0; }
-  },true);
-  /* 桌面：滾輪左右滑週欄 */
-  bar.addEventListener('wheel',function(e){
-    if(bar.scrollWidth-bar.clientWidth<=2) return;
-    var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
-    if(!d) return;
-    e.preventDefault();
-    bar.scrollLeft+=d;
-  },{passive:false});
 })();
 
 function renderSummary(){
@@ -2059,11 +2024,6 @@ $('grid').addEventListener('touchcancel',function(){clearTimeout(lpTimer);});
 /* ---------------- swipe to change week ---------------- */
 var swX=0,swY=0,swOn=false,swMoved=false,swipeGuard=0;
 
-function weekIndex(){
-  for(var i=0;i<S.weeks.length;i++){ if(S.weeks[i].id===S.cur) return i; }
-  return 0;
-}
-
 function animGrid(delta){
   var g=$('grid');
   g.style.animation='none';
@@ -2071,21 +2031,13 @@ function animGrid(delta){
   g.style.animation=delta>0?'gInR .22s ease-out':'gInL .22s ease-out';
 }
 
-function shiftWeek(delta,anim){
-  var j=weekIndex()+delta;
-  if(j<0){ toast('已是最新一週'); return; }
-  if(j>=S.weeks.length){ toast('已是最舊一週'); return; }
-  S.cur=S.weeks[j].id;
-  save();
-  renderAll();
-  if(anim) animGrid(delta);
-}
+function shiftWeek(delta,anim){ goWeek(delta,anim); }
 
 var appEl=document.querySelector('.app');
 appEl.addEventListener('touchstart',function(e){
   if(e.touches.length!==1){ swOn=false; return; }
   var t=e.target;
-  if(t.closest&&(t.closest('.weekdock')||t.closest('.weekbar')||t.closest('.tabbar')||t.closest('.hint')||t.closest('.icon-btn'))){
+  if(t.closest&&(t.closest('.weekdock')||t.closest('.tabbar')||t.closest('.hint')||t.closest('.icon-btn'))){
     swOn=false;
     return;
   }
@@ -2412,18 +2364,6 @@ function nextWeekNum(){
   });
   return max+1;
 }
-function addWeek(){
-  /* 沿用最新一週（＝上週）的支付渠道；支付排序本身是全域設定，新週自然一樣 */
-  var prev=newestWeek();
-  var w=newWeek(nextWeekNum());
-  if(prev&&Array.isArray(prev.hide)) w.hide=prev.hide.slice();
-  S.weeks.unshift(w);
-  S.cur=w.id;
-  save();
-  renderAll();
-  toast('已新增「'+w.name+'」（沿用上週渠道與支付順序）');
-}
-
 $('menuBtn').addEventListener('click',function(){
   $('inWeekName').value=curW().name;
   renderChips();
@@ -2501,21 +2441,6 @@ $('clearWeekBtn').addEventListener('click',function(){
     renderGrid();
     closeSheet();
     toast('本週資料已清空');
-  });
-});
-
-$('delWeekBtn').addEventListener('click',function(){
-  var btn=this;
-  armButton(btn,'刪除本週',function(){
-    if(S.weeks.length<=1){ toast('至少要保留一週'); return; }
-    var i=0;
-    for(var k=0;k<S.weeks.length;k++){ if(S.weeks[k].id===S.cur){ i=k; break; } }
-    S.weeks.splice(i,1);
-    S.cur=S.weeks[Math.min(i,S.weeks.length-1)].id;
-    save();
-    renderAll();
-    closeSheet();
-    toast('已刪除本週');
   });
 });
 
@@ -2690,6 +2615,21 @@ function rr(ctx,x,y,w,h,r){
   ctx.closePath();
 }
 
+/* 分享圖共用：奶油底漸層＋頂部彩帶（與 App 摘要卡同一套色） */
+function imgBG(ctx,W,H){
+  var g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#fffaf4'); g.addColorStop(1,'#f9efe2');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+}
+function imgStrip(ctx,W){
+  var g=ctx.createLinearGradient(0,0,W,0);
+  g.addColorStop(0,'#c23b6a'); g.addColorStop(.58,'#e0a63a'); g.addColorStop(1,'#59bfb0');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,4);
+}
+function imgDot(ctx,x,y,c){
+  ctx.beginPath(); ctx.arc(x,y,3.2,0,Math.PI*2); ctx.fillStyle=c; ctx.fill();
+}
+
 function buildImage(){
   var w=curW(),g=weekAgg(w),show=visiblePays(w);
   var pendN=g.p;   /* 待抽獎次數 */
@@ -2699,11 +2639,11 @@ function buildImage(){
   }
   var W=700,PAD=26,NAME_W=112,GAP=8,ROW_H=62;
   var cellW=(W-PAD*2-NAME_W-GAP*3)/3;
-  var y0=26;
-  var sumY=y0+64;
-  var headY=sumY+82;
-  var rowsY=headY+30;
-  var H=rowsY+show.length*(ROW_H+GAP)-GAP+56;
+  var y0=30;
+  var cardY=y0+62, cardH=100;
+  var headY=cardY+cardH+26;
+  var rowsY=headY+26;
+  var H=rowsY+show.length*(ROW_H+GAP)-GAP+52;
 
   var dpr=2;
   var cv=document.createElement('canvas');
@@ -2712,62 +2652,78 @@ function buildImage(){
   ctx.scale(dpr,dpr);
   ctx.textBaseline='middle';
 
-  ctx.fillStyle='#fbfaf8';
-  ctx.fillRect(0,0,W,H);
+  imgBG(ctx,W,H);
+  imgStrip(ctx,W);
 
-  /* 標題 */
+  /* 標題：左「消費連環賞」＋右週名膠囊 */
   ctx.textAlign='left';
   ctx.fillStyle='#3b2530';
   ctx.font='700 26px '+IMG_FONT;
-  ctx.fillText('消費連環賞',PAD,y0+14);
+  ctx.fillText('消費連環賞',PAD,y0+18);
 
-  ctx.textAlign='right';
-  ctx.fillStyle='#5e686e';
-  ctx.font='600 17px '+IMG_FONT;
-  ctx.fillText(w.name,W-PAD,y0+14);
+  ctx.font='800 13px '+IMG_FONT;
+  var chipTxt=w.name;
+  var chipW=ctx.measureText(chipTxt).width+24;
+  var chipX=W-PAD-chipW, chipY=y0+4;
+  ctx.fillStyle='#fdeaf2';
+  rr(ctx,chipX,chipY,chipW,26,13); ctx.fill();
+  ctx.strokeStyle='#f7d7e3'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle='#a83258';
+  ctx.textAlign='center';
+  ctx.fillText(chipTxt,chipX+chipW/2,chipY+13.5);
 
   ctx.textAlign='left';
-  ctx.fillStyle='#a8afb4';
-  ctx.font='12.5px '+IMG_FONT;
-  ctx.fillText('匯出時間 '+stampRead()+'　·　共 '+S.weeks.length+' 週'+(pendN?'　·　待抽 '+pendN+' 次':''),PAD,y0+44);
+  ctx.fillStyle='#a89b93';
+  ctx.font='12px '+IMG_FONT;
+  ctx.fillText('匯出時間 '+stampRead()+'　·　共 '+S.weeks.length+' 週'+(pendN?'　·　待抽 '+pendN+' 次':''),PAD,y0+46);
 
-  /* 三張小卡 */
-  var cw=(W-PAD*2-GAP*2)/3;
+  /* 摘要卡：未用券額 ／ 抽到總額 ＋ 一條已用進度條（與首頁一致） */
+  var cardW=W-PAD*2, cxL=PAD+18, cxR=W-PAD-18;
+  ctx.fillStyle='#fff';
+  rr(ctx,PAD,cardY,cardW,cardH,16); ctx.fill();
+  ctx.strokeStyle='#f0e2d6'; ctx.lineWidth=1; ctx.stroke();
+
+  ctx.strokeStyle='#f8efe7'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(W/2,cardY+14); ctx.lineTo(W/2,cardY+66); ctx.stroke();
+
+  imgDot(ctx,cxL+3,cardY+23,'#2e8f7e');
+  ctx.textAlign='left';
+  ctx.fillStyle='#967f89';
+  ctx.font='800 12.5px '+IMG_FONT;
+  ctx.fillText('未用券額',cxL+14,cardY+24);
+
+  ctx.textAlign='right';
+  ctx.fillStyle='#967f89';
+  ctx.font='800 12.5px '+IMG_FONT;
+  ctx.fillText('抽到總額',cxR-14,cardY+24);
+  imgDot(ctx,cxR-3,cardY+23,'#c23b6a');
+
+  ctx.textAlign='left';
+  ctx.fillStyle='#21665a';
+  ctx.font='800 30px '+IMG_FONT;
+  ctx.fillText(money(g.left),cxL,cardY+56);
+
+  ctx.textAlign='right';
+  ctx.fillStyle='#c23b6a';
+  ctx.fillText(money(g.t),cxR,cardY+56);
+
+  var pct=g.t>0?(g.u/g.t):0;
+  var barX=cxL, barY=cardY+78, barH=8, barW=cardW-166;
+  ctx.fillStyle='#f6eee7';
+  rr(ctx,barX,barY,barW,barH,4); ctx.fill();
+  if(pct>0){
+    var bg2=ctx.createLinearGradient(barX,0,barX+barW,0);
+    bg2.addColorStop(0,'#e884ab'); bg2.addColorStop(1,'#c23b6a');
+    ctx.fillStyle=bg2;
+    rr(ctx,barX,barY,Math.max(barW*pct,7),barH,4); ctx.fill();
+  }
+  ctx.textAlign='left';
+  ctx.fillStyle='#b0a49b';
+  ctx.font='11px '+IMG_FONT;
+  ctx.fillText('已用 MOP$'+money(g.u)+'　'+Math.round(pct*100)+'%',barX+barW+11,barY+4);
+
   var luckyN=0;
   w.cells.forEach(function(c){ if(hasVal(c)&&(+c.a||0)>=LUCKY_MIN) luckyN++; });
-  var cards=[
-    {l:'抽到總額',v:'MOP$'+num(g.t),c:'#3b2530'},
-    {l:'未用餘額',v:'MOP$'+num(g.left),c:'#c23b6a'},
-    {l:'滿減券',v:String(g.f)+' 張',c:'#a9702a'}
-  ];
-  cards.forEach(function(cd,i){
-    var x=PAD+i*(cw+GAP);
-    ctx.fillStyle='#fff';
-    rr(ctx,x,sumY,cw,72,14); ctx.fill();
-    ctx.strokeStyle='#f0e2d6'; ctx.lineWidth=1; ctx.stroke();
-    ctx.fillStyle='#967f89';
-    ctx.font='11.5px '+IMG_FONT;
-    ctx.textAlign='left';
-    ctx.fillText(cd.l,x+13,sumY+21);
-    ctx.fillStyle=cd.c;
-    ctx.font='700 20px '+IMG_FONT;
-    ctx.fillText(cd.v,x+13,sumY+48);
-
-    /* 有 100／200 大額券：抽到總額卡片右上角標「神助」／「神助 ×N」 */
-    if(i===0&&luckyN){
-      var lkTxt=luckyN>=2?('神助 ×'+luckyN):'神助';
-      ctx.font='800 12px '+IMG_FONT;
-      var lw=ctx.measureText(lkTxt).width+16, lh=20, ly=sumY+9;
-      var gr=ctx.createLinearGradient(0,ly,0,ly+lh);
-      gr.addColorStop(0,'#fdf2dc'); gr.addColorStop(1,'#f8e0b7');
-      ctx.fillStyle=gr;
-      rr(ctx,x+cw-lw-9,ly,lw,lh,10); ctx.fill();
-      ctx.strokeStyle='#e5bd7f'; ctx.lineWidth=1; ctx.stroke();
-      ctx.fillStyle='#8a5711';
-      ctx.textAlign='center';
-      ctx.fillText(lkTxt,x+cw-lw/2-9,ly+lh/2+0.5);
-    }
-  });
 
   /* 表頭 */
   ctx.fillStyle='#967f89';
@@ -2890,7 +2846,7 @@ function buildImage(){
   ctx.textAlign='center';
   ctx.fillStyle='#b0b7bb';
   ctx.font='11px '+IMG_FONT;
-  ctx.fillText('綠＝未用　紅＝未用且≥50　灰＝已用　藍＝待抽獎　·　滿減不計入金額',W/2,H-26);
+  ctx.fillText('綠＝未用　紅＝未用且≥50　灰＝已用　藍＝待抽獎　·　滿減 '+g.f+' 張'+(luckyN?'　·　神助 ×'+luckyN:'')+'　·　消費連環賞',W/2,H-24);
 
   return cv;
 }
@@ -2947,15 +2903,14 @@ function buildFavImage(){
   ctx.scale(DPR,DPR);
   ctx.textBaseline='middle';
 
-  var bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#fffaf4'); bg.addColorStop(1,'#f9efe2');
-  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  imgBG(ctx,W,H);
+  imgStrip(ctx,W);
 
   ctx.textAlign='left';
   ctx.fillStyle='#3b2530'; ctx.font='700 24px '+IMG_FONT;
   ctx.fillText('我的收藏',PAD,startY+24);
-  ctx.fillStyle='#a8afb4'; ctx.font='12px '+IMG_FONT;
-  ctx.fillText('共 '+arr.length+' 筆 · '+stampRead(),PAD,startY+50);
+  ctx.fillStyle='#a89b93'; ctx.font='12px '+IMG_FONT;
+  ctx.fillText('共 '+arr.length+' 筆　·　'+stampRead(),PAD,startY+50);
 
   var y=startY+HEAD;
   items.forEach(function(it,i){
@@ -2980,7 +2935,7 @@ function buildFavImage(){
   });
 
   ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
-  ctx.fillText('消費連環賞 · 收藏清單',W/2,startY+HEAD+cardsH+30);
+  ctx.fillText('收藏清單　·　消費連環賞',W/2,startY+HEAD+cardsH+30);
 
   return cv;
 }
@@ -3027,15 +2982,14 @@ function buildStatsImage(){
   ctx.scale(DPR,DPR);
   ctx.textBaseline='middle';
 
-  var bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#fffaf4'); bg.addColorStop(1,'#f9efe2');
-  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  imgBG(ctx,W,H);
+  imgStrip(ctx,W);
 
   ctx.textAlign='left';
   ctx.fillStyle='#3b2530'; ctx.font='700 24px '+IMG_FONT;
   ctx.fillText('累計統計',PAD,startY+24);
-  ctx.fillStyle='#a8afb4'; ctx.font='12px '+IMG_FONT;
-  ctx.fillText('共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券 · '+stampRead(),PAD,startY+50);
+  ctx.fillStyle='#a89b93'; ctx.font='12px '+IMG_FONT;
+  ctx.fillText('共 '+S.weeks.length+' 週　·　'+agg.c+' 筆金額券　·　'+stampRead(),PAD,startY+50);
 
   /* 主卡：累計／已用／未用 */
   var cyy=startY+70;
@@ -3047,13 +3001,13 @@ function buildStatsImage(){
   ctx.fillStyle='#967f89'; ctx.font='11.5px '+IMG_FONT;
   ctx.fillText('累計抽到消費券',PAD+18,cyy+26);
   ctx.fillStyle='#3b2530'; ctx.font='700 34px '+IMG_FONT;
-  ctx.fillText('MOP$'+num(agg.t),PAD+18,cyy+64);
+  ctx.fillText('MOP$'+money(agg.t),PAD+18,cyy+64);
 
   ctx.textAlign='right';
   ctx.fillStyle='#967f89'; ctx.font='11px '+IMG_FONT;
-  ctx.fillText('已用 MOP$'+num(agg.u),W-PAD-18,cyy+42);
+  ctx.fillText('已用 MOP$'+money(agg.u),W-PAD-18,cyy+42);
   ctx.fillStyle='#4a7f66'; ctx.font='600 12px '+IMG_FONT;
-  ctx.fillText('未用 MOP$'+num(agg.t-agg.u),W-PAD-18,cyy+68);
+  ctx.fillText('未用 MOP$'+money(agg.t-agg.u),W-PAD-18,cyy+68);
 
   /* 按支付條形 */
   var sy=cyy+HERO+22;
@@ -3068,7 +3022,7 @@ function buildStatsImage(){
     ctx.fillText(r.p,PAD+2,yy+ROW/2);
 
     var by=yy+ROW/2-5;
-    ctx.fillStyle='#eef1ec';
+    ctx.fillStyle='#f6eee7';
     rr(ctx,barX,by,barW,10,5); ctx.fill();
 
     if(d.t>0){
@@ -3083,7 +3037,7 @@ function buildStatsImage(){
     }
 
     ctx.textAlign='right'; ctx.fillStyle='#3b2530'; ctx.font='700 13px '+IMG_FONT;
-    ctx.fillText(num(d.t),W-PAD,yy+ROW/2);
+    ctx.fillText(money(d.t),W-PAD,yy+ROW/2);
     yy+=ROW+GAP;
   });
 
