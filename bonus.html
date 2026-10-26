@@ -72,12 +72,47 @@ header{
   flex:0 0 auto;
 }
 h1{
-  font-size:19px;
+  font-size:clamp(15px,4.7vw,19px);
   line-height:1.2;
   margin:0;
-  letter-spacing:1px;
+  letter-spacing:.6px;
   font-weight:700;
   color:var(--ink);
+  white-space:nowrap;
+  flex:0 0 auto;
+}
+/* 標題同右側：跨週累計（已消 ÷ 抽到總額），同一行靠右、整行字級同標題 */
+.hstat{
+  display:flex;
+  align-items:baseline;
+  gap:5px;
+  margin-left:auto;
+  padding-left:6px;
+  font-size:clamp(15px,4.7vw,19px);
+  line-height:1.2;
+  font-weight:700;
+  color:var(--muted);
+  letter-spacing:0;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.hstat .hs-k{
+  font-size:1em;
+  font-weight:700;
+  color:#b07d96;
+  letter-spacing:0;
+}
+.hstat b{font-size:1em;font-weight:800;letter-spacing:0}
+.hstat .hs-u b{color:var(--green)}
+.hstat .hs-t b{color:var(--accent)}
+.hstat .hs-sep{color:#d8c8cf;font-weight:600}
+/* 窄機（≤388）：先收起「累計」標籤騰位，其餘仍保持與標題同級 */
+@media (max-width:388px){
+  .hstat .hs-k{display:none}
+}
+/* 超窄機（≤340）：略收間距（字級已由 clamp 自動下調） */
+@media (max-width:340px){
+  .hstat{gap:4px;padding-left:5px}
 }
 .icon-btn{
   width:38px;height:38px;flex:0 0 auto;
@@ -92,17 +127,55 @@ h1{
 }
 .icon-btn:active{background:var(--bg2)}
 
-/* ---------- week tabs ---------- */
-.weekbar{
+/* ---------- week tabs（移至底部菜單上方，可左右滑／按箭咀翻） ---------- */
+.weekdock{
   flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:1px;
+  margin:0 -12px -8px;
+  padding:9px 5px;
+  background:linear-gradient(180deg,#fffdfb 0%,#fff8f1 100%);
+  border-top:1px solid #f2e2d6;
+}
+.weekbar{
+  flex:1 1 auto;
+  min-width:0;
   display:flex;
   gap:6px;
   overflow-x:auto;
-  padding:1px 1px 3px;
+  overflow-y:hidden;
+  padding:0 2px;
   scrollbar-width:none;
   -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  overscroll-behavior-x:contain;
+  cursor:grab;
 }
 .weekbar::-webkit-scrollbar{display:none}
+.weekbar.dragging{cursor:grabbing}
+.weekbar.dragging .wtab{pointer-events:none}
+/* 左右箭咀：只在週數超出可用寬度時出現 */
+.warrow{
+  flex:0 0 auto;
+  width:27px;
+  height:32px;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  color:#a58e98;
+  font-size:16px;
+  line-height:1;
+  font-weight:700;
+  transition:background .15s,color .15s,opacity .15s;
+}
+.warrow:active{background:var(--accent-soft);color:#a83258}
+.warrow:disabled{opacity:.3}
+.weekdock.noarrow .warrow{display:none}
 .wtab{
   flex:0 0 auto;
   padding:7px 13px;
@@ -150,7 +223,8 @@ h1{
 .summary::before{
   content:'';
   position:absolute;
-  left:0;right:0;top:0;height:3px;
+  left:12px;right:12px;top:0;height:3px;
+  border-radius:0 0 4px 4px;
   background:linear-gradient(90deg,var(--accent) 0%,var(--gold) 58%,#59bfb0 100%);
 }
 /* 兩個金額同一行，下面一條進度條＝已用 ÷ 抽到總額 */
@@ -464,8 +538,7 @@ h1{
   margin:0 -12px calc(-8px - env(safe-area-inset-bottom,0px));
   padding:8px 9px calc(8px + env(safe-area-inset-bottom,0px));
   background:linear-gradient(180deg,#fffdfb 0%,#fff6ee 100%);
-  border-top:1px solid #f2e2d6;
-  box-shadow:0 -6px 18px rgba(160,110,90,.10);
+  border-top:1px solid #f7ece3;
 }
 .tab{
   --tc:#c23b6a;
@@ -1181,12 +1254,14 @@ h1{
 
 <div class="app">
   <header>
-    <div>
-      <h1>消費連環賞</h1>
+    <h1>消費連環賞</h1>
+    <div class="hstat" id="hStat">
+      <span class="hs-k">累計</span>
+      <span class="hs-u">已消 <b id="vAllUsed">0</b></span>
+      <span class="hs-sep">/</span>
+      <span class="hs-t">抽到 <b id="vAllTotal">0</b></span>
     </div>
   </header>
-
-  <div class="weekbar" id="weekbar"></div>
 
   <section class="summary" id="sumBox">
     <div class="sum-row">
@@ -1214,6 +1289,12 @@ h1{
   <div class="grid" id="grid"></div>
 
   <div class="hint">拖支付名＝排序　·　點格＝已用／再點改額　·　滑動換週</div>
+
+  <div class="weekdock" id="weekdock">
+    <button class="warrow" id="wPrev" type="button" aria-label="向左看其他週">‹</button>
+    <div class="weekbar" id="weekbar"></div>
+    <button class="warrow" id="wNext" type="button" aria-label="向右看其他週">›</button>
+  </div>
 
   <nav class="tabbar" id="tabbar">
     <button type="button" class="tab t-fav" id="favBtn" aria-label="我的收藏">
@@ -1278,7 +1359,7 @@ h1{
     <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
     <button class="btn danger" id="delWeekBtn">刪除本週</button>
   </div>
-  <div class="ver">版本 2026-10-26a · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
+  <div class="ver">版本 2026-10-26f · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
 </div>
 
 <!-- 統計 -->
@@ -1564,13 +1645,103 @@ function renderTabs(){
   add.className='wtab wadd';
   add.textContent='＋ 新增';
   add.addEventListener('click',addWeek);
-  bar.appendChild(add);
+  /* 新增按鈕固定放最左，週標籤在它右邊往後排 */
+  bar.insertBefore(add,bar.firstChild);
 
   var on=bar.querySelector('.wtab.on');
   if(on&&on.scrollIntoView){
     try{ on.scrollIntoView({inline:'nearest',block:'nearest'}); }catch(e){}
   }
+  syncWeekArrows();
 }
+
+/* ---------------- 週欄左右翻頁（箭咀 + 手勢滑動） ---------------- */
+function weekStep(){
+  var bar=$('weekbar');
+  return Math.max(110,Math.round(bar.clientWidth*0.72));
+}
+function syncWeekArrows(){
+  var bar=$('weekbar'),dock=$('weekdock');
+  if(!bar||!dock) return;
+  var max=bar.scrollWidth-bar.clientWidth;
+  var over=max>2;
+  dock.classList.toggle('noarrow',!over);
+  var prev=$('wPrev'),next=$('wNext');
+  prev.disabled=!over||bar.scrollLeft<=1;
+  next.disabled=!over||bar.scrollLeft>=max-1;
+}
+function scrollWeekBar(dir){
+  var bar=$('weekbar');
+  var max=Math.max(0,bar.scrollWidth-bar.clientWidth);
+  var from=bar.scrollLeft;
+  var to=Math.max(0,Math.min(max,from+dir*weekStep()));
+  if(Math.abs(to-from)<1){ syncWeekArrows(); return; }
+  var dur=200,t0=0,done=false;
+  function finish(){ if(done) return; done=true; bar.scrollLeft=to; syncWeekArrows(); }
+  function step(ts){
+    if(done) return;
+    if(!t0) t0=ts;
+    var k=Math.min(1,(ts-t0)/dur);
+    bar.scrollLeft=from+(to-from)*(1-Math.pow(1-k,3));
+    if(k<1) requestAnimationFrame(step); else finish();
+  }
+  requestAnimationFrame(step);
+  setTimeout(function(){ if(Math.abs(bar.scrollLeft-to)>1) finish(); },dur+80);
+}
+(function bindWeekDock(){
+  var bar=$('weekbar');
+  bar.addEventListener('scroll',syncWeekArrows,{passive:true});
+  $('wPrev').addEventListener('click',function(){ scrollWeekBar(-1); });
+  $('wNext').addEventListener('click',function(){ scrollWeekBar(1); });
+  window.addEventListener('resize',function(){ setTimeout(syncWeekArrows,60); });
+
+  /* 手指按住週欄左右拖＝直接移動捲軸（不靠瀏覽器原生橫向捲動，避免被 touch-action 擋住） */
+  var down=false,pid=null,sx=0,sy=0,sl=0,moved=false,dragEnd=0;
+  function detach(){
+    window.removeEventListener('pointermove',onMove);
+    window.removeEventListener('pointerup',onUp,true);
+    window.removeEventListener('pointercancel',onUp,true);
+  }
+  function stopDrag(){ down=false; pid=null; bar.classList.remove('dragging'); detach(); }
+  function onMove(e){
+    if(!down||e.pointerId!==pid) return;
+    var dx=e.clientX-sx, dy=e.clientY-sy;
+    if(!moved){
+      if(Math.abs(dx)<5) return;
+      if(Math.abs(dx)<Math.abs(dy)+2){ stopDrag(); return; }  /* 偏直向＝交回頁面 */
+      moved=true;
+      bar.classList.add('dragging');
+    }
+    if(e.cancelable) e.preventDefault();
+    bar.scrollLeft=sl-dx;
+    syncWeekArrows();
+  }
+  function onUp(e){
+    if(!down||(e.pointerId!=null&&e.pointerId!==pid)) return;
+    if(moved) dragEnd=Date.now();
+    stopDrag();
+    syncWeekArrows();
+  }
+  bar.addEventListener('pointerdown',function(e){
+    if(e.pointerType==='mouse'&&e.button!==0) return;
+    down=true; pid=e.pointerId; sx=e.clientX; sy=e.clientY; sl=bar.scrollLeft; moved=false;
+    window.addEventListener('pointermove',onMove,{passive:false});
+    window.addEventListener('pointerup',onUp,true);
+    window.addEventListener('pointercancel',onUp,true);
+  });
+  /* 剛拖完不要誤觸週標籤 */
+  bar.addEventListener('click',function(e){
+    if(Date.now()-dragEnd<320){ e.preventDefault(); e.stopPropagation(); dragEnd=0; }
+  },true);
+  /* 桌面：滾輪左右滑週欄 */
+  bar.addEventListener('wheel',function(e){
+    if(bar.scrollWidth-bar.clientWidth<=2) return;
+    var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    if(!d) return;
+    e.preventDefault();
+    bar.scrollLeft+=d;
+  },{passive:false});
+})();
 
 function renderSummary(){
   var w=curW();
@@ -1591,6 +1762,17 @@ function renderSummary(){
 
   var remain=total-used;
   var usedPct=total>0?(used/total*100):0;
+
+  /* 左上角累計：所有週加總（已消／抽到總額） */
+  var allT=0,allU=0;
+  S.weeks.forEach(function(wk){
+    var ag=weekAgg(wk);
+    allT+=ag.t;
+    allU+=ag.u;
+  });
+  $('vAllUsed').textContent=money(allU);
+  $('vAllTotal').textContent=money(allT);
+  $('hStat').title='全部 '+S.weeks.length+' 週累計：已消 MOP$'+money(allU)+'／抽到 MOP$'+money(allT);
 
   $('vRemain').textContent=money(remain);
   $('vTotal').textContent=money(total);
@@ -1903,7 +2085,7 @@ var appEl=document.querySelector('.app');
 appEl.addEventListener('touchstart',function(e){
   if(e.touches.length!==1){ swOn=false; return; }
   var t=e.target;
-  if(t.closest&&(t.closest('.weekbar')||t.closest('.tabbar')||t.closest('.hint')||t.closest('.icon-btn'))){
+  if(t.closest&&(t.closest('.weekdock')||t.closest('.weekbar')||t.closest('.tabbar')||t.closest('.hint')||t.closest('.icon-btn'))){
     swOn=false;
     return;
   }
