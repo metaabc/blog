@@ -3,34 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#faf9f7">
+<meta name="theme-color" content="#fffaf3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>消費券速記</title>
+<title>消費連環賞</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
 :root{
-  --bg1:#fbfaf8;
-  --bg2:#f3f0ea;
+  /* 參考「2026 社區消費連環賞」主視覺：奶油底 + 桃紅 + 金黃 + 湖水綠 */
+  --bg1:#fffaf3;
+  --bg2:#fdf0e6;
   --card:#ffffff;
-  --ink:#333d43;
-  --ink2:#5e686e;
-  --muted:#8f989e;
-  --line:#e9e4dd;
-  --line2:#f1ede7;
-  --accent:#3f6a5b;
-  --accent2:#4d7d6b;
-  --accent-soft:#eaf1ed;
-  --green:#4a7f66;
-  --green-bg:#eaf3ee;
-  --green-line:#c6dcd0;
-  --gray-bg:#f4f2ef;
-  --gray-tx:#a9b0b3;
-  --orange:#b8763e;
-  --orange-bg:#faf0e5;
-  --red:#ac676a;
-  --red-bg:#fbeceb;
-  --red-line:#f2d3d1;
+  --ink:#3b2530;
+  --ink2:#5f4b55;
+  --muted:#967f89;
+  --line:#f0e2d8;
+  --line2:#f8efe7;
+  --accent:#c23b6a;
+  --accent2:#dc5a8c;
+  --accent-soft:#fdeaf2;
+  --gold:#e0a63a;
+  --gold-bg:#fdf4dc;
+  --gold-line:#efd9a2;
+  --gold-tx:#8a5f10;
+  --green:#2e8f7e;
+  --green-bg:#e7f5f0;
+  --green-line:#bfe4d9;
+  --gray-bg:#f6f2ec;
+  --gray-tx:#aaa39b;
+  --orange:#b8792f;
+  --orange-bg:#fdf2e2;
+  --red:#cf5a4c;
+  --red-bg:#fdecea;
+  --red-line:#f6d4ce;
   --kb:0px;
 }
 html,body{height:100%;margin:0;padding:0}
@@ -73,12 +78,6 @@ h1{
   letter-spacing:1px;
   font-weight:700;
   color:var(--ink);
-}
-.sub{
-  margin:3px 0 0;
-  font-size:11px;
-  color:var(--muted);
-  letter-spacing:.4px;
 }
 .icon-btn{
   width:38px;height:38px;flex:0 0 auto;
@@ -131,91 +130,128 @@ h1{
   background:#f6faf8;
 }
 
-/* ---------- summary ---------- */
+/* ---------- summary（數字 + 進度條） ---------- */
 .summary{
   flex:0 0 auto;
-  background:var(--card);
+  position:relative;
+  background:linear-gradient(180deg,#ffffff 0%,#fffdfb 100%);
   border:1px solid var(--line);
   border-radius:18px;
-  padding:12px 14px 11px;
-  box-shadow:0 1px 3px rgba(51,61,67,.04);
+  padding:14px 14px 12px;
+  box-shadow:0 2px 10px rgba(190,120,90,.07);
+  overflow:hidden;
 }
-.sum-row{display:flex;gap:12px}
-.sum-item{flex:1;min-width:0}
+.summary::before{
+  content:'';
+  position:absolute;
+  left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,var(--accent) 0%,var(--gold) 58%,#59bfb0 100%);
+}
+.sum-row{display:flex;gap:14px;align-items:flex-start}
+.sum-item{flex:1 1 0;min-width:0}
+.sum-item+.sum-item{padding-left:14px;border-left:1px solid var(--line2)}
+.sum-head{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0}
 .sum-label{
-  font-size:10.5px;
-  color:var(--muted);
-  letter-spacing:.4px;
-  margin-bottom:2px;
+  font-size:13.5px;
+  color:var(--ink2);
+  letter-spacing:.6px;
+  font-weight:700;
+  margin-bottom:4px;
+  white-space:nowrap;
 }
 .sum-val{
-  font-size:22px;
-  font-weight:700;
-  letter-spacing:-.4px;
+  display:flex;
+  align-items:baseline;
+  gap:3px;
+  min-width:0;
   font-variant-numeric:tabular-nums;
+}
+.sum-val .cur{font-size:10.5px;font-weight:700;color:var(--muted)}
+.sum-val b{
+  font-size:clamp(21px,6.2vw,27px);
+  font-weight:800;
+  letter-spacing:-.6px;
+  line-height:1.15;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  color:var(--ink);
 }
-.sum-val.green{color:var(--green)}
-.sum-line{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0}
-.sum-line .sum-val{min-width:0}
-/* 本週有 100／200 大額券：總額右側靠右標「神助」（放大到看得清） */
-.lucky-badge{
-  flex:0 0 auto;
-  display:none;
-  font-size:12.5px;
-  font-weight:800;
-  letter-spacing:.3px;
-  color:#8a5711;
-  background:linear-gradient(180deg,#fdf2dc,#f8e0b7);
-  border:1px solid #e5bd7f;
-  border-radius:9px;
-  padding:3px 7px;
-  line-height:1.25;
-  white-space:nowrap;
-  box-shadow:0 1px 3px rgba(170,120,40,.16);
-}
-.lucky-badge.on{display:inline-block}
-/* 有神助標籤時金額稍收一級，確保手機一行放得下 */
-.summary.has-lucky .sum-line .sum-val{font-size:19px;letter-spacing:-.6px}
-@media (max-width:374px){
-  .lucky-badge{font-size:11px;padding:2px 6px}
-  .summary.has-lucky .sum-line .sum-val{font-size:17.5px}
-}
-.meta{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:9px;
-  font-size:10.5px;
-  color:var(--muted);
-  font-variant-numeric:tabular-nums;
-}
-.bar{
-  flex:1;
-  height:4px;
+.sum-item.remain .sum-val b{color:var(--green)}
+.sum-item.total .sum-val b{color:var(--accent)}
+/* 進度條 */
+.pbar{
+  height:6px;
   border-radius:99px;
-  background:#efebe4;
+  background:#f6ece3;
   overflow:hidden;
+  margin:8px 0 5px;
 }
-.bar>i{
+.pbar>i{
   display:block;
   height:100%;
   width:0;
   border-radius:99px;
-  background:linear-gradient(90deg,#b6cfc4,#7ba894);
-  transition:width .3s ease;
+  transition:width .35s ease;
 }
-.meta .full-txt{color:var(--orange);font-weight:600}
-.meta .pend-txt{color:#5b7f8e;font-weight:600}
+.remain .pbar>i{background:linear-gradient(90deg,#69c8b7,var(--green))}
+.total .pbar>i{background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.sum-sub{
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:.2px;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.sum-sub b{color:var(--ink2);font-weight:700}
+/* 本週有 100／200 大額券：標「神助」 */
+.lucky-badge{
+  flex:0 0 auto;
+  display:none;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.3px;
+  color:var(--gold-tx);
+  background:linear-gradient(180deg,#fdf5df,#fbe8bf);
+  border:1px solid var(--gold-line);
+  border-radius:8px;
+  padding:2px 6px;
+  line-height:1.35;
+  white-space:nowrap;
+  box-shadow:0 1px 3px rgba(190,140,40,.16);
+}
+.lucky-badge.on{display:inline-block}
+@media (max-width:374px){
+  .lucky-badge{font-size:10.5px;padding:2px 5px}
+}
+/* 待抽／滿減小標籤 */
+.meta{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:9px;
+  flex-wrap:wrap;
+}
+.meta:empty{display:none}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.2px;
+  font-variant-numeric:tabular-nums;
+}
+.pill.pend{background:#eaf5f8;color:#4d7c8b;border:1px solid #cfe4ea}
+.pill.full{background:var(--gold-bg);color:var(--gold-tx);border:1px solid var(--gold-line)}
 .hnote{
-  margin-top:7px;
+  margin-top:8px;
   padding-top:7px;
   border-top:1px dashed var(--line2);
   font-size:10.5px;
-  color:#b0b7bb;
+  color:#b3a49c;
   letter-spacing:.2px;
   font-variant-numeric:tabular-nums;
 }
@@ -306,9 +342,9 @@ h1{
 .cell.fresh.big .tag{background:#f6e2e0;color:#a86164}
 /* 待抽獎：已記低但未抽，不計金額 */
 .cell.pending{
-  background:#eef4f6;
-  border:1.5px dashed #c2d6de;
-  color:#5b7f8e;
+  background:#eaf5f8;
+  border:1.5px dashed #cfe4ea;
+  color:#4d7c8b;
 }
 .cell.pending .v.word{font-size:clamp(11px,3.2vw,12.5px);letter-spacing:0}
 .cell.used .v{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#c3c8ca}
@@ -337,7 +373,7 @@ h1{
 .row.drag .cell{opacity:.86}
 .pay.has-full{
   background:#fdf7ee;
-  border-color:#ecd9bd;
+  border-color:#efd9b6;
   color:#a8793f;
   padding-right:8px;
 }
@@ -379,21 +415,41 @@ h1{
   letter-spacing:.3px;
   margin-top:-2px;
 }
-.footer{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.footer .btn{flex:1 1 0;min-width:0}
-.btn.ghost.fav-btn{
-  flex:1 1 0;
-  padding:13px 14px;
-  font-size:13px;
-  letter-spacing:.5px;
-  background:#fbf4e5;
-  border:1.5px solid #ecdcbb;
-  color:#8a6a33;
+/* 底部菜單：四個 tab（收藏／統計／分享／設定） */
+.tabbar{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+  margin:0 -12px calc(-8px - env(safe-area-inset-bottom,0px));
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
+  background:rgba(255,255,255,.94);
+  -webkit-backdrop-filter:saturate(1.4) blur(8px);
+  backdrop-filter:saturate(1.4) blur(8px);
+  border-top:1px solid var(--line);
+  box-shadow:0 -4px 16px rgba(150,100,80,.07);
 }
+.tab{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  padding:6px 2px 5px;
+  border-radius:12px;
+  color:#9c8791;
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.3px;
+  transition:color .15s,background .15s;
+}
+.tab svg{width:21px;height:21px;display:block}
+.tab.on{color:var(--accent);background:var(--accent-soft)}
+.tab.on svg{stroke-width:2.1}
+.tab:active{background:var(--accent-soft)}
+
 
 /* ---------- export & share ---------- */
-.hbtns{display:flex;gap:6px;flex:0 0 auto}
-.hbtns .icon-btn{width:36px;height:36px}
 .exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .exp-card{
   display:flex;
@@ -431,7 +487,7 @@ h1{
   padding:8px;
   border:1px solid var(--line);
   border-radius:14px;
-  background:#f7f5f1;
+  background:#fdf6ee;
 }
 .exp-preview img{display:block;width:100%;height:auto;border-radius:9px;background:#fff}
 .exp-btns{display:flex;gap:8px;margin-top:9px}
@@ -468,13 +524,13 @@ h1{
   color:#fff;
   box-shadow:0 3px 12px rgba(63,106,91,.22);
 }
-.btn.ghost{background:#f4f2ef;color:var(--ink2)}
+.btn.ghost{background:var(--accent-soft);color:#a83258;border:1px solid #f7d7e3}
 /* 已用的格子改回未用（只在已用時出現） */
 .btn.unuse{
   display:none;
   width:100%;
   margin-top:14px;
-  background:#f4f2ef;
+  background:#f6f2ec;
   color:var(--ink2);
   font-size:13px;
   padding:11px 14px;
@@ -667,7 +723,7 @@ h1{
 .x{
   width:30px;height:30px;
   border-radius:10px;
-  background:#f4f2ef;color:#9aa2a7;
+  background:#f6f2ec;color:#9aa2a7;
   font-size:13px;line-height:1;
   display:flex;align-items:center;justify-content:center;
 }
@@ -771,7 +827,7 @@ h1{
 .opt.zero{
   font-size:13px;
   font-weight:600;
-  color:#a9b0b3;
+  color:#a8a29a;
   border-style:dashed;
   border-color:#ded8d0;
   background:#fcfbf9;
@@ -788,7 +844,7 @@ h1{
   font-size:13px;
   font-weight:600;
   color:#b3813f;
-  border-color:#ecd9bd;
+  border-color:#efd9b6;
   background:#fdf7ee;
   padding:13px 2px;
 }
@@ -802,7 +858,7 @@ h1{
   flex:1;
   font-size:13px;
   font-weight:600;
-  color:#5b7f8e;
+  color:#4d7c8b;
   border-color:#c9dbe2;
   border-style:dashed;
   background:#f1f6f8;
@@ -851,8 +907,8 @@ h1{
 .qv.is-used{background:var(--gray-bg);border-color:var(--line)}
 .qv.is-used .qa{color:var(--gray-tx);text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#c3c8ca}
 .qv.is-blank .qa{font-size:12.5px;font-weight:500;color:#c0b9b0}
-.qv.is-pend{background:#eef4f6;border-color:#c9dbe2;border-style:dashed}
-.qv.is-pend .qa{font-size:12.5px;color:#5b7f8e;letter-spacing:0}
+.qv.is-pend{background:#eaf5f8;border-color:#c9dbe2;border-style:dashed}
+.qv.is-pend .qa{font-size:12.5px;color:#4d7c8b;letter-spacing:0}
 .qv.is-pend .qn{color:#88a3ad}
 .qops{display:flex;gap:6px;align-items:stretch}
 .qop{
@@ -1064,14 +1120,7 @@ h1{
 <div class="app">
   <header>
     <div>
-      <h1>消費券速記</h1>
-      <p class="sub" id="weekSub">第 1 週</p>
-    </div>
-    <div class="hbtns">
-      <button class="icon-btn" id="shareBtn" aria-label="匯出與分享">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V3.6"/><path d="M7.4 8.2 12 3.6l4.6 4.6"/><path d="M5 14.5v4.4a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-4.4"/></svg>
-      </button>
-      <button class="icon-btn" id="menuBtn" aria-label="本週設定">⋯</button>
+      <h1>消費連環賞</h1>
     </div>
   </header>
 
@@ -1079,23 +1128,25 @@ h1{
 
   <section class="summary" id="sumBox">
     <div class="sum-row">
-      <div class="sum-item">
-        <div class="sum-label">未用消費券餘額</div>
-        <div class="sum-val green" id="vRemain">MOP$0</div>
+      <div class="sum-item remain">
+        <div class="sum-label">未用券額</div>
+        <div class="sum-val"><span class="cur">MOP$</span><b id="vRemain">0</b></div>
+        <div class="pbar"><i id="vBarRemain"></i></div>
+        <div class="sum-sub" id="vRemainSub">尚未記錄</div>
       </div>
-      <div class="sum-item">
-        <div class="sum-label">本週抽到總額</div>
-        <div class="sum-line">
-          <div class="sum-val" id="vTotal">MOP$0</div>
+      <div class="sum-item total">
+        <div class="sum-head">
+          <div class="sum-label">抽到總額</div>
           <span class="lucky-badge" id="vLucky">神助</span>
         </div>
+        <div class="sum-val"><span class="cur">MOP$</span><b id="vTotal">0</b></div>
+        <div class="pbar"><i id="vBarUsed"></i></div>
+        <div class="sum-sub" id="vTotalSub">尚未抽到</div>
       </div>
     </div>
-    <div class="meta">
-      <span id="vCount">已填 0/24</span>
-      <span class="pend-txt" id="vPend" style="display:none">待抽 0</span>
-      <div class="bar"><i id="vBar"></i></div>
-      <span class="full-txt" id="vFull">滿減 0</span>
+    <div class="meta" id="metaRow">
+      <span class="pill pend" id="vPend" style="display:none">待抽 0</span>
+      <span class="pill full" id="vFull" style="display:none">滿減 0 張</span>
     </div>
     <div class="hnote" id="hNote" style="display:none"></div>
   </section>
@@ -1104,10 +1155,24 @@ h1{
 
   <div class="hint">拖支付名＝排序　·　點格＝已用／再點改額　·　滑動換週</div>
 
-  <div class="footer">
-    <button class="btn ghost fav-btn" id="favBtn" aria-label="我的收藏">★ 收藏</button>
-    <button class="btn primary" id="statsBtn">統計</button>
-  </div>
+  <nav class="tabbar" id="tabbar">
+    <button type="button" class="tab" id="favBtn" aria-label="我的收藏">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4l2.7 5.5 6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.3 9.8l6-.9z"/></svg>
+      <span>收藏</span>
+    </button>
+    <button type="button" class="tab" id="statsBtn" aria-label="統計">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M7.2 20v-5.6"/><path d="M12 20V7.4"/><path d="M16.8 20v-9.2"/></svg>
+      <span>統計</span>
+    </button>
+    <button type="button" class="tab" id="shareBtn" aria-label="分享">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V3.6"/><path d="M7.4 8.2 12 3.6l4.6 4.6"/><path d="M5 14.5v4.4a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-4.4"/></svg>
+      <span>分享</span>
+    </button>
+    <button type="button" class="tab" id="menuBtn" aria-label="設定">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.4a1.5 1.5 0 0 0 .3 1.7l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.5 1.5 0 0 0-1.7-.3 1.5 1.5 0 0 0-.9 1.4v.2a1.9 1.9 0 1 1-3.8 0v-.1a1.5 1.5 0 0 0-.9-1.4 1.5 1.5 0 0 0-1.7.3l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.5 1.5 0 0 0 .3-1.7 1.5 1.5 0 0 0-1.4-.9h-.2a1.9 1.9 0 1 1 0-3.8h.1a1.5 1.5 0 0 0 1.4-.9 1.5 1.5 0 0 0-.3-1.7l-.1-.1a1.9 1.9 0 1 1 2.7-2.7l.1.1a1.5 1.5 0 0 0 1.7.3h.1a1.5 1.5 0 0 0 .9-1.4v-.2a1.9 1.9 0 1 1 3.8 0v.1a1.5 1.5 0 0 0 .9 1.4 1.5 1.5 0 0 0 1.7-.3l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.5 1.5 0 0 0-.3 1.7v.1a1.5 1.5 0 0 0 1.4.9h.2a1.9 1.9 0 1 1 0 3.8h-.1a1.5 1.5 0 0 0-1.4.9z"/></svg>
+      <span>設定</span>
+    </button>
+  </nav>
 </div>
 
 <div class="mask" id="mask"></div>
@@ -1153,7 +1218,7 @@ h1{
     <button class="btn danger" id="clearWeekBtn">清空本週資料</button>
     <button class="btn danger" id="delWeekBtn">刪除本週</button>
   </div>
-  <div class="ver">版本 2026-10-22 · 面額 5 種 · 可匯出／分享<br>綠＝未用　淺紅＝未用且 ≥50　灰＝已用</div>
+  <div class="ver">版本 2026-10-26 · 面額 5 種 · 可匯出／分享<br>綠＝未用　紅＝未用且 ≥50　灰＝已用</div>
 </div>
 
 <!-- 統計 -->
@@ -1464,19 +1529,31 @@ function renderSummary(){
     if(hide.indexOf(Math.floor(idx/PER))>=0){ hSum+=a; hCnt++; }
   });
 
-  $('weekSub').textContent=w.name+'　·　共 '+S.weeks.length+' 週';
-  $('vRemain').textContent='MOP$'+money(total-used);
-  $('vTotal').textContent='MOP$'+money(total);
-  $('vCount').textContent='已填 '+filled+'/'+TOTAL_CELLS;
-  $('vPend').style.display=pend?'':'none';
-  $('vPend').textContent='· 待抽 '+pend;
-  $('vBar').style.width=(filled/TOTAL_CELLS*100)+'%';
-  $('vFull').textContent='滿減 '+(full?full+' 張':'—');
+  var remain=total-used;
+  var usedPct=total>0?(used/total*100):0;
+  var remainPct=total>0?(remain/total*100):0;
+
+  $('vRemain').textContent=money(remain);
+  $('vTotal').textContent=money(total);
+  /* 兩條進度條：左＝未用佔比（越用越短），右＝已用佔比（越用越長） */
+  $('vBarRemain').style.width=remainPct.toFixed(1)+'%';
+  $('vBarUsed').style.width=usedPct.toFixed(1)+'%';
+  $('vRemainSub').innerHTML=total>0
+    ? '已用 <b>MOP$'+money(used)+'</b>　·　剩 '+Math.round(remainPct)+'%'
+    : '尚未記錄';
+  $('vTotalSub').innerHTML=total>0
+    ? '共 <b>'+filled+'</b> 張　·　已用 '+Math.round(usedPct)+'%'
+    : '尚未抽到';
+  /* 待抽／滿減：有才顯示，避免干擾 */
+  $('metaRow').style.display=(pend||full)?'flex':'none';
+  $('vPend').style.display=pend?'inline-flex':'none';
+  $('vPend').textContent='待抽 '+pend;
+  $('vFull').style.display=full?'inline-flex':'none';
+  $('vFull').textContent='滿減 '+full+' 張';
   /* 神助：1 張只寫「神助」，2 張起顯示倍數「神助 ×2」 */
   $('vLucky').classList.toggle('on',lucky>0);
   $('vLucky').textContent=lucky>=2?('神助 ×'+lucky):'神助';
   $('vLucky').title=lucky>0?('本週有 '+lucky+' 張 100／200 大額券'):'';
-  $('sumBox').classList.toggle('has-lucky',lucky>0);
 
   var note=$('hNote');
   if(hCnt>0){
@@ -1505,7 +1582,7 @@ function renderGrid(){
   if(!show.length){
     g.style.gridTemplateRows='1fr';
     g.style.maxHeight='';
-    g.innerHTML='<div class="empty-tip">目前隱藏了全部支付渠道<span>右上「⋯」→ 顯示的支付渠道 可重新開啟</span></div>';
+    g.innerHTML='<div class="empty-tip">目前隱藏了全部支付渠道<span>底部「設定」→ 顯示的支付渠道 可重新開啟</span></div>';
     return;
   }
 
@@ -1770,7 +1847,7 @@ var appEl=document.querySelector('.app');
 appEl.addEventListener('touchstart',function(e){
   if(e.touches.length!==1){ swOn=false; return; }
   var t=e.target;
-  if(t.closest&&(t.closest('.weekbar')||t.closest('.footer')||t.closest('.hint')||t.closest('.icon-btn'))){
+  if(t.closest&&(t.closest('.weekbar')||t.closest('.tabbar')||t.closest('.hint')||t.closest('.icon-btn'))){
     swOn=false;
     return;
   }
@@ -2289,7 +2366,7 @@ function csvLine(arr){ return arr.map(csvCell).join(','); }
 
 function buildCSV(){
   var out=[];
-  out.push(csvLine(['消費券速記 · 匯出時間 '+stampRead()]));
+  out.push(csvLine(['消費連環賞 · 匯出時間 '+stampRead()]));
   out.push('');
   out.push(csvLine(['週次','支付','第幾次','金額(MOP)','狀態','滿減券','錄入時間']));
   S.weeks.forEach(function(w){
@@ -2322,7 +2399,7 @@ function buildCSV(){
 /* ---- 純文字（好貼到聊天）---- */
 function buildText(){
   var w=curW(),g=weekAgg(w),out=[];
-  out.push('消費券速記　'+w.name);
+  out.push('消費連環賞　'+w.name);
   out.push('抽到 MOP$'+num(g.t)+'　已用 MOP$'+num(g.u)+'　未用 MOP$'+num(g.left)+'　滿減 '+g.f+' 張');
   out.push('');
   visiblePays(w).forEach(function(pi){
@@ -2402,9 +2479,9 @@ function buildImage(){
 
   /* 標題 */
   ctx.textAlign='left';
-  ctx.fillStyle='#333d43';
+  ctx.fillStyle='#3b2530';
   ctx.font='700 26px '+IMG_FONT;
-  ctx.fillText('消費券速記',PAD,y0+14);
+  ctx.fillText('消費連環賞',PAD,y0+14);
 
   ctx.textAlign='right';
   ctx.fillStyle='#5e686e';
@@ -2421,16 +2498,16 @@ function buildImage(){
   var luckyN=0;
   w.cells.forEach(function(c){ if(hasVal(c)&&(+c.a||0)>=LUCKY_MIN) luckyN++; });
   var cards=[
-    {l:'抽到總額',v:'MOP$'+num(g.t),c:'#333d43'},
-    {l:'未用餘額',v:'MOP$'+num(g.left),c:'#3f6a5b'},
-    {l:'滿減券',v:String(g.f)+' 張',c:'#b8763e'}
+    {l:'抽到總額',v:'MOP$'+num(g.t),c:'#3b2530'},
+    {l:'未用餘額',v:'MOP$'+num(g.left),c:'#c23b6a'},
+    {l:'滿減券',v:String(g.f)+' 張',c:'#a9702a'}
   ];
   cards.forEach(function(cd,i){
     var x=PAD+i*(cw+GAP);
     ctx.fillStyle='#fff';
     rr(ctx,x,sumY,cw,72,14); ctx.fill();
-    ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
-    ctx.fillStyle='#8f989e';
+    ctx.strokeStyle='#f0e2d6'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle='#967f89';
     ctx.font='11.5px '+IMG_FONT;
     ctx.textAlign='left';
     ctx.fillText(cd.l,x+13,sumY+21);
@@ -2455,7 +2532,7 @@ function buildImage(){
   });
 
   /* 表頭 */
-  ctx.fillStyle='#98a1a6';
+  ctx.fillStyle='#967f89';
   ctx.font='11.5px '+IMG_FONT;
   ctx.textAlign='left';
   ctx.fillText('支付',PAD+12,headY+2);
@@ -2471,10 +2548,10 @@ function buildImage(){
 
     ctx.fillStyle='#fff';
     rr(ctx,PAD,ry,NAME_W,ROW_H,13); ctx.fill();
-    ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
+    ctx.strokeStyle='#f0e2d6'; ctx.lineWidth=1; ctx.stroke();
 
     ctx.textAlign='center';
-    ctx.fillStyle='#333d43';
+    ctx.fillStyle='#3b2530';
     ctx.font='700 15px '+IMG_FONT;
     ctx.fillText(PAYS[pi],PAD+NAME_W/2,ry+ROW_H/2-1);
 
@@ -2486,7 +2563,7 @@ function buildImage(){
     }
     if(fc){
       var bw=15;
-      ctx.fillStyle='#b8763e';
+      ctx.fillStyle='#a9702a';
       rr(ctx,PAD+NAME_W-bw-6,ry+6,bw,14,7); ctx.fill();
       ctx.fillStyle='#fff';
       ctx.font='700 9px '+IMG_FONT;
@@ -2501,13 +2578,13 @@ function buildImage(){
       var a=has&&!pend?(+c.a||0):0;
       var full=has&&!pend&&!!c.f;
       var used=has&&!pend&&!!c.u;
-      var fill='#f7f5f1',stroke='#eeeae3',txt='#c9c2ba';
+      var fill='#fdf6ee',stroke='#f2e6da',txt='#c3b6ad';
 
-      if(pend){ fill='#eef4f6'; stroke='#c2d6de'; txt='#5b7f8e'; }
-      else if(has&&a>0&&used){ fill='#f4f2ef'; stroke='#e5e0d8'; txt='#a9b0b3'; }
-      else if(has&&a>=TIME_MIN){ fill='#fbecec'; stroke='#f2d3d1'; txt='#a26163'; }
-      else if(has&&a>0){ fill='#e7f1ea'; stroke='#c6dcd0'; txt='#35624f'; }
-      else if(has&&full){ fill='#faf0e5'; stroke='#ecd9bd'; txt='#b8763e'; }
+      if(pend){ fill='#eaf5f8'; stroke='#cfe4ea'; txt='#4d7c8b'; }
+      else if(has&&a>0&&used){ fill='#f6f2ec'; stroke='#ece2d7'; txt='#a8a29a'; }
+      else if(has&&a>=TIME_MIN){ fill='#fdecea'; stroke='#f6d4ce'; txt='#b34a3f'; }
+      else if(has&&a>0){ fill='#e7f5f0'; stroke='#bfe4d9'; txt='#21665a'; }
+      else if(has&&full){ fill='#fdf2e2'; stroke='#efd9b6'; txt='#a9702a'; }
 
       ctx.fillStyle=fill;
       rr(ctx,x,ry,cellW,ROW_H,13); ctx.fill();
@@ -2563,7 +2640,7 @@ function buildImage(){
       }
 
       if(c.t&&a>=TIME_MIN){
-        ctx.fillStyle='#a9b0b3';
+        ctx.fillStyle='#a8a29a';
         ctx.font='9.5px '+IMG_FONT;
         ctx.textAlign='right';
         ctx.fillText(fmtTime(c.t),x+cellW-8,ry+ROW_H-13);
@@ -2575,7 +2652,7 @@ function buildImage(){
   ctx.textAlign='center';
   ctx.fillStyle='#b0b7bb';
   ctx.font='11px '+IMG_FONT;
-  ctx.fillText('綠＝未用　淺紅＝未用且≥50　灰＝已用　藍＝待抽獎　·　滿減不計入金額',W/2,H-26);
+  ctx.fillText('綠＝未用　紅＝未用且≥50　灰＝已用　藍＝待抽獎　·　滿減不計入金額',W/2,H-26);
 
   return cv;
 }
@@ -2633,11 +2710,11 @@ function buildFavImage(){
   ctx.textBaseline='middle';
 
   var bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#fdfcfa'); bg.addColorStop(1,'#f4f1ea');
+  bg.addColorStop(0,'#fffaf4'); bg.addColorStop(1,'#f9efe2');
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
   ctx.textAlign='left';
-  ctx.fillStyle='#333d43'; ctx.font='700 24px '+IMG_FONT;
+  ctx.fillStyle='#3b2530'; ctx.font='700 24px '+IMG_FONT;
   ctx.fillText('我的收藏',PAD,startY+24);
   ctx.fillStyle='#a8afb4'; ctx.font='12px '+IMG_FONT;
   ctx.fillText('共 '+arr.length+' 筆 · '+stampRead(),PAD,startY+50);
@@ -2646,18 +2723,18 @@ function buildFavImage(){
   items.forEach(function(it,i){
     ctx.fillStyle='#fff';
     rr(ctx,PAD,y,W-PAD*2,it.h,13); ctx.fill();
-    ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
+    ctx.strokeStyle='#f0e2d6'; ctx.lineWidth=1; ctx.stroke();
 
     /* 文字與序號在卡片內垂直居中 */
     var textTop=y+it.h/2-(it.lines.length-1)*LH/2;
 
     ctx.beginPath(); ctx.arc(CX+11,textTop,11,0,Math.PI*2);
-    ctx.fillStyle='#eaf1ed'; ctx.fill();
-    ctx.fillStyle='#3f6a5b'; ctx.font='700 11px '+IMG_FONT;
+    ctx.fillStyle='#fdeaf2'; ctx.fill();
+    ctx.fillStyle='#c23b6a'; ctx.font='700 11px '+IMG_FONT;
     ctx.textAlign='center';
     ctx.fillText(String(i+1),CX+11,textTop+.5);
 
-    ctx.textAlign='left'; ctx.fillStyle='#333d43'; ctx.font='14px '+IMG_FONT;
+    ctx.textAlign='left'; ctx.fillStyle='#3b2530'; ctx.font='14px '+IMG_FONT;
     it.lines.forEach(function(ln,k){
       ctx.fillText(ln,txtX,textTop+k*LH);
     });
@@ -2665,7 +2742,7 @@ function buildFavImage(){
   });
 
   ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
-  ctx.fillText('消費券速記 · 收藏清單',W/2,startY+HEAD+cardsH+30);
+  ctx.fillText('消費連環賞 · 收藏清單',W/2,startY+HEAD+cardsH+30);
 
   return cv;
 }
@@ -2713,11 +2790,11 @@ function buildStatsImage(){
   ctx.textBaseline='middle';
 
   var bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#fdfcfa'); bg.addColorStop(1,'#f4f1ea');
+  bg.addColorStop(0,'#fffaf4'); bg.addColorStop(1,'#f9efe2');
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
   ctx.textAlign='left';
-  ctx.fillStyle='#333d43'; ctx.font='700 24px '+IMG_FONT;
+  ctx.fillStyle='#3b2530'; ctx.font='700 24px '+IMG_FONT;
   ctx.fillText('累計統計',PAD,startY+24);
   ctx.fillStyle='#a8afb4'; ctx.font='12px '+IMG_FONT;
   ctx.fillText('共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券 · '+stampRead(),PAD,startY+50);
@@ -2726,30 +2803,30 @@ function buildStatsImage(){
   var cyy=startY+70;
   ctx.fillStyle='#fff';
   rr(ctx,PAD,cyy,W-PAD*2,HERO,16); ctx.fill();
-  ctx.strokeStyle='#ece7e0'; ctx.lineWidth=1; ctx.stroke();
+  ctx.strokeStyle='#f0e2d6'; ctx.lineWidth=1; ctx.stroke();
 
   ctx.textAlign='left';
-  ctx.fillStyle='#8f989e'; ctx.font='11.5px '+IMG_FONT;
+  ctx.fillStyle='#967f89'; ctx.font='11.5px '+IMG_FONT;
   ctx.fillText('累計抽到消費券',PAD+18,cyy+26);
-  ctx.fillStyle='#333d43'; ctx.font='700 34px '+IMG_FONT;
+  ctx.fillStyle='#3b2530'; ctx.font='700 34px '+IMG_FONT;
   ctx.fillText('MOP$'+num(agg.t),PAD+18,cyy+64);
 
   ctx.textAlign='right';
-  ctx.fillStyle='#8f989e'; ctx.font='11px '+IMG_FONT;
+  ctx.fillStyle='#967f89'; ctx.font='11px '+IMG_FONT;
   ctx.fillText('已用 MOP$'+num(agg.u),W-PAD-18,cyy+42);
   ctx.fillStyle='#4a7f66'; ctx.font='600 12px '+IMG_FONT;
   ctx.fillText('未用 MOP$'+num(agg.t-agg.u),W-PAD-18,cyy+68);
 
   /* 按支付條形 */
   var sy=cyy+HERO+22;
-  ctx.textAlign='left'; ctx.fillStyle='#98a1a6'; ctx.font='11.5px '+IMG_FONT;
+  ctx.textAlign='left'; ctx.fillStyle='#967f89'; ctx.font='11.5px '+IMG_FONT;
   ctx.fillText('按支付（累計由高到低）',PAD+2,sy);
 
   var barX=PAD+70,barW=W-PAD*2-70-72;
   var yy=sy+18;
   rows.forEach(function(r){
     var d=r.d;
-    ctx.textAlign='left'; ctx.fillStyle='#333d43'; ctx.font='13.5px '+IMG_FONT;
+    ctx.textAlign='left'; ctx.fillStyle='#3b2530'; ctx.font='13.5px '+IMG_FONT;
     ctx.fillText(r.p,PAD+2,yy+ROW/2);
 
     var by=yy+ROW/2-5;
@@ -2758,22 +2835,22 @@ function buildStatsImage(){
 
     if(d.t>0){
       var wpx=Math.max(barW*(d.t/maxT),5);
-      ctx.fillStyle='#a9c3b6';                 /* 淺綠＝未用（全長） */
+      ctx.fillStyle='#f2c9d8';                 /* 淺綠＝未用（全長） */
       rr(ctx,barX,by,wpx,10,5); ctx.fill();
       var uw=barW*(d.u/maxT);
       if(uw>0){
-        ctx.fillStyle='#3f6a5b';               /* 深綠＝已用（疊左邊） */
+        ctx.fillStyle='#c23b6a';               /* 深綠＝已用（疊左邊） */
         rr(ctx,barX,by,Math.max(uw,4),10,5); ctx.fill();
       }
     }
 
-    ctx.textAlign='right'; ctx.fillStyle='#333d43'; ctx.font='700 13px '+IMG_FONT;
+    ctx.textAlign='right'; ctx.fillStyle='#3b2530'; ctx.font='700 13px '+IMG_FONT;
     ctx.fillText(num(d.t),W-PAD,yy+ROW/2);
     yy+=ROW+GAP;
   });
 
   ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
-  ctx.fillText('深綠＝已用　淺綠＝未用　·　滿減 '+agg.f+' 張　·　消費券速記',W/2,startY+blockH-18);
+  ctx.fillText('深色＝已用　淺色＝未用　·　滿減 '+agg.f+' 張　·　消費連環賞',W/2,startY+blockH-18);
 
   return cv;
 }
@@ -2832,11 +2909,11 @@ $('shareImgBtn').addEventListener('click',function(){
   var file=null;
   try{ file=new File([blob],name,{type:'image/png'}); }catch(e){}
   if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
-    navigator.share({files:[file],title:'消費券速記 '+curW().name}).catch(function(){});
+    navigator.share({files:[file],title:'消費連環賞 '+curW().name}).catch(function(){});
     return;
   }
   if(navigator.share){
-    navigator.share({title:'消費券速記 '+curW().name,text:buildText()}).catch(function(){});
+    navigator.share({title:'消費連環賞 '+curW().name,text:buildText()}).catch(function(){});
     return;
   }
   if(downloadBlob(blob,name)){
@@ -2850,7 +2927,7 @@ $('shareImgBtn').addEventListener('click',function(){
 $('expCsvBtn').addEventListener('click',function(){
   var csv='\uFEFF'+buildCSV();
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  var name='消費券速記_'+stampFile()+'.csv';
+  var name='消費連環賞_'+stampFile()+'.csv';
   if(downloadBlob(blob,name)) toast('已匯出 CSV，可用 Excel 開啟');
   else toast('匯出失敗，請用「複製文字」');
 });
@@ -3224,6 +3301,12 @@ $('favWays').addEventListener('click',function(e){
 
 /* ---------------- sheet control ---------------- */
 var openedAt=0;
+var TAB_OF={favSheet:'favBtn',statsSheet:'statsBtn',expSheet:'shareBtn',menuSheet:'menuBtn'};
+function markTab(id){
+  var tabs=document.querySelectorAll('.tabbar .tab');
+  for(var k=0;k<tabs.length;k++) tabs[k].classList.remove('on');
+  if(id&&TAB_OF[id]) $(TAB_OF[id]).classList.add('on');
+}
 function openSheet(id){
   openedAt=Date.now();
   $('mask').classList.add('on');
@@ -3231,8 +3314,10 @@ function openSheet(id){
   for(var k=0;k<sheets.length;k++) sheets[k].classList.remove('on');
   $(id).classList.add('on');
   $(id).scrollTop=0;
+  markTab(id);
 }
 function closeSheet(){
+  markTab(null);
   $('mask').classList.remove('on');
   var sheets=document.querySelectorAll('.sheet');
   for(var k=0;k<sheets.length;k++) sheets[k].classList.remove('on');
