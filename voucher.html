@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#fffaf3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>團購券 · 一目了然</title>
+<title>團購券</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
 :root{
@@ -48,29 +48,13 @@ header{
   padding-bottom:10px;
   background:linear-gradient(180deg,var(--bg1) 72%,rgba(255,250,243,0));
 }
-.h-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.h-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;color:var(--ink)}
-.h-sub{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:.3px}
-
-/* ---------- summary ---------- */
-.summary{
-  position:relative;margin-top:6px;
-  background:linear-gradient(180deg,#fff,#fffdfb);
-  border:1px solid var(--line);border-radius:18px;
-  padding:13px 14px 12px;
-  box-shadow:0 3px 12px rgba(190,120,90,.08);
-  overflow:hidden;
-}
-.summary::before{content:"";position:absolute;left:12px;right:12px;top:0;height:3px;border-radius:0 0 4px 4px;
-  background:linear-gradient(90deg,var(--accent) 0%,var(--gold) 55%,var(--green) 100%);}
-.sum-row{display:flex;gap:8px}
-.sum-item{flex:1;min-width:0;background:var(--gray-bg);border-radius:13px;padding:9px 10px}
-.sum-item .l{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.2px}
-.sum-item .n{font-size:clamp(19px,5.6vw,25px);font-weight:800;line-height:1.15;margin-top:2px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
-.sum-item .n small{font-size:11px;font-weight:700;color:var(--muted);margin-left:2px;letter-spacing:0}
-.sum-item.a .n{color:var(--accent)}
-.sum-item.b .n{color:var(--red)}
-.sum-item.c .n{color:var(--green)}
+/* 統計同標題同一行，右手邊；只留兩個數 */
+.h-stat{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:700;color:var(--muted);white-space:nowrap;letter-spacing:.2px}
+.h-stat b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;margin-left:3px}
+.h-stat .st-a b{color:var(--accent)}
+.h-stat .st-b b{color:var(--red)}
 
 /* ---------- uploader ---------- */
 .upload{
@@ -90,12 +74,16 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .up-btn:active{transform:translateY(1px)}
 .up-btn svg{width:20px;height:20px}
 .up-tip{font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.6}
-.ocr-sw{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;font-size:12px;color:var(--ink2);font-weight:600}
-.ocr-sw input{appearance:none;-webkit-appearance:none;width:38px;height:22px;border-radius:99px;background:#e2ded7;position:relative;transition:background .18s;flex:0 0 auto}
-.ocr-sw input::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .18s}
-.ocr-sw input:checked{background:var(--green)}
-.ocr-sw input:checked::after{transform:translateX(16px)}
-.ocr-sw small{color:var(--muted);font-weight:400}
+/* 券名篩選：左邊打字、右邊揀現有 */
+.filterbar{display:flex;gap:8px;margin:-2px 0 10px}
+.filterbar input,.filterbar select{
+  min-width:0;border:1.4px solid var(--line);background:#fffdfb;border-radius:12px;
+  padding:10px 12px;font-size:13px;font-weight:600;color:var(--ink);outline:none;
+}
+.filterbar input{flex:1}
+.filterbar select{flex:0 1 42%;text-overflow:ellipsis}
+.filterbar input:focus,.filterbar select:focus{border-color:var(--accent-line);background:#fff}
+.filterbar input::placeholder{color:#b9b1a7;font-weight:500}
 
 /* ---------- section head ---------- */
 .sec{display:flex;align-items:center;gap:8px;margin:20px 2px 10px}
@@ -136,7 +124,6 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .b-use{background:var(--green-bg);color:var(--green);border:1px solid var(--green-line)}
 .b-share{background:var(--gold-bg);color:var(--gold-tx);border:1px solid var(--gold-line)}
 .b-restore{background:var(--gold-bg);color:var(--gold-tx)}
-.b-del{background:var(--gray-bg);color:var(--muted)}
 
 /* ---------- draft card ---------- */
 .draft{padding:10px;display:grid;grid-template-columns:78px 1fr;gap:8px 10px}
@@ -192,8 +179,17 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .lb-top{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#fff}
 .lb-top .t{font-size:14px;font-weight:700;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lb-x{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center}
-.lb-img{background:#fff;border-radius:16px;padding:14px;max-width:100%;max-height:74vh;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(0,0,0,.4)}
-.lb-img img{max-width:100%;max-height:66vh;object-fit:contain;border-radius:6px}
+.lb-img{background:#fff;border-radius:16px;padding:14px;max-width:100%;max-height:74vh;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(0,0,0,.4);touch-action:pan-y}
+.lb-img img{max-width:100%;max-height:66vh;object-fit:contain;border-radius:6px;user-select:none;-webkit-user-drag:none}
+.lb-right{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.lb-count{font-size:11px;font-weight:700;color:rgba(255,255,255,.66);letter-spacing:.6px;font-variant-numeric:tabular-nums}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:56px;border-radius:12px;
+  background:rgba(255,255,255,.14);color:#fff;font-size:24px;line-height:1;display:none;align-items:center;justify-content:center}
+.lb-nav.on{display:flex}
+.lb-nav.prev{left:6px}
+.lb-nav.next{right:6px}
+.lb-del{display:none;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);color:rgba(255,255,255,.58);font-size:11.5px;font-weight:700;align-items:center;justify-content:center}
+.lb-del.on{display:flex}
 .lb-bottom{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:rgba(255,255,255,.8);font-size:11.5px;line-height:1.7;padding:0 30px}
 .lb-use{margin-top:12px;background:var(--green);color:#fff;padding:12px 30px;border-radius:99px;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(46,143,126,.4)}
 
@@ -223,8 +219,11 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .name-add input{flex:1;min-width:0;border:1.5px solid var(--line);background:#fbfaf8;border-radius:12px;padding:12px 13px;font-size:15px;font-weight:600;color:var(--ink);outline:none}
 .name-add input:focus{border-color:var(--accent-line);background:#fff}
 .name-add button{flex:0 0 auto;padding:0 18px;border-radius:12px;font-size:13.5px;font-weight:700;background:var(--accent);color:#fff}
-.nrow{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-bottom:7px}
-.nrow .idx{font-size:10.5px;color:var(--muted);font-weight:700;width:18px;flex:0 0 auto;text-align:center}
+.nrow{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-bottom:7px}
+.nrow.dragging{opacity:.55;border-color:var(--accent-line);user-select:none;box-shadow:0 4px 14px rgba(194,59,106,.16)}
+.nrow .drag{width:24px;flex:0 0 auto;text-align:center;font-size:15px;line-height:1;color:#c6bdb2;cursor:grab;touch-action:none;padding:6px 0}
+.nrow .drag:active{cursor:grabbing;color:var(--accent)}
+.nrow .idx{font-size:10.5px;color:var(--muted);font-weight:700;width:16px;flex:0 0 auto;text-align:center}
 .nrow input{flex:1;min-width:0;border:1.2px solid transparent;background:transparent;border-radius:9px;padding:8px 9px;font-size:14px;font-weight:700;color:var(--ink);outline:none}
 .nrow input:focus{border-color:var(--accent-line);background:#fff}
 .nrow .ndel{width:32px;height:32px;flex:0 0 auto;border-radius:9px;background:var(--red-bg);color:var(--red);font-size:14px}
@@ -334,7 +333,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
   window.gtag('config','G-G7H3M2VW8T',{
     anonymize_ip:true,
     page_location:'https://voucher.local/app',
-    page_title:'團購券 · 一目了然'
+    page_title:'團購券'
   });
 })();
 </script>
@@ -345,22 +344,18 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 
   <header>
     <div class="h-top">
-      <h1>團購券 · 一目了然</h1>
+      <h1>團購券</h1>
+      <div class="h-stat">
+        <span class="st-a">待使用 <b id="sActive">0</b></span>
+        <span class="st-b">7 日內 <b id="sSoon">0</b></span>
+      </div>
     </div>
-    <div class="h-sub">到期日近排先 · 點圖放大</div>
   </header>
 
   <div class="banner" id="banner">⚠️ 瀏覽器不允許本機儲存，資料只會保留到關閉頁面。建議用 Chrome 開啟本檔。</div>
 
-  <!-- 分頁：待使用（上載／統計／待確認／券列表） -->
+  <!-- 分頁：待使用（上載／待確認／篩選／券列表） -->
   <div class="page" id="pageActive">
-  <section class="summary">
-    <div class="sum-row">
-      <div class="sum-item a"><div class="l">待使用</div><div class="n"><span id="sActive">0</span><small>張</small></div></div>
-      <div class="sum-item b"><div class="l">7 日內到期</div><div class="n"><span id="sSoon">0</span><small>張</small></div></div>
-    </div>
-  </section>
-
   <div class="upload" id="drop">
     <button class="up-btn" id="pickBtn" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 3v18M3 8h18M3 16h18M16 3v18"/></svg>
@@ -368,7 +363,6 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
     </button>
     <input id="fileInput" type="file" accept="image/*" multiple style="display:none">
     <div class="up-tip">可一次選多張</div>
-    <label class="ocr-sw"><input type="checkbox" id="ocrAuto"> 加入時自動辨識券面</label>
   </div>
 
   <!-- 待確認 -->
@@ -389,12 +383,17 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
       <h2>待使用</h2><span class="cnt" id="aCnt">0</span>
       <div class="layout-sw" data-layout-sw></div>
     </div>
+    <!-- 券名篩選：可自己打，或喺右邊揀現有券名 -->
+    <div class="filterbar" id="filterBar" style="display:none">
+      <input id="filterName" type="text" placeholder="篩選券名" autocomplete="off" maxlength="40" aria-label="輸入券名篩選">
+      <select id="filterPick" aria-label="選券名篩選"><option value="">全部券名</option></select>
+    </div>
     <div id="activeList"></div>
   </div>
 
   <!-- 分頁：券名名單 -->
   <div class="page" id="pageNames" style="display:none">
-    <div class="sec"><h2>券名名單</h2><span class="cnt" id="nCnt">0</span></div>
+    <div class="sec"><h2>券名名單</h2><span class="cnt" id="nCnt">0</span><span class="note">按住 ⠿ 拖拉排序</span></div>
     <div class="name-add">
       <input id="nameNew" type="text" placeholder="輸入券名" maxlength="40">
       <button id="nameAdd" type="button">新增</button>
@@ -412,7 +411,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
     <button class="clear-used" id="clearUsed" type="button">清空已使用</button>
   </div>
 
-  <div class="ver">單檔離線 · 版本 2026-10-31 v10</div>
+  <div class="ver">單檔離線 · 版本 2026-11-01 v11</div>
 </div>
 
 <!-- 底部手機菜單 -->
@@ -437,8 +436,10 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 
 <!-- 放大圖 -->
 <div class="lb" id="lightbox">
-  <div class="lb-top"><span class="t" id="lbTitle">團購券</span><button class="lb-x" id="lbClose" type="button">✕</button></div>
-  <div class="lb-img"><img id="lbImg" alt="團購券二維碼"></div>
+  <div class="lb-top"><span class="t" id="lbTitle">團購券</span><span class="lb-right"><span class="lb-count" id="lbCount"></span><button class="lb-del" id="lbDel" type="button" aria-label="刪除此券" title="刪除此券">刪</button><button class="lb-x" id="lbClose" type="button">✕</button></span></div>
+  <button class="lb-nav prev" id="lbPrev" type="button" aria-label="上一張">‹</button>
+  <button class="lb-nav next" id="lbNext" type="button" aria-label="下一張">›</button>
+  <div class="lb-img"><img id="lbImg" alt="團購券二維碼" draggable="false"></div>
   <div class="lb-bottom">
     <div id="lbInfo"></div>
     <div class="lb-actions">
@@ -456,7 +457,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
   <div class="sheet-head"><h3>設定</h3><button class="x" data-close type="button">✕</button></div>
   <div class="set-row">
     <div><b>加入時自動辨識券面</b><small>首次須下載約 2MB 字庫，可略過</small></div>
-    <input class="sw" type="checkbox" id="ocrAuto2">
+    <input class="sw" type="checkbox" id="ocrAuto">
   </div>
   <div class="set-row">
     <div><b>未讀到到期日，預設日數</b><small>未讀到到期日的新券，由今日起計</small></div>
@@ -480,14 +481,15 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 <div class="sheet" id="helpSheet">
   <div class="sheet-head"><h3>使用說明</h3><button class="x" data-close type="button">✕</button></div>
   <div class="help-body">
-    1. 按「<b>從相簿選取</b>」，可一次揀多張券圖。<br>
-    2. <b>待確認</b>：券名可自己輸入，或喺右邊「選現有」揀；到期日直接改。按「<b>讀取券名／到期日</b>」會自動帶入（券名同名單配對）。券面兩種寫法都讀到：<b>「有效期至: 2026-11-30」</b>同 <b>「2026-11-30到期」</b>；日期格式支援 2026-11-30、30/11/2026、2026年11月30日。未讀到到期日就預設 30 日（設定可改）。<br>
+    1. 按「<b>從相簿選取</b>」可一次揀多張券圖。加入時自動辨識喺「<b>設定</b>」開關（首次須下載約 2MB 字庫）。<br>
+    2. <b>待確認</b>：券名可自己輸入，或喺右邊「選現有」揀；按「<b>讀取券名／到期日</b>」會自動帶入，讀到嘅券面文字會放入券名。到期兩種寫法都讀到：<b>「有效期至: 2026-11-30」</b>同 <b>「2026-11-30到期」</b>；日期支援 2026-11-30、30/11/2026、2026年11月30日。未讀到就預設 30 日（設定可改）。<br>
     3. 券面有幾個日期（例如購買日＋到期日），待確認卡會列出<b>候選日期</b>，一撳即改。<br>
-    4. 按「<b>全部加入</b>」後，<b>到期日近嘅排最前</b>。卡片<b>點圖放大</b>方便睇同掃碼；卡上<b>券名、到期日可直接改並自動儲存</b>，到期日旁顯示倒數日數（7 日內轉紅）。<br>
-    5. 底部「<b>券名</b>」可新增、改名、刪除常用券名；用過嘅新券名會自動加入名單。<br>
-    6. 按「<b>分享</b>」叫起系統分享，自己揀微信／WhatsApp；用完按「<b>銷券</b>」移入「<b>已使用</b>」，5 秒內可復原。卡片「<b>刪除</b>」可移除單張券。<br>
-    7. <b>檢視佈局</b>：標題右邊三個圖示切換<b>大圖／並排／格狀</b>，同時套用兩個分頁，選擇會記住。<br>
-    8. <b>私隱</b>：券圖、券名、到期日只存本機，<b>永不上傳</b>。清除所有券須按兩次確定。
+    4. 按「<b>全部加入</b>」後，<b>到期日近嘅排最前</b>。卡上<b>券名、到期日可直接改並自動儲存</b>，到期日旁顯示倒數（7 日內轉紅）。<br>
+    5. <b>放大圖</b>：點券圖即可放大，<b>左右滑</b>切換上一張／下一張；圖內可分享、銷券，或刪除單張券。<br>
+    6. 頂部可<b>輸入或揀券名篩選</b>清單，清空即顯示全部。<br>
+    7. 底部「<b>券名</b>」可新增、改名、刪除；<b>按住 ⠿ 拖拉</b>可調整名單順序，用過嘅新券名會自動加入。<br>
+    8. 按「<b>分享</b>」叫起系統分享，自己揀微信／WhatsApp；用完按「<b>銷券</b>」移入「<b>已使用</b>」，5 秒內可復原。<b>檢視佈局</b>有三種（大圖／並排／格狀），設定內亦可切換。<br>
+    9. <b>私隱</b>：券圖、券名、到期日只存本機，<b>永不上傳</b>。清除所有券須按兩次確定。
   </div>
 </div>
 
@@ -505,8 +507,10 @@ var names=[];      // 券名名單（localStorage）
 var urls={};       // id -> objectURL
 var lbId=null, shareId=null, toastTimer=null, undoFn=null;
 var clearArmed=false, clearTimer=null;
-var DAYS_KEY='tgq_default_days_v1', LAYOUT_KEY='tgq_layout_v1', NAMES_KEY='tgq_names_v1';
+var DAYS_KEY='tgq_default_days_v1', LAYOUT_KEY='tgq_layout_v1', NAMES_KEY='tgq_names_v1', AUTO_KEY='tgq_auto_ocr_v1';
 var curTab='active', layout='large';
+var nameFilter='';              // 券名篩選（空字串＝全部）
+var lbList=[], lbIdx=0;         // 放大圖時嘅清單同位置
 
 /* ============ Google Analytics（只傳匿名操作事件） ============
    絕不傳送：券名、到期日、二維碼內容、圖檔、本機路徑 */
@@ -583,13 +587,26 @@ function refreshNamePickers(){
   document.querySelectorAll('.d-name-pick').forEach(function(sel){
     var cur=sel.value;sel.innerHTML=nameOptionsHtml();sel.value=cur;
   });
+  refreshFilterNames();
+}
+/* 篩選下拉：名單＋券上用過嘅名 */
+function refreshFilterNames(){
+  var sel=$('filterPick');if(!sel)return;
+  var list=names.slice();
+  vouchers.forEach(function(v){if(v.name&&list.indexOf(v.name)<0)list.push(v.name);});
+  sel.innerHTML='<option value="">全部券名</option>'+list.map(function(n){
+    return '<option value="'+esc(n)+'">'+esc(n)+'</option>';
+  }).join('');
+  sel.value=list.indexOf(nameFilter)>=0?nameFilter:'';
 }
 function renderNames(){
   var box=$('nameList');if(!box)return;
   $('nCnt').textContent=names.length;
   if(!names.length){box.innerHTML='<div class="empty">未有券名<br>上方輸入後按「新增」</div>';return;}
   box.innerHTML=names.map(function(n,i){
-    return '<div class="nrow"><span class="idx">'+(i+1)+'</span>'
+    return '<div class="nrow">'
+      +'<span class="drag" data-drag="'+i+'" role="button" aria-label="按住拖拉排序">⠿</span>'
+      +'<span class="idx">'+(i+1)+'</span>'
       +'<input class="n-edit" data-nedit="'+i+'" value="'+esc(n)+'" maxlength="40" aria-label="編輯券名">'
       +'<button class="ndel" data-ndel="'+i+'" type="button" aria-label="刪除券名">✕</button></div>';
   }).join('');
@@ -676,6 +693,24 @@ function matchName(src){
   });
   return best;
 }
+/* 券面有字就攞最似券名嗰行；有同名單嘅先配對 */
+function guessName(text,decoded){
+  var s=String(text||''),d=String(decoded||'');
+  var m=matchName(s+'\n'+d);
+  if(m)return m;
+  var pick=function(src){
+    var lines=src.split(/\r?\n/).map(function(x){return x.replace(/\s+/g,' ').trim();}).filter(Boolean);
+    for(var i=0;i<lines.length;i++){
+      var t=lines[i];
+      if(t.length<2)continue;
+      if(/^[\d\s\-/.年月日:：$%％()（）]+$/.test(t))continue;                        // 純日期／數字／金額
+      if(/^(有效期|有效至|到期|使用期限|期限|序號|編號|訂單|電話|地址|網址|www\.|https?:)/i.test(t))continue;
+      return t.slice(0,40);
+    }
+    return '';
+  };
+  return pick(s)||pick(d);   // 券面文字優先，冇先用二維碼內容
+}
 function autoFill(d,text,decoded){
   var src=(text||'')+'\n'+(decoded||'');
   var opt=parseDateOptions(src);
@@ -686,7 +721,7 @@ function autoFill(d,text,decoded){
     d.expiry=todayPlus(defaultDays());d.expiryDefault=true;d.expiryFound=false;
     d.dateOptions=[];
   }
-  if(!d.name)d.name=matchName(src);
+  if(!d.name)d.name=guessName(text,decoded);
 }
 
 /* ============ 圖片處理 / 辨識 ============ */
@@ -875,7 +910,7 @@ async function addFiles(files){
             dd.expiry=qo.suggested;dd.expiryDefault=false;dd.expiryFound=true;
             dd.dateOptions=qo.ambiguous?qo.list:[];
           }
-          if(!dd.name)dd.name=matchName(dec);
+          if(!dd.name)dd.name=guessName('',dec);
         }
         if(!dd.busy){
           dd.statusText=dec?'已讀取二維碼 · 可輸入資料':'已就緒 · 到期日預設 '+defaultDays()+' 日';
@@ -986,10 +1021,20 @@ function patchDraft(d){
 }
 function renderActive(){
   var act=vouchers.filter(function(v){return v.status==='active';}).sort(sortActive);
-  $('aCnt').textContent=act.length;
-  if(!act.length){$('activeList').innerHTML='<div class="empty">仲未有團購券 👆<br>按上面「<b>從相簿選取</b>」加入第一張</div>';return;}
+  /* 冇券就唔使篩選列；順手清空舊篩選，避免新券一加入就被濾走 */
+  if(!act.length&&nameFilter){nameFilter='';$('filterName').value='';$('filterPick').value='';}
+  $('filterBar').style.display=act.length?'':'none';
+  var f=nameFilter.trim().toLowerCase();
+  var shown=f?act.filter(function(v){return String(v.name||'').toLowerCase().indexOf(f)>=0;}):act;
+  $('aCnt').textContent=shown.length;
+  if(!shown.length){
+    $('activeList').innerHTML=f
+      ? '<div class="empty">冇券名含「<b>'+esc(nameFilter.trim())+'</b>」嘅券<br>清空篩選即可睇全部</div>'
+      : '<div class="empty">仲未有團購券 👆<br>按上面「<b>從相簿選取</b>」加入第一張</div>';
+    return;
+  }
   var h='';
-  act.forEach(function(v){
+  shown.forEach(function(v){
     var u=getUrl(v.id,v.img);
     var dl=daysLeft(v.expiry);
     var soon=(dl!==null&&dl<=7);
@@ -1005,7 +1050,6 @@ function renderActive(){
         +'<div class="vact">'
           +'<button class="b-open" data-open="'+v.id+'">開圖</button>'
           +'<button class="b-share" data-share="'+v.id+'">分享</button>'
-          +'<button class="b-del" data-del="'+v.id+'">刪除</button>'
           +'<button class="b-use" data-redeem="'+v.id+'">銷券</button>'
         +'</div>'
       +'</div>'
@@ -1035,7 +1079,6 @@ function renderUsed(){
         +'<div class="vact">'
           +'<button class="b-share" data-share="'+v.id+'">分享</button>'
           +'<button class="b-restore" data-restore="'+v.id+'">還原</button>'
-          +'<button class="b-del" data-del="'+v.id+'">刪除</button>'
         +'</div>'
       +'</div>'
     +'</div>';
@@ -1087,22 +1130,60 @@ function redeem(id,src){
   toast('已銷券',function(){v.status='active';v.usedAt=0;persist(v);renderAll();gaEvent('voucher_undo_redeem',{});toast('已復原');});
 }
 function restore(id){var v=vouchers.find(function(x){return x.id===id;});if(!v)return;v.status='active';v.usedAt=0;persist(v);renderAll();gaEvent('voucher_restore',{});toast('已還原到「待使用」');}
-function delVoucher(id){var v=vouchers.find(function(x){return x.id===id;});if(!v)return;if(!confirm('刪除呢張券？無法復原。'))return;vouchers=vouchers.filter(function(x){return x.id!==id;});idbDel(id).catch(function(){});revoke(id);renderAll();gaEvent('voucher_delete',{});toast('已刪除');}
+function delVoucher(id){
+  var v=vouchers.find(function(x){return x.id===id;});if(!v)return false;
+  if(!confirm('刪除呢張券？無法復原。'))return false;
+  vouchers=vouchers.filter(function(x){return x.id!==id;});
+  idbDel(id).catch(function(){});revoke(id);renderAll();refreshFilterNames();
+  gaEvent('voucher_delete',{});toast('已刪除');
+  return true;
+}
 
 /* ============ lightbox ============ */
-function openLB(id){
-  var v=vouchers.find(function(x){return x.id===id;})||drafts.find(function(x){return x.id===id;});if(!v)return;
-  var u=getUrl(id,v.img);if(!u)return;
+/* 由邊個清單打開，就沿住嗰個清單順序左右滑 */
+function lbTarget(id){return vouchers.find(function(x){return x.id===id;})||drafts.find(function(x){return x.id===id;})||null;}
+function lbScope(id){
+  if(drafts.some(function(d){return d.id===id;}))return drafts.map(function(d){return d.id;});
+  var v=lbTarget(id);if(!v)return [id];
+  if(v.status==='active'){
+    var f=nameFilter.trim().toLowerCase();
+    return vouchers.filter(function(x){return x.status==='active';}).sort(sortActive)
+      .filter(function(x){return !f||String(x.name||'').toLowerCase().indexOf(f)>=0;})
+      .map(function(x){return x.id;});
+  }
+  return vouchers.filter(function(x){return x.status==='used';})
+    .sort(function(a,b){return (b.usedAt||0)-(a.usedAt||0);}).map(function(x){return x.id;});
+}
+function lbPaint(id){
+  var v=lbTarget(id);if(!v)return;
   lbId=id;
-  $('lbImg').src=u;
+  $('lbImg').src=getUrl(id,v.img)||'';
   $('lbTitle').textContent=v.name||'團購券';
   var dl=daysLeft(v.expiry);
   $('lbInfo').textContent='到期日 '+fmtDate(v.expiry)
     +(dl===null?'':' · '+(dl<0?('過期 '+Math.abs(dl)+' 日'):(dl===0?'今日到期':('剩 '+dl+' 日'))));
   $('lbUse').style.display=(v.status==='active')?'inline-block':'none';
-  $('lightbox').classList.add('on');
+  $('lbDel').classList.toggle('on',!!v.status);
+  var n=lbList.length;
+  $('lbCount').textContent=n>1?((lbIdx+1)+' / '+n):'';
+  $('lbPrev').classList.toggle('on',n>1);
+  $('lbNext').classList.toggle('on',n>1);
 }
-function closeLB(){$('lightbox').classList.remove('on');lbId=null;}
+function openLB(id){
+  var v=lbTarget(id);if(!v)return;
+  var u=getUrl(id,v.img);if(!u)return;
+  lbList=lbScope(id);
+  lbIdx=Math.max(0,lbList.indexOf(id));
+  $('lightbox').classList.add('on');
+  lbPaint(id);
+}
+function lbStep(dir){
+  if(lbList.length<2)return;
+  lbIdx=(lbIdx+dir+lbList.length)%lbList.length;
+  lbPaint(lbList[lbIdx]);
+  gaEvent('lb_swipe',{dir:dir>0?'next':'prev'});
+}
+function closeLB(){$('lightbox').classList.remove('on');lbId=null;lbList=[];lbIdx=0;}
 
 /* ============ 共用面板 ============ */
 var SHEETS=['settingsSheet','helpSheet'];
@@ -1228,7 +1309,6 @@ function saveVoucherImage(id){
 
 /* ============ 設定 ============ */
 function updateSettings(){
-  $('ocrAuto2').checked=$('ocrAuto').checked;
   var act=vouchers.filter(function(v){return v.status==='active';}).length;
   $('setStoreInfo').textContent=(storageOK?'IndexedDB':'記憶體（本機儲存被封鎖）')
     +' · 待使用 '+act+' 張、已使用 '+(vouchers.length-act)+' 張';
@@ -1348,7 +1428,6 @@ $('activeList').addEventListener('click',function(e){
   var t=e.target,el;
   if((el=t.closest('[data-redeem]'))){redeem(el.getAttribute('data-redeem'),'card');return;}
   if((el=t.closest('[data-share]'))){openShare(el.getAttribute('data-share'));return;}
-  if((el=t.closest('[data-del]'))){delVoucher(el.getAttribute('data-del'));return;}
   if((el=t.closest('[data-open]'))){openLB(el.getAttribute('data-open'));return;}
 });
 /* 卡內直接編輯：邊打邊自動存檔，完成輸入先重新排序 */
@@ -1382,7 +1461,6 @@ $('usedList').addEventListener('click',function(e){
   var t=e.target,el;
   if((el=t.closest('[data-restore]'))){restore(el.getAttribute('data-restore'));return;}
   if((el=t.closest('[data-share]'))){openShare(el.getAttribute('data-share'));return;}
-  if((el=t.closest('[data-del]'))){delVoucher(el.getAttribute('data-del'));return;}
   if((el=t.closest('[data-open]'))){openLB(el.getAttribute('data-open'));return;}
 });
 /* 券名名單：新增、直接改、刪除 */
@@ -1420,6 +1498,59 @@ $('nameList').addEventListener('click',function(e){
   names.splice(i,1);saveNames();renderNames();refreshNamePickers();
   gaEvent('name_delete',{});
 });
+/* 名單拖拉排序：滑鼠同觸控共用 pointer 事件，放手先寫入 */
+var dragRow=null;
+$('nameList').addEventListener('pointerdown',function(e){
+  var h=e.target.closest('[data-drag]');if(!h)return;
+  dragRow=h.closest('.nrow');if(!dragRow)return;
+  e.preventDefault();
+  dragRow.classList.add('dragging');
+  try{h.setPointerCapture(e.pointerId);}catch(err){}
+});
+/* 用指標 Y 對比其他列的中線，唔用 elementFromPoint，拖住嗰列都唔會擋住判斷 */
+document.addEventListener('pointermove',function(e){
+  if(!dragRow)return;
+  var box=$('nameList');
+  var rows=Array.prototype.filter.call(box.querySelectorAll('.nrow'),function(r){return r!==dragRow;});
+  var before=null;
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i].getBoundingClientRect();
+    if(e.clientY<r.top+r.height/2){before=rows[i];break;}
+  }
+  if(before){
+    if(dragRow.nextElementSibling!==before)box.insertBefore(dragRow,before);
+  }else if(box.lastElementChild!==dragRow){
+    box.appendChild(dragRow);
+  }
+},{passive:true});
+function endNameDrag(){
+  if(!dragRow)return;
+  dragRow.classList.remove('dragging');dragRow=null;
+  var box=$('nameList');
+  var vals=Array.prototype.map.call(box.querySelectorAll('.n-edit'),function(i){return i.value.trim();});
+  if(vals.length===names.length&&vals.every(Boolean)){
+    names=vals;saveNames();renderNames();refreshNamePickers();
+    gaEvent('name_reorder',{count:names.length});
+  }else{
+    renderNames();
+  }
+}
+document.addEventListener('pointerup',endNameDrag);
+document.addEventListener('pointercancel',endNameDrag);
+
+/* 券名篩選：邊打邊篩，或直接揀現有券名 */
+$('filterName').addEventListener('input',function(){
+  nameFilter=this.value;
+  var sel=$('filterPick');
+  var ok=Array.prototype.some.call(sel.options,function(o){return o.value===nameFilter;});
+  sel.value=ok?nameFilter:'';
+  renderActive();
+});
+$('filterPick').addEventListener('change',function(){
+  nameFilter=this.value;
+  $('filterName').value=nameFilter;
+  renderActive();
+});
 
 $('clearUsed').addEventListener('click',function(){
   var used=vouchers.filter(function(v){return v.status==='used';});
@@ -1431,15 +1562,38 @@ $('clearUsed').addEventListener('click',function(){
 });
 
 $('lbClose').addEventListener('click',closeLB);
-$('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB();});
+$('lightbox').addEventListener('click',function(e){
+  if(lbSwiped){lbSwiped=false;return;}          // 剛滑完，唔好當成點背景關閉
+  if(e.target===this)closeLB();
+});
 $('lbUse').addEventListener('click',function(){if(lbId)redeem(lbId,'lightbox');});
 $('lbShare').addEventListener('click',function(){var id=lbId;if(!id)return;closeLB();openShare(id);});
+$('lbPrev').addEventListener('click',function(){lbStep(-1);});
+$('lbNext').addEventListener('click',function(){lbStep(1);});
+$('lbDel').addEventListener('click',function(){var id=lbId;if(!id)return;if(delVoucher(id))closeLB();});
+/* 左右手勢：滑夠 45px 且以橫向為主就切換上一張／下一張 */
+var lbSwipe=null, lbSwiped=false;
+$('lightbox').addEventListener('pointerdown',function(e){
+  if(e.target.closest('button'))return;
+  lbSwipe={x:e.clientX,y:e.clientY,id:e.pointerId};
+});
+$('lightbox').addEventListener('pointerup',function(e){
+  if(!lbSwipe)return;
+  var dx=e.clientX-lbSwipe.x,dy=e.clientY-lbSwipe.y;lbSwipe=null;
+  if(Math.abs(dx)>=45&&Math.abs(dx)>Math.abs(dy)*1.2){
+    lbStep(dx<0?1:-1);lbSwiped=true;
+    setTimeout(function(){lbSwiped=false;},400);
+  }
+});
+$('lightbox').addEventListener('pointercancel',function(){lbSwipe=null;});
 $('mask').addEventListener('click',closeSheet);
 SHEETS.forEach(function(id){$(id).addEventListener('click',function(e){if(e.target.closest('[data-close]'))closeSheet();});});
 
 /* 設定 */
-$('ocrAuto').addEventListener('change',function(){$('ocrAuto2').checked=this.checked;});
-$('ocrAuto2').addEventListener('change',function(){$('ocrAuto').checked=this.checked;gaEvent('setting_auto_ocr',{enabled:this.checked?1:0});});
+$('ocrAuto').addEventListener('change',function(){
+  lsSet(AUTO_KEY,this.checked?'1':'0');
+  gaEvent('setting_auto_ocr',{enabled:this.checked?1:0});
+});
 $('defaultDays').addEventListener('change',function(){
   var n=parseInt(this.value,10);
   if(!isFinite(n)||n<1||n>3650){n=30;toast('日數需為 1–3650，已還原 30');}
@@ -1506,17 +1660,23 @@ $('tabbar').addEventListener('click',function(e){
 });
 
 $('toastUndo').addEventListener('click',function(){if(undoFn){var f=undoFn;undoFn=null;f();$('toast').classList.remove('on');}});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeLB();closeSheet();}});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeLB();closeSheet();return;}
+  if(!$('lightbox').classList.contains('on'))return;
+  if(e.key==='ArrowRight'){e.preventDefault();lbStep(1);}
+  else if(e.key==='ArrowLeft'){e.preventDefault();lbStep(-1);}
+});
 
 /* ============ init ============ */
 layout=lsGet(LAYOUT_KEY)||'large';
 initLayoutSw();
-loadNames();renderNames();
+loadNames();renderNames();refreshFilterNames();
 setTab('active');
 $('defaultDays').value=defaultDays();
+$('ocrAuto').checked=(lsGet(AUTO_KEY)==='1');
 idbGetAll().then(function(list){
   vouchers=list||[];
-  renderAll();
+  renderAll();refreshFilterNames();
 }).catch(function(){
   storageOK=false;$('banner').classList.add('on');renderAll();
 });
