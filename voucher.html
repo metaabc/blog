@@ -115,7 +115,19 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .vdate-wrap:focus-within{border-style:solid;box-shadow:0 0 0 3px rgba(194,59,106,.1)}
 .v-inp{min-width:0;border:1.4px solid var(--line);background:#fbfaf8;border-radius:10px;padding:6px 9px;font-size:14px;font-weight:800;color:var(--ink);outline:none;font-variant-numeric:tabular-nums}
 .v-inp:focus{border-color:var(--accent-line);background:#fff;box-shadow:0 0 0 3px rgba(194,59,106,.1)}
-.v-name{width:100%;font-size:14px;padding:7px 9px}
+.v-name{flex:1;min-width:0;font-size:14px;padding:7px 9px}
+.vname-row{display:flex;gap:6px;align-items:stretch}
+.b-pickname{flex:0 0 auto;width:38px;border:1.4px solid var(--line);background:#fbfaf8;border-radius:10px;color:var(--accent);font-size:15px;font-weight:800;cursor:pointer;transition:transform .08s,background .15s}
+.b-pickname:active{transform:scale(.94);background:#fff}
+.b-pickname:hover{background:#fff}
+/* 卡內「選券名」彈出 */
+.namepop-overlay{position:fixed;inset:0;z-index:80;display:none;background:rgba(40,30,40,.32)}
+.namepop-overlay.on{display:block}
+.namepop{position:fixed;z-index:81;min-width:180px;max-width:80vw;max-height:54vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 36px rgba(60,40,55,.26);padding:6px}
+.namepop .np-t{font-size:11px;font-weight:700;color:var(--muted);padding:6px 10px 4px}
+.namepop .np-item{display:block;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:9px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.namepop .np-item:hover{background:var(--accent-soft)}
+.namepop .np-empty{padding:14px 12px;font-size:12.5px;color:var(--muted);line-height:1.5}
 .vwhen{font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap}
 .vact{display:flex;gap:6px;margin-top:9px}
 .vact button{flex:1;padding:9px 4px;border-radius:11px;font-size:11.5px;font-weight:700;letter-spacing:.2px;transition:transform .08s,opacity .15s}
@@ -494,6 +506,10 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 </div>
 
 <div class="toast" id="toast"><span id="toastMsg"></span><button class="undo" id="toastUndo" style="display:none">復原</button></div>
+
+<!-- 卡內「選券名」彈出 -->
+<div class="namepop-overlay" id="namePopOverlay"></div>
+<div class="namepop" id="namePop" style="display:none"></div>
 
 <script>
 (function(){
@@ -1041,7 +1057,10 @@ function renderActive(){
     h+='<div class="card vcard'+(soon?' soon':'')+'" data-id="'+v.id+'">'
       +'<div class="vthumb" data-open="'+v.id+'">'+(u?'<img src="'+u+'" alt="券圖">':'')+'<span class="zoom-hint">⤢</span></div>'
       +'<div class="vbody">'
-        +'<input class="v-inp v-name" data-iname="'+v.id+'" value="'+esc(v.name)+'" placeholder="輸入券名" maxlength="40" aria-label="修改券名">'
+        +'<div class="vname-row">'
+          +'<input class="v-inp v-name" data-iname="'+v.id+'" value="'+esc(v.name)+'" placeholder="輸入券名" maxlength="40" aria-label="修改券名">'
+          +'<button class="b-pickname" data-pickname="'+v.id+'" type="button" title="選券名" aria-label="選券名">▾</button>'
+        +'</div>'
         +'<div class="vmeta">'
           +'<label class="vdate-wrap"><span class="vt">到期日</span><span class="vexp">'+fmtDate(v.expiry)+'</span><span class="edit-pen">✎</span>'
           +'<input class="v-date" type="date" data-iexp="'+v.id+'" value="'+esc(v.expiry)+'" aria-label="修改到期日"></label>'
@@ -1070,7 +1089,10 @@ function renderUsed(){
     h+='<div class="card vcard is-used" data-id="'+v.id+'">'
       +'<div class="vthumb" data-open="'+v.id+'">'+(u?'<img src="'+u+'" alt="券圖">':'')+'<span class="zoom-hint">⤢</span></div>'
       +'<div class="vbody">'
-        +'<input class="v-inp v-name" data-iname="'+v.id+'" value="'+esc(v.name)+'" placeholder="輸入券名" maxlength="40" aria-label="修改券名">'
+        +'<div class="vname-row">'
+          +'<input class="v-inp v-name" data-iname="'+v.id+'" value="'+esc(v.name)+'" placeholder="輸入券名" maxlength="40" aria-label="修改券名">'
+          +'<button class="b-pickname" data-pickname="'+v.id+'" type="button" title="選券名" aria-label="選券名">▾</button>'
+        +'</div>'
         +'<div class="vmeta">'
           +'<label class="vdate-wrap"><span class="vt">到期日</span><span class="vexp">'+fmtDate(v.expiry)+'</span><span class="edit-pen">✎</span>'
           +'<input class="v-date" type="date" data-iexp="'+v.id+'" value="'+esc(v.expiry)+'" aria-label="修改到期日"></label>'
@@ -1232,7 +1254,7 @@ function syncInlineInputs(){
     }
     delete v._dirty;
   });
-  changed.forEach(function(v){if(v.name)addNameIfNew(v.name);persist(v);});
+  changed.forEach(function(v){persist(v);});
   return changed;
 }
 function redrawFromInline(evtName){
@@ -1426,6 +1448,7 @@ $('draftList').addEventListener('click',function(e){
 
 $('activeList').addEventListener('click',function(e){
   var t=e.target,el;
+  if((el=t.closest('[data-pickname]'))){openNamePop(el.getAttribute('data-pickname'));return;}
   if((el=t.closest('[data-redeem]'))){redeem(el.getAttribute('data-redeem'),'card');return;}
   if((el=t.closest('[data-share]'))){openShare(el.getAttribute('data-share'));return;}
   if((el=t.closest('[data-open]'))){openLB(el.getAttribute('data-open'));return;}
@@ -1459,10 +1482,41 @@ function onInlineChange(e){
 });
 $('usedList').addEventListener('click',function(e){
   var t=e.target,el;
+  if((el=t.closest('[data-pickname]'))){openNamePop(el.getAttribute('data-pickname'));return;}
   if((el=t.closest('[data-restore]'))){restore(el.getAttribute('data-restore'));return;}
   if((el=t.closest('[data-share]'))){openShare(el.getAttribute('data-share'));return;}
   if((el=t.closest('[data-open]'))){openLB(el.getAttribute('data-open'));return;}
 });
+/* 卡內「選券名」彈出：從券名名單一按填入 */
+var namePopId=null;
+function openNamePop(id){
+  var pop=$('namePop'),ov=$('namePopOverlay'),btn=document.querySelector('[data-pickname="'+id+'"]');
+  if(!pop||!btn)return;
+  namePopId=id;
+  var h='<div class="np-t">選券名（按一下即填入）</div>';
+  if(!names.length){h+='<div class="np-empty">未有券名名單<br>請到底部「券名」先新增</div>';}
+  else{
+    h+=names.map(function(n){return '<button class="np-item" data-np="'+esc(n)+'" type="button">'+esc(n)+'</button>';}).join('');
+  }
+  pop.innerHTML=h;
+  pop.style.display='block';ov.classList.add('on');
+  var r=btn.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;
+  var left=Math.min(r.left,window.innerWidth-pw-8);
+  var top=r.bottom+6;
+  if(top+ph>window.innerHeight-8)top=Math.max(8,r.top-ph-6);
+  pop.style.left=Math.max(8,left)+'px';pop.style.top=top+'px';
+  gaEvent('name_pop_open',{count:names.length});
+}
+function closeNamePop(){$('namePop').style.display='none';$('namePopOverlay').classList.remove('on');namePopId=null;}
+$('namePop').addEventListener('click',function(e){
+  var it=e.target.closest('.np-item');if(!it)return;
+  var id=namePopId;if(!id)return;
+  var inp=document.querySelector('[data-iname="'+id+'"]');
+  if(inp){inp.value=it.getAttribute('data-np');onInlineInput({target:inp});onInlineChange({target:inp});}
+  closeNamePop();
+});
+$('namePopOverlay').addEventListener('click',closeNamePop);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&namePopId)closeNamePop();});
 /* 券名名單：新增、直接改、刪除 */
 function addNameFromInput(){
   var el=$('nameNew'),s=el.value.trim();
