@@ -2,7 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf6ef">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G7H3M2VW8T"></script>
 <script>
@@ -11,91 +12,73 @@
   gtag('js', new Date());
   gtag('config', 'G-G7H3M2VW8T');
 </script>
-<title>作業佈置 · 初三C / 初一A</title>
+<title>作業佈置</title>
 <style>
   :root{
-    --bg:#f5f2ec;
-    --ink:#241f1a;
-    --muted:#7c7469;
-    --faint:#a89e91;
-    --card:#fffdf9;
-    --line:#e7dfd3;
+    --bg:#f7f3ec; --card:#fffdf9; --line:#e9e1d4; --ink:#2c2620; --muted:#8b8274; --faint:#a99f8f;
+    --sign-bg:#fdf1dd; --sign-fg:#9c6a14; --test-bg:#fde9ee; --test-fg:#a8244a;
     --accent:#2f6fb0;
-    --sign-bg:#fbeece; --sign-fg:#8a5a06;
-    --test-bg:#fbe0e7; --test-fg:#a3203f;
-    --shadow:0 1px 2px rgba(60,48,32,.05), 0 8px 24px -16px rgba(60,48,32,.28);
-    --fs:1;
-    --font:"Noto Sans TC","Source Han Sans TC","PingFang TC","Microsoft JhengHei UI","Microsoft JhengHei","Hiragino Sans GB",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --shadow:0 1px 2px rgba(63,50,32,.05), 0 6px 18px -10px rgba(63,50,32,.22);
+    --font:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Hiragino Sans GB",system-ui,-apple-system,"Segoe UI",sans-serif;
   }
   *{box-sizing:border-box}
-  html{text-size-adjust:100%;-webkit-text-size-adjust:100%}
   html,body{margin:0}
   body{
     background:
       radial-gradient(1100px 480px at 12% -8%, #fff9ec 0%, rgba(255,249,236,0) 62%),
       radial-gradient(900px 420px at 92% 4%, #eef5f4 0%, rgba(238,245,244,0) 58%),
       var(--bg);
-    color:var(--ink);
-    font-family:var(--font);
-    -webkit-font-smoothing:antialiased;
-    font-size:calc(16px * var(--fs));
-    line-height:1.65;
-    padding-bottom:64px;
+    color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased; line-height:1.6;
+    padding-bottom:calc(158px + env(safe-area-inset-bottom));
   }
-  .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
 
-  /* ---------- header ---------- */
-  header.top{position:sticky;top:0;z-index:20;
-    background:rgba(245,242,236,.88);
-    backdrop-filter:blur(14px) saturate(140%);
-    -webkit-backdrop-filter:blur(14px) saturate(140%);
-    border-bottom:1px solid var(--line);
-  }
-  .top-inner{max-width:1020px;margin:0 auto;padding:12px 20px 10px}
-
-  .tabs{display:inline-flex;gap:4px;padding:4px;
-    background:#eae3d7;border-radius:999px;border:1px solid #e0d7c7}
-  .tab{
-    display:flex;align-items:center;gap:8px;
-    border:0;background:transparent;cursor:pointer;
-    padding:8px 18px;border-radius:999px;
-    font-family:inherit;font-size:calc(15px * var(--fs));font-weight:600;color:#6d6459;
-    transition:background .18s,color .18s,box-shadow .18s;
-  }
-  .tab .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.55}
-  .tab .now{font-size:calc(11px * var(--fs));font-weight:800;letter-spacing:.02em;
-    color:#fff;border-radius:999px;padding:1px 8px;line-height:1.75;
-    box-shadow:0 1px 3px rgba(0,0,0,.16)}
-  .tab:hover{color:#3a332b}
-  .tab[aria-selected="true"]{background:var(--card);color:var(--accent);
-    box-shadow:0 1px 2px rgba(60,48,32,.08),0 2px 10px -6px rgba(60,48,32,.3)}
-  .tab[aria-selected="true"] .dot{opacity:1}
-
-  .tools{display:flex;gap:9px;align-items:center;flex-wrap:nowrap;margin-left:auto}
-  .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;
-    font-size:calc(13px * var(--fs));color:#5d564c;user-select:none;
-    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+  /* ---------- 開關（簽改/測） ---------- */
+  .toggle{display:inline-flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;
+    font-size:12.5px;font-weight:600;color:#5d564c;user-select:none;
+    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
   .toggle input{appearance:none;width:30px;height:17px;border-radius:999px;background:#ded5c6;
-    position:relative;cursor:pointer;transition:background .18s;margin:0}
+    position:relative;cursor:pointer;transition:background .18s;margin:0;flex:0 0 auto}
   .toggle input::after{content:"";position:absolute;top:2px;left:2px;width:13px;height:13px;
     border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 2px rgba(0,0,0,.18)}
   .toggle input:checked{background:var(--accent)}
   .toggle input:checked::after{transform:translateX(13px)}
 
-  /* ---------- list ---------- */
-  main{padding-top:14px}
+  /* 簽改/測：浮動於底部工具條上方，靠右 */
+  .toggle.fab{position:fixed;right:12px;z-index:49;
+    bottom:calc(var(--mbar-h, 86px) + 10px);
+    padding:7px 13px;border-radius:999px;font-size:13px;
+    background:rgba(255,253,249,.97);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    box-shadow:0 7px 20px -12px rgba(60,48,32,.8),0 1px 2px rgba(60,48,32,.07);
+    transition:box-shadow .16s,transform .12s}
+  .toggle.fab:active{transform:scale(.97)}
 
-  .day{
-    background:var(--card);border:1px solid var(--line);border-radius:16px;
+  /* ---------- 內容 ---------- */
+  main.wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+  .srcbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin:5px 0 12px;padding:9px 13px;
+    background:rgba(255,253,249,.72);border:1px solid var(--line);border-radius:12px;
+    font-size:12.5px;color:var(--muted)}
+  .srcbar-links{display:flex;gap:8px;flex-wrap:wrap}
+  .srcbar-links a{display:inline-flex;align-items:center;gap:5px;text-decoration:none;
+    color:var(--accent);background:#fff;border:1px solid #dfe6ee;border-radius:999px;
+    padding:2px 10px;font-weight:600;font-size:12.5px}
+  .srcbar-links a:hover{background:#f2f7fc}
+  .srcbar-links a svg{opacity:.7}
+  .srcbar .law{margin-left:auto;color:#9a9082;font-weight:500;white-space:nowrap}
+
+  /* 右上角：今日日期（短格式） */
+  .topdate{margin:10px 0 2px;text-align:right;line-height:1.4;
+    font-size:12px;font-weight:700;color:#8b8274;letter-spacing:.03em}
+
+  .day{background:var(--card);border:1px solid var(--line);border-radius:16px;
     box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;
-    animation:rise .32s ease both;
-  }
+    animation:rise .3s ease both}
   @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-
   .body{padding:13px 16px 12px;min-width:0}
-  .body .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
-  .body .hd h2{font-size:calc(17px * var(--fs));margin:0;font-weight:700;letter-spacing:.01em}
-  .chip{font-size:calc(12px * var(--fs));font-weight:600;border-radius:999px;padding:2px 10px;line-height:1.6;
+  .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+  .hd h2{font-size:17px;margin:0;font-weight:700;letter-spacing:.01em}
+  .chip{font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;line-height:1.6;
     border:1px solid transparent}
   .chip.sign{background:var(--sign-bg);color:var(--sign-fg)}
   .chip.test{background:var(--test-bg);color:var(--test-fg)}
@@ -106,100 +89,120 @@
 
   ul.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
   ul.items li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
-  .subj{font-size:calc(12.5px * var(--fs));font-weight:700;line-height:1.6;padding:1px 8px;border-radius:6px;
+  .subj{font-size:12.5px;font-weight:700;line-height:1.6;padding:1px 8px;border-radius:6px;
     white-space:nowrap;border:1px solid;letter-spacing:.01em;margin-top:2px;min-width:38px;text-align:center}
-  .txt{font-size:calc(15.5px * var(--fs));line-height:1.72;color:#332d26;word-break:break-word;white-space:pre-line}
-  .txt .att{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;
-    font-size:calc(12.5px * var(--fs));font-weight:700;line-height:1.75;
-    color:#3d6aa8;text-decoration:none;background:#eff5fd;
-    border:1px solid #cfdff3;border-radius:7px;padding:0 8px;margin:0 2px;
-    vertical-align:1px;transition:background .15s,border-color .15s}
-  .txt .att:hover{background:#e2eefb;border-color:#a9c4e6}
-  li.note{grid-template-columns:1fr;color:var(--muted);font-size:calc(13.5px * var(--fs));font-style:normal;
-    padding-bottom:3px;border-bottom:1px dotted #ebe4d8;margin-bottom:2px}
+  .txt{font-size:15.5px;line-height:1.72;color:#332d26;word-break:break-word;white-space:pre-line}
+  li.note{grid-template-columns:1fr;color:var(--muted);font-size:13.5px;
+    padding-bottom:2px;border-bottom:1px dotted #ebe4d8;margin-bottom:2px}
+  li.note a.img{color:var(--accent);font-weight:600;text-decoration:none;border-bottom:1px solid #cfe0ef}
+  mark.k-sign{background:var(--sign-bg);color:var(--sign-fg);border-radius:4px;padding:0 3px;font-weight:700}
+  mark.k-test{background:var(--test-bg);color:var(--test-fg);border-radius:4px;padding:0 3px;font-weight:700}
 
-  mark{font-weight:700;padding:.5px 2.5px;border-radius:4px;margin:0 .5px;
-    box-decoration-break:clone;-webkit-box-decoration-break:clone}
-  mark.k-sign{background:var(--sign-bg);color:var(--sign-fg)}
-  mark.k-test{background:var(--test-bg);color:var(--test-fg)}
-
-  .empty{text-align:center;color:var(--faint);font-size:calc(15px * var(--fs));padding:56px 20px;
+  .empty{text-align:center;color:var(--faint);font-size:14px;padding:52px 20px;
     border:1px dashed #ddd3c2;border-radius:16px;background:rgba(255,253,249,.6)}
 
-  .toast{position:fixed;left:50%;bottom:26px;z-index:60;
+  .toast{position:fixed;left:50%;bottom:calc(var(--mbar-h, 86px) + 62px);z-index:70;
     transform:translate(-50%,14px);opacity:0;pointer-events:none;
-    background:#2b2620;color:#fff;font-size:calc(13px * var(--fs));line-height:1.5;
-    padding:9px 16px;border-radius:999px;text-align:center;max-width:86vw;
-    box-shadow:0 12px 32px -14px rgba(0,0,0,.55);
-    transition:opacity .25s ease,transform .25s ease}
+    background:#2b2620;color:#fff;font-size:13px;line-height:1.5;
+    padding:9px 16px;border-radius:10px;max-width:86vw;text-align:center;
+    transition:opacity .2s,transform .2s;box-shadow:0 8px 24px -12px rgba(0,0,0,.5)}
   .toast.show{opacity:1;transform:translate(-50%,0)}
-  .toast.err{background:#8a2237}
+  .toast.err{background:#8c2b2b}
 
-  /* 頂部參考網址列 */
-  .srcbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    margin:10px 0 8px;padding:7px 12px;
-    background:linear-gradient(180deg,#fffdf9,#fff);
-    border:1px solid var(--line);border-radius:12px;
-    font-size:calc(12.5px * var(--fs));color:var(--muted)}
-  .srcbar .law{margin-left:auto;color:#9a9082;font-weight:500;white-space:nowrap}
-  .srcbar .law b{color:#7b7266;font-weight:700}
-  .srcbar-links{display:flex;gap:8px;flex-wrap:wrap}
-  .srcbar-links a{display:inline-flex;align-items:center;gap:5px;
-    font-weight:600;color:var(--accent);text-decoration:none;
-    background:#fff;border:1px solid color-mix(in srgb,var(--accent) 28%,#fff);
-    border-radius:999px;padding:3px 11px;line-height:1.7;
-    transition:background .15s,border-color .15s}
-  .srcbar-links a:hover{background:color-mix(in srgb,var(--accent) 9%,#fff);
-    border-color:color-mix(in srgb,var(--accent) 55%,#fff)}
-  .srcbar-links a svg{opacity:.7}
+  /* ---------- 底部工具條 ---------- */
+  .mbar{position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(255,253,249,.96);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+    padding:7px 20px calc(7px + env(safe-area-inset-bottom))}
+  .mbar-inner{max-width:1020px;margin:0 auto;display:flex;flex-direction:column;gap:3px}
+  .brow{display:flex;align-items:center;gap:10px}
 
-  code{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;background:#eee8dc;
-    padding:1px 5px;border-radius:4px;color:#5c5348}
+  /* 設定（左，Apple 工具列樣式：圓角圖示 + 下方標籤） */
+  .tb-btn{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;
+    border:0;background:transparent;cursor:pointer;font-family:inherit;
+    padding:1px 4px;border-radius:12px;-webkit-tap-highlight-color:transparent}
+  .tb-btn .ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb, var(--accent) 13%, #fff);color:var(--accent);
+    transition:background .15s,transform .12s}
+  .tb-btn:hover .ico{background:color-mix(in srgb, var(--accent) 20%, #fff)}
+  .tb-btn:active .ico{transform:scale(.93)}
+  .tb-btn .lbl{font-size:11px;font-weight:600;color:#6d6459;line-height:1.25;letter-spacing:.02em}
 
-  /* 頁首兩行：第一行＝班別（左）＋ 簽改/測・更新・A（靠右）；第二行＝原網址列 */
-  .toprow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .toprow .tabs{flex:0 0 auto}
+  /* 已設定班級（右）：可橫向滑動 */
+  .cstrip{flex:0 1 auto;min-width:0;margin-left:auto;display:flex;align-items:center;gap:6px;padding:1px 0;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;overscroll-behavior-x:contain}
+  .cstrip::-webkit-scrollbar{display:none}
+  .cchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+    font-family:inherit;font-size:13px;font-weight:700;color:#6d6459;background:#fff;
+    border:1px solid var(--line);border-radius:999px;padding:7px 12px;line-height:1.3;
+    white-space:nowrap;scroll-snap-align:center;
+    transition:background .16s,color .16s,border-color .16s,box-shadow .16s}
+  .cchip .cdot{width:6px;height:6px;border-radius:50%;background:var(--c);flex:0 0 auto}
+  .cchip .cnow{font-size:10px;font-weight:800;line-height:1.75;border-radius:999px;
+    padding:0 6px;background:var(--c);color:#fff}
+  .cchip[aria-selected="true"]{color:#fff;background:var(--c);border-color:transparent;
+    box-shadow:0 5px 14px -9px rgba(0,0,0,.85)}
+  .cchip[aria-selected="true"] .cdot{background:#fff}
+  .cchip[aria-selected="true"] .cnow{background:#fff;color:var(--c)}
+  .cchip.busy{opacity:.65}
+
+  /* 手勢滑動切班 */
+  main.wrap{will-change:transform}
+  body.dragging{user-select:none;-webkit-user-select:none}
+
+  /* ---------- 班級選單（底部彈出） ---------- */
+  .sheet-wrap{position:fixed;inset:0;z-index:60;display:none}
+  .sheet-wrap.on{display:block}
+  .backdrop{position:absolute;inset:0;background:rgba(40,32,22,.4);animation:fade .18s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:560px;
+    background:#fffdf9;border-radius:18px 18px 0 0;
+    padding:14px 16px calc(16px + env(safe-area-inset-bottom));
+    max-height:80vh;overflow:auto;animation:up .22s ease;box-shadow:0 -10px 40px -18px rgba(0,0,0,.4)}
+  @keyframes up{from{transform:translateY(16px);opacity:.7}to{transform:none;opacity:1}}
+  .sheet-hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .sheet-hd h3{margin:0;font-size:16px}
+  .sheet-hd .grab{width:36px;height:4px;border-radius:99px;background:#ded5c6;margin:0 auto 8px}
+  .sheet-hd .done{margin-left:auto;border:0;background:#eee7db;color:#5d564c;font-family:inherit;
+    font-size:13.5px;font-weight:700;border-radius:999px;padding:7px 16px;cursor:pointer}
+  .sheet .tip{margin:2px 0 12px;font-size:12.5px;color:var(--faint);line-height:1.6}
+  .grp{margin-bottom:12px}
+  .grp .lab{font-size:12.5px;font-weight:700;color:#8b8274;letter-spacing:.04em;margin:0 0 6px 2px}
+  .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+  .opt{cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;color:#5d564c;
+    background:#fff;border:1px solid var(--line);border-radius:11px;padding:9px 6px;
+    display:flex;align-items:center;justify-content:center;gap:5px;
+    transition:background .15s,color .15s,border-color .15s}
+  .opt[aria-pressed="true"]{color:#fff;border-color:transparent;font-weight:700}
+  .opt .tick{font-size:11px;opacity:.9}
+  .sheet .foot{margin-top:6px;font-size:12px;color:var(--faint)}
 
   @media (max-width:560px){
-    .wrap{padding:0 12px}
-    .top-inner{padding:10px 12px 8px}
-    .tab{padding:7px 14px;font-size:calc(14px * var(--fs))}
-    .tab .now{padding:1px 6px}
-    .toprow{gap:8px}
-    .tools{gap:8px}
-    .toggle{flex:0 0 auto}
-    .day{border-radius:13px}
-    .body{padding:13px}
-    .txt{font-size:calc(15.5px * var(--fs))}
+    main.wrap{padding:0 12px}
+    .toggle{font-size:12px;padding:5px 9px;gap:6px}
     .srcbar{margin:10px 0;padding:8px 11px;gap:7px}
-    .srcbar .law{margin-left:0;flex:1 1 100%;white-space:normal;font-size:calc(12px * var(--fs))}
+    .srcbar .law{margin-left:0;flex:1 1 auto;white-space:normal;font-size:12px}
+    .topdate{margin:7px 0 1px;font-size:11.5px}
     .srcbar-links{gap:6px}
-    .srcbar-links a{padding:2px 9px}
+    .srcbar-links a{padding:2px 9px;font-size:12px}
+    .body{padding:13px}
+    .txt{font-size:15px}
+    .mbar{padding:6px 10px calc(6px + env(safe-area-inset-bottom))}
+    .cchip{font-size:12.5px;padding:6px 11px}
+    .toggle.fab{font-size:12.5px;padding:6px 11px;right:10px}
   }
   @media print{
     body{background:#fff;padding:0}
-    header.top{position:static;background:#fff;border:0}
-    .tools,.tabs,.srcbar,.toast{display:none}
+    .srcbar,.mbar,.toast,.sheet-wrap,.fab{display:none}
     .day{break-inside:avoid;box-shadow:none;page-break-inside:avoid}
   }
 </style>
 </head>
 <body>
 
-<header class="top">
-  <div class="top-inner">
-    <div class="toprow">
-      <div class="tabs" role="tablist" aria-label="班別" id="tabs"></div>
-      <div class="tools">
-        <label class="toggle" title="只顯示含「簽改」或「測」的項目">
-          <input type="checkbox" id="onlyFlags"><span>簽改/測</span>
-        </label>
-      </div>
-    </div>
-  </div>
-</header>
-
 <main class="wrap">
+  <div class="topdate"><span id="todayTag" aria-label="今天的日期"></span></div>
   <div class="srcbar">
     <div class="srcbar-links" id="sources"></div>
     <span class="law">以<b>原網址</b>為準 · 本頁僅供參考</span>
@@ -207,391 +210,445 @@
   <div id="list"></div>
 </main>
 
+<nav class="mbar">
+  <div class="mbar-inner">
+    <div class="brow">
+      <button class="tb-btn" id="openMenu" aria-haspopup="dialog" aria-controls="sheetWrap" aria-label="班級設定">
+      <span class="ico">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </span>
+      <span class="lbl">設定</span>
+      </button>
+      <div class="cstrip" id="classStrip" role="tablist" aria-label="已設定的班級"></div>
+    </div>
+  </div>
+</nav>
+
+<label class="toggle fab" title="只顯示含「簽改」或「測」的項目">
+  <input type="checkbox" id="onlyFlags"><span>簽改/測</span>
+</label>
+
+<div class="sheet-wrap" id="sheetWrap" aria-hidden="true">
+  <div class="backdrop" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-hd">
+      <h3 id="sheetTitle">選擇班級</h3>
+      <button class="done" data-close>完成</button>
+    </div>
+    <p class="tip">可選多個班級，選好的會排在下方班級條；在內容上左右滑動即可切換下一個班。選擇會記住，抓取時自動換上對應的 classcode。</p>
+    <div id="classGroups"></div>
+    <div class="foot" id="sheetFoot"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* ====== 內嵌快照資料（由 build_homework.py 產生） ====== */
-let DATA = {"generatedAt": "2026-10-29 00:55", "classes": [{"code": "s3C", "name": "初三C", "accent": "#2f6fb0", "url": "https://webservice.pooito.edu.mo/show.php?group=function/homeworks/showworks.php&all=true&&classcode=s3C", "days": [{"date": "2026-10-28", "due": "2026-10-29", "items": [{"subject": "物", "text": "校本改正"}, {"subject": "历", "text": "整理笔记"}]}, {"date": "2026-10-27", "due": "2026-10-28", "items": [{"subject": "", "text": "物p.31（1-8），33"}, {"subject": "地", "text": "同步p.65（10-11）p.69（14）"}, {"subject": "中", "text": "试默《桃》1-2段，星期四交硬笔书法"}, {"subject": "eng", "text": "Newschiping scew Dictation"}]}, {"date": "2026-10-26", "due": "2026-10-27", "items": [{"subject": "物", "text": "p.27-29（1-12）"}, {"subject": "中", "text": "整理筆记，及预习诗歌体栽"}]}, {"date": "2026-10-25", "due": "2026-10-26", "items": [{"subject": "化", "text": "校本p.24第8题"}, {"subject": "语", "text": "完成《挑》思考题两题"}, {"subject": "生", "text": "校本p.16（表格）"}, {"subject": "代", "text": "工作纸两张各三题"}]}, {"date": "2026-10-21", "due": "2026-10-22", "items": [{"subject": "化", "text": "校本p.24（一）1-5（二）2题\n物書p.40（1,2）"}, {"subject": "中", "text": "预《桃》4-5 6.14-6.15（5-7）"}]}, {"date": "2026-10-20", "due": "2026-10-21", "items": [{"subject": "物", "text": "p 21（1一7）校本"}, {"subject": "美", "text": "工作纸，下周交画"}, {"subject": "eng", "text": "reading WS"}, {"subject": "代", "text": "签改大测，工作纸"}, {"subject": "中", "text": "改翻译，书第4题"}]}, {"date": "2026-10-19", "due": "2026-10-20", "items": [{"subject": "代", "text": "工作纸5题"}, {"subject": "中", "text": "《桃》第2段翻译，eclass阅读，背《桃》1-2段"}, {"subject": "英", "text": "智学網"}]}, {"date": "2026-10-14", "due": "2026-10-15", "items": [{"subject": "中", "text": "签改大测\n（2）预习《桃》"}, {"subject": "物", "text": "补充练习\n（2）小测改正"}, {"subject": "化", "text": "补笔记及功课改正（12-22）"}]}, {"date": "2026-10-13", "due": "2026-10-14", "items": [{"subject": "中", "text": "预习《桃》"}, {"subject": "美", "text": "工作纸"}, {"subject": "地", "text": "校本p.13,15,16"}]}, {"date": "2026-10-12", "due": "2026-10-13", "items": [{"subject": "中", "text": "交小测改正，File"}, {"subject": "几", "text": "工作纸"}, {"subject": "物", "text": "小测改正"}, {"subject": "生", "text": "校本p.14"}]}, {"date": "2026-10-11", "due": "2026-10-12", "items": [{"subject": "代", "text": "工作纸"}, {"subject": "语", "text": "工作纸，复习大测"}, {"subject": "生", "text": "带七下课本"}, {"subject": "eng", "text": "（1）meaning（2）Passive Voicequiz"}]}, {"date": "2026-10-08", "due": "2026-10-09", "items": [{"subject": "语", "text": "改正小测 （2）完成语基工作纸"}, {"subject": "电", "text": "下星期一做好code 02章"}]}, {"date": "2026-10-07", "due": "2026-10-08", "items": [{"subject": "化", "text": "阅读一篇"}, {"subject": "语", "text": "完成《五》思考题，明天小测"}, {"subject": "历", "text": "整理笔记，明天小测"}, {"subject": "英", "text": "交Grammar WB"}, {"subject": "物", "text": "作业改正"}]}, {"date": "2026-10-06", "due": "2026-10-07", "items": [{"subject": "代", "text": "工作纸"}, {"subject": "化", "text": "校本p.21（一）"}, {"subject": "地", "text": "同步p.58（6）p.59-60（10-15,16）"}, {"subject": "中", "text": "签改小测，改正翻译工课"}, {"subject": "美", "text": "明天交画"}, {"subject": "物", "text": "校本p.18（12-14）"}]}, {"date": "2026-10-05", "due": "2026-10-06", "items": [{"subject": "中", "text": "抄成语1-10（各3次）"}, {"subject": "物", "text": "校本p.16-17（1-11）"}, {"subject": "电", "text": "周四打字测试"}, {"subject": "eng", "text": "Sentences making"}, {"subject": "生", "text": "下堂小测"}]}, {"date": "2026-10-04", "due": "2026-10-05", "items": [{"subject": "中", "text": "《五》翻译句子\n（2）作文"}, {"subject": "物", "text": "校本p.13-15（1-10）"}, {"subject": "历", "text": "整理笔记"}, {"subject": "化", "text": "校本p.21第一部分（三行）"}, {"subject": "代", "text": "工作纸"}]}, {"date": "2026-09-29", "due": "2026-09-30", "items": [{"subject": "中", "text": "改签小测及交剪報"}, {"subject": "eng", "text": "Verb Table（2）AI Pictwres"}, {"subject": "代", "text": "工作纸"}, {"subject": "地", "text": "同步p.54（8-12）"}, {"subject": "几", "text": "工作纸"}, {"subject": "物", "text": "校本p.12 8-9 p.13（1）p.14（5）"}]}, {"date": "2026-09-28", "due": "2026-09-29", "items": [{"subject": "语", "text": "交阅读笔记\n（2）整理《孔明借箭》《种梨》笔记"}, {"subject": "eng", "text": "改正Dict"}, {"subject": "物", "text": "校本p.11-12（1-7）"}, {"subject": "生", "text": "校本p.12,13"}]}, {"date": "2026-09-27", "due": "2026-09-28", "items": [{"subject": "化", "text": "校本p.19"}, {"subject": "生", "text": "校本p.9"}, {"subject": "eng", "text": "智学网"}, {"subject": "语", "text": "小测名句（11-20）\n（2）完成《种梨》翻译3句\n（3）思考题1题"}]}, {"date": "2026-09-24", "due": "2026-09-25", "items": [{"subject": "eng", "text": "correction 工作纸"}, {"subject": "电", "text": "完成10题"}, {"subject": "语", "text": "完成《种梨》翻译三句"}, {"subject": "几", "text": "工作纸"}, {"subject": "化", "text": "明天带九上书"}, {"subject": "历", "text": "改正阅读3,4"}, {"subject": "代", "text": "工作纸"}]}, {"date": "2026-09-23", "due": "2026-09-24", "items": [{"subject": "语", "text": "名句（11-20）抄写3次"}, {"subject": "eng", "text": "GWB p.5 PartE"}, {"subject": "物", "text": "校本p.8-10（1-3）"}, {"subject": "代", "text": "工作纸"}, {"subject": "历", "text": "阅读3与筆记"}]}, {"date": "2026-09-22", "due": "2026-09-23", "items": [{"subject": "代", "text": "工作纸"}, {"subject": "音", "text": "带书"}, {"subject": "地理", "text": "同步p.51,53-54（1-7）"}, {"subject": "几", "text": "工作纸"}, {"subject": "物", "text": "工作纸"}, {"subject": "语", "text": "签改小测"}]}, {"date": "2026-09-21", "due": "2026-09-22", "items": [{"subject": "中", "text": "背名句（11-20）\n（2）硬笔书法两版"}, {"subject": "生", "text": "校本p.8"}, {"subject": "几", "text": "工作纸（2）改签小测"}, {"subject": "电", "text": "下星期前交cod.00章"}, {"subject": "Eng", "text": "改签Dict"}, {"subject": "物", "text": "校本p.6-7（11-12）"}]}, {"date": "2026-09-19", "due": "2026-09-20", "items": [{"subject": "英", "text": "工作纸，改正TV"}, {"subject": "语", "text": "①小测名句（6-10）及名诗②完成孔明借箭思考题"}, {"subject": "历", "text": "改正校本"}, {"subject": "化", "text": "模拟实验报告（2）校本笔记功课改正"}]}, {"date": "2026-09-17", "due": "2026-09-18", "items": [{"subject": "中", "text": "抄名句（6-10）3次以及名诗\n（2）阅读兵\n（3）改正作业"}, {"subject": "代", "text": "工作纸"}, {"subject": "电", "text": "完成4题"}, {"subject": "历", "text": "完成阅读一"}, {"subject": "英", "text": "speaking（2）GWB p.4 PartC"}]}, {"date": "2026-09-16", "due": "2026-09-17", "items": [{"subject": "几", "text": "工作纸"}, {"subject": "历", "text": "整理笔记"}, {"subject": "中", "text": "完成《孔明借箭》故事续写"}, {"subject": "代", "text": "工作纸"}, {"subject": "化", "text": "校本p.10-11"}, {"subject": "阅", "text": "speaking"}]}, {"date": "2026-09-15", "due": "2026-09-16", "items": [{"subject": "地", "text": "带齐课本"}, {"subject": "几", "text": "工作纸（周四交）"}, {"subject": "物", "text": "下堂小测"}, {"subject": "语", "text": "签改小测\n（2）课本练习"}, {"subject": "代", "text": "工作纸（两张）"}]}, {"date": "2026-09-14", "due": "2026-09-15", "items": [{"subject": "中", "text": "名句（6-10）及名诗\n（2）完成书5.7（1-2）及筆记（文学常识）"}, {"subject": "几", "text": "工作纸\n（2）週四小测"}, {"subject": "物", "text": "校本P.3-4,1-10"}]}, {"date": "2026-09-12", "due": "2026-09-14", "items": [{"subject": "英", "text": "W B p.2\n（2）Dictation 改正"}, {"subject": "中", "text": "週一测名句（1-5）及名诗\n（2）语基练习"}, {"subject": "化", "text": "校本p.7,11（第10条头10题)"}, {"subject": "代", "text": "工作纸"}]}, {"date": "2026-09-09", "due": "2026-09-11", "items": [{"subject": "中文", "text": "名诗,名句抄写（1-5）"}, {"subject": "物理", "text": "完善笔记"}, {"subject": "代数", "text": "工作纸"}, {"subject": "历史", "text": "工作P1-2"}, {"subject": "化学", "text": "校本p3,4"}]}]}, {"code": "s1A", "name": "初一A", "accent": "#0e8a7d", "url": "https://webservice.pooito.edu.mo/show.php?group=function/homeworks/showworks.php&all=true&&classcode=s1A", "days": [{"date": "2026-10-28", "due": "2026-10-29", "items": [{"subject": "語文", "text": "1.eclass 2.書後練習P.3.24~3.26"}, {"subject": "英文", "text": "1.智學網 2.Sign & corr. Dictation"}, {"subject": "數學", "text": "1.明天小測(A+AA) 2.温習小測"}, {"subject": "生物", "text": "完成實驗冊P.3~4內容"}, {"subject": "地理", "text": "下週三小測(二分二至日)"}]}, {"date": "2026-10-27", "due": "2026-10-28", "items": [{"subject": "數A", "text": "書P.67練習2\nP.76(10,11,12)"}, {"subject": "數AA", "text": "工作紙X1"}, {"subject": "英", "text": "1.finish w.b p.11-12\n2.Dict tmr."}, {"subject": "美", "text": "2/11交作品"}, {"subject": "生", "text": "1.輕巧奪冠P.16第11-14題\n2.明帶實驗冊"}, {"subject": "語", "text": "<<紙船印象>>生詞造句(選三個)"}]}, {"date": "2026-10-26", "due": "2026-10-27", "items": [{"subject": "英", "text": "1.copy draft\n2.study vocab"}, {"subject": "語", "text": "抄背《背影》"}, {"subject": "數A", "text": "書P.75 3 (1-6),4 (1-8),5"}, {"subject": "數AA", "text": "簽改小測\n周四小測"}]}, {"date": "2026-10-23", "due": "2026-10-24", "items": [{"subject": "英", "text": "1.智學網2.readers journal p.5"}, {"subject": "語", "text": "謄文"}, {"subject": "電", "text": "下週三前完成打字練習三次"}, {"subject": "數A", "text": "書P.69練習1,2,3\nP.70(4)"}, {"subject": "數AA", "text": "工作紙三張"}, {"subject": "公", "text": "成長計劃"}]}, {"date": "2026-10-22", "due": "2026-10-23", "items": [{"subject": "數a", "text": "一張練習題x1"}, {"subject": "科", "text": "校本p.52"}, {"subject": "英", "text": "智學網"}, {"subject": "數aa", "text": "工作紙x2(下週一)"}]}, {"date": "2026-10-21", "due": "2026-10-22", "items": [{"subject": "英", "text": "1.finish readers journal p.5(submit on Monday)"}, {"subject": "數a", "text": "書p.59習題2.1(3)\np.70(5)(1-2)\np.75複習題2(2)"}, {"subject": "生", "text": "預習輕巧奪冠p.15-16第6-10題"}, {"subject": "地", "text": "簽改小測"}, {"subject": "歷", "text": "工作紙(三)"}]}, {"date": "2026-10-20", "due": "2026-10-21", "items": [{"subject": "", "text": "第八週 10月20-10月23日"}, {"subject": "數A", "text": "書P.65練習3(1-3),4\nP.75(6)(1-2),7,8"}, {"subject": "英", "text": "1.Sign the test\n2.finish readers journal P.5(submit on Monday)"}, {"subject": "語", "text": "時事新聞分享"}, {"subject": "歷", "text": "工作紙(三)"}]}, {"date": "2026-10-16", "due": "2026-10-17", "items": [{"subject": "語", "text": "搜集有關天災的新聞(3則)"}, {"subject": "數A", "text": "書P.69-70(1,2,3) (1-4)"}, {"subject": "歷", "text": "1.星期二帶書2.工作紙P.1"}, {"subject": "公", "text": "成長計劃"}]}, {"date": "2026-10-15", "due": "2026-10-16", "items": [{"subject": "數A", "text": "書P.59(1)(1-4)&P.60(6)"}, {"subject": "數AA", "text": "工作紙X1(下週二交)"}, {"subject": "歷", "text": "工作紙(一)P.1"}, {"subject": "科", "text": "1.改正工作紙\n2.自主完成校本p.24-25(不收)"}, {"subject": "地", "text": "習作p.6-7"}]}, {"date": "2026-10-14", "due": "2026-10-15", "items": [{"subject": "數A", "text": "WS X1"}, {"subject": "數AA", "text": "WS X1(周五交)"}, {"subject": "歷", "text": "抄問答"}, {"subject": "生", "text": "下週二檢查學習冊"}, {"subject": "地", "text": "習作p.9-10"}]}, {"date": "2026-10-13", "due": "2026-10-14", "items": [{"subject": "數a", "text": "抄題在功課本上\n1.書p.20(1)(1-2),(2)(1-4)\np.48(9,12)(1-4)\np.52(12,15)(1-3)\n2.釘好講義"}, {"subject": "英", "text": "1.Finish G.W p.9-10"}, {"subject": "美", "text": "2/11交作品"}, {"subject": "生", "text": "簽改測"}]}, {"date": "2026-10-12", "due": "2026-10-13", "items": [{"subject": "英", "text": "1.Sign and corr unseen\n2.study for the test"}, {"subject": "公", "text": "網上問卷"}, {"subject": "科", "text": "周四課堂評估科學已學知識"}, {"subject": "語", "text": "溫習大測"}, {"subject": "代A", "text": "改正HW"}]}, {"date": "2026-10-09", "due": "2026-10-12", "items": [{"subject": "數A", "text": "有理數工作紙1張"}, {"subject": "英", "text": "1.Sign&corr dict\n2.Bring a picture who you admire"}, {"subject": "音", "text": "帶書"}, {"subject": "語", "text": "預習單元三"}, {"subject": "電", "text": "下週三電腦測驗,內容:第1,2章,練習1-4"}, {"subject": "歷", "text": "抄問答(筆記最後頁)"}, {"subject": "公", "text": "成長計劃"}]}, {"date": "2026-10-08", "due": "2026-10-09", "items": [{"subject": "語", "text": "1.ECLASS\n2.簽改默書"}, {"subject": "數A", "text": "書P.51(7)(1-3)\nP.47(4)(1-4)\nP.47(3)(1-6)抄題做"}, {"subject": "數AA", "text": "計算題20題"}, {"subject": "歷", "text": "抄問答(筆記本最後一頁)(下週四交)"}, {"subject": "科", "text": "1.改正校本2.校本P.20-23\n3.智學網上傳實驗"}, {"subject": "地", "text": "下週五小測校本P.7圖表,填充圖冊P.10"}, {"subject": "英", "text": "1.Newspapper clipping\n2.dict tmr."}]}, {"date": "2026-10-07", "due": "2026-10-08", "items": [{"subject": "語", "text": "補充教材P.25,26"}, {"subject": "英", "text": "1.finish small vocab book p.8,11"}, {"subject": "數A", "text": "1.做繁分數前10題2.明小測"}, {"subject": "電", "text": "下週三電腦測驗,內容:第1,2章和練習1-4"}, {"subject": "生", "text": "完成輕巧奪冠P.15(1-5)"}, {"subject": "地", "text": "1.填充圖冊P.5-7,P.9(8)\n2.明默(東南西北)"}]}, {"date": "2026-10-06", "due": "2026-10-07", "items": [{"subject": "數A", "text": "1.改正默寫2. 20題計算題"}, {"subject": "數AA", "text": "工作紙"}, {"subject": "英", "text": "1.make a comment on Padlet\n2.智學網\n3.finish G.B p.88-89(1-7)"}, {"subject": "生", "text": "預習學習冊P.4內容(參考課本P.12-13)"}, {"subject": "語", "text": "書P.2.40-P.2.46"}]}, {"date": "2026-10-05", "due": "2026-10-06", "items": [{"subject": "英", "text": "1.Sign and corr dict\n2.智學網"}, {"subject": "科", "text": "明天交流程圖工作紙"}, {"subject": "語", "text": "<<差…>>問題討論"}, {"subject": "公", "text": "習作p.1-4"}, {"subject": "數a", "text": "1.明默平方數,立方數\n2.計算題15題"}]}, {"date": "2026-09-30", "due": "2026-10-05", "items": [{"subject": "公", "text": "1.成長計劃2.下週一交臨時卡"}, {"subject": "語", "text": "小作文(交紙本)"}, {"subject": "英", "text": "1.Newspaper clipping(Next Fri)\n2.dict on 5/10 3.智學網"}, {"subject": "數A", "text": "計算題20題"}, {"subject": "生", "text": "學習冊(課堂評價1-4)和寫日誌"}, {"subject": "地", "text": "1.校本教材P.7\n2.下週四默(東南西北)"}, {"subject": "科", "text": "工作紙"}]}, {"date": "2026-09-29", "due": "2026-09-30", "items": [{"subject": "數A", "text": "抄兩次P.25平方,立方數A簿(明天默)"}, {"subject": "英", "text": "finish G.B p.4-7"}, {"subject": "美", "text": "8/10交智學網(初一美術….)"}, {"subject": "生", "text": "完成輕巧奪冠P.1-2第7-12題"}, {"subject": "語", "text": "預習<<販夫風景>>"}]}, {"date": "2026-09-28", "due": "2026-09-29", "items": [{"subject": "英", "text": "1.Sign and corr of dict\n2.Study paragraph4,dict on5/10"}, {"subject": "語", "text": "1.書P.2.14-2.152.筆記總結"}, {"subject": "數A", "text": "1.改正小測(2張合起來)\n2.改正2本功課本"}, {"subject": "科", "text": "工作紙5/10交 筆記明天交(資訊科技)"}]}, {"date": "2026-09-25", "due": "2026-09-28", "items": [{"subject": "英", "text": "1.Corr G.B\n2.Sign and corr +dict"}, {"subject": "語", "text": "1.硬筆4版2.書P.2.12-2.14"}, {"subject": "代A", "text": "書P.37 (2)(1-4)\np.38(7)(1-8)&(8)(1-4)\np.39(12)(1-4)"}, {"subject": "公", "text": "成長計劃"}, {"subject": "語", "text": "1.小練筆2.簽改默"}, {"subject": "科", "text": "校本教材P.17-18"}, {"subject": "地", "text": "校本教材P.7(表格:經度)"}, {"subject": "英", "text": "1.Dict tomorrow\n2.智學網,Englishcentral"}, {"subject": "代A", "text": "計算題13題"}]}, {"date": "2026-09-23", "due": "2026-09-24", "items": [{"subject": "語", "text": "<<差……>>生詞,造句"}, {"subject": "英", "text": "Study vocab 22-42(Dict on Fri)"}, {"subject": "代A", "text": "1.明小測\n2.書P.38(3)&P.51(1,2,3,8)"}, {"subject": "生", "text": "完成輕巧奪冠p.1(1-6)"}, {"subject": "地", "text": "填充圖冊p.4-5(1-2)"}]}, {"date": "2026-09-22", "due": "2026-09-23", "items": [{"subject": "代A", "text": "做p.25全部(抄題在功課本)"}, {"subject": "英", "text": "1.finish the W.S\n2.Sign&corr dict"}, {"subject": "生", "text": "簽改小測"}, {"subject": "語", "text": "閲讀工作紙"}, {"subject": "公", "text": "班幹事總結"}]}, {"date": "2026-09-21", "due": "2026-09-22", "items": [{"subject": "電", "text": "明第五節上電腦課"}, {"subject": "英", "text": "1.Study vocab 22-42 dict on Fri 2.做智學網"}, {"subject": "語", "text": "1.書p.1.15-1.16\n2.抄背名句(1-10) 成語(1-10)\n3.筆記總結"}, {"subject": "科", "text": "完成工作紙"}, {"subject": "數", "text": "1.改簽小測2.改正2本功課本3.wsｘ１"}]}, {"date": "2026-09-18", "due": "2026-09-19", "items": [{"subject": "英", "text": "1.study vocab 1-21(Dictation on Monday)2.智學網"}, {"subject": "語", "text": "工作紙、簽改默、帶單元二"}, {"subject": "歷", "text": "整理筆記"}]}, {"date": "2026-09-17", "due": "2026-09-18", "items": [{"subject": "語", "text": "硬筆p.1-p.4"}, {"subject": "數", "text": "工作紙(貼簿做)"}, {"subject": "歷", "text": "個人歷史"}, {"subject": "科", "text": "校本教材p.8-9"}, {"subject": "英", "text": "finish 智學網"}]}, {"date": "2026-09-16", "due": "2026-09-17", "items": [{"subject": "語", "text": "問題討論"}, {"subject": "英", "text": "1.finish draft2.study vocab 1-21(Dictation on21/9)"}, {"subject": "生", "text": "1.完成學習冊p.1內容2.下週二小測"}, {"subject": "地", "text": "校本教材p.4"}]}, {"date": "2026-09-15", "due": "2026-09-16", "items": [{"subject": "數", "text": "正數和奧數工作紙"}, {"subject": "英", "text": "1.finish G.M.W.B p.2-3 2.Sign&corr dictation"}, {"subject": "生", "text": "完成輕巧奪冠p.3第1-5題"}, {"subject": "語", "text": "書後習題p.1.12-p.1.14"}]}, {"date": "2026-09-14", "due": "2026-09-15", "items": [{"subject": "科學", "text": "帶筆記簿"}, {"subject": "英", "text": "finish the self-intro"}, {"subject": "語", "text": "<<一件小事>>生詞解釋,造句"}, {"subject": "數", "text": "WS X1貼簿做"}]}, {"date": "2026-09-11", "due": "2026-09-14", "items": [{"subject": "英", "text": "Create a classroom language poster (Monday)"}, {"subject": "音", "text": "練習背唱校歌"}, {"subject": "語", "text": "自我介紹"}, {"subject": "數", "text": "1. 準備2本功課簿\n2. 釘好講義"}, {"subject": "歷", "text": "個人歷史（下周五）"}]}]}]};
-
-/* ---------- 關鍵字標記 ---------- */
-const SIGN_WORDS = ["簽改","签改","改簽","改签","簽名","签名","簽","签","改正","批改"];
-const TEST_WORDS = ["測驗","测验","小測","小测","大測","大测","測","测","默書","默书","默","評估","评估","統測","统测"];
-const TOKEN_RE = new RegExp("(" + SIGN_WORDS.concat(TEST_WORDS).join("|") + ")|([A-Za-z]+)", "g");
-
-function clsOfWord(w){
-  if (SIGN_WORDS.includes(w)) return "sign";
-  if (TEST_WORDS.includes(w)) return "test";
-  const k = w.toLowerCase();
-  if (/^(sign|corr|correct|correction)/.test(k)) return "sign";
-  if (/^(dict|dictation|quiz|test|tests|exam)/.test(k)) return "test";
-  return null;
-}
-function esc(s){
-  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function markup(text){
-  // 先把 markdown 圖片語法抽出，稍後換成可點擊的「附圖」
-  const imgs = [];
-  const clean = String(text).replace(/!\[[^\]]*\]\(\s*(https?:\/\/[^\s)]+)\s*\)/g, (all, url) => {
-    imgs.push(url);
-    return "\u0001IM" + (imgs.length - 1) + "\u0001";
-  });
-  let out = "", last = 0, m, flags = {sign:false, test:false};
-  TOKEN_RE.lastIndex = 0;
-  while ((m = TOKEN_RE.exec(clean)) !== null){
-    const word = m[0], kind = m[1] ? clsOfWord(m[1]) : clsOfWord(word);
-    if (!kind) continue;
-    flags[kind] = true;
-    out += esc(clean.slice(last, m.index)) + '<mark class="k-' + kind + '">' + esc(word) + '</mark>';
-    last = m.index + word.length;
-  }
-  out += esc(clean.slice(last));
-  if (imgs.length){
-    out = out.replace(/\u0001IM(\d+)\u0001/g, (a, i) =>
-      '<a class="att" href="' + esc(imgs[+i]) + '" target="_blank" rel="noopener">附圖 ↗</a>');
-  }
-  return {html: out, flags};
-}
-
-/* ---------- 繁簡對照（收錄作業常見字，讓搜尋不受簡繁體影響） ---------- */
-const T2S = {
-  "紙":"纸","測":"测","驗":"验","課":"课","業":"业","練":"练","習":"习","復":"复","學":"学","數":"数",
-  "語":"语","歷":"历","電":"电","讀":"读","圖":"图","冊":"册","補":"补","筆":"笔","記":"记","簽":"签",
-  "準":"准","備":"备","帶":"带","書":"书","題":"题","範":"范","單":"单","總":"总","結":"结","體":"体",
-  "認":"认","識":"识","實":"实","際":"际","節":"节","華":"华","藝":"艺","網":"网","線":"线","視":"视",
-  "畫":"画","樣":"样","種":"种","類":"类","別":"别","對":"对","錯":"错","誤":"误","試":"试","評":"评",
-  "價":"价","費":"费","長":"长","門":"门","開":"开","關":"关","間":"间","問":"问","時":"时","週":"周",
-  "歲":"岁","溫":"温","傳":"传","統":"统","導":"导","師":"师","幹":"干","舉":"举","辦":"办","討":"讨",
-  "論":"论","說":"说","話":"话","寫":"写","觀":"观","覽":"览","條":"条","則":"则","圍":"围","內":"内",
-  "達":"达","標":"标","進":"进","據":"据","計":"计","簡":"简","雜":"杂","難":"难","於":"于","與":"与",
-  "為":"为","個":"个","們":"们","這":"这","頁":"页","兩":"两","幾":"几","臺":"台","塊":"块","裡":"里",
-  "麼":"么","東":"东","養":"养","營":"营","醫":"医","藥":"药","護":"护","產":"产","農":"农","資":"资",
-  "訊":"讯","錄":"录","攝":"摄","聽":"听","響":"响","聲":"声","樂":"乐","環":"环","級":"级","組":"组",
-  "織":"织","無":"无","專":"专","職":"职","務":"务","員":"员","會":"会","議":"议","團":"团","隊":"队",
-  "築":"筑","場":"场","館":"馆","園":"园","運":"运","動":"动","顯":"显","質":"质","變":"变","適":"适",
-  "應":"应","該":"该","較":"较","減":"减","擴":"扩","縮":"缩","檢":"检","檔":"档","親":"亲","複":"复"
-};
-function norm(s){
-  return String(s).replace(/[\u4e00-\u9fff]/g, c => T2S[c] || c).toLowerCase();
-}
-
-/* ---------- 科目顏色 ---------- */
-const SUBJ_RULES = [
-  [/^(中|語|语|華|华)/, "#b2543a"],
-  [/^(英|ENG|Eng|eng)/, "#2f6fb0"],
-  [/^(數|数|代|幾|几)/, "#6b5bb5"],
-  [/^(物)/, "#0e7f8a"],
-  [/^(化)/, "#2f8a5c"],
-  [/^(生|科)/, "#4f8f2f"],
-  [/^(地)/, "#a8762c"],
-  [/^(歷|历)/, "#8a5a8a"],
-  [/^(電|电)/, "#3a6b8a"],
-  [/^(公)/, "#9a5b2b"],
-  [/^(音)/, "#b0547a"],
-  [/^(美)/, "#c2762b"],
-  [/^(閱|阅)/, "#5a6b7a"],
-  [/^(體|体)/, "#4a7a5a"],
-  [/^(普)/, "#7a6a3a"],
-];
-function subjColor(s){
-  for (const [re, c] of SUBJ_RULES) if (re.test(s)) return c;
-  return "#6b7280";
-}
-
-/* ---------- 日期工具 ---------- */
-const WEEK = ["週日","週一","週二","週三","週四","週五","週六"];
-const p2 = n => String(n).padStart(2, "0");
-function parseD(s){ const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); }
-function today0(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
-function ymd(d){ return d.getFullYear() + "-" + p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
-function mmdd(s){ const d = parseD(s); return p2(d.getMonth()+1) + "-" + p2(d.getDate()); }
-function stamp(){
-  const d = new Date();
-  return ymd(d) + " " + p2(d.getHours()) + ":" + p2(d.getMinutes());
-}
-/* 交作業日提示（只有最新一張卡顯示） */
-function dueInfo(dueStr){
-  if (!dueStr) return null;
-  const diff = Math.round((parseD(dueStr) - today0()) / 86400000);
-  let label, tone = "";
-  if (diff < 0) { label = "已過 " + (-diff) + " 天"; tone = "late"; }
-  else if (diff === 0) { label = "今天交"; tone = "soon"; }
-  else if (diff === 1) { label = "明天交"; tone = "soon"; }
-  else if (diff === 2) { label = "後天交"; }
-  else { label = diff + " 天後交"; }
-  return {label, tone};
-}
-
 /* =========================================================
-   網頁內建解析器：直接在瀏覽器抓取學校網頁並解析
+   資料來源
    ========================================================= */
-const KNOWN_SUBJECTS = new Set(("中|中文|語|语|語文|语文|英|英文|ENG|ENGLISH|數|数|數學|数学|代|代數|代数|" +
-  "幾|几|幾何|几何|物|物理|化|化學|化学|生|生物|科|科學|科学|地|地理|歷|历|歷史|历史|" +
-  "公|公民|電|电|電腦|电脑|音|音樂|音乐|美|美術|美术|閱|阅|閱讀|阅读|體|体|體育|体育|" +
-  "普|普通話|普通话|視|视|視藝|视艺").split("|").map(s => s.toUpperCase()));
-const CJK1 = /^[\u4e00-\u9fff]$/;
-const CJK_ALPHA = /^[\u4e00-\u9fff]{1,2}[A-Za-z]{1,2}$/;
-const ALPHA_ONLY = /^[A-Za-z]{2,10}$/;
-const COLON_RE = /^([^:：]{1,8})\s*[:：]\s*([\s\S]+)$/;
-const TIGHT_RE = /^([\u4e00-\u9fff]{1,3}[A-Za-z]{0,2})\s*([0-9（(][\s\S]*)$/;
-
-function isSubject(tok){
-  const t = String(tok).trim();
-  if (!t) return false;
-  if (KNOWN_SUBJECTS.has(t.toUpperCase())) return true;
-  return CJK1.test(t) || CJK_ALPHA.test(t) || ALPHA_ONLY.test(t);
-}
-
-/* 把一格 td 的 HTML 轉成文字行（br / div / p 一律視為換行） */
-function cellLines(cell){
-  const c = cell.cloneNode(true);
-  c.querySelectorAll("br").forEach(b => b.replaceWith("\n"));
-  c.querySelectorAll("div,p,li,tr").forEach(el => el.append("\n"));
-  return (c.textContent || "")
-    .replace(/\r/g, "\n")
-    .replace(/[\u00a0\u3000]+/g, " ")
-    .split("\n")
-    .map(s => s.replace(/[ \t]+/g, " ").trim())
-    .filter(Boolean);
-}
-
-/* 逐行拆成 {subject, text}；無科目前綴的行視為續行並保留換行 */
-function splitItems(lines){
-  const items = [];
-  lines.forEach(line => {
-    let subject = "", text = line;
-    const m = line.match(COLON_RE);
-    if (m && isSubject(m[1])) { subject = m[1].trim(); text = m[2].trim(); }
-    else {
-      const m2 = line.match(TIGHT_RE);
-      if (m2 && isSubject(m2[1])) { subject = m2[1].trim(); text = m2[2].trim(); }
-    }
-    const last = items[items.length - 1];
-    if (last && !subject) { last.text += "\n" + line; return; }
-    if (last && subject && last.subject === subject) { last.text += "\n" + text; return; }
-    items.push({ subject, text });
-  });
-  return items;
-}
-
-/* 網頁只有 MM-DD，依學年規則（8 月—翌年 7 月）推算年份 */
-function resolveDate(mo, da, today){
-  let y = today.getFullYear();
-  const tm = today.getMonth() + 1;
-  if (tm >= 8 && mo <= 7) y += 1;
-  else if (tm <= 7 && mo >= 8) y -= 1;
-  const d = new Date(y, mo - 1, da);
-  return isNaN(d.getTime()) ? new Date(y, mo - 1, 1) : d;
-}
-const DSTR = /^(\d{1,2})\s*[-/.]\s*(\d{1,2})$/;
-
-function putDay(bucket, d, due, items){
-  const key = ymd(d);
-  if (!bucket.has(key)) bucket.set(key, { date: key, due: null, items: [] });
-  const b = bucket.get(key);
-  if (due && (!b.due || ymd(due) > b.due)) b.due = ymd(due);
-  items.forEach(it => {
-    if (!b.items.some(o => o.subject === it.subject && o.text === it.text)) b.items.push(it);
-  });
-}
-const sortedDays = bucket => [...bucket.values()].sort((a, b) => a.date < b.date ? 1 : -1);
-
-function parsePage(html, today){
-  today = today || new Date();
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  const bucket = new Map();
-  doc.querySelectorAll("tr").forEach(tr => {
-    const cells = tr.querySelectorAll("td,th");
-    if (cells.length < 4) return;
-    const m = (cells[0].textContent || "").trim().match(DSTR);
-    if (!m) return;
-    const d = resolveDate(+m[1], +m[2], today);
-    const dm = (cells[3].textContent || "").trim().match(DSTR);
-    let due = dm ? resolveDate(+dm[1], +dm[2], today) : null;
-    if (due && due < d) due = new Date(due.getFullYear() + 1, due.getMonth(), due.getDate());
-
-    const items = splitItems(cellLines(cells[2]));
-    if (!items.length) return;
-    putDay(bucket, d, due, items);
-  });
-  return sortedDays(bucket);
-}
-
-/* 備援來源：r.jina.ai 回傳的 markdown 表格，還原成同樣結構 */
-const MD_ROW = /^(\d{1,2})-(\d{1,2})\s+[初高][一二三][A-E]\s*(.*)$/;
-/* markdown 會把同一格的多行壓成一行，這裡依「空白＋科目:」重新斷行 */
-function mdLines(text){
-  return text
-    .replace(/\r/g, "")
-    .replace(/[ \t\u00a0]+(?=[\u4e00-\u9fffA-Za-z]{1,6}\s*[:：])/g, "\n")
-    .split("\n")
-    .map(s => s.trim())
-    .filter(Boolean);
-}
-function parseMarkdown(md, today){
-  today = today || new Date();
-  const lines = String(md).replace(/\r/g, "").split("\n");
-  const startAt = lines.findIndex(l => l.indexOf("佈置作業時間") >= 0);
-  if (startAt < 0) return [];
-  const rows = [];
-  let cur = null;
-  for (let i = startAt + 1; i < lines.length; i++){
-    const raw = lines[i].trim();
-    if (!raw) continue;
-    const m = raw.match(MD_ROW);
-    if (m){
-      cur = { mo: +m[1], da: +m[2], buf: m[3] ? [m[3]] : [] };
-      rows.push(cur);
-    }else if (cur){
-      cur.buf.push(raw);
-    }
-  }
-  const bucket = new Map();
-  rows.forEach(r => {
-    const d = resolveDate(r.mo, r.da, today);
-    let text = r.buf.join("\n").trim();
-    let due = null;
-    const tail = text.match(/(\d{1,2})-(\d{1,2})\s*$/);
-    if (tail){
-      let cand = new Date(d.getFullYear(), +tail[1] - 1, +tail[2]);
-      if (cand < d) cand = new Date(d.getFullYear() + 1, +tail[1] - 1, +tail[2]);
-      const diff = Math.round((cand - d) / 86400000);
-      if (diff >= 0 && diff <= 21){       // 交作業日期通常很近，避免把頁碼範圍誤認為日期
-        due = cand;
-        text = text.slice(0, tail.index).replace(/\s+$/, "");
-      }
-    }
-    const items = splitItems(mdLines(text));
-    if (items.length) putDay(bucket, d, due, items);
-  });
-  return sortedDays(bucket);
-}
-
-/* ---------- 抓取：直連優先，失敗則多個跨域代理並行競速 ---------- */
-const CLASS_META = [
-  { code: "s3C", name: "初三C", accent: "#2f6fb0" },
-  { code: "s1A", name: "初一A", accent: "#0e8a7d" }
-];
 const URL_BASE = "https://webservice.pooito.edu.mo/show.php?group=function/homeworks/showworks.php&all=true&&classcode=";
 
-const PROXY_HTML = [
-  u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
-  u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+/* 可選班級：value = 網址 classcode，name = 顯示名稱 */
+const CLASSES = [
+  { v:"s6A", n:"高三A" }, { v:"s6B", n:"高三B" }, { v:"s6C", n:"高三C" }, { v:"s6D", n:"高三D" },
+  { v:"s5A", n:"高二A" }, { v:"s5B", n:"高二B" }, { v:"s5C", n:"高二C" }, { v:"s5D", n:"高二D" },
+  { v:"s4A", n:"高一A" }, { v:"s4B", n:"高一B" }, { v:"s4C", n:"高一C" }, { v:"s4D", n:"高一D" },
+  { v:"s3A", n:"初三A" }, { v:"s3B", n:"初三B" }, { v:"s3C", n:"初三C" }, { v:"s3D", n:"初三D" }, { v:"s3E", n:"初三E" },
+  { v:"s2A", n:"初二A" }, { v:"s2B", n:"初二B" }, { v:"s2C", n:"初二C" }, { v:"s2D", n:"初二D" }, { v:"s2E", n:"初二E" },
+  { v:"s1A", n:"初一A" }, { v:"s1B", n:"初一B" }, { v:"s1C", n:"初一C" }, { v:"s1D", n:"初一D" }, { v:"s1E", n:"初一E" }
 ];
-const JINA = u => "https://r.jina.ai/" + u;
+const LEVELS = [
+  { k:"s6", t:"高三" }, { k:"s5", t:"高二" }, { k:"s4", t:"高一" },
+  { k:"s3", t:"初三" }, { k:"s2", t:"初二" }, { k:"s1", t:"初一" }
+];
+const LEVEL_ACCENT = { s6:"#6d5bd0", s5:"#0e7490", s4:"#b4692b", s3:"#2f6fb0", s2:"#b3457a", s1:"#0e8a7d" };
+const MAX_SEL = 6;
+const DEFAULT_SEL = ["s3C", "s1A"];
+
+const accentOf = code => LEVEL_ACCENT[String(code).slice(0, 2)] || "#2f6fb0";
+const nameOf = code => (CLASSES.find(c => c.v === code) || {}).n || code;
+
+/* =========================================================
+   小工具
+   ========================================================= */
+const p2 = n => String(n).padStart(2, "0");
+const ymd = d => d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate());
+const parseD = s => { const [y, m, d] = String(s).split("-").map(Number); return new Date(y, m - 1, d); };
+const today0 = () => { const t = new Date(); t.setHours(0, 0, 0, 0); return t; };
+const stamp = () => { const d = new Date(); return ymd(d) + " " + p2(d.getHours()) + ":" + p2(d.getMinutes()); };
+const mmdd = s => { const d = parseD(s); return p2(d.getMonth() + 1) + "-" + p2(d.getDate()); };
+const WEEK = ["日", "一", "二", "三", "四", "五", "六"];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-async function getText(url, timeoutMs, outer){
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  if (outer) outer.addEventListener("abort", () => ctrl.abort(), { once: true });
-  try{
-    const res = await fetch(url, { signal: ctrl.signal, cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    let text = await res.text();
-    if (/^\s*\{/.test(text)) {                    // allorigins /get 會包成 JSON
-      try { const j = JSON.parse(text); if (j && j.contents) text = j.contents; } catch(e){}
-    }
-    if (!/佈置作業時間|showworks/.test(text)) throw new Error("回傳內容不是作業頁");
-    return text;
-  }finally{
-    clearTimeout(timer);
-  }
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 }
-
-/* 一次嘗試：直連、HTML 代理、markdown 代理同時進行，先拿到可用資料者為準 */
-async function loadDaysOnce(url){
-  const ctrl = new AbortController();
-  const today = new Date();
-  const tasks = [];
-
-  const viaHtml = async (target, ms) => {
-    const days = parsePage(await getText(target, ms, ctrl.signal), today);
-    if (!days.length) throw new Error("空資料");
-    return days;
-  };
-
-  tasks.push(viaHtml(url, 5000));                                     // 直連
-  PROXY_HTML.forEach(f => tasks.push(viaHtml(f(url), 14000)));        // HTML 代理
-  tasks.push((async () => {                                           // markdown 代理
-    const days = parseMarkdown(await getText(JINA(url), 22000, ctrl.signal), today);
-    if (!days.length) throw new Error("空資料");
-    return days;
-  })());
-
-  try{
-    const days = await Promise.any(tasks);
-    ctrl.abort();
-    return days;
-  }catch(e){
-    ctrl.abort();
-    throw new Error("連線失敗");
-  }
-}
-
-/* 全部通道失敗時，稍等再試一次 */
-async function fetchPage(url){
-  try { return await loadDaysOnce(url); }
-  catch(e){
-    await sleep(900);
-    try { return await loadDaysOnce(url); }
-    catch(e2){ throw new Error("無法取得作業資料"); }
-  }
-}
-
-/* ---------- 本機快取：更新後的資料下次開啟仍有效 ---------- */
-const CACHE_KEY = "hw_board_v1";
-function loadCache(){
-  try{
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const obj = JSON.parse(raw);
-    return (obj && obj.classes && obj.classes.length) ? obj : null;
-  }catch(e){ return null; }
-}
-function saveCache(obj){
-  try{ localStorage.setItem(CACHE_KEY, JSON.stringify(obj)); }catch(e){}
-}
-
-/* ---------- 狀態 ---------- */
-const state = { cls: 0, only: false, busy: false };
-const currentClass = () => DATA.classes[state.cls];
+const _ta = document.createElement("textarea");
+function decodeEnt(s){ _ta.innerHTML = s; return _ta.value; }
 
 function toast(msg, isErr){
   const el = document.getElementById("toast");
   el.textContent = msg;
   el.className = "toast show" + (isErr ? " err" : "");
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => { el.className = "toast" + (isErr ? " err" : ""); }, 4200);
+  toast._t = setTimeout(() => { el.className = "toast" + (isErr ? " err" : ""); }, 3600);
 }
 
-function renderTabs(){
-  const el = document.getElementById("tabs");
+/* 顯示範圍：今天往回，直到「上週一」（含） */
+function lastMonday(){
+  const t = today0();
+  const backToThisMonday = (t.getDay() + 6) % 7;      // 週一=0
+  return new Date(t.getFullYear(), t.getMonth(), t.getDate() - backToThisMonday - 7);
+}
+
+/* =========================================================
+   儲存：已選班級 / 各班快取
+   ========================================================= */
+const LS_SEL = "hw_sel_v1";
+const LS_CACHE = "hw_cache_v1";
+const CACHE_MIN = 5;          // 資料快取有效分鐘數：5 分鐘內開頁直接顯示、不重抓
+
+/* 一律按「高班 → 低班」排列（CLASSES 的既定次序），左右亦以此為準 */
+const sortSel = arr => arr.slice()
+  .sort((a, b) => CLASSES.findIndex(x => x.v === a) - CLASSES.findIndex(x => x.v === b));
+
+function loadSel(){
+  try{
+    const a = JSON.parse(localStorage.getItem(LS_SEL) || "null");
+    if (Array.isArray(a) && a.length){
+      const ok = a.filter(c => CLASSES.some(x => x.v === c));
+      if (ok.length) return sortSel(ok.slice(0, MAX_SEL));
+    }
+  }catch(e){}
+  return sortSel(DEFAULT_SEL);
+}
+function saveSel(){ try{ localStorage.setItem(LS_SEL, JSON.stringify(state.sel)); }catch(e){} }
+
+function loadCache(){
+  try{
+    const o = JSON.parse(localStorage.getItem(LS_CACHE) || "null");
+    if (o && typeof o === "object") return o;
+  }catch(e){}
+  return {};
+}
+function saveCache(){ try{ localStorage.setItem(LS_CACHE, JSON.stringify(state.data)); }catch(e){} }
+
+/* =========================================================
+   狀態
+   ========================================================= */
+const state = { sel: loadSel(), cls: 0, only: false, data: loadCache(), busy: {}, err: {} };
+
+/* =========================================================
+   抓取（直連失敗 → 多個跨域代理並行，先回先贏）
+   ========================================================= */
+/* 學校站沒有 CORS 標頭 → 瀏覽器只能靠代理取 HTML。
+   實測（2026-10-28）：allorigins / codetabs 常 5xx，r.jina.ai 最穩，
+   而且它支援 x-respond-with: html（回原始 HTML，利於精準解析表格）。 */
+const PROXIES = [
+  { mk: u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u), t: 14000 },
+  { mk: u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u), t: 14000 },
+  { mk: u => "https://r.jina.ai/" + u, t: 24000, h: { "x-respond-with": "html" } }
+];
+
+async function getText(url, ms, outer, headers){
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  if (outer) outer.addEventListener("abort", () => ctrl.abort(), { once:true });
+  try{
+    const res = await fetch(url, { signal: ctrl.signal, cache: "no-store", headers: headers || {} });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    let text = await res.text();
+    if (/^\s*\{/.test(text)){                       // allorigins /get 會包一層 JSON
+      try{ const j = JSON.parse(text); if (j && j.contents) text = j.contents; }catch(e){}
+    }
+    if (!/showworks|佈置作業|classcode/.test(text)) throw new Error("回傳內容不是作業頁");
+    return text;
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+async function fetchOnce(url){
+  // 直連（若學校日後開放 CORS 就最快）與各代理同時開跑，先回先贏
+  const ctrl = new AbortController();
+  const jobs = [getText(url, 8000, ctrl.signal)]
+    .concat(PROXIES.map(p => getText(p.mk(url), p.t, ctrl.signal, p.h)));
+  try{
+    const text = await Promise.any(jobs);
+    ctrl.abort();
+    return text;
+  }catch(err){
+    ctrl.abort();
+    throw new Error("連線失敗（代理暫時不通）");
+  }
+}
+
+async function fetchPage(url){
+  let last = null;
+  for (let i = 0; i < 2; i++){
+    try{ return await fetchOnce(url); }
+    catch(err){ last = err; if (i === 0) await sleep(700); }
+  }
+  throw last || new Error("連線失敗");
+}
+
+/* =========================================================
+   解析學校頁面
+   ========================================================= */
+const SUBJ_KNOWN = new Set((
+  "中|中文|語|語文|英文|英|ENG|ENGLISH|數|數學|代|代數|幾|幾何|物|物理|化|化學|生|生物|科|科學|" +
+  "地|地理|歷|歷史|史|普|普通話|視|視藝|視覺藝術|音|音樂|體|體育|電|電腦|資訊|ICT|公民|公|" +
+  "道德|倫|倫理|經濟|商|會計|設計|家政|工藝|閱讀|寫作|作文|書法|美術|美|圖|圖書|宗教|宗|通識|綜合|生活|" +
+  "语|数|学|历|音|乐|体|育|电|脑|资|讯|图|书|阅|读|写|作|会|计|设|家|政|艺|综|合|活|术|美|科|理|化|地|生|物|文|英"
+).split("|"));
+
+function looksLikeSubject(tok){
+  const t = String(tok || "").replace(/[.。、,，]$/, "").trim();
+  if (!t || t.length > 7) return false;
+  if (/^第|週|月|日|年|星期/.test(t)) return false;
+  if (/^\d+$/.test(t)) return false;
+  if (/^[A-Za-z]{1,6}$/.test(t)) return true;             // eng / math / ICT / PE
+  if (SUBJ_KNOWN.has(t)) return true;
+  if (SUBJ_KNOWN.has(t.toUpperCase())) return true;
+  if (/^[\u4e00-\u9fff]{1,3}[A-E]$/.test(t)) return true; // 數A / 物B
+  return false;
+}
+
+function cellLines(cell){
+  let h = cell.innerHTML
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(div|p|tr|li|h\d)>/gi, "\n")
+    .replace(/<[^>]+>/g, "");
+  h = decodeEnt(h);
+  return h.split("\n")
+    .map(s => s.replace(/[\s\u00a0]+/g, " ").trim())
+    .filter(Boolean);
+}
+
+function cellImages(cell){
+  return [...cell.querySelectorAll("img")]
+    .map(im => im.getAttribute("src") || "")
+    .filter(Boolean)
+    .map(src => { try{ return new URL(src, location.href).href; }catch(e){ return src; } });
+}
+
+const isHan = c => /[\u4e00-\u9fff]/.test(c || "");
+const isLat = c => /[A-Za-z0-9]/.test(c || "");
+
+/* 「物p.31…」這種科目緊貼內容、沒有冒號也沒有空格的寫法 */
+function tightSubject(line){
+  const m = line.match(/^([A-Za-z\u4e00-\u9fff]{1,4}[A-Ea-e]?)(.+)$/);
+  if (!m) return null;
+  const head = m[1], rest = m[2];
+  for (let len = head.length; len >= 1; len--){
+    const cand = head.slice(0, len);
+    const after = head.slice(len) + rest;
+    if (!after) continue;
+    const ch = after[0];
+    if (isHan(ch)) continue;                        // 科目後面直接接中文 → 不是前綴
+    if (isLat(cand[0]) && isLat(ch)) continue;      // 英文字被切斷（reading → read）
+    if (looksLikeSubject(cand)) return { subj:cand, text:after };
+  }
+  return null;
+}
+
+function splitItems(lines){
+  const items = [];
+  for (const raw of lines){
+    const line = raw.trim();
+    if (!line) continue;
+    let subj = "", text = line;
+
+    const m = line.match(/^([^：:]{1,7})[：:]\s*(.*)$/);
+    if (m && looksLikeSubject(m[1])){
+      subj = m[1].trim();
+      text = m[2].trim();
+    }else{
+      const m2 = line.match(/^([A-Za-z\u4e00-\u9fff]{1,3}[A-Ea-e]?)\s+(.+)$/);
+      if (m2 && looksLikeSubject(m2[1])){ subj = m2[1]; text = m2[2].trim(); }
+      else{
+        const t = tightSubject(line);
+        if (t){ subj = t.subj; text = t.text.trim(); }
+      }
+    }
+
+    const last = items[items.length - 1];
+    if (subj){
+      if (last && last.subject === subj && !last.img) last.text += (last.text ? "\n" : "") + text;
+      else items.push({ subject: subj, text });
+    }else if (last && !last.img){
+      last.text += (last.text ? "\n" : "") + line;   // 續行併回上一項
+    }else{
+      items.push({ subject: "", text: line });       // 無科目前綴的說明行
+    }
+  }
+  return items;
+}
+
+function resolveDate(mo, dy, base){
+  const y0 = base.getFullYear();
+  let best = null;
+  for (const y of [y0 - 1, y0, y0 + 1]){
+    const d = new Date(y, mo - 1, dy);
+    if (d.getMonth() !== mo - 1 || d.getDate() !== dy) continue;
+    const diff = Math.abs(d - base);
+    if (!best || diff < best.diff) best = { d, diff };
+  }
+  return best ? best.d : null;
+}
+
+function parsePage(html){
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const bucket = new Map();
   const t0 = today0();
-  const tkey = ymd(t0);
-  const tlabel = (t0.getMonth() + 1) + "-" + p2(t0.getDate());
-  el.innerHTML = DATA.classes.map((c, i) => {
-    // 該班資料中已含今天的作業 → 標示「今天」，代表已抓到當天內容
-    const hasToday = (c.days || []).some(d => d.date === tkey);
-    return `
-    <button class="tab" role="tab" aria-selected="${i === state.cls}" data-i="${i}">
-      <span class="dot" style="color:${c.accent}"></span>${esc(c.name)}
-      ${hasToday ? `<span class="now" style="background:${c.accent}"
-        title="已抓到今天（${tlabel}）的作業內容">今天</span>` : ""}
+
+  doc.querySelectorAll("tr").forEach(tr => {
+    const cells = tr.querySelectorAll("td,th");
+    if (cells.length < 4) return;
+
+    const dm = (cells[0].textContent || "").match(/(\d{1,2})\s*[-/.月]\s*(\d{1,2})/);
+    if (!dm) return;
+    const d = resolveDate(+dm[1], +dm[2], t0);
+    if (!d) return;
+
+    let due = null;
+    const dm2 = (cells[3].textContent || "").match(/(\d{1,2})\s*[-/.月]\s*(\d{1,2})/);
+    if (dm2){
+      due = resolveDate(+dm2[1], +dm2[2], d);
+      if (due && due < d) due = new Date(due.getFullYear(), due.getMonth() + 1, due.getDate());
+    }
+
+    const items = splitItems(cellLines(cells[2]));
+    cellImages(cells[2]).forEach(src => items.push({ subject:"", text:"", img:src }));
+    if (!items.length) return;
+
+    const key = ymd(d);
+    if (!bucket.has(key)) bucket.set(key, { date:key, due:null, items:[] });
+    const b = bucket.get(key);
+    if (due && (!b.due || ymd(due) > b.due)) b.due = ymd(due);
+    items.forEach(it => {
+      if (!b.items.some(o => o.subject === it.subject && o.text === it.text && o.img === it.img)) b.items.push(it);
+    });
+  });
+
+  return [...bucket.values()].sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+/* =========================================================
+   顏色標示：簽改 / 測驗
+   ========================================================= */
+const TOKEN_RE = /(簽改|簽名|簽|小測|大測|測驗|測|默書|默|\b(?:Dictation|Dictionary|Dict|Quiz|Test|Sign|Correction|Corr)\b)/gi;
+
+function clsOfWord(w){
+  if (/^(簽改|簽名|簽|sign|corr|correction)$/i.test(w)) return "sign";
+  if (/測|默|dict|quiz|test/i.test(w)) return "test";
+  return "";
+}
+function markup(text){
+  let out = "", last = 0, m, flags = { sign:false, test:false };
+  TOKEN_RE.lastIndex = 0;
+  while ((m = TOKEN_RE.exec(text)) !== null){
+    const word = m[0], kind = clsOfWord(word);
+    if (!kind) continue;
+    flags[kind] = true;
+    out += esc(text.slice(last, m.index)) + '<mark class="k-' + kind + '">' + esc(word) + "</mark>";
+    last = m.index + word.length;
+  }
+  out += esc(text.slice(last));
+  return { html: out, flags };
+}
+
+const SUBJ_COLORS = ["#2f6fb0", "#0e8a7d", "#b4692b", "#8a4fbf", "#b3457a", "#2f7f4f", "#b0452b", "#3d6ea8"];
+function subjColor(s){
+  let h = 0;
+  for (const ch of String(s)) h = (h * 31 + ch.codePointAt(0)) >>> 0;
+  return SUBJ_COLORS[h % SUBJ_COLORS.length];
+}
+
+/* 交期提示（只在最近一日顯示） */
+function dueInfo(dueStr){
+  if (!dueStr) return null;
+  const diff = Math.round((parseD(dueStr) - today0()) / 86400000);
+  let label, tone = "";
+  if (diff < 0){ label = "已過 " + (-diff) + " 天"; tone = "late"; }
+  else if (diff === 0){ label = "今天交"; tone = "soon"; }
+  else if (diff === 1){ label = "明天交"; tone = "soon"; }
+  else if (diff === 2){ label = "後天交"; }
+  else { label = diff + " 天後交"; }
+  return { label, tone };
+}
+
+/* =========================================================
+   畫面
+   ========================================================= */
+function renderSources(){
+  document.getElementById("sources").innerHTML = state.sel.map(code =>
+    `<a href="${URL_BASE + code}" target="_blank" rel="noopener"
+        title="開啟${esc(nameOf(code))}作業佈置原頁面">
+       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+         <path d="M14 4h6v6"></path><path d="M20 4l-9 9"></path>
+         <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path>
+       </svg>${esc(nameOf(code))} 原頁面</a>`
+  ).join("");
+}
+
+/* 底部：已設定的班級（可橫向滑動） */
+function renderStrip(){
+  const t0 = ymd(today0());
+  const el = document.getElementById("classStrip");
+  el.innerHTML = state.sel.map((code, i) => {
+    const rec = state.data[code];
+    const hasToday = !!(rec && rec.days && rec.days.some(d => d.date === t0));
+    const acc = accentOf(code);
+    return `<button class="cchip${state.busy[code] ? " busy" : ""}" role="tab"
+              data-i="${i}" aria-selected="${i === state.cls}" style="--c:${acc}"
+              title="${esc(nameOf(code))}${hasToday ? "：已抓到今天的作業" : ""}">
+      <span class="cdot"></span>${esc(nameOf(code))}
+      ${hasToday ? '<span class="cnow">今天</span>' : ""}
     </button>`;
   }).join("");
-  el.querySelectorAll(".tab").forEach(b => b.onclick = () => {
-    state.cls = +b.dataset.i;
-    document.documentElement.style.setProperty("--accent", currentClass().accent);
-    renderTabs(); renderList();
-    history.replaceState(null, "", "#" + currentClass().code);
+  el.querySelectorAll(".cchip").forEach(b => {
+    b.onclick = () => selectClass(+b.dataset.i);
   });
-  document.documentElement.style.setProperty("--accent", currentClass().accent);
+  document.documentElement.style.setProperty("--accent", accentOf(currentCode()));
+  centerChip(false);
 }
 
-function matchItems(day, nq, only){
+function centerChip(smooth){
+  const strip = document.getElementById("classStrip");
+  const el = strip.querySelector('.cchip[aria-selected="true"]');
+  if (!el) return;
+  const sr = strip.getBoundingClientRect(), er = el.getBoundingClientRect();
+  const delta = (er.left - sr.left) + strip.scrollLeft - (strip.clientWidth - er.width) / 2;
+  const left = Math.max(0, Math.min(strip.scrollWidth - strip.clientWidth, delta));
+  if (smooth && Math.abs(left - strip.scrollLeft) > 2) strip.scrollTo({ left, behavior:"smooth" });
+  else strip.scrollLeft = left;
+}
+
+function refreshNav(){ renderStrip(); }
+
+function selectClass(i){
+  i = Math.max(0, Math.min(state.sel.length - 1, i));
+  if (i === state.cls){ centerChip(true); return; }
+  state.cls = i;
+  refreshNav();
+  renderList();
+  try{ history.replaceState(null, "", "#" + currentCode()); }catch(e){}
+  if (window.scrollY > 4) window.scrollTo({ top:0, behavior:"smooth" });
+  centerChip(true);
+  ensureData(currentCode());
+}
+
+function matchItems(day, only){
   return day.items.filter(it => {
-    if (nq && !norm(it.subject + ":" + it.text).includes(nq)) return false;
+    if (it.img) return !only;
     if (only){
       const r = markup(it.text);
       if (!r.flags.sign && !r.flags.test) return false;
@@ -600,22 +657,31 @@ function matchItems(day, nq, only){
   });
 }
 
-/* 顯示範圍：由今天往回，一直到「上週一」（含）為止 */
-function lastMonday(){
-  const t = today0();
-  const backToThisMonday = (t.getDay() + 6) % 7;      // 0=週日 → 6
-  return new Date(t.getFullYear(), t.getMonth(), t.getDate() - backToThisMonday - 7);
-}
+function currentCode(){ return state.sel[state.cls] || state.sel[0]; }
 
 function renderList(){
-  const c = currentClass();
-  const nq = "";
+  const code = currentCode();
   const list = document.getElementById("list");
+  const rec = state.data[code];
 
-  const cutoff = ymd(lastMonday());                    // 上週一
-  const days = c.days
-    .filter(d => d.date >= cutoff)                     // 由近到遠，至到上週一
-    .map(d => ({ ...d, shown: matchItems(d, nq, state.only) }))
+  if (!rec || !rec.days || !rec.days.length){
+    if (state.busy[code] || !state.err[code]){
+      list.innerHTML = `<div class="empty">正在抓取 ${esc(nameOf(code))} 的作業…<br>
+        <span style="font-size:12px;opacity:.75">首次載入需時數秒</span></div>`;
+    }else{
+      list.innerHTML = `<div class="empty">抓不到 ${esc(nameOf(code))} 的資料<br>
+        <span style="font-size:12px;opacity:.8">${esc(state.err[code])}</span><br>
+        <button class="retry" data-code="${esc(code)}">再試一次</button></div>`;
+      const btn = list.querySelector(".retry");
+      if (btn) btn.onclick = () => ensureData(btn.dataset.code, true);
+    }
+    return;
+  }
+
+  const cutoff = ymd(lastMonday());
+  const days = rec.days
+    .filter(d => d.date >= cutoff)
+    .map(d => ({ ...d, shown: matchItems(d, state.only) }))
     .filter(d => d.shown.length > 0);
 
   if (!days.length){
@@ -628,9 +694,11 @@ function renderList(){
   let html = "";
   days.forEach((d, idx) => {
     const dt = parseD(d.date);
-    const due = idx === 0 ? dueInfo(d.due) : null;   // 交期提示只在最近一日顯示
+    const due = idx === 0 ? dueInfo(d.due) : null;    // 交期只在最近一日顯示
     let signN = 0, testN = 0;
+
     const rows = d.shown.map(it => {
+      if (it.img) return `<li class="note"><a class="img" href="${esc(it.img)}" target="_blank" rel="noopener">📎 附圖</a></li>`;
       const r = markup(it.text);
       if (r.flags.sign) signN++;
       if (r.flags.test) testN++;
@@ -643,7 +711,7 @@ function renderList(){
     html += `<article class="day" style="animation-delay:${Math.min(idx * 18, 220)}ms">
       <div class="body">
         <div class="hd">
-          <h2>${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · ${WEEK[dt.getDay()]}</h2>
+          <h2>${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · 週${WEEK[dt.getDay()]}</h2>
           ${dt.getTime() === t0.getTime() ? '<span class="chip today">今天</span>' : ""}
           ${signN ? `<span class="chip sign">簽改 ${signN}</span>` : ""}
           ${testN ? `<span class="chip test">測驗 ${testN}</span>` : ""}
@@ -656,90 +724,222 @@ function renderList(){
   list.innerHTML = html;
 }
 
-/* ---------- 抓取／更新 ---------- */
-async function refresh(opts){
-  opts = opts || {};
-  if (state.busy || !DATA || !DATA.classes || !DATA.classes.length) return;
-  state.busy = true;
+/* =========================================================
+   抓取各班
+   ========================================================= */
+function isFresh(at){
+  if (!at) return false;
+  const t = new Date(String(at).replace(" ", "T"));
+  if (isNaN(t.getTime())) return false;
+  return (Date.now() - t.getTime()) < CACHE_MIN * 60 * 1000;
+}
 
-  // 逐班獨立更新：哪一班先拿到就先顯示，不必等另一班
-  const jobs = DATA.classes.map((c, idx) => (async () => {
-    if (idx) await sleep(idx * 350);
-    try{
-      const days = await fetchPage(c.url || URL_BASE + c.code);
-      const target = DATA.classes.find(x => x.code === c.code) || c;
-      target.days = days;
-      target.fetchedAt = stamp();
-      DATA.generatedAt = target.fetchedAt;
-      saveCache(DATA);
-      renderTabs();
-      renderList();
-      return { name: c.name, ok: true, n: days.length };
-    }catch(err){
-      return { name: c.name, ok: false, err: (err && err.message) || "網絡問題" };
-    }
-  })());
+async function ensureData(code, force){
+  const rec = state.data[code];
+  if (!force && rec && rec.days && rec.days.length && isFresh(rec.at)) return;
+  if (state.busy[code]) return;
 
-  const results = await Promise.all(jobs);
-  state.busy = false;
+  state.busy[code] = true;
+  delete state.err[code];
+  refreshNav(); if (code === currentCode()) renderList();
 
-  const bad = results.filter(r => !r.ok);
-  const hasAny = DATA.classes.some(c => c.days && c.days.length);
-
-  if (bad.length === results.length && !hasAny){
-    toast("無法取得資料：" + bad[0].err + "。請檢查網絡後重新開啟本頁。", true);
-    return;
-  }
-
-  if (bad.length){
-    if (!opts.silent) toast("部分班別抓取失敗（" + bad.map(b => b.name).join("、") + "），已保留原有資料", true);
-  }else if (!opts.silent){
-    toast("已更新：" + results.map(r => r.name + " " + r.n + " 天").join("、"));
+  try{
+    const html = await fetchPage(URL_BASE + code);
+    const days = parsePage(html);
+    if (!days.length) throw new Error("解析不到作業");
+    state.data[code] = { at: stamp(), days };
+    saveCache();
+  }catch(err){
+    state.err[code] = (err && err.message) || "網絡問題";
+  }finally{
+    state.busy[code] = false;
+    refreshNav(); if (code === currentCode()) renderList();
   }
 }
 
-/* ---------- 初始化：每次開啟即時抓取 ---------- */
-(function init(){
-  const list = document.getElementById("list");
+/* =========================================================
+   班級選單
+   ========================================================= */
+function renderSheet(){
+  const groups = document.getElementById("classGroups");
+  groups.innerHTML = LEVELS.map(lv => {
+    const items = CLASSES.filter(c => c.v.startsWith(lv.k))
+      .sort((a, b) => a.v.localeCompare(b.v));
+    if (!items.length) return "";
+    return `<div class="grp">
+      <div class="lab">${lv.t}</div>
+      <div class="opts">${items.map(c => {
+        const on = state.sel.includes(c.v);
+        const acc = accentOf(c.v);
+        return `<button class="opt" data-v="${c.v}" aria-pressed="${on}"
+                  style="${on ? `background:${acc};` : ""}">
+          ${on ? '<span class="tick">✓</span>' : ""}${esc(c.n)}
+        </button>`;
+      }).join("")}</div>
+    </div>`;
+  }).join("");
 
-  // 先用上次成功抓取的快取（若有），沒有就用內嵌快照，最後才向學校網址抓
-  const cache = loadCache();
-  if (cache && (!DATA || !DATA.generatedAt || cache.generatedAt > DATA.generatedAt)) DATA = cache;
+  groups.querySelectorAll(".opt").forEach(b => {
+    b.onclick = () => toggleClass(b.dataset.v);
+  });
 
-  let cold = false;
-  if (!DATA || !DATA.classes || !DATA.classes.length){
-    cold = true;
-    DATA = { generatedAt: "", classes: CLASS_META.map(m => ({ ...m, url: URL_BASE + m.code, days: [] })) };
+  document.getElementById("sheetFoot").textContent =
+    `已選 ${state.sel.length}/${MAX_SEL} 個班級` + (state.sel.length >= MAX_SEL ? "（已達上限）" : "");
+}
+
+function toggleClass(code){
+  const i = state.sel.indexOf(code);
+  if (i >= 0){
+    if (state.sel.length === 1){ toast("至少要保留一個班級", true); return; }
+    state.sel.splice(i, 1);
+    if (state.cls >= state.sel.length) state.cls = state.sel.length - 1;
+  }else{
+    if (state.sel.length >= MAX_SEL){ toast("最多同時顯示 " + MAX_SEL + " 個班級", true); return; }
+    state.sel.push(code);
+    state.sel = sortSel(state.sel);                 // 保持高班→低班
+    state.cls = state.sel.indexOf(code);            // 切到剛加入的班
   }
+  saveSel();
+  refreshNav(); renderSources(); renderSheet(); renderList();
+  if (i < 0) ensureData(code);
+}
 
-  const hash = location.hash.replace("#", "");
-  const i = DATA.classes.findIndex(c => c.code === hash);
-  if (i >= 0) state.cls = i;
+function openSheet(){
+  const w = document.getElementById("sheetWrap");
+  w.classList.add("on");
+  w.setAttribute("aria-hidden", "false");
+  renderSheet();
+}
+function closeSheet(){
+  const w = document.getElementById("sheetWrap");
+  w.classList.remove("on");
+  w.setAttribute("aria-hidden", "true");
+}
 
-  document.getElementById("sources").innerHTML = DATA.classes.map(c =>
-    `<a href="${c.url || URL_BASE + c.code}" target="_blank" rel="noopener"
-        title="開啟${esc(c.name)}作業佈置原頁面">
-       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-         <path d="M14 4h6v6"></path><path d="M20 4l-9 9"></path>
-         <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path>
-       </svg>${esc(c.name)} 原頁面</a>`
-  ).join("");
+/* =========================================================
+   手勢：左右滑動切換班級
+   ========================================================= */
+const SWIPE_MIN = 54;
+let sw = null;
+
+function bindSwipe(){
+  const area = document.querySelector("main.wrap");
+
+  const reset = anim => {
+    if (anim){
+      area.style.transition = "transform .2s ease";
+      area.style.transform = "translateX(0)";
+      setTimeout(() => { area.style.transition = ""; area.style.transform = ""; }, 220);
+    }else{
+      area.style.transition = "";
+      area.style.transform = "";
+    }
+    document.body.classList.remove("dragging");
+  };
+
+  area.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1 || document.querySelector(".sheet-wrap.on")){ sw = null; return; }
+    const t = e.touches[0];
+    sw = { x:t.clientX, y:t.clientY, dx:0, dir:null };
+  }, { passive:true });
+
+  area.addEventListener("touchmove", e => {
+    if (!sw || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    const dx = t.clientX - sw.x, dy = t.clientY - sw.y;
+    if (sw.dir === null){
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      sw.dir = Math.abs(dx) > Math.abs(dy) * 1.15 ? "x" : "y";
+      if (sw.dir === "x") document.body.classList.add("dragging");
+    }
+    if (sw.dir !== "x") return;
+    e.preventDefault();
+    const atEdge = (state.cls === 0 && dx > 0) || (state.cls === state.sel.length - 1 && dx < 0);
+    sw.dx = atEdge ? dx * 0.25 : dx;
+    area.style.transform = "translateX(" + sw.dx + "px)";
+  }, { passive:false });
+
+  const end = () => {
+    if (!sw) return;
+    const dx = sw.dx, moved = sw.dir === "x";
+    sw = null;
+    if (!moved){ document.body.classList.remove("dragging"); return; }
+    if (Math.abs(dx) >= SWIPE_MIN){
+      reset(false);
+      selectClass(state.cls + (dx < 0 ? 1 : -1));
+    }else{
+      reset(true);
+    }
+  };
+  area.addEventListener("touchend", end);
+  area.addEventListener("touchcancel", end);
+}
+
+/* =========================================================
+   初始化
+   ========================================================= */
+(function init(){
+  document.getElementById("openMenu").onclick = openSheet;
+  document.querySelectorAll("[data-close]").forEach(el => el.onclick = closeSheet);
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape"){ closeSheet(); return; }
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft"){
+      const tag = (e.target.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "select" || tag === "textarea") return;
+      selectClass(state.cls + (e.key === "ArrowRight" ? 1 : -1));
+    }
+  });
 
   const only = document.getElementById("onlyFlags");
   only.addEventListener("change", () => { state.only = only.checked; renderList(); });
 
-  if (DATA.classes[state.cls].days.length){
-    renderTabs();
-    renderList();
-  }else{
-    document.getElementById("tabs").innerHTML = "";
-    list.innerHTML = '<div class="empty">正在抓取作業資料…<br>' +
-                     '<span style="font-size:12px;opacity:.75">首次載入需時數秒</span></div>';
-  }
+  const hash = location.hash.replace("#", "");
+  const hi = state.sel.indexOf(hash);
+  if (hi >= 0) state.cls = hi;
 
-  // 開啟即抓；有舊資料時靜默更新，失敗只在右上角提示
-  refresh({ silent: !cold });
+  bindSwipe();
+  window.addEventListener("resize", () => { centerChip(false); syncFab(); });
+
+  /* 浮動的「簽改/測」貼在工具條上緣，並與工具條內容右邊緣對齊 */
+  function syncFab(){
+    const bar = document.querySelector(".mbar");
+    const inner = bar && bar.querySelector(".mbar-inner");
+    const fab = document.querySelector(".toggle.fab");
+    if (bar) document.documentElement.style.setProperty("--mbar-h", bar.offsetHeight + "px");
+    if (inner && fab){
+      const vw = document.documentElement.clientWidth;
+      const pad = Math.max(8, Math.round(vw - inner.getBoundingClientRect().right));
+      fab.style.right = pad + "px";
+    }
+  }
+  syncFab();
+  if (window.ResizeObserver) new ResizeObserver(syncFab).observe(document.querySelector(".mbar"));
+  window.addEventListener("load", syncFab);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFab);
+
+  renderSources();
+
+  /* 右上角：今日日期（短格式，例如 10-28 週三） */
+  (function todayTag(){
+    const t = today0();
+    const el = document.getElementById("todayTag");
+    if (el) el.textContent = mmdd(ymd(t)) + " 週" + WEEK[t.getDay()];
+  })();
+  refreshNav();
+  renderList();
+
+  // 開頁即抓：各班獨立，先拿到先顯示
+  state.sel.forEach((code, i) => {
+    setTimeout(() => ensureData(code), i * 350);
+  });
+
+  // 第一次使用提示手勢
+  try{
+    if (state.sel.length > 1 && !localStorage.getItem("hw_hint_v1")){
+      localStorage.setItem("hw_hint_v1", "1");
+      setTimeout(() => toast("在內容上左右滑動，即可切換其他班級"), 1500);
+    }
+  }catch(e){}
 })();
 </script>
 </body>
