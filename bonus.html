@@ -1101,7 +1101,38 @@ h1{
   letter-spacing:.2px;
 }
 .btn-row{display:flex;gap:8px;margin-top:7px}
-.btn-row .btn{flex:1 1 0;min-width:0;padding:12px 6px;font-size:13px;white-space:nowrap}
+.btn-row .inp{flex:1 1 auto;min-width:0;width:auto;padding:12px 14px;text-align:center}
+.btn-row .btn{flex:0 0 auto;padding:12px 18px;font-size:13px;white-space:nowrap}
+.w-in{flex:1 1 0 !important;min-width:0}
+.w-exp{flex:2 1 0 !important;min-width:0}
+.lbl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.lbl-row .lbl.lbl-top{margin-top:0}
+.lbl-row .btn{flex:0 0 auto}
+
+/* 編輯支付方式列 */
+.pm-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line2)}
+.pm-row:last-child{border-bottom:none}
+.pm-inp{flex:1;min-width:0;padding:11px 13px;font-size:15px;font-weight:600}
+.pm-del{flex:0 0 auto;width:42px;height:42px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font-size:16px;color:#b56b62;transition:background .13s,color .13s,border-color .13s}
+.pm-del:active{transform:scale(.95)}
+.pm-del[data-armed="1"]{background:#b56b62;color:#fff;border-color:#b56b62}
+.pm-swatch{flex:0 0 auto;width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer;position:relative;overflow:hidden;padding:0}
+.pm-swatch::after{content:"";position:absolute;right:3px;bottom:3px;width:0;border-top:7px solid rgba(0,0,0,.18);border-left:7px solid transparent;transform:rotate(0)}
+.pay-color-pop{margin-top:12px;padding:12px;border:1.5px solid var(--line);border-radius:14px;background:#fff}
+.pay-color-pop .pc-title{font-size:13px;font-weight:700;color:#7a7f85;margin-bottom:10px}
+.pc-dots{display:flex;flex-wrap:wrap;gap:10px}
+.pc-dot{width:30px;height:30px;border-radius:50%;border:2px solid rgba(0,0,0,.12);cursor:pointer;position:relative;padding:0}
+.pc-dot[data-color=""]{background:#fff;background-image:linear-gradient(45deg,#e7e3df 25%,transparent 25%,transparent 75%,#e7e3df 75%),linear-gradient(45deg,#e7e3df 25%,#fff 25%,#fff 75%,#e7e3df 75%);background-size:12px 12px;background-position:0 0,6px 6px}
+.pc-dot[data-color=""].sel::after{content:"／";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#b56b62;font-weight:800;font-size:16px}
+.pc-dot[data-color="#ffe08a"]{background:#ffe08a}
+.pc-dot[data-color="#ffc9c9"]{background:#ffc9c9}
+.pc-dot[data-color="#c9e7ff"]{background:#c9e7ff}
+.pc-dot[data-color="#c9f0d0"]{background:#c9f0d0}
+.pc-dot[data-color="#e3c9ff"]{background:#e3c9ff}
+.pc-dot[data-color="#ffd6a5"]{background:#ffd6a5}
+.pc-dot[data-color="#bdeee8"]{background:#bdeee8}
+.pc-dot[data-color="#d6d6d6"]{background:#d6d6d6}
+.pc-dot.sel{outline:3px solid var(--accent);outline-offset:1px}
 
 /* ---------- stats ---------- */
 .stat4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -1270,7 +1301,7 @@ h1{
 
   <div class="grid" id="grid"></div>
 
-  <div class="hint">拖支付名＝排序　·　點格＝已消／再點改額　·　滑動換週</div>
+  <div class="hint">拖支付方式名＝排序　·　點格＝已消／再點改額　·　滑動換週</div>
 
   <div class="weekdock" id="weekdock">
     <button class="wnav" id="wPrev" type="button" aria-label="上一週"><span class="ar">‹</span>上週</button>
@@ -1317,7 +1348,7 @@ h1{
 <!-- 支付快捷 -->
 <div class="sheet" id="paySheet">
   <div class="sheet-head">
-    <h3 id="payTitle">支付 · 快捷</h3>
+    <h3 id="payTitle">支付方式 · 快捷</h3>
     <button class="x" data-close>✕</button>
   </div>
   <div class="lbl">三格狀態 · 點按鈕即時套用</div>
@@ -1332,15 +1363,48 @@ h1{
     <button class="x" data-close>✕</button>
   </div>
 
-  <div class="lbl lbl-top">顯示的支付渠道<span class="sec-tag">套用所有週</span></div>
+  <div class="lbl-row">
+    <div class="lbl lbl-top">顯示的支付方式<span class="sec-tag">套用所有週</span></div>
+    <button class="btn ghost" id="payManageBtn" type="button">編輯支付方式</button>
+  </div>
   <div class="chips" id="payChips"></div>
-  <div class="chips-tip">點一下隱藏／顯示　·　按住拖動可換次序<br>十週共用；隱藏的資料仍計入統計</div>
+  <div class="chips-tip">點一下隱藏／顯示　·　按住拖動可換次序<br>所有週共用；隱藏的資料仍計入統計</div>
 
-  <div class="lbl lbl-top">匯出</div>
-  <button class="btn ghost wide" id="expCsvBtn" type="button">匯出 CSV 表格</button>
-  <div class="chips-tip" style="margin-top:8px">含全部週　·　Excel／Numbers 可開</div>
+  <div class="lbl lbl-top">週數<span class="sec-tag">1–12</span></div>
+  <div class="btn-row">
+    <input class="inp w-in" id="weekInput" type="number" min="1" max="12" inputmode="numeric" />
+    <button class="btn primary" id="weekSave" type="button">儲存</button>
+    <button class="btn ghost w-exp" id="expCsvBtn" type="button">匯出</button>
+  </div>
+  <div class="chips-tip" id="weekTip">目前共 10 週</div>
 
-  <div class="ver">版本 2026-10-26l · 面額 5 種<br>綠＝未用　紅＝未用且 ≥50　灰＝已消</div>
+  <div class="ver">版本 2026-10-31 · 可增刪週數、編輯支付方式與底色<br>綠＝未用　紅＝未用且 ≥50　灰＝已消</div>
+</div>
+
+<!-- 編輯支付方式 -->
+<div class="sheet" id="payManageSheet">
+  <div class="sheet-head">
+    <h3>編輯支付方式</h3>
+    <button class="x" data-close>✕</button>
+  </div>
+  <div class="lbl">點名稱可直接改名　·　左邊色塊設底色　·　🗑 刪除（至少留一個）</div>
+  <div id="payManageList"></div>
+  <div class="pay-color-pop" id="payColorPop" style="display:none">
+    <div class="pc-title">設定「<span id="pcName">—</span>」的底色</div>
+    <div class="pc-dots" id="pcDots">
+      <div class="pc-dot sel" data-color="" title="無色"></div>
+      <div class="pc-dot" data-color="#ffe08a"></div>
+      <div class="pc-dot" data-color="#ffc9c9"></div>
+      <div class="pc-dot" data-color="#c9e7ff"></div>
+      <div class="pc-dot" data-color="#c9f0d0"></div>
+      <div class="pc-dot" data-color="#e3c9ff"></div>
+      <div class="pc-dot" data-color="#ffd6a5"></div>
+      <div class="pc-dot" data-color="#bdeee8"></div>
+      <div class="pc-dot" data-color="#d6d6d6"></div>
+    </div>
+    <button class="btn ghost" id="pcClose" type="button" style="margin-top:10px">完成</button>
+  </div>
+  <button class="btn primary wide" id="payAddBtn" type="button" style="margin-top:12px">＋ 新增支付方式</button>
 </div>
 
 <!-- 統計 -->
@@ -1367,7 +1431,7 @@ h1{
       <div class="n o" id="sFull">0</div>
     </div>
   </div>
-  <div class="sec">按支付抽券統計</div>
+  <div class="sec">按支付方式抽券統計</div>
   <div id="payTable"></div>
   <div class="foot-note" id="statsNote">全部週次合計 · 金額單位 MOP$ · 滿減券不計入總額</div>
   <div class="stats-bar">
@@ -1439,18 +1503,27 @@ h1{
 (function(){
 'use strict';
 
-var PAYS=['中銀','工商','國際','廣發','大豐','支付寶','MPay','UePay'];
+var DEF_PAYS=['中銀','工商','國際','廣發','大豐','支付寶','MPay','UePay'];
+var PAYS=DEF_PAYS.slice();          /* 動態鏡像 S.pays：隨增刪／改名同步 */
 var DEF_ORDER=PAYS.map(function(_,i){return i;});
 var PER=3;
-var TOTAL_CELLS=PAYS.length*PER;
+var TOTAL_CELLS=PAYS.length*PER;   /* 動態：渠道數 × PER */
 var ROW_MAX=60;    /* 每行最大高度：隱藏渠道後不留大片空白 */
 var ROW_GAP=6;
 var AMTS=[10,20,50,100,200];
 var KEY='coupon_book_v1';
+/* 同步全域 PAYS／DEF_ORDER／TOTAL_CELLS 與 S.pays */
+function syncPays(arr){
+  var p=(arr&&Array.isArray(arr))?arr:(S&&Array.isArray(S.pays)?S.pays:DEF_PAYS);
+  PAYS=p.slice();
+  DEF_ORDER=PAYS.map(function(_,i){return i;});
+  TOTAL_CELLS=PAYS.length*PER;
+}
 var $=function(id){return document.getElementById(id);};
 
 /* ---------------- state ---------------- */
-var S=ensureWeeks(loadState(),10);
+var S=ensureWeeks(loadState());
+syncPays();   /* 以載入後的 S.pays 為準 */
 
 function uid(){return Math.random().toString(36).slice(2,9);}
 function newWeek(n){
@@ -1458,7 +1531,7 @@ function newWeek(n){
 }
 /* 固定十週：不足就補（沿用現有渠道設定），已有資料與自訂名稱一律不動 */
 function ensureWeeks(s,want){
-  want=want||10;
+  want=(typeof want==='number')?want:null;   /* 不強制補到固定週數，週數由使用者決定 */
   s.weeks=sortWeeks(s.weeks||[]);
   var used={};
   s.weeks.forEach(function(w){
@@ -1514,6 +1587,13 @@ function loadState(){
     if(raw){
       var d=JSON.parse(raw);
       if(d&&Array.isArray(d.weeks)&&d.weeks.length){
+        /* 支付方式（渠道）名稱：新版存 d.pays（依 slot 排列），舊版用預設 8 間 */
+        if(!(Array.isArray(d.pays)&&d.pays.length)) d.pays=DEF_PAYS.slice();
+        syncPays(d.pays);   /* 先同步 TOTAL_CELLS，cell 補齊才正確 */
+        /* 支付方式底色：依 slot 排列，與 pays 等長，缺漏補空 */
+        if(!Array.isArray(d.payColors)) d.payColors=[];
+        while(d.payColors.length<PAYS.length) d.payColors.push('');
+        d.payColors=d.payColors.slice(0,PAYS.length);
         d.weeks.forEach(function(w){
           if(!Array.isArray(w.cells)) w.cells=[];
           while(w.cells.length<TOTAL_CELLS) w.cells.push(null);
@@ -1570,8 +1650,9 @@ function loadState(){
       }
     }
   }catch(e){}
-  var w=newWeek(1);
-  return {v:2,weeks:[w],cur:w.id,favs:[],hide:[]};
+  var weeks=[]; for(var i=1;i<=10;i++) weeks.push(newWeek(i));
+  syncPays(DEF_PAYS.slice());
+  return {v:2,weeks:weeks,cur:weeks[0].id,favs:[],pays:DEF_PAYS.slice(),payColors:DEF_PAYS.map(function(){return '';}),hide:[]};
 }
 
 function save(){
@@ -1789,6 +1870,8 @@ function renderGrid(){
     }else{
       nm.textContent=PAYS[pi];
     }
+    var pcol=S.payColors[pi]||'';
+    nm.style.background=pcol||'';
     row.appendChild(nm);
     bindRowDrag(row,nm);
 
@@ -2328,7 +2411,9 @@ $('unuseBtn').addEventListener('click',function(){
 
 /* ---------------- 週管理 ---------------- */
 $('menuBtn').addEventListener('click',function(){
+  var wi=$('weekInput'); if(wi) wi.value=S.weeks.length;
   renderChips();
+  updateWeekTip();
   openSheet('menuSheet');
 });
 
@@ -2343,6 +2428,8 @@ function renderChips(){
     b.dataset.pi=pi;
     b.className='chip'+(hide.indexOf(pi)<0?' on':'');
     b.textContent=PAYS[pi];
+    var ccol=S.payColors[pi]||'';
+    if(ccol) b.style.background=ccol;
     b.addEventListener('click',function(){ toggleHide(pi); });
     box.appendChild(b);
   });
@@ -2353,7 +2440,7 @@ function toggleHide(pi){
   var hide=hideList();
   var k=hide.indexOf(pi);
   if(k<0){
-    if(PAYS.length-(hide.length+1)<1){ toast('至少要顯示一間'); return; }
+    if(PAYS.length-(hide.length+1)<1){ toast('至少要顯示一個支付方式'); return; }
     hide.push(pi);
     toast('已隱藏「'+PAYS[pi]+'」，所有週一併套用');
   }else{
@@ -2445,8 +2532,186 @@ function applyChipOrder(){
   renderChips();
   renderSummary();
   renderGrid();
-  toast('支付次序已更新，十週共用');
+  toast('支付方式次序已更新，所有週共用');
 }
+
+/* ---------------- 支付方式（渠道）：新增／刪除／改名 ---------------- */
+function addChannel(name){
+  name=(name||'').trim();
+  if(PAYS.length>=16){ toast('最多 16 個支付方式'); return; }
+  if(!name) name='支付方式 '+(PAYS.length+1);
+  S.pays.push(name);
+  S.payColors.push('');
+  if(!Array.isArray(S.order)) S.order=DEF_ORDER.slice();
+  S.order.push(S.pays.length-1);   /* 新槽位序號 */
+  S.weeks.forEach(function(w){ for(var k=0;k<PER;k++) w.cells.push(null); });
+  syncPays();
+  save();
+  renderChips();
+  renderAll();
+}
+function deleteChannel(idx){
+  if(idx<0||idx>=PAYS.length) return;
+  if(PAYS.length<=1){ toast('至少要保留一個支付方式'); return; }
+  var oldLen=PAYS.length;
+  S.pays.splice(idx,1);
+  if(Array.isArray(S.payColors)) S.payColors.splice(idx,1);
+  if(Array.isArray(S.order)){
+    S.order=S.order.filter(function(v){return v!==idx;}).map(function(v){return v>idx?v-1:v;});
+  }
+  S.hide=(S.hide||[]).filter(function(v){return v!==idx;}).map(function(v){return v>idx?v-1:v;});
+  S.weeks.forEach(function(w){
+    var out=[];
+    for(var s=0;s<oldLen;s++){
+      if(s===idx) continue;
+      for(var k=0;k<PER;k++) out.push(w.cells[s*PER+k]||null);
+    }
+    w.cells=out;
+  });
+  syncPays();
+  save();
+  renderChips();
+  renderAll();
+}
+function renameChannel(idx,name){
+  if(idx<0||idx>=PAYS.length) return;
+  name=(name||'').trim();
+  if(!name) return;
+  S.pays[idx]=name;
+  syncPays();
+  save();
+  renderChips();
+}
+var colorTarget=-1;
+function setPayColor(idx,color){
+  if(idx<0||idx>=PAYS.length) return;
+  S.payColors[idx]=color||'';
+  save();
+  renderPayManage();
+  if(colorTarget===idx){
+    var cur=S.payColors[idx]||'';
+    [].forEach.call($('pcDots').children,function(d){ d.classList.toggle('sel', d.getAttribute('data-color')===cur); });
+  }
+  renderAll();
+}
+function openColorPop(pi){
+  colorTarget=pi;
+  var pop=$('payColorPop');
+  if(!pop) return;
+  pop.style.display='';
+  $('pcName').textContent=PAYS[pi]||'';
+  var cur=S.payColors[pi]||'';
+  [].forEach.call($('pcDots').children,function(d){ d.classList.toggle('sel', d.getAttribute('data-color')===cur); });
+}
+function renderPayManage(){
+  var box=$('payManageList');
+  if(!box) return;
+  box.innerHTML='';
+  PAYS.forEach(function(name,pi){
+    var row=document.createElement('div');
+    row.className='pm-row';
+    var sw=document.createElement('button');
+    sw.type='button';
+    sw.className='pm-swatch';
+    sw.style.background=S.payColors[pi]||'#fff';
+    sw.title='設定底色';
+    sw.addEventListener('click',function(){ openColorPop(pi); });
+    var inp=document.createElement('input');
+    inp.className='inp pm-inp';
+    inp.type='text';
+    inp.maxLength=12;
+    inp.value=name;
+    inp.placeholder='支付方式名稱';
+    inp.addEventListener('change',function(){ renameChannel(pi,this.value); });
+    inp.addEventListener('blur',function(){ renameChannel(pi,this.value); });
+    var del=document.createElement('button');
+    del.type='button';
+    del.className='pm-del';
+    del.textContent='🗑';
+    del.addEventListener('click',function(){
+      if(PAYS.length<=1){ toast('至少要保留一個支付方式'); return; }
+      if(del.dataset.armed==='1'){
+        deleteChannel(pi);
+        renderPayManage();
+        toast('已刪除「'+name+'」');
+      }else{
+        del.dataset.armed='1';
+        del.textContent='確認?';
+        setTimeout(function(){ if(del){ del.dataset.armed=''; del.textContent='🗑'; } },2600);
+      }
+    });
+    row.appendChild(sw);
+    row.appendChild(inp);
+    row.appendChild(del);
+    box.appendChild(row);
+  });
+}
+/* ---------------- 週數：填寫儲存 ---------------- */
+var weekSaveArmed=null;
+function resetWeekSaveBtn(){ var b=$('weekSave'); if(b) b.textContent='儲存'; }
+function updateWeekTip(){
+  var t=$('weekTip');
+  if(t) t.textContent='目前共 '+S.weeks.length+' 週';
+  resetWeekSaveBtn();
+}
+function setWeekCount(n){
+  n=Math.max(1,Math.min(12,parseInt(n,10)||0));
+  if(n===S.weeks.length){ toast('週數未改變'); return; }
+  if(n>S.weeks.length){
+    var add=n-S.weeks.length;
+    for(var i=0;i<add;i++){
+      var maxN=0;
+      S.weeks.forEach(function(w){ var m=/(\d+)/.exec(w.name||''); if(m) maxN=Math.max(maxN,parseInt(m[1],10)); });
+      var w=newWeek(maxN+1);
+      S.weeks.push(w);
+    }
+    S.cur=S.weeks[S.weeks.length-1].id;
+  }else{
+    S.weeks.length=n;   /* 截掉最後幾週 */
+    if(!S.weeks.some(function(w){return w.id===S.cur;})) S.cur=S.weeks[S.weeks.length-1].id;
+  }
+  save();
+  renderTabs();
+  renderAll();
+  updateWeekTip();
+  toast('已設為 '+n+' 週');
+}
+function onWeekSave(){
+  var inp=$('weekInput');
+  var n=Math.max(1,Math.min(12,parseInt(inp.value,10)||0));
+  inp.value=n;
+  if(n===S.weeks.length){ toast('週數未改變'); return; }
+  if(n<S.weeks.length){
+    if(weekSaveArmed!==n){
+      weekSaveArmed=n;
+      $('weekSave').textContent='確認設 '+n+' 週？';
+      setTimeout(function(){ weekSaveArmed=null; resetWeekSaveBtn(); },2600);
+      return;
+    }
+    weekSaveArmed=null;
+  }
+  setWeekCount(n);
+  resetWeekSaveBtn();
+}
+
+$('payManageBtn').addEventListener('click',function(){ renderPayManage(); openSheet('payManageSheet'); });
+$('payAddBtn').addEventListener('click',function(){
+  addChannel('');
+  renderPayManage();
+  var ins=$('payManageList').querySelectorAll('.pm-inp');
+  if(ins&&ins.length) ins[ins.length-1].focus();
+});
+$('weekSave').addEventListener('click',onWeekSave);
+$('weekInput').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); onWeekSave(); } });
+
+/* 底色調色盤（色塊為靜態元素，綁定一次即可） */
+[].forEach.call($('pcDots').children,function(d){
+  d.addEventListener('click',function(){
+    if(colorTarget<0) return;
+    setPayColor(colorTarget, d.getAttribute('data-color')||'');
+  });
+});
+$('pcClose').addEventListener('click',function(){ var p=$('payColorPop'); if(p) p.style.display='none'; colorTarget=-1; });
 
 /* ---------------- stats ---------------- */
 function renderStats(){
@@ -2473,7 +2738,7 @@ function renderStats(){
   $('sFull').textContent=agg.f+' 張';
   $('statsNote').textContent='共 '+S.weeks.length+' 週 · '+agg.c+' 筆金額券'+(agg.p?' · 待抽 '+agg.p+' 次':'')+' · 按抽到總額由高到低 · 滿減券另計，不計入金額';
 
-  var html='<div class="tbl-head"><span>支付</span><span class="r">次數</span><span class="r">抽到</span><span class="r">已消</span><span class="r">滿減</span></div>';
+  var html='<div class="tbl-head"><span>支付方式</span><span class="r">次數</span><span class="r">抽到</span><span class="r">已消</span><span class="r">滿減</span></div>';
   var rows=PAYS.map(function(p,i){ return {p:p,i:i,d:per[i]}; });
   rows.sort(function(A,B){
     if(B.d.t!==A.d.t) return B.d.t-A.d.t;
@@ -2535,7 +2800,7 @@ function buildCSV(){
   var out=[];
   out.push(csvLine(['消費連環賞 · 匯出時間 '+stampRead()]));
   out.push('');
-  out.push(csvLine(['週次','支付','第幾次','金額(MOP)','狀態','滿減券','錄入時間']));
+  out.push(csvLine(['週次','支付方式','第幾次','金額(MOP)','狀態','滿減券','錄入時間']));
   S.weeks.forEach(function(w){
     for(var pi=0;pi<PAYS.length;pi++){
       for(var k=0;k<PER;k++){
@@ -2733,7 +2998,7 @@ function buildImage(){
   ctx.fillStyle='#967f89';
   ctx.font='11.5px '+IMG_FONT;
   ctx.textAlign='left';
-  ctx.fillText('支付',PAD+12,headY+2);
+  ctx.fillText('支付方式',PAD+12,headY+2);
   for(var k=0;k<PER;k++){
     var cx=PAD+NAME_W+GAP+k*(cellW+GAP);
     ctx.textAlign='center';
@@ -3016,7 +3281,7 @@ function buildStatsImage(){
   /* 按支付條形 */
   var sy=cyy+HERO+22;
   ctx.textAlign='left'; ctx.fillStyle='#967f89'; ctx.font='11.5px '+IMG_FONT;
-  ctx.fillText('按支付（抽到總額由高到低）',PAD+2,sy);
+  ctx.fillText('按支付方式（抽到總額由高到低）',PAD+2,sy);
 
   var barX=PAD+70,barW=W-PAD*2-70-72;
   var yy=sy+18;
