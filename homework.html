@@ -289,8 +289,33 @@ function esc(s){
   return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
     ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 }
-const _ta = document.createElement("textarea");
-function decodeEnt(s){ _ta.innerHTML = s; return _ta.value; }
+
+/* 安全解碼 HTML 實體：只用字串替換，絕不調用 innerHTML / new Function /
+   DOMParser，因此抓取到的網頁內容永遠不會被當成標記或程式碼來解析或執行。 */
+const ENT_MAP = {
+  "&amp;":"&", "&lt;":"<", "&gt;":">", "&quot;":'"', "&apos;":"'",
+  "&nbsp;":" ", "&copy;":"©", "&reg;":"®", "&trade;":"™",
+  "&deg;":"°", "&plusmn;":"±", "&times;":"×", "&divide;":"÷",
+  "&middot;":"·", "&hellip;":"…", "&mdash;":"—", "&ndash;":"–",
+  "&laquo;":"«", "&raquo;":"»", "&lsquo;":"‘", "&rsquo;":"’",
+  "&ldquo;":"“", "&rdquo;":"”", "&bull;":"•", "&euro;":"€",
+  "&pound;":"£", "&yen;":"¥", "&curren;":"¤", "&sect;":"§",
+  "&frac12;":"½", "&frac14;":"¼", "&frac34;":"¾", "&sup2;":"²",
+  "&#39;":"'", "&#x27;":"'", "&#x2F;":"/", "&#96;":"`"
+};
+function decodeEnt(s){
+  return String(s == null ? "" : s).replace(/&(?:#x?[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/g, m => {
+    if (ENT_MAP[m]) return ENT_MAP[m];
+    const num = m.match(/^&#(x?)([0-9a-fA-F]+);$/);
+    if (num){
+      const cp = num[1] ? parseInt(num[2], 16) : parseInt(num[2], 10);
+      if (Number.isFinite(cp) && cp > 0 && cp <= 0x10FFFF){
+        try { return String.fromCodePoint(cp); } catch(e){}
+      }
+    }
+    return m;            // 不認識的實體原樣保留，絕不當成標記執行
+  });
+}
 
 function toast(msg, isErr){
   const el = document.getElementById("toast");
@@ -435,7 +460,15 @@ function cellImages(cell){
   return [...cell.querySelectorAll("img")]
     .map(im => im.getAttribute("src") || "")
     .filter(Boolean)
-    .map(src => { try{ return new URL(src, location.href).href; }catch(e){ return src; } });
+    .map(src => {
+      try{
+        const u = new URL(src, location.href);
+        // 只允許 http / https，拒絕 javascript: / data: / vbscript: 等可執行程式碼的協定
+        if (u.protocol !== "http:" && u.protocol !== "https:") return "";
+        return u.href;
+      }catch(e){ return ""; }
+    })
+    .filter(Boolean);
 }
 
 const isHan = c => /[\u4e00-\u9fff]/.test(c || "");
