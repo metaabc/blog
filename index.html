@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>書籤管理</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --line:#e3e6ea; --txt:#1f2430; --sub:#6b7280;
+  --pri:#2563eb; --pri-d:#1d4ed8; --warn:#dc2626; --ok:#16a34a; --pin:#f59e0b;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft JhengHei","PingFang TC",system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+header{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+header h1{font-size:18px;margin-right:8px}
+.search-wrap{flex:1;min-width:220px;position:relative}
+.search-wrap input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:var(--bg)}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--sub)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;transition:.15s}
+.btn:hover{border-color:var(--pri);color:var(--pri)}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+.btn.pri:hover{background:var(--pri-d)}
+.btn.danger:hover{border-color:var(--warn);color:var(--warn)}
+main{max-width:1200px;margin:0 auto;padding:20px}
+.add-bar{display:flex;gap:8px;margin-bottom:18px}
+.add-bar input{flex:1;padding:10px 14px;border:1px solid var(--line);border-radius:var(--radius);font-size:14px;background:var(--card)}
+.tag-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.chip{padding:4px 12px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:12.5px;cursor:pointer;color:var(--sub)}
+.chip.active{background:var(--pri);border-color:var(--pri);color:#fff}
+.stats{font-size:12.5px;color:var(--sub)}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+.seg button{border:none;background:transparent;padding:6px 12px;font-size:12.5px;cursor:pointer;color:var(--sub);font-family:inherit;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--pri);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.grid.compact{grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:9px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:.15s;position:relative}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.card.pinned{border-color:var(--pin);box-shadow:0 0 0 1px var(--pin)}
+.card .thumb{height:118px;background:#eef1f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+.card .thumb img{width:100%;height:100%;object-fit:cover}
+.card .thumb .noimg{color:#9ca3af;font-size:26px}
+.card .body{padding:10px 12px;flex:1;display:flex;flex-direction:column;gap:6px}
+.card .title{font-size:14px;font-weight:600;line-height:1.4;cursor:pointer;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .title:hover{color:var(--pri)}
+.card .url{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .desc{font-size:12.5px;color:var(--sub);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:11.5px;padding:2px 9px;background:#eef2ff;color:var(--pri);border-radius:99px;white-space:nowrap}
+.card .foot{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-top:1px solid var(--line)}
+.card .foot .time{font-size:11px;color:#9ca3af}
+/* 精簡卡片 */
+.grid.compact .card .thumb{height:74px}
+.grid.compact .card .body{padding:8px 10px;gap:4px}
+.grid.compact .card .title{font-size:13px;-webkit-line-clamp:1}
+.grid.compact .card .desc{display:none}
+.grid.compact .card .url{font-size:11px}
+.grid.compact .card .foot{padding:4px 8px}
+.grid.compact .card .foot .time{display:none}
+.grid.compact .tag{font-size:10.5px;padding:1px 7px}
+/* 頭像 */
+.avatar{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:600;flex:0 0 26px;user-select:none}
+/* 列表 */
+.list{display:flex;flex-direction:column;gap:7px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;gap:11px;padding:8px 12px;transition:.15s}
+.row:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.row.pinned{border-color:var(--pin);box-shadow:0 0 0 1px var(--pin)}
+.row .rthumb{width:44px;height:44px;border-radius:8px;overflow:hidden;background:#eef1f5;flex:0 0 44px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.row .rthumb img{width:100%;height:100%;object-fit:cover}
+.row .rmain{flex:1;min-width:0}
+.row .rtitle{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.row .rtitle:hover{color:var(--pri)}
+.row .rurl{font-size:11.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .rdesc{font-size:11.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.row .rtags{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+.row .rtime{font-size:11px;color:#9ca3af;flex:0 0 auto;margin-right:4px}
+.row .racts{display:flex;align-items:center;gap:0;flex:0 0 auto}
+/* 精簡列表 */
+.list.dense{gap:4px}
+.list.dense .row{padding:5px 10px;border-radius:8px;gap:9px}
+.list.dense .rthumb{width:24px;height:24px;flex:0 0 24px;border-radius:6px;background:none}
+.list.dense .rthumb img{display:none}
+.list.dense .rtitle{font-size:12.5px;font-weight:500}
+.list.dense .rdesc{display:none}
+.list.dense .rtags{margin-top:0}
+.list.dense .rtime{width:78px;text-align:right}
+.list.dense .tag{font-size:10.5px;padding:1px 7px}
+.row .avatar{width:26px;height:26px;flex:0 0 26px}
+.list.dense .avatar{width:24px;height:24px;flex:0 0 24px;font-size:12px}
+/* 精簡：左 logo / 預覽圖 + 右標題，多欄自動排列 */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:6px}
+.cgrid .row{padding:5px 8px;gap:8px}
+.cgrid .rthumb{width:34px;height:34px;flex:0 0 34px;border-radius:7px;position:relative}
+.cgrid .ctitle{flex:1;min-width:0;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.cgrid .ctitle:hover{color:var(--pri)}
+.cgrid .chost,.cgrid .ctags{display:none}
+.cgrid .racts{display:flex;flex:0 0 auto}
+.cgrid .iconbtn{padding:2px 3px;font-size:13px;opacity:.4}
+.cgrid .row:hover .iconbtn{opacity:1}
+/* 圖示疊在頭像上，載入失敗自動露出頭像 */
+.row .rthumb{position:relative}
+.row .rthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.iconbtn{background:none;border:none;cursor:pointer;font-size:16px;padding:4px 6px;color:var(--sub);border-radius:6px}
+.iconbtn:hover{background:var(--bg)}
+.iconbtn.pin.on{color:var(--pin)}
+.iconbtn.del:hover{color:var(--warn)}
+.empty{text-align:center;color:var(--sub);padding:60px 0}
+.modal-mask{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.modal-mask.show{display:flex}
+.modal{background:var(--card);border-radius:14px;width:100%;max-width:560px;padding:22px 24px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.modal h2{font-size:17px;margin-bottom:16px}
+.modal label{display:block;font-size:13px;color:var(--sub);margin:12px 0 5px}
+.modal input[type=text],.modal input[type=url],.modal textarea,.modal select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit}
+.modal textarea{resize:vertical;min-height:60px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.suggest-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.suggest-tags .tag{cursor:pointer;opacity:.45}
+.suggest-tags .tag.sel{opacity:1;background:var(--pri);color:#fff}
+.picked{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;min-height:26px}
+.picked:empty{display:none}
+.picked .ptag{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;padding:3px 6px 3px 10px;background:#eef2ff;color:var(--pri);border-radius:99px}
+.picked .ptag .rm{cursor:pointer;font-weight:bold;padding:0 4px;border-radius:50%}
+.picked .ptag .rm:hover{color:var(--warn)}
+.tag-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.tag-row input.tname{flex:0 0 130px}
+.tag-row input.tkeys{flex:1;min-width:150px}
+.tag-row .x{color:var(--warn);cursor:pointer;font-weight:bold;padding:4px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:r 0.7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes r{to{transform:rotate(360deg)}}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2430;color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;opacity:0;transition:.3s;z-index:200;pointer-events:none;max-width:90vw}
+#toast.show{opacity:1}
+.hint{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.6}
+/* ============ 手機 / 窄螢幕 ============ */
+@media (max-width:760px){
+  header{padding:9px 12px;gap:8px}
+  header h1{font-size:15px;margin-right:0}
+  .search-wrap{order:9;flex:1 1 100%;min-width:0}
+  .search-wrap input{padding:8px 10px 8px 32px;font-size:13px}
+  .btn{padding:6px 10px;font-size:12.5px}
+  main{padding:12px}
+  .add-bar{flex-direction:column;gap:7px;margin-bottom:12px}
+  .add-bar input{font-size:13px;padding:9px 12px}
+  .tag-filter{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;margin-bottom:10px;-webkit-overflow-scrolling:touch}
+  .chip{flex:0 0 auto}
+  .toolbar{gap:8px}
+  .seg{overflow-x:auto;max-width:100%}
+  .seg button{padding:5px 9px;font-size:12px}
+  .grid,.grid.compact{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
+  .card .thumb{height:84px}
+  .card .body{padding:8px 9px;gap:4px}
+  .card .title{font-size:12.5px;-webkit-line-clamp:2}
+  .card .desc,.card .url{display:none}
+  .card .foot{padding:4px 7px}
+  .card .foot .time{display:none}
+  .iconbtn{padding:5px 4px;font-size:15px}
+  .cgrid{grid-template-columns:repeat(auto-fill,minmax(156px,1fr));gap:6px}
+  .cgrid .row,.row{padding:6px 8px;gap:8px}
+  .cgrid .rthumb{width:32px;height:32px;flex:0 0 32px}
+  .cgrid .iconbtn{opacity:.75;font-size:13px}
+  .row .rthumb{width:38px;height:38px;flex:0 0 38px}
+  .list.dense .rthumb{width:22px;height:22px;flex:0 0 22px}
+  .cgrid .ctitle,.row .rtitle{font-size:12.5px}
+  .modal-mask{padding:14px 10px}
+  .modal{padding:18px 16px;border-radius:12px}
+  .modal label{font-size:12px}
+  .tag-row input.tname{flex:0 0 96px}
+  .empty{padding:40px 0}
+  #toast{bottom:16px;font-size:13px;padding:9px 16px}
+}
+@media (max-width:400px){
+  header h1{display:none}
+  .grid,.grid.compact{grid-template-columns:repeat(2,1fr)}
+  .cgrid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔖 書籤管理</h1>
+  <div class="search-wrap">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="search" type="text" placeholder="搜尋標題、網址或標籤…">
+  </div>
+  <button class="btn" id="btnSettings">⚙️ 設定</button>
+  <button class="btn" id="btnExport">📤 匯出 Excel</button>
+  <button class="btn" id="btnImport">📥 匯入 Excel</button>
+  <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
+</header>
+
+<main>
+  <div class="add-bar">
+    <input id="urlInput" type="text" placeholder="貼上網址，例如 https://example.com，按 Enter 自動抓取標題、預覽圖並配對標籤">
+    <button class="btn pri" id="btnAdd">加入書籤</button>
+  </div>
+
+  <div class="tag-filter" id="tagFilter"></div>
+  <div class="toolbar">
+    <div class="stats" id="stats"></div>
+    <div class="seg" id="layoutSeg">
+      <button data-layout="compact" title="精簡卡片">▦ 精簡</button>
+      <button data-layout="grid" title="標準卡片">▤ 卡片</button>
+      <button data-layout="list" title="列表">☰ 列表</button>
+      <button data-layout="dense" title="精簡列表">≣ 密集</button>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">沒有符合條件的書籤</div>
+</main>
+
+<!-- 新增/編輯書籤 -->
+<div class="modal-mask" id="mBookmark">
+  <div class="modal">
+    <h2 id="bmTitle">加入書籤</h2>
+    <label>標題</label>
+    <input type="text" id="fTitle">
+    <label>網址</label>
+    <input type="text" id="fUrl">
+    <label>說明</label>
+    <textarea id="fDesc"></textarea>
+    <label>標籤 — 點選下方既有標籤，或輸入新標籤後按 Enter（新標籤會自動錄入標籤清單）</label>
+    <div class="picked" id="fPicked"></div>
+    <input type="text" id="fTagInput" list="tagListDl" placeholder="輸入標籤，按 Enter 或逗號加入…" autocomplete="off">
+    <datalist id="tagListDl"></datalist>
+    <div class="suggest-tags" id="fSuggest"></div>
+    <div class="hint" id="fetchStatus"></div>
+    <div class="modal-actions">
+      <button class="btn" id="bmCancel">取消</button>
+      <button class="btn pri" id="bmSave">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 設定 -->
+<div class="modal-mask" id="mSettings">
+  <div class="modal">
+    <h2>⚙️ 設定 — 標籤清單</h2>
+    <div class="hint">每個標籤可設定「配對關鍵字」（以逗號分隔）。抓取網頁時，若標題／說明／關鍵字命中其中任一詞，即自動建議該標籤。不填則以標籤名稱本身配對。</div>
+    <div style="margin-top:14px">
+      <div id="tagEditor"></div>
+      <button class="btn" id="btnAddTag" style="margin-top:6px">＋ 新增標籤</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn danger" id="btnClearAll">清空全部書籤</button>
+      <button class="btn" id="stCancel">關閉</button>
+      <button class="btn pri" id="stSave">儲存設定</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================= 資料 ================= */
+const LS_KEY = 'bookmark_mgr_v1';
+const DEFAULT_TAGS = [
+  {name:'工具', keys:'tool,工具,converter,generator'},
+  {name:'教學', keys:'教學,tutorial,guide,how to'},
+  {name:'新聞', keys:'新聞,news,報導'},
+  {name:'購物', keys:'購物,shop,store,商城'},
+  {name:'社交', keys:'social,社交,forum,論壇'},
+  {name:'開發', keys:'github,code,開發,dev,api'},
+  {name:'AI', keys:'ai,gpt,llm,人工智慧'},
+  {name:'娛樂', keys:'遊戲,game,影片,video,娛樂'}
+];
+let db = load();
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(LS_KEY));
+    if(d && Array.isArray(d.bookmarks) && Array.isArray(d.tags)) return d;
+  }catch(e){}
+  return {bookmarks:[], tags: JSON.parse(JSON.stringify(DEFAULT_TAGS))};
+}
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+/* ================= 工具 ================= */
+function toast(msg, ms=2200){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(()=>t.classList.remove('show'), ms);
+}
+function esc(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function normalizeUrl(u){
+  u = (u||'').trim();
+  if(!u) return '';
+  if(!/^https?:\/\//i.test(u)) u = 'https://' + u;
+  return u;
+}
+function hostOf(u){ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return u; } }
+
+/* ================= 抓取網頁（透過 CORS 代理） ================= */
+const PROXIES = [
+  u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+  u => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+  u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u)
+];
+async function fetchPage(url, onStatus){
+  for(let i=0;i<PROXIES.length;i++){
+    try{
+      onStatus && onStatus(`正在透過代理 ${i+1}/${PROXIES.length} 讀取網頁…`);
+      const r = await fetch(PROXIES[i](url), {signal: AbortSignal.timeout(15000)});
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      const text = await r.text();
+      if(text && text.length > 50) return text;
+      throw new Error('回應內容過短');
+    }catch(e){ /* 試下一個代理 */ }
+  }
+  return null;
+}
+function parsePage(html, url){
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const meta = p => doc.querySelector(`meta[property="${p}"], meta[name="${p}"]`)?.getAttribute('content') || '';
+  const title = (doc.querySelector('title')?.textContent || meta('og:title') || '').trim();
+  const desc = (meta('og:description') || meta('description') || '').trim();
+  let img = meta('og:image') || meta('twitter:image') || '';
+  if(img && !/^https?:/i.test(img)){
+    try{ img = new URL(img, url).href; }catch(e){ img=''; }
+  }
+  const kw = (meta('keywords') || '').trim();
+  // 抓正文中文字詞作為額外配對素材
+  const bodyText = (doc.body?.innerText || doc.body?.textContent || '').replace(/\s+/g,' ').slice(0, 4000);
+  return {title: title || hostOf(url), desc, img, keywords: kw + ' ' + title + ' ' + desc + ' ' + bodyText};
+}
+function matchTags(pageData){
+  const hay = (pageData.keywords + ' ' + pageData.desc).toLowerCase();
+  const hits = [];
+  db.tags.forEach(t=>{
+    const words = (t.keys && t.keys.trim()) ? t.keys.split(/[,，]/) : [t.name];
+    if(words.some(w=>w.trim() && hay.includes(w.trim().toLowerCase()))) hits.push(t.name);
+  });
+  return hits;
+}
+
+/* ================= 書籤 CRUD / 新增流程 ================= */
+let editId = null;
+async function startAdd(rawUrl){
+  const url = normalizeUrl(rawUrl);
+  if(!url){ toast('請先輸入網址'); return; }
+  if(db.bookmarks.some(b=>b.url===url)){ toast('此網址已在書籤中'); return; }
+  openBookmarkModal(null);
+  document.getElementById('fetchStatus').innerHTML = '<span class="spin"></span>正在讀取網頁…';
+  document.getElementById('fUrl').value = url;
+  document.getElementById('fTitle').value = hostOf(url);
+  const html = await fetchPage(url, s=>{ document.getElementById('fetchStatus').innerHTML = '<span class="spin"></span>'+esc(s); });
+  let data;
+  if(html){
+    data = parsePage(html, url);
+    document.getElementById('fetchStatus').innerHTML = '✅ 已成功讀取網頁並自動配對標籤';
+  }else{
+    data = {title: hostOf(url), desc:'', img:'', keywords:url};
+    document.getElementById('fetchStatus').innerHTML = '⚠️ 無法讀取網頁內容（可能被目標網站封鎖），已填入基本資訊，請手動補充。';
+  }
+  document.getElementById('fTitle').value = data.title;
+  document.getElementById('fDesc').value = data.desc;
+  const hits = matchTags(data);
+  pickedTags = [...hits];
+  renderTagPicker();
+  window._pendingImg = data.img || '';
+}
+/* ---- 標籤錄入 / 選取 ---- */
+let pickedTags = [];
+function renderTagPicker(){
+  // 已選標籤
+  const box = document.getElementById('fPicked');
+  box.innerHTML = '';
+  pickedTags.forEach((t,i)=>{
+    const s = document.createElement('span');
+    s.className = 'ptag';
+    s.innerHTML = `${esc(t)}<span class="rm" title="移除">✕</span>`;
+    s.querySelector('.rm').onclick = ()=>{ pickedTags.splice(i,1); renderTagPicker(); };
+    box.appendChild(s);
+  });
+  // 全部標籤列（點選）
+  const sug = document.getElementById('fSuggest');
+  sug.innerHTML = '';
+  db.tags.forEach(t=>{
+    const c = document.createElement('span');
+    c.className = 'tag' + (pickedTags.includes(t.name)?' sel':'');
+    c.textContent = t.name;
+    c.title = '點擊加入/移除';
+    c.onclick = ()=> togglePicked(t.name);
+    sug.appendChild(c);
+  });
+  // datalist 自動完成
+  const dl = document.getElementById('tagListDl');
+  dl.innerHTML = db.tags.map(t=>`<option value="${esc(t.name)}">`).join('');
+}
+function togglePicked(name){
+  const i = pickedTags.indexOf(name);
+  if(i>=0) pickedTags.splice(i,1); else pickedTags.push(name);
+  renderTagPicker();
+}
+function addPickedFromInput(){
+  const inp = document.getElementById('fTagInput');
+  inp.value.split(/[,，]/).map(s=>s.trim()).filter(Boolean).forEach(t=>{
+    if(!pickedTags.includes(t)) pickedTags.push(t);
+  });
+  inp.value = '';
+  renderTagPicker();
+}
+document.getElementById('fTagInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ e.preventDefault(); addPickedFromInput(); }
+});
+document.getElementById('fTagInput').addEventListener('change', addPickedFromInput);
+function openBookmarkModal(bm){
+  editId = bm ? bm.id : null;
+  document.getElementById('bmTitle').textContent = bm ? '編輯書籤' : '加入書籤';
+  document.getElementById('fTitle').value = bm?.title || '';
+  document.getElementById('fUrl').value = bm?.url || '';
+  document.getElementById('fDesc').value = bm?.desc || '';
+  document.getElementById('fTagInput').value = '';
+  pickedTags = bm ? [...(bm.tags||[])] : [];
+  renderTagPicker();
+  document.getElementById('fetchStatus').innerHTML = '';
+  document.getElementById('mBookmark').classList.add('show');
+  if(!bm) document.getElementById('fTitle').focus();
+}
+document.getElementById('bmSave').onclick = ()=>{
+  const url = normalizeUrl(document.getElementById('fUrl').value);
+  if(!url){ toast('網址不可為空'); return; }
+  // 新標籤自動錄入標籤清單
+  pickedTags.forEach(t=>{
+    if(t.trim() && !db.tags.some(x=>x.name===t.trim())) db.tags.push({name:t.trim(), keys:''});
+  });
+  const bm = {
+    id: editId || uid(),
+    url,
+    title: document.getElementById('fTitle').value.trim() || hostOf(url),
+    desc: document.getElementById('fDesc').value.trim(),
+    img: editId ? (db.bookmarks.find(b=>b.id===editId)?.img || '') : (window._pendingImg || ''),
+    tags: pickedTags.map(t=>t.trim()).filter(Boolean),
+    pinned: editId ? (db.bookmarks.find(b=>b.id===editId)?.pinned || false) : false,
+    added: editId ? db.bookmarks.find(b=>b.id===editId).added : Date.now()
+  };
+  if(editId){
+    const i = db.bookmarks.findIndex(b=>b.id===editId);
+    db.bookmarks[i] = bm;
+  }else{
+    db.bookmarks.unshift(bm);
+  }
+  save(); closeModals(); render(); toast('已儲存');
+};
+
+/* ================= 渲染 ================= */
+let searchQ = '', activeTag = '';
+let layout = db.layout || 'compact';
+const LAYOUT_CLASS = {compact:'cgrid', grid:'grid', list:'list', dense:'list dense'};
+
+function avatar(b){
+  const h = hostOf(b.url);
+  const ch = (h.match(/[a-z0-9\u4e00-\u9fa5]/i)||['?'])[0].toUpperCase();
+  let hue = 0; for(const c of h) hue = (hue*31 + c.charCodeAt(0)) % 360;
+  return `<span class="avatar" style="background:hsl(${hue},52%,50%)">${esc(ch)}</span>`;
+}
+function actionsHTML(b){
+  return `<button class="iconbtn pin ${b.pinned?'on':''}" data-act="pin" title="${b.pinned?'取消置頂':'置頂'}">📌</button>
+          <button class="iconbtn edit" data-act="edit" title="編輯">✏️</button>
+          <button class="iconbtn del" data-act="del" title="刪除">🗑️</button>`;
+}
+function cardHTML(b){
+  return `<div class="card${b.pinned?' pinned':''}" data-id="${b.id}">
+    <div class="thumb" data-act="open">${b.img?`<img src="${esc(b.img)}" loading="lazy" onerror="this.parentElement.innerHTML='<span class=noimg>🌐</span>'">`:'<span class="noimg">🌐</span>'}</div>
+    <div class="body">
+      <div class="title" data-act="open" title="${esc(b.title)}">${esc(b.title)}</div>
+      <div class="url">${esc(hostOf(b.url))}</div>
+      ${b.desc?`<div class="desc">${esc(b.desc)}</div>`:''}
+      <div class="tags">${(b.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+    </div>
+    <div class="foot">
+      <span class="time">${new Date(b.added).toLocaleDateString('zh-TW')}</span>
+      <span>${actionsHTML(b)}</span>
+    </div>
+  </div>`;
+}
+function rowHTML(b, mode){
+  const tags = (b.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+  const thumb = `<div class="rthumb" data-act="open">${b.img?`<img src="${esc(b.img)}" loading="lazy" onerror="this.remove()">`:''}${avatar(b)}</div>`;
+  const acts = `<span class="racts">${actionsHTML(b)}</span>`;
+  if(mode==='compact'){
+    return `<div class="row crow${b.pinned?' pinned':''}" data-id="${b.id}">
+      ${thumb}
+      <div class="ctitle" data-act="open" title="${esc(b.title)}">${esc(b.title)}</div>
+      <div class="chost">${esc(hostOf(b.url))}</div>
+      <div class="ctags">${tags}</div>
+      ${acts}
+    </div>`;
+  }
+  return `<div class="row${b.pinned?' pinned':''}" data-id="${b.id}">
+    ${thumb}
+    <div class="rmain">
+      <div class="rtitle" data-act="open" title="${esc(b.title)}">${esc(b.title)}</div>
+      <div class="rurl">${esc(b.url)}</div>
+      ${mode==='dense'?'':`${b.desc?`<div class="rdesc">${esc(b.desc)}</div>`:''}`}
+      <div class="rtags">${tags}</div>
+    </div>
+    <span class="rtime">${new Date(b.added).toLocaleDateString('zh-TW')}</span>
+    ${acts}
+  </div>`;
+}
+
+function render(){
+  // 標籤過濾列
+  const allTags = [...new Set(db.bookmarks.flatMap(b=>b.tags||[]))];
+  const tf = document.getElementById('tagFilter');
+  tf.innerHTML = '';
+  const mk = (label, val)=>{
+    const c = document.createElement('span');
+    c.className = 'chip' + (activeTag===val?' active':'');
+    c.textContent = label;
+    c.onclick = ()=>{ activeTag = (activeTag===val?'':val); render(); };
+    tf.appendChild(c);
+  };
+  if(allTags.length) mk('全部','', '');
+  allTags.sort().forEach(t=>mk(t,t));
+
+  // 過濾 + 排序
+  const q = searchQ.toLowerCase();
+  let list = db.bookmarks.filter(b=>{
+    if(activeTag && !(b.tags||[]).includes(activeTag)) return false;
+    if(!q) return true;
+    return (b.title+' '+b.url+' '+(b.tags||[]).join(' ')+' '+(b.desc||'')).toLowerCase().includes(q);
+  });
+  list.sort((a,b)=> (b.pinned-a.pinned) || (b.added-a.added));
+
+  document.getElementById('stats').textContent =
+    `共 ${db.bookmarks.length} 個書籤${q||activeTag?`，符合條件 ${list.length} 個`:''}・置頂 ${db.bookmarks.filter(b=>b.pinned).length} 個`;
+
+  // 佈局切換按鈕狀態
+  document.querySelectorAll('#layoutSeg button').forEach(btn=>{
+    btn.classList.toggle('on', btn.dataset.layout===layout);
+  });
+
+  const wrap = document.getElementById('grid');
+  wrap.className = LAYOUT_CLASS[layout] || 'grid compact';
+  wrap.innerHTML = list.map(b => layout==='grid' ? cardHTML(b) : rowHTML(b, layout)).join('');
+  document.getElementById('empty').style.display = list.length?'none':'block';
+}
+// 事件委派
+document.getElementById('grid').addEventListener('click', e=>{
+  const hostEl = e.target.closest('[data-id]');
+  if(!hostEl) return;
+  const b = db.bookmarks.find(x=>x.id===hostEl.dataset.id);
+  if(!b) return;
+  const actEl = e.target.closest('[data-act]');
+  const act = actEl ? actEl.dataset.act : '';
+  if(act==='open'){ window.open(b.url,'_blank'); return; }
+  if(act==='pin'){ b.pinned=!b.pinned; save(); render(); return; }
+  if(act==='edit'){ openBookmarkModal(b); return; }
+  if(act==='del'){
+    if(confirm(`確定刪除「${b.title}」？`)){
+      db.bookmarks = db.bookmarks.filter(x=>x.id!==b.id);
+      save(); render(); toast('已刪除');
+    }
+  }
+});
+// 佈局切換
+document.querySelectorAll('#layoutSeg button').forEach(btn=>{
+  btn.onclick = ()=>{
+    layout = btn.dataset.layout;
+    db.layout = layout; save(); render();
+  };
+});
+document.getElementById('search').addEventListener('input', e=>{ searchQ = e.target.value.trim(); render(); });
+document.getElementById('btnAdd').onclick = ()=> startAdd(document.getElementById('urlInput').value);
+document.getElementById('urlInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ startAdd(e.target.value); e.target.value=''; }
+});
+
+/* ================= 設定：標籤清單 ================= */
+let tmpTags = [];
+document.getElementById('btnSettings').onclick = ()=>{
+  tmpTags = JSON.parse(JSON.stringify(db.tags));
+  renderTagEditor();
+  document.getElementById('mSettings').classList.add('show');
+};
+function renderTagEditor(){
+  const box = document.getElementById('tagEditor');
+  box.innerHTML = '';
+  tmpTags.forEach((t,i)=>{
+    const row = document.createElement('div');
+    row.className = 'tag-row';
+    row.innerHTML = `
+      <input type="text" class="tname" placeholder="標籤名稱" value="${esc(t.name)}">
+      <input type="text" class="tkeys" placeholder="配對關鍵字（逗號分隔，可留空）" value="${esc(t.keys||'')}">
+      <span class="x" title="刪除">✕</span>`;
+    row.querySelector('.tname').addEventListener('input', e=> tmpTags[i].name = e.target.value);
+    row.querySelector('.tkeys').addEventListener('input', e=> tmpTags[i].keys = e.target.value);
+    row.querySelector('.x').onclick = ()=>{ tmpTags.splice(i,1); renderTagEditor(); };
+    box.appendChild(row);
+  });
+}
+document.getElementById('btnAddTag').onclick = ()=>{ tmpTags.push({name:'', keys:''}); renderTagEditor(); };
+document.getElementById('stSave').onclick = ()=>{
+  tmpTags = tmpTags.filter(t=>t.name.trim());
+  if(!tmpTags.length){ toast('至少需要一個標籤'); return; }
+  db.tags = tmpTags.map(t=>({name:t.name.trim(), keys:(t.keys||'').trim()}));
+  save(); closeModals(); render(); toast('設定已儲存');
+};
+document.getElementById('btnClearAll').onclick = ()=>{
+  if(confirm('⚠️ 確定清空全部書籤？此操作無法復原！') && confirm('再次確認：真的要清空全部書籤嗎？')){
+    db.bookmarks = []; save(); closeModals(); render(); toast('已清空全部書籤');
+  }
+};
+
+/* ================= Excel 匯入 / 匯出 ================= */
+document.getElementById('btnExport').onclick = ()=>{
+  if(!db.bookmarks.length){ toast('目前沒有書籤可匯出'); return; }
+  const rows = db.bookmarks.map(b=>({
+    '置頂': b.pinned ? '是' : '',
+    '標題': b.title,
+    '網址': b.url,
+    '標籤': (b.tags||[]).join(','),
+    '說明': b.desc || '',
+    '圖片': b.img || '',
+    '加入時間': new Date(b.added).toLocaleString('zh-TW')
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{wch:6},{wch:40},{wch:50},{wch:20},{wch:50},{wch:40},{wch:20}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '書籤');
+  XLSX.writeFile(wb, `書籤清單_${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast('已匯出 Excel');
+};
+document.getElementById('btnImport').onclick = ()=> document.getElementById('fileInput').click();
+document.getElementById('fileInput').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    try{
+      const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws);
+      if(!rows.length){ toast('檔案內沒有資料'); return; }
+      let added = 0, skipped = 0;
+      rows.forEach(r=>{
+        const get = (...names)=>{ for(const n of names){ const k = Object.keys(r).find(k=>k.trim()===n); if(k!==undefined && r[k]!=='') return String(r[k]).trim(); } return ''; };
+        const url = normalizeUrl(get('網址','url','URL','連結','網站'));
+        if(!url){ skipped++; return; }
+        if(db.bookmarks.some(b=>b.url===url)){ skipped++; return; }
+        db.bookmarks.push({
+          id: uid(),
+          url,
+          title: get('標題','title','名稱') || hostOf(url),
+          tags: get('標籤','tags','分類').split(/[,，;、]/).map(s=>s.trim()).filter(Boolean),
+          desc: get('說明','desc','描述','備註'),
+          img: get('圖片','image','預覽圖'),
+          pinned: /^(是|y|yes|true|1)$/i.test(get('置頂','pinned')),
+          added: Date.now()
+        });
+        added++;
+      });
+      save(); render();
+      toast(`匯入完成：新增 ${added} 筆${skipped?`，略過 ${skipped} 筆（空白或重複）`:''}`, 3500);
+    }catch(err){
+      toast('匯入失敗：' + err.message, 4000);
+    }
+    e.target.value = '';
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+/* ================= 共用 ================= */
+function closeModals(){ document.querySelectorAll('.modal-mask').forEach(m=>m.classList.remove('show')); window._pendingImg=''; }
+document.querySelectorAll('.modal-mask').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) closeModals(); });
+});
+document.getElementById('bmCancel').onclick = closeModals;
+document.getElementById('stCancel').onclick = closeModals;
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModals(); });
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,2604 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>圖文翻譯 · 拍照辨識 + 譯文覆蓋</title>
+<style>
+:root{
+  --bg:#f4f5f2;
+  --panel:#ffffff;
+  --line:#e5e5df;
+  --line-2:#d8d8d0;
+  --ink:#191b1f;
+  --muted:#6f7480;
+  --soft:#f8f9f6;
+  --accent:#2563eb;
+  --accent-2:#1d4ed8;
+  --ok:#0f9d58;
+  --warn:#b45309;
+  --radius:16px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"PingFang TC","Hiragino Sans CNS","Microsoft JhengHei","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+button,select,textarea,input{font-family:inherit}
+
+/* ---------- 頂欄 ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.84);
+  backdrop-filter:saturate(1.3) blur(14px);-webkit-backdrop-filter:saturate(1.3) blur(14px);
+  border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1300px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15.5px;letter-spacing:.2px}
+.logo{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,#2563eb,#22b8cf);box-shadow:0 6px 14px -8px rgba(37,99,235,.9)}
+.brand small{display:block;font-size:11.5px;font-weight:500;color:var(--muted);letter-spacing:0}
+.spacer{flex:1 1 auto}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);
+  background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+.pill b{color:var(--ok);font-weight:700}
+
+/* ---------- 版面 ---------- */
+.app{max-width:1300px;margin:0 auto;padding:16px 20px 44px;
+  display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);gap:16px;align-items:start}
+@media (max-width:960px){ .app{grid-template-columns:1fr;padding:12px 12px 40px} }
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:0 1px 2px rgba(16,24,40,.03),0 12px 28px -26px rgba(16,24,40,.28);overflow:hidden}
+.panel-head{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fcfcfa)}
+.panel-title{font-size:13px;font-weight:700;letter-spacing:.3px;color:#33383f}
+.panel-head .meta{font-size:11.5px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.panel-body{padding:12px 14px 14px}
+
+/* ---------- 影像區 ---------- */
+.stage{position:relative;min-height:400px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--line);border-radius:12px;overflow:auto;padding:14px;
+  background:radial-gradient(circle at 1px 1px,#dcdcd4 1px,transparent 0) 0 0/16px 16px, #fbfbf8}
+@media (max-width:960px){ .stage{min-height:300px} }
+
+.drop{text-align:center;padding:26px 18px;max-width:420px}
+.drop-ico{width:64px;height:64px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;
+  background:#eef4ff;color:var(--accent);border:1px solid #dbe7ff}
+.drop h2{margin:0 0 6px;font-size:17px;letter-spacing:.2px}
+.drop p{margin:0 0 16px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.drop-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+.canvas-wrap{position:relative;display:inline-block;line-height:0;max-width:100%}
+canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto;height:auto;
+  border-radius:8px;box-shadow:0 6px 22px -14px rgba(16,24,40,.45);background:#fff}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.ovbox{position:absolute;display:flex;align-items:center;justify-content:center;padding:0 3px;
+  background:#ffffff;color:#14161a;border-radius:4px;line-height:1.12;font-weight:600;
+  overflow:hidden;text-align:center;word-break:break-word;box-shadow:0 0 0 1px rgba(37,99,235,.22);
+  transition:background .15s,box-shadow .15s}
+.ovbox.hl{background:#fff4c2;box-shadow:0 0 0 2px #eab308;z-index:2}
+
+/* ---------- 工具列 ---------- */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:11px}
+.btn-mini.on{background:#2563eb;color:#fff;border-color:#2563eb}
+.erasebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:9px;padding:9px 10px;
+  background:linear-gradient(135deg,#fef3c7,#fde8e8);border:1px solid #f5c98a;border-radius:12px;font-size:12px}
+.erasebar input[type=range]{vertical-align:middle;width:78px;accent-color:#d946ef}
+.erangelabel{color:#7c5410;white-space:nowrap}
+.swatch{width:20px;height:20px;border-radius:6px;border:2px solid #fff;box-shadow:0 0 0 1px #d1d5db;background:#fff;display:inline-block}
+.thumbs{display:flex;gap:7px;overflow-x:auto;margin-top:10px;padding:3px 2px}
+.thumb{position:relative;flex:0 0 auto;width:72px;border-radius:9px;overflow:hidden;cursor:pointer;
+  border:2px solid transparent;box-shadow:0 1px 4px rgba(16,20,26,.16);background:#fff}
+.thumb.on{border-color:#2563eb}
+.thumb canvas{display:block;width:100%;height:auto}
+.thumb .tag{position:absolute;left:4px;top:3px;font-size:10px;font-weight:700;color:#fff;
+  background:rgba(16,20,26,.62);border-radius:5px;padding:0 5px;line-height:15px}
+.thumb .x{position:absolute;right:2px;top:2px;width:16px;height:16px;line-height:14px;text-align:center;
+  font-size:10px;color:#fff;background:rgba(16,20,26,.55);border-radius:50%;cursor:pointer}
+.thumb .x:hover{background:#dc2626}
+
+.btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--ink);
+  padding:9px 13px;border-radius:11px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;
+  gap:6px;cursor:pointer;transition:transform .14s ease,border-color .14s,background .14s,box-shadow .14s;
+  white-space:nowrap;line-height:1.1}
+.btn:hover:not(:disabled){border-color:#c9cec6;background:#fbfbf8;transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:none}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn-primary{background:linear-gradient(180deg,#3b76ff,#2563eb);border-color:#2563eb;color:#fff;
+  box-shadow:0 8px 18px -12px rgba(37,99,235,.95)}
+.btn-primary:hover:not(:disabled){background:linear-gradient(180deg,#4a80ff,#2b6bf0);border-color:#2b6bf0}
+.btn-block{width:100%;justify-content:center;padding:12px 14px;font-size:14px}
+.btn-mini{padding:6px 9px;font-size:12px;border-radius:9px}
+.btn svg{flex:0 0 auto}
+.btn.on{background:#eef4ff;border-color:#bcd0ff;color:var(--accent-2)}
+
+/* ---------- 狀態 ---------- */
+.status{margin-top:10px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;min-height:18px}
+.status .dot{width:6px;height:6px;border-radius:50%;background:#c7cbd1;flex:0 0 auto}
+.status.work .dot{background:var(--accent);animation:pulse 1.1s infinite}
+.status.ok .dot{background:var(--ok)}
+.status.err .dot{background:#dc2626}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+.bar{height:3px;border-radius:3px;background:#eceee9;overflow:hidden;margin-top:9px}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3b76ff,#22b8cf);
+  transition:width .25s ease;border-radius:3px}
+
+/* ---------- 右側 ---------- */
+.langrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sel{position:relative;flex:1 1 0;min-width:0}
+.sel select{appearance:none;width:100%;border:1px solid var(--line);background:#fff;border-radius:11px;
+  padding:9px 30px 9px 11px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;outline:none}
+.sel select:focus{border-color:#bcd0ff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.sel::after{content:"";position:absolute;right:11px;top:50%;width:7px;height:7px;border-right:1.6px solid #8a9099;
+  border-bottom:1.6px solid #8a9099;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.arrow{color:#b6bbc2;font-size:14px;flex:0 0 auto}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+
+.tabs{display:flex;gap:3px;background:#f1f2ee;padding:3px;border-radius:11px;margin-bottom:10px}
+.tab{flex:1 1 0;border:0;background:transparent;padding:7px 4px;border-radius:8px;font-size:12.5px;
+  font-weight:700;color:var(--muted);cursor:pointer;transition:.15s}
+.tab.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(16,24,40,.08)}
+.tab:disabled{opacity:.4;cursor:default}
+
+.txt{width:100%;min-height:300px;resize:vertical;border:1px solid var(--line);border-radius:12px;
+  padding:12px 13px;font-size:13.5px;line-height:1.75;color:var(--ink);background:#fff;outline:none;
+  white-space:pre-wrap}
+.txt:focus{border-color:#bcd0ff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.result{min-height:300px;max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:12px;
+  padding:12px 13px;font-size:13.5px;line-height:1.8;background:#fff;white-space:pre-wrap;word-break:break-word}
+.pairs{min-height:300px;max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:6px}
+.pair{padding:8px 10px;border-radius:9px;cursor:default;border-bottom:1px dashed #eeeee9}
+.pair:last-child{border-bottom:0}
+.pair:hover{background:#fffbea}
+.pair .s{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:3px;word-break:break-word}
+.pair .d{font-size:13.5px;color:var(--ink);line-height:1.6;font-weight:600;word-break:break-word}
+.pair .d.miss{color:#b91c1c;font-weight:500}
+.empty-note{padding:26px 14px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.9}
+
+/* ---------- 點讀 / 生字卡 ---------- */
+.mini{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
+.mini-sel{font-size:12px;padding:5px 7px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);cursor:pointer}
+.ttsinfo{font-size:11.5px;line-height:1.5;padding:7px 10px;border-radius:9px;margin-bottom:8px}
+.ttsinfo.ok{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.ttsinfo.warn{background:#fff7ed;color:#b45309;border:1px solid #fed7aa}
+.mini .hint{font-size:11.5px;color:#9aa0a6;margin-left:auto}
+.mini-sel{appearance:none;border:1px solid var(--line);background-color:#fff;border-radius:9px;padding:6px 22px 6px 9px;
+  font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);outline:none;
+  background-image:linear-gradient(45deg,transparent 50%,#9aa0a6 50%),linear-gradient(135deg,#9aa0a6 50%,transparent 50%);
+  background-position:calc(100% - 13px) 55%,calc(100% - 9px) 55%;background-size:4px 4px,4px 4px;background-repeat:no-repeat}
+.mini-sel:focus{border-color:#bcd0ff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+
+.reader{min-height:300px;max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:12px;
+  padding:12px 13px;background:#fff;font-size:16px;line-height:2.15;letter-spacing:.2px;word-break:break-word}
+.seg{border-radius:5px;transition:background .15s,box-shadow .15s}
+.seg.speaking{background:#fff3c4;box-shadow:0 0 0 4px #fff3c4}
+.tk{display:inline-block;padding:0 1px;border-radius:4px;cursor:pointer;transition:background .12s,color .12s,transform .12s}
+.tk:hover{background:#e6efff;color:var(--accent-2)}
+.tk.on{background:#2563eb;color:#fff;transform:translateY(-1px)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;max-height:52vh;overflow:auto;padding:2px}
+.card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;
+  appearance:none;background:linear-gradient(180deg,#fff,#fbfbf7);border:1px solid var(--line);border-radius:14px;
+  padding:15px 6px 10px;cursor:pointer;font-family:inherit;color:inherit;transition:.15s;min-height:114px}
+.card:hover{border-color:#b9cdfa;box-shadow:0 10px 20px -16px rgba(37,99,235,.9);transform:translateY(-1px)}
+.card.speaking{border-color:#7aa2ff;background:#eef4ff;box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+.card .zi{font-size:32px;font-weight:700;line-height:1.18;letter-spacing:2px;color:#15171b}
+.card .py{font-size:11.5px;font-weight:700;color:var(--accent-2);letter-spacing:.3px;text-align:center;line-height:1.5;max-width:100%;word-break:break-word}
+.card .mn{font-size:11px;color:var(--muted);line-height:1.45;text-align:center;margin-top:2px;max-width:100%;word-break:break-word}
+.card .idx{position:absolute;top:5px;left:8px;font-size:9.5px;color:#c3c7cd;font-weight:700}
+.editor{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.editor summary{cursor:pointer;font-size:12px;color:var(--muted);font-weight:600;outline:none;user-select:none}
+.editor summary:hover{color:var(--accent-2)}
+.txt-sm{min-height:110px;margin-top:8px;font-size:12.5px;line-height:1.7}
+
+.foot-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.note{font-size:11.5px;color:#9aa0a6;line-height:1.7;margin:12px 0 0}
+.note a{color:var(--accent);text-decoration:none;font-weight:600}
+.note a:hover{text-decoration:underline}
+
+/* ---------- 提示 ---------- */
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,18px);z-index:80;
+  background:#1d2025;color:#fff;font-size:13px;padding:10px 16px;border-radius:11px;
+  box-shadow:0 14px 30px -14px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.22s ease;max-width:84vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 連線警告 ---------- */
+.banner{background:#fff7ed;border-bottom:1px solid #fed7aa;color:#9a3412;font-size:12.5px;line-height:1.6;
+  padding:9px 20px;display:flex;gap:10px;align-items:center}
+.banner .bt{flex:1 1 auto}
+.banner b{font-weight:700}
+.banner button{flex:0 0 auto}
+
+/* ---------- 收藏抽屜 ---------- */
+.badge{display:inline-block;min-width:17px;height:17px;line-height:17px;padding:0 5px;border-radius:9px;
+  background:#eef2f7;color:#5b6472;font-size:10.5px;font-weight:800;margin-left:5px;text-align:center}
+.badge.hot{background:#e8f0ff;color:var(--accent-2)}
+.drawer-mask{position:fixed;inset:0;z-index:75;background:rgba(16,20,26,.34);backdrop-filter:blur(1px);
+  display:flex;justify-content:flex-end}
+.drawer{width:min(420px,94vw);height:100%;background:#fff;display:flex;flex-direction:column;
+  box-shadow:-24px 0 60px -40px rgba(0,0,0,.6);animation:slideIn .22s ease}
+@keyframes slideIn{from{transform:translateX(24px);opacity:.6}to{transform:none;opacity:1}}
+.drawer-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.drawer-head h3{margin:0;font-size:14.5px;letter-spacing:.3px}
+.drawer-head .x{margin-left:auto;border:0;background:#f4f5f2;width:28px;height:28px;border-radius:9px;
+  cursor:pointer;font-size:16px;color:#6b7280;line-height:1}
+.drawer-body{flex:1 1 auto;overflow:auto;padding:10px 12px 24px}
+.sitem{display:flex;gap:10px;align-items:flex-start;padding:9px;border:1px solid var(--line);border-radius:12px;
+  margin-bottom:8px;cursor:pointer;transition:.15s;position:relative;background:#fff}
+.sitem:hover{border-color:#bcd0ff;background:#fbfcff}
+.sthumb{width:64px;height:64px;flex:0 0 64px;border-radius:9px;object-fit:cover;background:#f1f2ee;border:1px solid var(--line)}
+.sthumb.none{display:block}
+.sbody{flex:1 1 auto;min-width:0}
+.stitle{font-size:13px;font-weight:700;line-height:1.4;margin-bottom:2px;word-break:break-word;padding-right:18px}
+.smeta{font-size:11px;color:#9aa0a6;margin-bottom:3px}
+.ssnip{font-size:11.5px;color:var(--muted);line-height:1.45;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.sdel{position:absolute;top:6px;right:6px;border:0;background:transparent;color:#c3c7cd;font-size:15px;
+  cursor:pointer;width:22px;height:22px;border-radius:7px;line-height:1}
+.sdel:hover{background:#fee2e2;color:#b91c1c}
+.drawer-foot{padding:10px 14px;border-top:1px solid var(--line);display:flex;gap:8px}
+.drawer-foot .btn{flex:1 1 0;justify-content:center}
+
+/* ---------- 分享 ---------- */
+.share-box{background:#fff;border-radius:16px;padding:18px;width:min(520px,94vw);box-shadow:0 30px 70px -30px rgba(0,0,0,.9)}
+.share-box h3{margin:0 0 10px;font-size:15px;letter-spacing:.3px}
+.share-box textarea{width:100%;height:210px;resize:vertical;border:1px solid var(--line);border-radius:11px;
+  padding:11px 12px;font-size:13px;line-height:1.7;outline:none;background:#fcfcfa;white-space:pre-wrap;color:var(--ink)}
+.share-box textarea:focus{border-color:#bcd0ff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.share-actions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.share-actions .btn{flex:1 1 0;justify-content:center;min-width:96px}
+
+/* ---------- 相機 ---------- */
+.modal{position:fixed;inset:0;z-index:70;background:rgba(12,14,18,.78);display:grid;place-items:center;padding:18px;
+  backdrop-filter:blur(3px)}
+.cam-box{background:#111;border-radius:16px;overflow:hidden;max-width:min(760px,96vw);width:100%;
+  box-shadow:0 30px 70px -30px rgba(0,0,0,.9)}
+.cam-box video{display:block;width:100%;max-height:66vh;background:#000;object-fit:contain}
+.cam-actions{display:flex;gap:8px;justify-content:center;padding:12px;background:#16181d}
+.cam-actions .btn{background:#23262d;border-color:#33373f;color:#e9eaec}
+.cam-actions .btn-primary{background:linear-gradient(180deg,#3b76ff,#2563eb);border-color:#2563eb;color:#fff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="logo">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h4l1.6-2h4.8L16 7h4v12H4z"/><circle cx="12" cy="13" r="3.4"/>
+        </svg>
+      </div>
+      <div>圖文翻譯<small>拍照 · 貼上 · 上載 → 辨識 → 譯文覆蓋</small></div>
+    </div>
+    <div class="spacer"></div>
+    <span class="pill"><b>●</b> OCR 在本機執行，圖片不外傳</span>
+    <button class="btn btn-mini" id="btnSaveCurrent">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 17l-5.3 2.8 1.1-5.9L3.5 9.8l5.9-.8z"/></svg>
+      收藏
+    </button>
+    <button class="btn btn-mini" id="btnSavedList">收藏清單<span class="badge" id="saveCount">0</span></button>
+    <button class="btn btn-mini" id="btnShare">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.3 10.7l7.4-3.8M8.3 13.3l7.4 3.8"/></svg>
+      分享
+    </button>
+  </div>
+</div>
+
+<div class="banner" id="netBanner" hidden>
+  <span class="bt">
+    <b>這個環境禁用了外部連線</b>（例如內建預覽面板的安全限制），OCR 語言包與 Google 翻譯都連不上。
+    請把 <b>圖文翻譯.html</b> 下載後用瀏覽器直接開啟（雙擊檔案），即可正常使用。
+  </span>
+  <button class="btn btn-mini" id="btnBannerClose">知道了</button>
+</div>
+
+<main class="app">
+
+  <!-- ============ 左：影像 ============ -->
+  <section class="panel">
+    <div class="panel-head">
+      <div class="panel-title">影像</div>
+      <div class="meta" id="meta"></div>
+    </div>
+    <div class="panel-body">
+      <div class="stage" id="stage">
+        <div class="drop" id="drop">
+          <div class="drop-ico">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2.6"/><circle cx="8.6" cy="10" r="1.5"/>
+              <path d="M5 17l4.4-4.2 3 2.8L16 12l3 3.4"/>
+            </svg>
+          </div>
+          <h2>拍照、貼上或拖曳圖片</h2>
+          <p>支援 JPG / PNG / WebP / HEIC<br>手機可直接開相機，電腦可按 Ctrl+V 貼上截圖</p>
+          <div class="drop-btns">
+            <button class="btn btn-primary" id="btnCam">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg>
+              拍照
+            </button>
+            <button class="btn" id="btnUpload">上載圖片</button>
+            <button class="btn" id="btnPasteTip">貼上 (Ctrl+V)</button>
+          </div>
+        </div>
+
+        <div class="canvas-wrap" id="wrap" hidden>
+          <canvas id="canvas"></canvas>
+          <div class="overlay" id="overlay"></div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn btn-mini" id="btnRotate" disabled>↻ 旋轉 90°</button>
+        <button class="btn btn-mini" id="btnErase" disabled title="去除圖中的筆跡／手寫字">🧽 去筆跡</button>
+        <button class="btn btn-mini" id="btnToggleOv" disabled>隱藏譯文</button>
+        <button class="btn btn-mini" id="btnSaveImg" disabled>下載譯圖</button>
+        <button class="btn btn-mini" id="btnClear" disabled>清除</button>
+      </div>
+
+      <div class="erasebar" id="erasebar" hidden>
+        <button class="btn btn-mini" id="btnPick">💧 拾色</button>
+        <span class="swatch" id="swatch" title="已選筆跡顏色"></span>
+        <button class="btn btn-mini" id="btnBrush">🖌️ 筆刷</button>
+        <button class="btn btn-mini" id="btnAutoMask">重新偵測</button>
+        <span class="erangelabel">容差 <input type="range" id="tol" min="8" max="90" value="40"></span>
+        <span class="erangelabel">筆刷 <input type="range" id="brushSize" min="4" max="60" value="18"></span>
+        <button class="btn btn-mini btn-primary" id="btnApplyErase">套用</button>
+        <button class="btn btn-mini" id="btnCancelErase">取消</button>
+      </div>
+
+      <div class="thumbs" id="thumbs" hidden></div>
+
+      <div class="status" id="status"><span class="dot"></span><span id="statusText">等待圖片</span></div>
+      <div class="bar" id="bar" hidden><i id="barFill"></i></div>
+    </div>
+  </section>
+
+  <!-- ============ 右：文字 ============ -->
+  <section class="panel">
+    <div class="panel-head">
+      <div class="panel-title">語言與結果</div>
+    </div>
+    <div class="panel-body">
+
+      <div class="langrow">
+        <div class="sel">
+          <select id="srcLang" aria-label="來源語言">
+            <option value="auto">自動偵測</option>
+            <option value="en">英文</option>
+            <option value="zh-TW">繁體中文</option>
+            <option value="zh-CN">簡體中文</option>
+            <option value="ja">日文</option>
+            <option value="ko">韓文</option>
+            <option value="pt">葡萄牙文</option>
+            <option value="fr">法文</option>
+            <option value="de">德文</option>
+            <option value="es">西班牙文</option>
+          </select>
+        </div>
+        <span class="arrow">→</span>
+        <div class="sel">
+          <select id="dstLang" aria-label="目標語言">
+            <option value="zh-TW" selected>繁體中文</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="pt">Português</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="th">ไทย</option>
+            <option value="vi">Tiếng Việt</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="btnOCR" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8V5.6A1.6 1.6 0 015.6 4H8M16 4h2.4A1.6 1.6 0 0120 5.6V8M20 16v2.4a1.6 1.6 0 01-1.6 1.6H16M8 20H5.6A1.6 1.6 0 014 18.4V16"/><path d="M8.4 15.4l3.6-6 3.6 6"/><path d="M9.8 13.4h4.4"/></svg>
+          擷取文字
+        </button>
+        <button class="btn btn-primary" id="btnTranslate" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8M8 4v2c0 4-1.6 6.6-4 8"/><path d="M5.4 10.4c1.2 2 3 3.2 5.1 3.6"/><path d="M13 20l4.2-9.6L21.4 20"/><path d="M14.6 16.4h5.2"/></svg>
+          翻譯並覆蓋
+        </button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab on" data-tab="ocr" id="tabOcr">原文</button>
+        <button class="tab" data-tab="cards" id="tabCards">生字卡</button>
+        <button class="tab" data-tab="trans" id="tabTrans">譯文</button>
+        <button class="tab" data-tab="pairs" id="tabPairs">對照</button>
+      </div>
+
+      <div id="paneOcr">
+        <div class="mini">
+          <button class="btn btn-mini" id="btnReadAll">▶ 朗讀全文</button>
+          <button class="btn btn-mini" id="btnEditText">編輯文字</button>
+          <select class="mini-sel" id="ttsLang2" aria-label="發音語言">
+            <option value="zh-CN">普通話</option>
+            <option value="zh-HK">粵語</option>
+            <option value="zh-TW">台灣國語</option>
+            <option value="en-US">English</option>
+          </select>
+          <select class="mini-sel" id="rateSel2" aria-label="語速">
+            <option value="0.7">慢速</option>
+            <option value="0.9" selected>正常</option>
+            <option value="1.15">快速</option>
+          </select>
+        </div>
+        <div class="ttsinfo" id="ttsInfo2"></div>
+        <div class="reader" id="reader">
+          <div class="empty-note">辨識出的文字會出現在這裡。<br>點字即可聽發音，長句會逐句朗讀。</div>
+        </div>
+        <textarea class="txt" id="ocrText" hidden spellcheck="false" placeholder="辨識出的文字會出現在這裡，可直接編輯、複製。"></textarea>
+      </div>
+
+      <div id="paneCards" hidden>
+        <div class="mini">
+          <select class="mini-sel" id="ttsLang" aria-label="發音語言">
+            <option value="zh-CN">普通話</option>
+            <option value="zh-HK">粵語</option>
+            <option value="zh-TW">台灣國語</option>
+            <option value="en-US">English</option>
+          </select>
+          <select class="mini-sel" id="rateSel" aria-label="語速">
+            <option value="0.7">慢速</option>
+            <option value="0.9" selected>正常</option>
+            <option value="1.15">快速</option>
+          </select>
+          <button class="btn btn-mini" id="btnReadCards">▶ 全部朗讀</button>
+          <button class="btn btn-mini" id="btnParse">重新解析</button>
+          <button class="btn btn-mini" id="btnCsv">匯出 CSV</button>
+        </div>
+        <div class="ttsinfo" id="ttsInfo"></div>
+        <div class="cards" id="cards">
+          <div class="empty-note">辨識完成後，會自動從「生字表」抽出 生字 / 拼音 / 中文，一字一卡。<br>點卡片即可發音。</div>
+        </div>
+        <details class="editor">
+          <summary>手動編輯生字表（每行：生字 | 拼音 | 中文）</summary>
+          <textarea class="txt txt-sm" id="vocabText" spellcheck="false" placeholder="花 | huā | 花朵&#10;草 | cǎo | 小草"></textarea>
+          <button class="btn btn-mini" id="btnApplyVocab" style="margin-top:8px">更新卡片</button>
+        </details>
+      </div>
+
+      <div id="paneTrans" hidden>
+        <div class="result" id="transText"><div class="empty-note">尚未翻譯。<br>按「翻譯並覆蓋」，譯文會疊回原圖對應位置。</div></div>
+      </div>
+
+      <div id="panePairs" hidden>
+        <div class="pairs" id="pairs"><div class="empty-note">尚未產生對照。<br>完成辨識與翻譯後，這裡會逐行對照原文與譯文。</div></div>
+      </div>
+
+      <div class="foot-actions">
+        <button class="btn btn-mini" id="btnCopy">複製譯文</button>
+        <button class="btn btn-mini" id="btnDownload">下載 .txt</button>
+        <button class="btn btn-mini" id="btnGoogle">在 Google 翻譯開啟</button>
+      </div>
+
+      <p class="note">
+        辨識用 Tesseract（WebAssembly，在本機瀏覽器執行，首次需下載語言包 10–40MB）。
+        翻譯用 Google 翻譯公開介面，<b>只送出文字</b>，圖片不會上傳。
+        生字卡的拼音優先取自圖中文字，缺少時由 pinyin-pro 自動標音；發音用系統內建語音（Edge / Chrome 效果最好）。
+        若翻譯被攔截，可按「在 Google 翻譯開啟」手動處理。
+      </p>
+    </div>
+  </section>
+</main>
+
+<input type="file" id="file" accept="image/*" multiple hidden>
+<input type="file" id="fileCapture" accept="image/*" capture="environment" hidden>
+
+<div class="modal" id="camModal" hidden>
+  <div class="cam-box">
+    <video id="camVideo" playsinline autoplay muted></video>
+    <div class="cam-actions">
+      <button class="btn" id="btnCamCancel">取消</button>
+      <button class="btn btn-primary" id="btnShoot">拍攝</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-mask" id="drawerMask" hidden>
+  <aside class="drawer">
+    <div class="drawer-head">
+      <h3>收藏清單</h3>
+      <button class="x" id="btnDrawerClose" title="關閉">×</button>
+    </div>
+    <div class="drawer-body" id="savedList"></div>
+    <div class="drawer-foot">
+      <button class="btn btn-mini" id="btnExportAll">匯出全部（.txt）</button>
+      <button class="btn btn-mini" id="btnClearAll">清空收藏</button>
+    </div>
+  </aside>
+</div>
+
+<div class="modal" id="shareModal" hidden>
+  <div class="share-box">
+    <h3>分享結果</h3>
+    <textarea id="shareText" readonly spellcheck="false"></textarea>
+    <div class="share-actions">
+      <button class="btn btn-primary" id="btnShareNative">系統分享</button>
+      <button class="btn" id="btnShareCopy">複製文字</button>
+      <button class="btn" id="btnShareImg">分享譯圖</button>
+      <button class="btn" id="btnShareClose">關閉</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  var els = {
+    stage: $("stage"), drop: $("drop"), wrap: $("wrap"), canvas: $("canvas"), overlay: $("overlay"),
+    meta: $("meta"),
+    btnCam: $("btnCam"), btnUpload: $("btnUpload"), btnPasteTip: $("btnPasteTip"),
+    btnRotate: $("btnRotate"), btnToggleOv: $("btnToggleOv"), btnSaveImg: $("btnSaveImg"), btnClear: $("btnClear"),
+    btnErase: $("btnErase"), erasebar: $("erasebar"), thumbs: $("thumbs"),
+    btnPick: $("btnPick"), btnBrush: $("btnBrush"), btnAutoMask: $("btnAutoMask"),
+    btnApplyErase: $("btnApplyErase"), btnCancelErase: $("btnCancelErase"),
+    swatch: $("swatch"), tol: $("tol"), brushSize: $("brushSize"),
+    status: $("status"), statusText: $("statusText"), bar: $("bar"), barFill: $("barFill"),
+    srcLang: $("srcLang"), dstLang: $("dstLang"),
+    btnOCR: $("btnOCR"), btnTranslate: $("btnTranslate"),
+    ocrText: $("ocrText"), transText: $("transText"), pairs: $("pairs"),
+    paneOcr: $("paneOcr"), paneTrans: $("paneTrans"), panePairs: $("panePairs"), paneCards: $("paneCards"),
+    tabOcr: $("tabOcr"), tabTrans: $("tabTrans"), tabPairs: $("tabPairs"), tabCards: $("tabCards"),
+    reader: $("reader"), cards: $("cards"), vocabText: $("vocabText"),
+    btnReadAll: $("btnReadAll"), btnEditText: $("btnEditText"),
+    btnReadCards: $("btnReadCards"), btnParse: $("btnParse"), btnCsv: $("btnCsv"), btnApplyVocab: $("btnApplyVocab"),
+    ttsLang: $("ttsLang"), rateSel: $("rateSel"),
+    ttsLang2: $("ttsLang2"), rateSel2: $("rateSel2"),
+    btnSaveCurrent: $("btnSaveCurrent"), btnSavedList: $("btnSavedList"), btnShare: $("btnShare"),
+    saveCount: $("saveCount"), drawerMask: $("drawerMask"), savedList: $("savedList"),
+    btnDrawerClose: $("btnDrawerClose"), btnClearAll: $("btnClearAll"), btnExportAll: $("btnExportAll"),
+    shareModal: $("shareModal"), shareText: $("shareText"), btnShareNative: $("btnShareNative"),
+    btnShareCopy: $("btnShareCopy"), btnShareImg: $("btnShareImg"), btnShareClose: $("btnShareClose"),
+    netBanner: $("netBanner"), btnBannerClose: $("btnBannerClose"),
+    btnCopy: $("btnCopy"), btnDownload: $("btnDownload"), btnGoogle: $("btnGoogle"),
+    file: $("file"), fileCapture: $("fileCapture"),
+    camModal: $("camModal"), camVideo: $("camVideo"), btnCamCancel: $("btnCamCancel"), btnShoot: $("btnShoot"),
+    toast: $("toast")
+  };
+
+  var OCR_LANG = {
+    "auto": "eng+chi_tra", "en": "eng", "zh-TW": "chi_tra", "zh-CN": "chi_sim",
+    "ja": "jpn", "ko": "kor", "pt": "por", "fr": "fra", "de": "deu", "es": "spa"
+  };
+
+  var S = {
+    src: null,          // 原始影像（Image 或 Canvas）
+    name: "",
+    rotation: 0,
+    lines: [],          // { text, trans, bbox:{x0,y0,x1,y1} }
+    cache: {},          // 譯文快取 text -> 譯文
+    worker: null,
+    workerLang: "",
+    busy: false,
+    showTrans: true,
+    pages: [],          // 多圖：{ src, name, rotation, lines, cache, vocab }
+    page: -1
+  };
+
+  /* ---------------- 小工具 ---------------- */
+  var toastTimer = null;
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { els.toast.classList.remove("on"); }, 2600);
+  }
+
+  function setStatus(text, kind, pct) {
+    els.statusText.textContent = text;
+    els.status.className = "status" + (kind ? " " + kind : "");
+    if (typeof pct === "number") {
+      els.bar.hidden = false;
+      els.barFill.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+      if (pct >= 1) setTimeout(function () { if (els.barFill.style.width === "100%") els.bar.hidden = true; }, 900);
+    } else {
+      els.bar.hidden = true;
+      els.barFill.style.width = "0%";
+    }
+  }
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function syncButtons() {
+    var has = !!S.src, busy = S.busy, em = E.active;
+    els.btnRotate.disabled = !has || busy || em;
+    els.btnClear.disabled = !has || busy || em;
+    els.btnOCR.disabled = !has || busy || em;
+    els.btnTranslate.disabled = !has || busy || em;
+    els.btnErase.disabled = !has || busy;
+    els.btnErase.classList.toggle("on", em);
+    els.btnSaveImg.disabled = !has || busy || em || !hasTranslation();
+    els.btnToggleOv.disabled = !has || !hasTranslation();
+    els.btnToggleOv.classList.toggle("on", hasTranslation() && S.showTrans);
+    els.btnToggleOv.textContent = S.showTrans ? "隱藏譯文" : "顯示譯文";
+    var content = !!(els.ocrText.value.trim() || S.lines.length);
+    els.btnSaveCurrent.disabled = !content || busy;
+    els.btnShare.disabled = !content || busy;
+  }
+
+  function hasTranslation() {
+    for (var i = 0; i < S.lines.length; i++) if (S.lines[i].trans) return true;
+    return false;
+  }
+
+  /* ---------------- 載入影像（支援多圖） ---------------- */
+  function saveCurrentPage() {
+    var p = S.pages[S.page];
+    if (!p) return;
+    p.src = S.src; p.name = S.name; p.rotation = S.rotation;
+    p.lines = S.lines; p.cache = S.cache; p.vocab = els.vocabText.value;
+  }
+
+  function adoptSource(src, name) {
+    saveCurrentPage();
+    S.pages.push({ src: src, name: name || "", rotation: 0, lines: [], cache: {}, vocab: "" });
+    S.page = S.pages.length - 1;
+    S.src = src;
+    S.name = name || "";
+    S.rotation = 0;
+    S.lines = [];
+    S.cache = {};
+    els.drop.hidden = true;
+    els.wrap.hidden = false;
+    renderThumbs();
+  }
+
+  function setSource(src, name) {
+    adoptSource(src, name);
+    renderCanvas();
+    clearResults();
+    setStatus("已載入圖片，可以開始辨識", "ok");
+    syncButtons();
+    if (S.pages.length > 1) toast("已加入第 " + S.pages.length + " 張圖片（共 " + S.pages.length + " 張，可點下方縮圖切換）");
+  }
+
+  function activatePage(i, fresh) {
+    var p = S.pages[i];
+    if (!p) return;
+    S.page = i;
+    S.src = p.src; S.name = p.name; S.rotation = p.rotation;
+    S.lines = p.lines; S.cache = p.cache;
+    els.drop.hidden = true;
+    els.wrap.hidden = false;
+    renderCanvas();
+    renderThumbs();
+    clearResults();
+    if (p.vocab) {
+      els.vocabText.value = p.vocab;
+      VOCAB = parseVocabEdit(p.vocab);
+      renderCards();
+    }
+    if (!fresh) {
+      els.ocrText.value = S.lines.map(function (l) { return l.text; }).join("\n");
+      if (els.ocrText.value.trim()) renderReader();
+      setStatus("第 " + (i + 1) + " / " + S.pages.length + " 張", "ok");
+    } else {
+      setStatus("已載入圖片，可以開始辨識", "ok");
+    }
+    syncButtons();
+  }
+
+  function switchPage(i) {
+    if (S.busy || i === S.page || !S.pages[i]) return;
+    exitErase();
+    saveCurrentPage();
+    activatePage(i, false);
+  }
+
+  function removePage(i) {
+    if (S.busy) return;
+    exitErase();
+    var wasActive = i === S.page;
+    S.pages.splice(i, 1);
+    if (!S.pages.length) { els.btnClear.click(); return; }
+    if (wasActive) {
+      S.page = -1;
+      activatePage(Math.min(i, S.pages.length - 1), false);
+    } else {
+      if (i < S.page) S.page--;
+      renderThumbs();
+    }
+    toast("已移除，剩 " + S.pages.length + " 張圖片");
+  }
+
+  function renderThumbs() {
+    var t = els.thumbs;
+    t.innerHTML = "";
+    if (!S.pages.length) { t.hidden = true; return; }
+    t.hidden = false;
+    for (var i = 0; i < S.pages.length; i++) {
+      (function (i) {
+        var p = S.pages[i];
+        var item = document.createElement("div");
+        item.className = "thumb" + (i === S.page ? " on" : "");
+        item.title = p.name || ("圖片 " + (i + 1));
+        var cv = document.createElement("canvas");
+        cv.width = 68; cv.height = 50;
+        var cx = cv.getContext("2d");
+        cx.fillStyle = "#ffffff"; cx.fillRect(0, 0, 68, 50);
+        var sw = p.src.naturalWidth || p.src.width, sh = p.src.naturalHeight || p.src.height;
+        if (sw && sh) {
+          var k = Math.min(64 / sw, 46 / sh);
+          cx.drawImage(p.src, (68 - sw * k) / 2, (50 - sh * k) / 2, sw * k, sh * k);
+        }
+        item.appendChild(cv);
+        var tag = document.createElement("span"); tag.className = "tag"; tag.textContent = i + 1;
+        item.appendChild(tag);
+        var x = document.createElement("span"); x.className = "x"; x.textContent = "✕"; x.title = "移除這張";
+        x.addEventListener("click", function (ev) { ev.stopPropagation(); removePage(i); });
+        item.appendChild(x);
+        item.addEventListener("click", function () { switchPage(i); });
+        t.appendChild(item);
+      })(i);
+    }
+  }
+
+  function renderCanvas() {
+    if (!S.src) return;
+    var w0 = S.src.naturalWidth || S.src.width;
+    var h0 = S.src.naturalHeight || S.src.height;
+    if (!w0 || !h0) return;
+
+    var MAX = 2400;
+    var k = Math.min(1, MAX / Math.max(w0, h0));
+    var dw = Math.round(w0 * k), dh = Math.round(h0 * k);
+
+    var rot = ((S.rotation % 360) + 360) % 360;
+    var swap = rot % 180 !== 0;
+
+    var c = els.canvas;
+    c.width = swap ? dh : dw;
+    c.height = swap ? dw : dh;
+    var ctx = c.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.save();
+    ctx.translate(c.width / 2, c.height / 2);
+    ctx.rotate(rot * Math.PI / 180);
+    ctx.drawImage(S.src, -dw / 2, -dh / 2, dw, dh);
+    ctx.restore();
+
+    els.meta.textContent = Math.round(w0) + "×" + Math.round(h0) + (S.name ? " · " + S.name : "");
+    renderOverlay();
+  }
+
+  /* ---------------- 覆蓋層 ---------------- */
+  function renderOverlay() {
+    var ov = els.overlay;
+    ov.innerHTML = "";
+    if (!S.lines.length || !S.showTrans) return;
+    var any = false;
+    for (var i = 0; i < S.lines.length; i++) if (S.lines[i].trans) { any = true; break; }
+    if (!any) return;
+
+    var W = els.canvas.width, H = els.canvas.height;
+    var displayW = ov.clientWidth;
+    if (!W || !displayW) return;
+    var scale = displayW / W;
+
+    for (var j = 0; j < S.lines.length; j++) {
+      var l = S.lines[j];
+      if (!l.trans || !l.bbox) continue;
+      var b = l.bbox;
+      var box = document.createElement("div");
+      box.className = "ovbox";
+      box.dataset.i = j;
+      box.style.left = (b.x0 / W * 100) + "%";
+      box.style.top = (b.y0 / H * 100) + "%";
+      box.style.width = ((b.x1 - b.x0) / W * 100) + "%";
+      box.style.height = ((b.y1 - b.y0) / H * 100) + "%";
+      box.textContent = l.trans;
+      ov.appendChild(box);
+      fitFont(box, (b.y1 - b.y0) * scale);
+    }
+  }
+
+  function fitFont(box, hPx) {
+    var size = Math.max(6, Math.min(hPx * 0.76, hPx * 1.1));
+    box.style.fontSize = size.toFixed(1) + "px";
+    var guard = 60;
+    while (guard-- > 0 && size > 5.5 &&
+      (box.scrollHeight > box.clientHeight + 1 || box.scrollWidth > box.clientWidth + 1)) {
+      size -= Math.max(0.4, size * 0.07);
+      box.style.fontSize = size.toFixed(1) + "px";
+    }
+  }
+
+  var roTimer = null;
+  if (window.ResizeObserver) {
+    new ResizeObserver(function () {
+      clearTimeout(roTimer);
+      roTimer = setTimeout(renderOverlay, 90);
+    }).observe(els.canvas);
+  }
+
+  /* ---------------- 讀取檔案 ---------------- */
+  function handleFiles(list) {
+    var imgs = [];
+    for (var i = 0; i < list.length; i++) {
+      var f = list[i];
+      if (f && /^image\//.test(f.type)) imgs.push(f);
+    }
+    if (!imgs.length) { toast("請選擇圖片檔案"); return; }
+    var loaded = 0;
+    imgs.forEach(function (f, idx) {
+      var url = URL.createObjectURL(f);
+      var img = new Image();
+      img.decoding = "async";
+      img.onload = function () {
+        setSource(img, f.name || ("圖片 " + (idx + 1)));
+        URL.revokeObjectURL(url);
+        loaded++;
+        if (imgs.length > 1 && loaded === imgs.length) {
+          setStatus("已載入 " + imgs.length + " 張圖片，可點下方縮圖切換", "ok");
+          toast("已載入 " + imgs.length + " 張圖片");
+        }
+      };
+      img.onerror = function () {
+        toast("「" + (f.name || "圖片") + "」載入失敗");
+        URL.revokeObjectURL(url);
+        loaded++;
+      };
+      img.src = url;
+    });
+  }
+
+  function handleFile(file) { handleFiles([file]); }
+
+  els.btnUpload.addEventListener("click", function () { els.file.click(); });
+  els.file.addEventListener("change", function (e) {
+    if (e.target.files && e.target.files.length) handleFiles(e.target.files);
+    e.target.value = "";
+  });
+  els.fileCapture.addEventListener("change", function (e) {
+    if (e.target.files && e.target.files.length) handleFiles(e.target.files);
+    e.target.value = "";
+  });
+
+  els.btnPasteTip.addEventListener("click", function () {
+    toast("按 Ctrl+V（Mac：⌘+V）即可貼上剪貼簿圖片");
+    window.focus();
+  });
+
+  /* ---------------- 相機 ---------------- */
+  var camStream = null;
+
+  els.btnCam.addEventListener("click", async function () {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      els.fileCapture.click();
+      return;
+    }
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1440 } },
+        audio: false
+      });
+      els.camVideo.srcObject = camStream;
+      els.camModal.hidden = false;
+    } catch (err) {
+      toast("無法開啟相機，改用相簿或檔案上載");
+      els.fileCapture.click();
+    }
+  });
+
+  function closeCamera() {
+    if (camStream) { camStream.getTracks().forEach(function (t) { t.stop(); }); camStream = null; }
+    els.camVideo.srcObject = null;
+    els.camModal.hidden = true;
+  }
+  els.btnCamCancel.addEventListener("click", closeCamera);
+  els.camModal.addEventListener("click", function (e) { if (e.target === els.camModal) closeCamera(); });
+
+  els.btnShoot.addEventListener("click", function () {
+    var v = els.camVideo;
+    if (!v.videoWidth) { toast("相機尚未準備好，稍等一秒再拍"); return; }
+    var c = document.createElement("canvas");
+    c.width = v.videoWidth;
+    c.height = v.videoHeight;
+    c.getContext("2d").drawImage(v, 0, 0);
+    closeCamera();
+    setSource(c, "拍照 " + new Date().toLocaleTimeString());
+  });
+
+  /* ---------------- 貼上 / 拖放 ---------------- */
+  window.addEventListener("paste", function (e) {
+    var items = (e.clipboardData && e.clipboardData.items) || [];
+    var imgs = [];
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].type && items[i].type.indexOf("image/") === 0) {
+        var f = items[i].getAsFile();
+        if (f) imgs.push(f);
+      }
+    }
+    if (imgs.length) { e.preventDefault(); handleFiles(imgs); toast("已貼上 " + imgs.length + " 張圖片"); }
+  });
+
+  ["dragenter", "dragover"].forEach(function (ev) {
+    document.addEventListener(ev, function (e) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; });
+  });
+  document.addEventListener("drop", function (e) {
+    e.preventDefault();
+    var dt = e.dataTransfer;
+    if (!dt) return;
+    if (dt.files && dt.files.length) { handleFiles(dt.files); return; }
+    var html = dt.getData("text/html");
+    var m = html && html.match(/src\s*=\s*["']([^"']+)["']/i);
+    if (m) { loadUrl(m[1]); return; }
+    var txt = dt.getData("text/plain");
+    if (txt && /^https?:\/\//.test(txt.trim())) loadUrl(txt.trim());
+  });
+
+  function loadUrl(u) {
+    var img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function () { setSource(img, "網路圖片"); };
+    img.onerror = function () { toast("無法讀取該圖片網址"); };
+    img.src = u;
+  }
+
+  /* ---------------- 旋轉 / 清除 ---------------- */
+  els.btnRotate.addEventListener("click", function () {
+    if (!S.src || S.busy) return;
+    S.rotation = (S.rotation + 90) % 360;
+    S.lines = [];
+    S.cache = {};
+    renderCanvas();
+    clearResults();
+    setStatus("已旋轉，請重新辨識", "ok");
+    syncButtons();
+  });
+
+  els.btnClear.addEventListener("click", function () {
+    if (S.busy) return;
+    exitErase();
+    S.src = null; S.name = ""; S.rotation = 0; S.lines = []; S.cache = {};
+    S.pages = []; S.page = -1;
+    els.canvas.width = 0; els.canvas.height = 0;
+    els.wrap.hidden = true;
+    els.drop.hidden = false;
+    els.meta.textContent = "";
+    els.overlay.innerHTML = "";
+    renderThumbs();
+    clearResults();
+    setStatus("等待圖片", "");
+    syncButtons();
+  });
+
+  els.btnToggleOv.addEventListener("click", function () {
+    S.showTrans = !S.showTrans;
+    renderOverlay();
+    syncButtons();
+  });
+
+  /* ---------------- 語音朗讀 ---------------- */
+  var TTS = { lang: "zh-CN", rate: 0.9, stopped: true };
+  var VOICES = [];
+  var _queue = [];
+  var _speaking = false;
+  var _ttsDefaulted = false;
+
+  var LANG_LABEL = { "zh-HK": "粵語", "zh-CN": "普通話", "zh-TW": "台灣國語", "en-US": "英語" };
+  var LANG_ALIAS = {
+    "zh-HK": ["yue", "yue-hk", "yue-hant-hk", "zh-hk", "zh-hant-hk", "zh-yue", "cantonese", "ctb"],
+    "zh-CN": ["zh-cn", "cmn-hans-cn", "cmn-hans", "cmn", "zh"],
+    "zh-TW": ["zh-tw", "cmn-hant-tw", "cmn-hant", "zh-hant"],
+    "en-US": ["en", "en-us", "en-gb", "en-au", "en-ca", "english"]
+  };
+
+  function _aliases(lang) {
+    var a = LANG_ALIAS[lang];
+    if (a) return a.map(function (s) { return s.toLowerCase(); });
+    return [String(lang).toLowerCase().replace("_", "-")];
+  }
+
+  function matchVoice(lang) {
+    if (!("speechSynthesis" in window)) return null;
+    var list = VOICES.length ? VOICES : (window.speechSynthesis.getVoices() || []);
+    if (!list.length) return null;
+    var aliases = _aliases(lang);
+    var exact = null, loose = null;
+    for (var i = 0; i < list.length; i++) {
+      var l = String(list[i].lang || "").toLowerCase().replace("_", "-");
+      if (aliases.indexOf(l) >= 0) { if (!exact) exact = list[i]; }
+      else if (l.slice(0, 2) === lang.slice(0, 2)) { if (!loose) loose = list[i]; }
+    }
+    return exact || loose || null;
+  }
+
+  function voiceAvailable(lang) {
+    if (!("speechSynthesis" in window)) return false;
+    var list = VOICES.length ? VOICES : (window.speechSynthesis.getVoices() || []);
+    if (!list.length) return false;
+    var aliases = _aliases(lang);
+    for (var i = 0; i < list.length; i++) {
+      if (aliases.indexOf(String(list[i].lang || "").toLowerCase().replace("_", "-")) >= 0) return true;
+    }
+    return false;
+  }
+
+  function _speakOne(text, opt, done) {
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = opt.lang || TTS.lang;
+    u.rate = opt.rate || TTS.rate;
+    u.pitch = 1;
+    var v = matchVoice(u.lang);
+    if (v) u.voice = v;
+    if (opt.onstart) u.onstart = opt.onstart;
+    u.onend = function () { if (done) done(); };
+    u.onerror = function () { if (opt.onerror) opt.onerror(); if (done) done(); };
+    window.__utt = u;
+    try { window.speechSynthesis.speak(u); } catch (e) { if (done) done(); }
+  }
+
+  function _pump() {
+    if (_speaking) return;
+    if (!_queue.length) return;
+    _speaking = true;
+    var job = _queue.shift();
+    if (TTS.stopped) { _speaking = false; _queue.length = 0; return; }
+    _speakOne(job.text, job.opt, function () {
+      _speaking = false;
+      if (TTS.stopped) { _queue.length = 0; return; }
+      _pump();
+    });
+  }
+
+  function _enqueue(text, opt) { _queue.push({ text: text, opt: opt || {} }); _pump(); }
+
+  function stopQueue() {
+    _queue.length = 0;
+    _speaking = false;
+    if ("speechSynthesis" in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+  }
+
+  function isHan(ch) { return /[㐀-鿿豈-﫿]/.test(ch); }
+
+
+
+
+  function splitRuns(text) {
+    var runs = [], cur = "", curHan = null;
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (/\s/.test(ch)) {
+        if (cur) { runs.push({ t: cur, han: curHan }); cur = ""; curHan = null; }
+        continue;
+      }
+      var h = isHan(ch);
+      if (curHan === null) curHan = h;
+      if (h !== curHan) { if (cur) runs.push({ t: cur, han: curHan }); cur = ch; curHan = h; }
+      else cur += ch;
+    }
+    if (cur) runs.push({ t: cur, han: curHan });
+    return runs;
+  }
+
+  function runLang(han) {
+    if (han) return (TTS.lang === "en-US") ? "zh-CN" : TTS.lang;
+    return "en-US";
+  }
+
+  function speak(text, opt) {
+    opt = opt || {};
+    text = String(text || "").trim();
+    if (!text) { if (opt.onend) opt.onend(); return; }
+    if (!("speechSynthesis" in window)) { toast("此瀏覽器不支援語音朗讀，建議用 Edge 或 Chrome"); if (opt.onend) opt.onend(); return; }
+    stopQueue();
+    TTS.stopped = false;
+    _enqueue(text, { lang: opt.lang, rate: opt.rate, onstart: opt.onstart, onend: opt.onend, onerror: opt.onerror });
+  }
+
+  function speakMixed(text, opt) {
+    opt = opt || {};
+    text = String(text || "").trim();
+    if (!text) { if (opt.onend) opt.onend(); return; }
+    if (!("speechSynthesis" in window)) { toast("此瀏覽器不支援語音朗讀，建議用 Edge 或 Chrome"); if (opt.onend) opt.onend(); return; }
+    var runs = splitRuns(text);
+    if (!runs.length) { if (opt.onend) opt.onend(); return; }
+    stopQueue();
+    TTS.stopped = false;
+    runs.forEach(function (r) {
+      _enqueue(r.t, { lang: runLang(r.han), rate: opt.rate, onstart: opt.onstart, onend: null, onerror: null });
+    });
+    var last = _queue.length - 1;
+    var prev = _queue[last].opt.onend;
+    _queue[last].opt.onend = function () { if (prev) prev(); if (opt.onend) opt.onend(); };
+  }
+
+  function speakSequence(items, opt) {
+    opt = opt || {};
+    if (!items.length) { if (opt.onallend) opt.onallend(); return; }
+    if (!("speechSynthesis" in window)) { toast("此瀏覽器不支援語音朗讀，建議用 Edge 或 Chrome"); if (opt.onallend) opt.onallend(); return; }
+    stopQueue();
+    TTS.stopped = false;
+    items.forEach(function (it) {
+      var runs = splitRuns(it.text);
+      if (!runs.length) return;
+      runs.forEach(function (r, ri) {
+        var first = ri === 0, last = ri === runs.length - 1;
+        _enqueue(r.t, {
+          lang: (it.lang !== undefined ? it.lang : runLang(r.han)),
+          rate: opt.rate,
+          onstart: first ? it.onstart : null,
+          onend: last ? it.onend : null,
+          onerror: last ? it.onend : null
+        });
+      });
+    });
+  }
+
+  function refreshVoices() {
+    if ("speechSynthesis" in window) VOICES = window.speechSynthesis.getVoices() || [];
+    if (!_ttsDefaulted && VOICES.length) {
+      var saved = null; try { saved = localStorage.getItem("imgtr_tts"); } catch (e) {}
+      if (!saved) {
+        TTS.lang = voiceAvailable("zh-HK") ? "zh-HK"
+                : voiceAvailable("zh-CN") ? "zh-CN"
+                : voiceAvailable("en-US") ? "en-US" : TTS.lang;
+        syncTtsSelects();
+      }
+      _ttsDefaulted = true;
+    }
+    updateTtsInfo();
+  }
+
+  function syncTtsSelects() {
+    if (els.ttsLang) els.ttsLang.value = TTS.lang;
+    if (els.ttsLang2) els.ttsLang2.value = TTS.lang;
+  }
+
+  function updateTtsInfo() {
+    var lang = TTS.lang, v = matchVoice(lang), avail = voiceAvailable(lang);
+    var label = LANG_LABEL[lang] || lang;
+    var msg;
+    if (!("speechSynthesis" in window)) msg = "⚠️ 此瀏覽器不支援語音朗讀，建議用 Edge 或 Chrome";
+    else if (avail) msg = "🔊 " + label + "：" + (v ? (v.name + " (" + v.lang + ")") : "系統預設");
+    else msg = "⚠️ 此裝置沒有「" + label + "」語音，朗讀會改用其他中文／英文語音代替。Windows 可在「設定 → 時間和語言 → 語言和區域」新增「中文(香港)」或「English (United States)」並安裝語音。";
+    var nodes = document.querySelectorAll(".ttsinfo");
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].textContent = msg;
+      nodes[i].className = "ttsinfo" + (avail || !("speechSynthesis" in window) ? " ok" : " warn");
+    }
+  }
+
+  function setTtsLang(v, persist) {
+    TTS.lang = v;
+    syncTtsSelects();
+    if (persist) { try { localStorage.setItem("imgtr_tts", v); } catch (e) {} }
+    stopSpeak();
+    updateTtsInfo();
+  }
+
+  if ("speechSynthesis" in window) {
+    try { var _s = localStorage.getItem("imgtr_tts"); if (_s) TTS.lang = _s; } catch (e) {}
+    syncTtsSelects();
+    refreshVoices();
+    if (typeof window.speechSynthesis.addEventListener === "function") {
+      window.speechSynthesis.addEventListener("voiceschanged", refreshVoices);
+    }
+    var _iv = setInterval(function () {
+      if (VOICES.length) { clearInterval(_iv); return; }
+      refreshVoices();
+    }, 700);
+    setTimeout(function () { clearInterval(_iv); }, 6000);
+  }
+  updateTtsInfo();
+
+  function stopSpeak() {
+    TTS.stopped = true;
+    stopQueue();
+    var a = document.querySelectorAll(".seg.speaking, .card.speaking, .tk.on");
+    for (var i = 0; i < a.length; i++) {
+      a[i].classList.remove("speaking");
+      a[i].classList.remove("on");
+    }
+    if (els.btnReadAll) els.btnReadAll.textContent = "▶ 朗讀全文";
+    if (els.btnReadCards) els.btnReadCards.textContent = "▶ 全部朗讀";
+  }
+
+  /* ---------------- 原文點讀 ---------------- */
+  function mkTok(w) {
+    var el = document.createElement("span");
+    el.className = "tk";
+    el.textContent = w;
+    el.setAttribute("data-w", w);
+    return el;
+  }
+
+  function buildTokens(s) {
+    var frag = document.createDocumentFragment();
+    var re = /[\u3400-\u9fff]+|[A-Za-z][A-Za-z'’\-]*|\d+(?:[.,]\d+)?|[^\S\n]+|[\s\S]/g;
+    var m;
+    while ((m = re.exec(s))) {
+      var t = m[0];
+      if (/^\s+$/.test(t)) { frag.appendChild(document.createTextNode(t)); continue; }
+      if (/^[\u3400-\u9fff]+$/.test(t)) {
+        for (var k = 0; k < t.length; k++) frag.appendChild(mkTok(t.charAt(k)));
+      } else if (/^[A-Za-z0-9]/.test(t)) {
+        frag.appendChild(mkTok(t));
+      } else {
+        frag.appendChild(document.createTextNode(t));
+      }
+    }
+    return frag;
+  }
+
+  function renderReader() {
+    var text = els.ocrText.value;
+    els.reader.innerHTML = "";
+    if (!text.trim()) {
+      els.reader.innerHTML = '<div class="empty-note">辨識出的文字會出現在這裡。<br>點字即可聽發音，長句會逐句朗讀。</div>';
+      return;
+    }
+    var lines = text.split(/\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var segs = lines[i].match(/[^。！？!?；;，,]+[。！？!?；;，,]?/g) || [];
+      for (var j = 0; j < segs.length; j++) {
+        if (!segs[j].trim()) continue;
+        var sp = document.createElement("span");
+        sp.className = "seg";
+        sp.appendChild(buildTokens(segs[j]));
+        els.reader.appendChild(sp);
+      }
+      if (i < lines.length - 1) els.reader.appendChild(document.createElement("br"));
+    }
+  }
+
+  els.reader.addEventListener("click", function (e) {
+    var t = e.target.closest ? e.target.closest(".tk") : null;
+    if (!t) return;
+    stopSpeak();
+    t.classList.add("on");
+    var w = t.getAttribute("data-w") || "";
+    speak(w, {
+      lang: runLang(isHan(w)),
+      rate: 0.8,
+      onend: function () { t.classList.remove("on"); },
+      onerror: function () { t.classList.remove("on"); }
+    });
+  });
+
+  els.btnReadAll.addEventListener("click", function () {
+    if (!TTS.stopped) { stopSpeak(); return; }
+    var segs = els.reader.querySelectorAll(".seg");
+    if (!segs.length) { toast("請先辨識文字"); return; }
+    var items = [];
+    for (var i = 0; i < segs.length; i++) {
+      (function (el) {
+        items.push({
+          text: el.textContent,
+          onstart: function () { el.classList.add("speaking"); try { el.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (err) {} },
+          onend: function () { el.classList.remove("speaking"); }
+        });
+      })(segs[i]);
+    }
+    els.btnReadAll.textContent = "■ 停止";
+    speakSequence(items, {
+      rate: TTS.rate,
+      onallend: function () { els.btnReadAll.textContent = "▶ 朗讀全文"; if (!TTS.stopped) toast("朗讀完成"); }
+    });
+  });
+
+  els.btnEditText.addEventListener("click", function () {
+    var editing = !els.ocrText.hidden;
+    if (editing) {
+      els.ocrText.hidden = true;
+      els.reader.hidden = false;
+      els.btnEditText.textContent = "編輯文字";
+      renderReader();
+    } else {
+      stopSpeak();
+      els.ocrText.hidden = false;
+      els.reader.hidden = true;
+      els.btnEditText.textContent = "完成編輯";
+      els.ocrText.focus();
+    }
+  });
+
+  /* ---------------- 生字卡 ---------------- */
+  var VOCAB = [];
+  var PY_RE = /[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜĀÁǍÀĒÉĚÈĪÍǏÌŌÓǑÒŪÚǓÙǕǗǙǛÜü]/;
+  var HEADER_RE = /^(生字表|生字|生詞|生詞表|詞語表|詞語|讀音|拼音|部首|筆順|課文|單元|練習|作業|工作紙|測驗|默書|姓名|日期|班別|年級|分數|成績)/;
+
+  function isPinyinToken(t) {
+    if (!t) return false;
+    if (/[\u3400-\u9fff]/.test(t)) return false;
+    if (!/^[A-Za-z·'’\s\u0100-\u01FF\u00C0-\u00FF]+$/.test(t)) return false;
+    if (PY_RE.test(t)) return true;
+    if (/\d/.test(t)) return true;
+    return /^[a-z]+$/.test(t) && t.length <= 24; // 無聲調拼音，如 "hua"
+  }
+
+  function guessPinyin(zi) {
+    try {
+      var P = window.pinyinPro;
+      if (P && typeof P.pinyin === "function") {
+        return P.pinyin(zi, { toneType: "symbol", type: "array" }).join(" ");
+      }
+    } catch (e) {}
+    return "";
+  }
+
+  function parseVocab(text) {
+    var rows = [], seen = {};
+    var lines = String(text || "").split(/\n+/);
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      line = line.replace(/^[\s(（[【]*\d+[\s)）\]】.、,，:：]*/, "")
+                 .replace(/^[•·\-–—*]+\s*/, "").trim();
+      if (!line) continue;
+
+      var parts = line.split(/[\t|｜]+|\s{2,}/).map(function (s) { return s.trim(); }).filter(Boolean);
+      if (parts.length < 2) parts = line.split(/\s+/).filter(Boolean);
+      if (!parts.length) continue;
+
+      var idx = -1;
+      for (var p = 0; p < parts.length; p++) {
+        if (/[\u3400-\u9fff]/.test(parts[p])) { idx = p; break; }
+      }
+      if (idx < 0) continue;
+
+      var m = parts[idx].match(/^([\u3400-\u9fff]{1,6})\s*(.*)$/);
+      if (!m) continue;
+      var zi = m[1];
+      var rest = [];
+      if (m[2] && m[2].trim()) rest.push(m[2].trim());
+      rest = rest.concat(parts.slice(idx + 1));
+
+      var ocrPy = "", mn = "";
+      for (var q = 0; q < rest.length; q++) {
+        var t = rest[q].replace(/^[（(\[]\s*/, "").replace(/\s*[)）\]]$/, "").trim();
+        if (!t) continue;
+        if (!ocrPy && isPinyinToken(t)) ocrPy = t;
+        else mn = mn ? mn + " " + t : t;
+      }
+
+      // 標題行（生字表、姓名…）不當卡片
+      if (!ocrPy && !mn && HEADER_RE.test(zi)) continue;
+
+      // 圖上有聲調就照用；只有無聲調拼音時，改用 pinyin-pro 重新標音
+      var py;
+      if (ocrPy && PY_RE.test(ocrPy)) py = ocrPy;
+      else py = guessPinyin(zi) || ocrPy;
+
+      if (seen[zi]) continue;
+      seen[zi] = 1;
+      rows.push({ zi: zi, py: py, mn: mn });
+    }
+    return rows;
+  }
+
+  function parseVocabEdit(text) {
+    var rows = [];
+    var lines = String(text || "").split(/\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[i].trim();
+      if (!l) continue;
+      var p = l.split(/\s*[|｜\t]\s*/);
+      var zi = (p[0] || "").trim();
+      if (!zi) continue;
+      var py = p.length > 1 ? (p[1] || "").trim() : "";
+      var mn = p.length > 2 ? p.slice(2).join(" ").trim() : "";
+      rows.push({ zi: zi, py: py || guessPinyin(zi), mn: mn });
+    }
+    return rows;
+  }
+
+  function fillVocabText() {
+    els.vocabText.value = VOCAB.map(function (r) {
+      return r.zi + " | " + (r.py || "") + (r.mn ? " | " + r.mn : "");
+    }).join("\n");
+  }
+
+  function renderCards() {
+    if (!VOCAB.length) {
+      els.cards.innerHTML = '<div class="empty-note">未抽到生字。<br>可展開「手動編輯生字表」，每行輸入：生字 | 拼音 | 中文</div>';
+      return;
+    }
+    var html = "";
+    for (var i = 0; i < VOCAB.length; i++) {
+      var r = VOCAB[i];
+      html += '<button type="button" class="card" data-i="' + i + '">' +
+        '<span class="idx">' + (i + 1) + "</span>" +
+        '<span class="zi">' + esc(r.zi) + "</span>" +
+        '<span class="py">' + (r.py ? esc(r.py) : "&nbsp;") + "</span>" +
+        '<span class="mn">' + (r.mn ? esc(r.mn) : "&nbsp;") + "</span>" +
+        "</button>";
+    }
+    els.cards.innerHTML = html;
+  }
+
+  function buildCards() {
+    VOCAB = parseVocab(els.ocrText.value);
+    fillVocabText();
+    renderCards();
+    return VOCAB.length;
+  }
+
+  els.cards.addEventListener("click", function (e) {
+    var c = e.target.closest ? e.target.closest(".card") : null;
+    if (!c) return;
+    var r = VOCAB[Number(c.getAttribute("data-i"))];
+    if (!r) return;
+    stopSpeak();
+    c.classList.add("speaking");
+    speak(r.zi, {
+      lang: runLang(isHan(r.zi)),
+      rate: Math.min(TTS.rate, 0.85),
+      onend: function () { c.classList.remove("speaking"); },
+      onerror: function () { c.classList.remove("speaking"); }
+    });
+  });
+
+  els.btnReadCards.addEventListener("click", function () {
+    if (!VOCAB.length) { toast("先辨識或輸入生字"); return; }
+    if (!TTS.stopped) { stopSpeak(); return; }
+    TTS.stopped = false;
+    els.btnReadCards.textContent = "■ 停止";
+    var items = [];
+    for (var i = 0; i < VOCAB.length; i++) {
+      (function (idx) {
+        var zi = VOCAB[idx].zi;
+        var card = els.cards.querySelector('.card[data-i="' + idx + '"]');
+        items.push({
+          text: zi,
+          lang: isHan(zi) ? TTS.lang : "en-US",
+          onstart: function () { if (card) { card.classList.add("speaking"); try { card.scrollIntoView({ block: "nearest" }); } catch (err) {} } },
+          onend: function () { if (card) card.classList.remove("speaking"); }
+        });
+      })(i);
+    }
+    speakSequence(items, {
+      rate: Math.min(TTS.rate, 0.85),
+      onallend: function () { els.btnReadCards.textContent = "▶ 全部朗讀"; }
+    });
+  });
+
+  els.btnParse.addEventListener("click", function () {
+    if (!els.ocrText.value.trim()) { toast("請先辨識文字"); return; }
+    var n = buildCards();
+    setStatus(n ? "已抽出 " + n + " 個生字" : "未找到生字表，可手動輸入", n ? "ok" : "", null);
+    if (!n) els.vocabText.parentElement.open = true;
+    switchTab("cards");
+  });
+
+  els.btnApplyVocab.addEventListener("click", function () {
+    VOCAB = parseVocabEdit(els.vocabText.value);
+    renderCards();
+    toast("已更新 " + VOCAB.length + " 張生字卡");
+  });
+
+  els.btnCsv.addEventListener("click", function () {
+    if (!VOCAB.length) { toast("沒有生字可匯出"); return; }
+    var rows = [["生字", "拼音", "中文"]].concat(VOCAB.map(function (r) { return [r.zi, r.py, r.mn]; }));
+    var csv = "\ufeff" + rows.map(function (r) {
+      return r.map(function (c) {
+        c = String(c == null ? "" : c);
+        return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c;
+      }).join(",");
+    }).join("\r\n");
+    downloadBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), "生字卡_" + stamp() + ".csv");
+  });
+
+  els.ttsLang.addEventListener("change", function () { setTtsLang(els.ttsLang.value, true); });
+  if (els.ttsLang2) els.ttsLang2.addEventListener("change", function () { setTtsLang(els.ttsLang2.value, true); });
+  els.rateSel.addEventListener("change", function () {
+    TTS.rate = parseFloat(els.rateSel.value) || 0.9;
+    try { localStorage.setItem("imgtr_rate", els.rateSel.value); } catch (e) {}
+    if (els.rateSel2) els.rateSel2.value = els.rateSel.value;
+  });
+  if (els.rateSel2) els.rateSel2.addEventListener("change", function () {
+    TTS.rate = parseFloat(els.rateSel2.value) || 0.9;
+    try { localStorage.setItem("imgtr_rate", els.rateSel2.value); } catch (e) {}
+    els.rateSel.value = els.rateSel2.value;
+  });
+
+  function downloadBlob(blob, name) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+
+  /* ---------------- 分頁 ---------------- */
+  function switchTab(name) {
+    els.tabOcr.classList.toggle("on", name === "ocr");
+    els.tabCards.classList.toggle("on", name === "cards");
+    els.tabTrans.classList.toggle("on", name === "trans");
+    els.tabPairs.classList.toggle("on", name === "pairs");
+    els.paneOcr.hidden = name !== "ocr";
+    els.paneCards.hidden = name !== "cards";
+    els.paneTrans.hidden = name !== "trans";
+    els.panePairs.hidden = name !== "pairs";
+  }
+  [els.tabOcr, els.tabCards, els.tabTrans, els.tabPairs].forEach(function (b) {
+    b.addEventListener("click", function () {
+      switchTab(b.dataset.tab);
+      if (b.dataset.tab !== "ocr" && b.dataset.tab !== "cards") stopSpeak();
+    });
+  });
+
+  function clearResults() {
+    stopSpeak();
+    els.ocrText.value = "";
+    els.ocrText.hidden = true;
+    els.reader.hidden = false;
+    els.btnEditText.textContent = "編輯文字";
+    renderReader();
+    VOCAB = [];
+    els.vocabText.value = "";
+    renderCards();
+    els.transText.innerHTML = '<div class="empty-note">尚未翻譯。<br>按「翻譯並覆蓋」，譯文會疊回原圖對應位置。</div>';
+    els.pairs.innerHTML = '<div class="empty-note">尚未產生對照。<br>完成辨識與翻譯後，這裡會逐行對照原文與譯文。</div>';
+    switchTab("ocr");
+  }
+
+  /* ---------------- OCR ---------------- */
+  function statusLabel(s) {
+    var map = {
+      "loading tesseract core": "載入 OCR 引擎…",
+      "initializing tesseract": "初始化 OCR 引擎…",
+      "loading language traineddata": "下載語言包（首次較久）…",
+      "initializing api": "準備辨識…",
+      "recognizing text": "辨識文字中…"
+    };
+    return map[s] || "處理中…";
+  }
+
+  async function getWorker(lang) {
+    if (S.worker && S.workerLang === lang) return S.worker;
+    if (S.worker) {
+      try { await S.worker.terminate(); } catch (e) {}
+      S.worker = null; S.workerLang = "";
+    }
+    if (typeof window.Tesseract === "undefined") {
+      throw new Error("OCR 引擎未載入（此環境可能封鎖了外部連線）");
+    }
+    // 語言包下載若有 45 秒沒有任何進度就視為失敗，避免一直轉圈
+    var startedAt = Date.now(), timer = null, rejectFn = null;
+    var timeoutMs = (NET_OK === false) ? 16000 : 45000;
+    var guard = new Promise(function (_, rej) { rejectFn = rej; });
+    function arm() {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        rejectFn(new Error("語言包下載逾時（" + Math.round((Date.now() - startedAt) / 1000) + " 秒）：此環境可能封鎖了外部連線"));
+      }, timeoutMs);
+    }
+    arm();
+
+    var w;
+    try {
+      w = await Promise.race([
+        window.Tesseract.createWorker(lang, 1, {
+          logger: function (m) {
+            arm();
+            if (m.status === "recognizing text") {
+              setStatus("辨識文字中… " + Math.round(m.progress * 100) + "%", "work", 0.15 + m.progress * 0.85);
+            } else {
+              setStatus(statusLabel(m.status), "work", Math.min(0.12, m.progress || 0));
+            }
+          }
+        }),
+        guard
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+    try { await w.setParameters({ preserve_interword_spaces: "1" }); } catch (e) {}
+    S.worker = w;
+    S.workerLang = lang;
+    return w;
+  }
+
+  function extractLines(data) {
+    var raw = [];
+    if (Array.isArray(data.blocks)) {
+      for (var i = 0; i < data.blocks.length; i++) {
+        var b = data.blocks[i];
+        var ps = b.paragraphs || [];
+        for (var j = 0; j < ps.length; j++) {
+          var ls = ps[j].lines || [];
+          for (var k = 0; k < ls.length; k++) raw.push(ls[k]);
+        }
+      }
+    }
+    if (!raw.length && Array.isArray(data.lines)) raw = raw.concat(data.lines);
+
+    var out = [];
+    for (var n = 0; n < raw.length; n++) {
+      var t = (raw[n].text || "").replace(/\s+/g, " ");
+      t = t.replace(/([\u3400-\u9fff\u3000-\u303f\uff00-\uffef])\s+(?=[\u3400-\u9fff\u3000-\u303f\uff00-\uffef])/g, "$1");
+      t = t.trim();
+      if (!t || !raw[n].bbox) continue;
+      out.push({ text: t, trans: "", bbox: raw[n].bbox });
+    }
+
+    if (!out.length && data.text && data.text.trim()) {
+      var rows = data.text.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+      var hh = els.canvas.height / Math.max(rows.length, 1);
+      out = rows.map(function (t2, idx) {
+        return { text: t2, trans: "", bbox: { x0: 4, y0: idx * hh, x1: els.canvas.width - 4, y1: (idx + 1) * hh } };
+      });
+    }
+    return out;
+  }
+
+  els.btnOCR.addEventListener("click", async function () {
+    if (!S.src || S.busy) return;
+    S.busy = true; syncButtons();
+    setStatus(NET_OK === false ? "連線受限，仍嘗試載入 OCR 引擎…" : "準備 OCR…", "work", 0.02);
+
+    try {
+      var lang = OCR_LANG[els.srcLang.value] || "eng";
+      var w = await getWorker(lang);
+      var res = await w.recognize(els.canvas);
+      S.lines = extractLines(res.data || {});
+      S.cache = {};
+
+      if (!S.lines.length) {
+        setStatus("未偵測到文字，可試試旋轉或更清晰的圖片", "err", 1);
+        toast("未偵測到文字");
+        renderReader();
+      } else {
+        els.ocrText.value = S.lines.map(function (l) { return l.text; }).join("\n");
+        els.ocrText.hidden = true;
+        els.reader.hidden = false;
+        els.btnEditText.textContent = "編輯文字";
+        renderReader();
+        var nCards = buildCards();
+        setStatus("辨識完成：" + S.lines.length + " 行文字" + (nCards ? "、" + nCards + " 張生字卡" : ""), "ok", 1);
+        switchTab("ocr");
+      }
+      els.transText.innerHTML = '<div class="empty-note">尚未翻譯。<br>按「翻譯並覆蓋」，譯文會疊回原圖對應位置。</div>';
+      els.pairs.innerHTML = '<div class="empty-note">尚未產生對照。<br>完成辨識與翻譯後，這裡會逐行對照原文與譯文。</div>';
+      renderOverlay();
+    } catch (err) {
+      console.error(err);
+      var msg = err && err.message ? err.message : String(err);
+      setStatus("辨識失敗：" + msg, "err", 0);
+      if (/逾時|連線|未載入|CORS/i.test(msg)) {
+        showNetBanner();
+        toast("OCR 引擎連不上，請直接用瀏覽器開啟本檔案");
+      } else {
+        toast("辨識失敗，可換更清晰的圖片或先旋轉");
+      }
+    } finally {
+      S.busy = false; syncButtons();
+    }
+  });
+
+  /* ---------------- 翻譯 ---------------- */
+  var IS_FILE = location.protocol === "file:";
+  var ENDPOINTS = [
+    function (sl, tl, q) {
+      return "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + sl + "&tl=" + tl + "&dt=t&q=" + encodeURIComponent(q);
+    },
+    function (sl, tl, q) {
+      return "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=" + sl + "&tl=" + tl + "&q=" + encodeURIComponent(q);
+    },
+    function (sl, tl, q) {
+      return "https://translate.google.com/translate_a/single?client=gtx&sl=" + sl + "&tl=" + tl + "&dt=t&q=" + encodeURIComponent(q);
+    }
+  ];
+  // 直接開檔（file://）時 translate.googleapis.com 不送 CORS 標頭，先走 clients5
+  if (IS_FILE) ENDPOINTS = [ENDPOINTS[1], ENDPOINTS[2], ENDPOINTS[0]];
+
+  function pickTranslation(json) {
+    if (!Array.isArray(json) || !json.length) return "";
+    var head = json[0];
+    if (typeof head === "string") return head;          // ["譯文"]
+    if (!Array.isArray(head) || !head.length) return "";
+    if (Array.isArray(head[0])) {                        // [[["譯文","原文",…], …]] 或 [["譯文","zh-CN"]]
+      var s = "";
+      for (var i = 0; i < head.length; i++) {
+        if (Array.isArray(head[i]) && typeof head[i][0] === "string") s += head[i][0];
+      }
+      return s;
+    }
+    if (typeof head[0] === "string") return head[0];
+    return "";
+  }
+
+  async function fetchTranslation(sl, tl, q) {
+    var lastErr = null;
+    for (var i = 0; i < ENDPOINTS.length; i++) {
+      try {
+        var ctrl = new AbortController();
+        var timer = setTimeout(function () { ctrl.abort(); }, 15000);
+        var r = await fetch(ENDPOINTS[i](sl, tl, q), { signal: ctrl.signal, cache: "no-store" });
+        clearTimeout(timer);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        var json = await r.json();
+        var out = pickTranslation(json);
+        if (out) return out;
+        throw new Error("無法解析譯文");
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    throw lastErr || new Error("翻譯服務無回應");
+  }
+
+  els.btnTranslate.addEventListener("click", async function () {
+    if (S.busy || !S.src) return;
+
+    if (!S.lines.length) {
+      toast("請先按「擷取文字」");
+      return;
+    }
+
+    S.busy = true; syncButtons();
+    var sl = els.srcLang.value === "auto" ? "auto" : els.srcLang.value;
+    var tl = els.dstLang.value;
+
+    // 以文字框內容為準（允許使用者先修正錯字）
+    var edited = els.ocrText.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+    if (edited.length && edited.length !== S.lines.length) {
+      // 行數改變：保留文字但不再對應圖上位置
+      S.lines = edited.map(function (t) { return { text: t, trans: "", bbox: null }; });
+    } else if (edited.length === S.lines.length) {
+      for (var i = 0; i < edited.length; i++) S.lines[i].text = edited[i];
+    }
+
+    var uniq = [], seen = {};
+    for (var j = 0; j < S.lines.length; j++) {
+      var t = S.lines[j].text;
+      if (!seen[t]) { seen[t] = 1; uniq.push(t); }
+    }
+
+    var ok = 0, fail = 0, done = 0;
+    for (var k = 0; k < uniq.length; k++) {
+      var src = uniq[k];
+      if (S.cache[src] !== undefined) {
+        done++; continue;
+      }
+      try {
+        var r = await fetchTranslation(sl, tl, src);
+        S.cache[src] = r;
+        ok++;
+      } catch (e) {
+        S.cache[src] = "";
+        fail++;
+      }
+      done++;
+      setStatus("翻譯中 " + done + " / " + uniq.length, "work", done / uniq.length);
+      await sleep(70);
+    }
+
+    for (var m = 0; m < S.lines.length; m++) {
+      S.lines[m].trans = S.cache[S.lines[m].text] || "";
+    }
+
+    renderOverlay();
+    renderResults();
+    syncButtons();
+
+    if (ok === 0 && fail > 0) {
+      setStatus("翻譯服務無回應（此環境可能封鎖外部連線）", "err", 0);
+      showNetBanner();
+      toast("翻譯被攔截，可用「在 Google 翻譯開啟」手動處理");
+      switchTab("ocr");
+    } else {
+      setStatus("翻譯完成" + (fail ? "（" + fail + " 行失敗）" : ""), "ok", 1);
+      switchTab("trans");
+    }
+    S.busy = false; syncButtons();
+  });
+
+  function renderResults() {
+    var transLines = [], pairHtml = "";
+    for (var i = 0; i < S.lines.length; i++) {
+      var l = S.lines[i];
+      transLines.push(l.trans || l.text);
+      pairHtml += '<div class="pair" data-i="' + i + '">' +
+        '<div class="s">' + esc(l.text) + "</div>" +
+        '<div class="d' + (l.trans ? "" : " miss") + '">' + esc(l.trans || "（未取得譯文）") + "</div>" +
+        "</div>";
+    }
+    els.transText.textContent = transLines.join("\n");
+    els.pairs.innerHTML = pairHtml || '<div class="empty-note">沒有可顯示的內容</div>';
+
+    Array.prototype.forEach.call(els.pairs.querySelectorAll(".pair"), function (p) {
+      p.addEventListener("mouseenter", function () { hlBox(p.dataset.i, true); });
+      p.addEventListener("mouseleave", function () { hlBox(p.dataset.i, false); });
+    });
+  }
+
+  function hlBox(i, on) {
+    var box = els.overlay.querySelector('.ovbox[data-i="' + i + '"]');
+    if (box) box.classList.toggle("hl", on);
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  /* ---------------- 匯出 ---------------- */
+  function allText(which) {
+    return S.lines.map(function (l) {
+      if (which === "trans") return l.trans || l.text;
+      return l.text;
+    }).join("\n");
+  }
+
+  els.btnCopy.addEventListener("click", async function () {
+    var txt = allText("trans");
+    if (!txt) { toast("沒有可複製的內容"); return; }
+    try {
+      await navigator.clipboard.writeText(txt);
+      toast("已複製譯文");
+    } catch (e) {
+      els.transText.focus();
+      var r = document.createRange();
+      r.selectNodeContents(els.transText);
+      var sel = window.getSelection();
+      sel.removeAllRanges(); sel.addRange(r);
+      document.execCommand("copy");
+      toast("已複製");
+    }
+  });
+
+  els.btnDownload.addEventListener("click", function () {
+    var txt = allText("trans");
+    if (!txt) { toast("沒有可下載的內容"); return; }
+    var blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "譯文_" + stamp() + ".txt";
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000);
+  });
+
+  els.btnGoogle.addEventListener("click", function () {
+    var txt = allText("trans") || els.ocrText.value;
+    if (!txt) { toast("先辨識或輸入一些文字"); return; }
+    var sl = els.srcLang.value === "auto" ? "auto" : els.srcLang.value;
+    var url = "https://translate.google.com/?sl=" + encodeURIComponent(sl) +
+      "&tl=" + encodeURIComponent(els.dstLang.value) +
+      "&text=" + encodeURIComponent(txt.slice(0, 4800)) + "&op=translate";
+    window.open(url, "_blank", "noopener");
+  });
+
+  function stamp() {
+    var d = new Date(), p = function (n) { return n < 10 ? "0" + n : "" + n; };
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "_" + p(d.getHours()) + p(d.getMinutes());
+  }
+
+  function wrapText(ctx, text, maxW) {
+    var out = [], cur = "";
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (ch === "\n") { out.push(cur); cur = ""; continue; }
+      var test = cur + ch;
+      if (ctx.measureText(test).width > maxW && cur) { out.push(cur); cur = ch; }
+      else cur = test;
+    }
+    if (cur) out.push(cur);
+    return out;
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); return; }
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function renderTranslatedCanvas() {
+    var base = els.canvas;
+    var out = document.createElement("canvas");
+    out.width = base.width; out.height = base.height;
+    var ctx = out.getContext("2d");
+    ctx.drawImage(base, 0, 0);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    for (var i = 0; i < S.lines.length; i++) {
+      var l = S.lines[i];
+      if (!l.trans || !l.bbox) continue;
+      var b = l.bbox;
+      var w = Math.max(8, b.x1 - b.x0), h = Math.max(8, b.y1 - b.y0);
+      ctx.fillStyle = "#ffffff";
+      roundRect(ctx, b.x0 - 4, b.y0 - 3, w + 8, h + 6, 6);
+      ctx.fill();
+
+      var size = Math.max(10, h * 0.8), rows = null;
+      for (; size >= 7; size -= 1) {
+        ctx.font = "600 " + size.toFixed(0) + 'px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
+        rows = wrapText(ctx, l.trans, w + 2);
+        if (rows.length * size * 1.16 <= h + 6) break;
+      }
+      ctx.font = "600 " + Math.max(7, size).toFixed(0) + 'px "PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
+      ctx.fillStyle = "#14161a";
+      var lineH = Math.max(7, size) * 1.16;
+      var startY = b.y0 + h / 2 - (rows.length - 1) * lineH / 2;
+      for (var r = 0; r < rows.length; r++) {
+        ctx.fillText(rows[r], b.x0 + w / 2, startY + r * lineH);
+      }
+    }
+    return out;
+  }
+
+  els.btnSaveImg.addEventListener("click", function () {
+    if (!S.src) return;
+    renderTranslatedCanvas().toBlob(function (blob) {
+      if (!blob) { toast("匯出失敗"); return; }
+      downloadBlob(blob, "譯圖_" + stamp() + ".png");
+      toast("已下載譯圖");
+    }, "image/png");
+  });
+
+  /* ---------------- 收藏清單 ---------------- */
+  var SAVED_KEY = "imgtr_saved_v1";
+  var saved = [];
+
+  function fmtDate(ts) {
+    var d = new Date(ts), p = function (n) { return (n < 10 ? "0" : "") + n; };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+
+  function loadSaved() {
+    try {
+      var raw = localStorage.getItem(SAVED_KEY);
+      saved = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(saved)) saved = [];
+    } catch (e) { saved = []; }
+    renderSaved();
+  }
+
+  function persistSaved() {
+    var copy = saved.slice();
+    while (copy.length) {
+      try { localStorage.setItem(SAVED_KEY, JSON.stringify(copy)); saved = copy; return true; }
+      catch (e) { copy.pop(); }
+    }
+    try { localStorage.setItem(SAVED_KEY, "[]"); } catch (e2) {}
+    saved = [];
+    toast("儲存空間不足，無法收藏");
+    return false;
+  }
+
+  function snapshotImage(maxSide) {
+    if (!S.src || !els.canvas.width) return "";
+    var c = els.canvas;
+    var k = Math.min(1, maxSide / Math.max(c.width, c.height));
+    var o = document.createElement("canvas");
+    o.width = Math.max(1, Math.round(c.width * k));
+    o.height = Math.max(1, Math.round(c.height * k));
+    var x = o.getContext("2d");
+    x.fillStyle = "#ffffff";
+    x.fillRect(0, 0, o.width, o.height);
+    x.drawImage(c, 0, 0, o.width, o.height);
+    try { return o.toDataURL("image/jpeg", 0.72); } catch (e) { return ""; }
+  }
+
+  function makeTitle() {
+    var first = (els.ocrText.value || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean)[0] || "";
+    first = first.replace(/^[\s\d.、,，)）(:：]+/, "").slice(0, 24);
+    return first || ("未命名 " + fmtDate(Date.now()));
+  }
+
+  function saveCurrent() {
+    if (!S.src && !els.ocrText.value.trim()) { toast("還沒有可收藏的結果"); return; }
+    var item = {
+      id: "s" + Date.now() + Math.random().toString(36).slice(2, 6),
+      ts: Date.now(),
+      title: makeTitle(),
+      ocr: els.ocrText.value,
+      vocab: VOCAB.map(function (v) { return [v.zi, v.py, v.mn]; }),
+      lines: S.lines.map(function (l) {
+        return { t: l.text, r: l.trans || "", b: l.bbox ? [l.bbox.x0, l.bbox.y0, l.bbox.x1, l.bbox.y1] : null };
+      }),
+      img: snapshotImage(1000),
+      w: els.canvas.width || 0,
+      h: els.canvas.height || 0
+    };
+    saved.unshift(item);
+    if (saved.length > 24) saved = saved.slice(0, 24);
+    if (persistSaved()) { renderSaved(); toast("已收藏：" + item.title); }
+  }
+
+  function renderSaved() {
+    els.saveCount.textContent = saved.length;
+    els.saveCount.classList.toggle("hot", saved.length > 0);
+    if (!saved.length) {
+      els.savedList.innerHTML = '<div class="empty-note">還沒有收藏。<br><br>辨識或翻譯之後，按右上角「收藏」，<br>文字、生字卡與譯文都會存在這台裝置，<br>之後可隨時找回。</div>';
+      return;
+    }
+    els.savedList.innerHTML = saved.map(function (it) {
+      var n = it.vocab ? it.vocab.length : 0;
+      return '<div class="sitem" data-id="' + it.id + '">' +
+        (it.img ? '<img class="sthumb" src="' + it.img + '" alt="">' : '<div class="sthumb none"></div>') +
+        '<div class="sbody">' +
+        '<div class="stitle">' + esc(it.title) + "</div>" +
+        '<div class="smeta">' + fmtDate(it.ts) + (n ? " · " + n + " 張生字卡" : "") + "</div>" +
+        '<div class="ssnip">' + esc(String(it.ocr || "").replace(/\s+/g, " ").slice(0, 60)) + "</div>" +
+        "</div>" +
+        '<button class="sdel" data-del="' + it.id + '" title="刪除">×</button>' +
+        "</div>";
+    }).join("");
+  }
+
+  function restoreSaved(id) {
+    var it = null;
+    for (var i = 0; i < saved.length; i++) if (saved[i].id === id) it = saved[i];
+    if (!it) return;
+
+    var apply = function () {
+      els.ocrText.hidden = true;
+      els.reader.hidden = false;
+      els.btnEditText.textContent = "編輯文字";
+      els.ocrText.value = it.ocr || "";
+      renderReader();
+      VOCAB = (it.vocab || []).map(function (v) { return { zi: v[0], py: v[1], mn: v[2] }; });
+      if (!VOCAB.length && els.ocrText.value.trim()) VOCAB = parseVocab(els.ocrText.value);
+      fillVocabText();
+      renderCards();
+      if (hasTranslation()) {
+        renderResults();
+      } else {
+        els.transText.innerHTML = '<div class="empty-note">這筆收藏沒有譯文。<br>可再按「翻譯並覆蓋」補上。</div>';
+        els.pairs.innerHTML = '<div class="empty-note">這筆收藏沒有譯文。</div>';
+      }
+      renderOverlay();
+      syncButtons();
+      switchTab("ocr");
+      setStatus("已載入收藏：" + it.title, "ok");
+      closeDrawer();
+    };
+
+    if (it.img) {
+      var img = new Image();
+      img.onload = function () {
+        adoptSource(img, it.title);
+        renderCanvas();
+        var k = (it.w && els.canvas.width) ? els.canvas.width / it.w : 1;
+        S.lines = (it.lines || []).map(function (l) {
+          return {
+            text: l.t, trans: l.r || "",
+            bbox: l.b ? { x0: l.b[0] * k, y0: l.b[1] * k, x1: l.b[2] * k, y1: l.b[3] * k } : null
+          };
+        });
+        apply();
+      };
+      img.onerror = function () { S.src = null; S.lines = (it.lines || []).map(function (l) { return { text: l.t, trans: l.r || "", bbox: null }; }); apply(); };
+      img.src = it.img;
+    } else {
+      S.lines = (it.lines || []).map(function (l) { return { text: l.t, trans: l.r || "", bbox: null }; });
+      apply();
+    }
+  }
+
+  function openDrawer() { renderSaved(); els.drawerMask.hidden = false; }
+  function closeDrawer() { els.drawerMask.hidden = true; }
+
+  els.btnSaveCurrent.addEventListener("click", saveCurrent);
+  els.btnSavedList.addEventListener("click", openDrawer);
+  els.btnDrawerClose.addEventListener("click", closeDrawer);
+  els.drawerMask.addEventListener("click", function (e) { if (e.target === els.drawerMask) closeDrawer(); });
+
+  els.savedList.addEventListener("click", function (e) {
+    var del = e.target.closest ? e.target.closest(".sdel") : null;
+    if (del) {
+      e.stopPropagation();
+      var id = del.getAttribute("data-del");
+      saved = saved.filter(function (x) { return x.id !== id; });
+      persistSaved();
+      renderSaved();
+      toast("已刪除");
+      return;
+    }
+    var item = e.target.closest ? e.target.closest(".sitem") : null;
+    if (item) restoreSaved(item.getAttribute("data-id"));
+  });
+
+  var clearArmed = false;
+  els.btnClearAll.addEventListener("click", function () {
+    if (!saved.length) { toast("收藏是空的"); return; }
+    if (!clearArmed) {
+      clearArmed = true;
+      els.btnClearAll.textContent = "再按一次清空";
+      els.btnClearAll.style.color = "#b91c1c";
+      setTimeout(function () {
+        clearArmed = false;
+        els.btnClearAll.textContent = "清空收藏";
+        els.btnClearAll.style.color = "";
+      }, 3000);
+      return;
+    }
+    saved = [];
+    persistSaved();
+    renderSaved();
+    clearArmed = false;
+    els.btnClearAll.textContent = "清空收藏";
+    els.btnClearAll.style.color = "";
+    toast("已清空收藏");
+  });
+
+  els.btnExportAll.addEventListener("click", function () {
+    if (!saved.length) { toast("收藏是空的"); return; }
+    var out = saved.map(function (it) {
+      var s = "=== " + it.title + "（" + fmtDate(it.ts) + "）===\n" + (it.ocr || "");
+      if (it.vocab && it.vocab.length) {
+        s += "\n\n[生字卡]\n" + it.vocab.map(function (v) {
+          return v[0] + "  " + (v[1] || "") + "  " + (v[2] || "");
+        }).join("\n");
+      }
+      return s;
+    }).join("\n\n");
+    downloadBlob(new Blob([out], { type: "text/plain;charset=utf-8" }), "收藏清單_" + stamp() + ".txt");
+  });
+
+  /* ---------------- 分享 ---------------- */
+  function buildShareText() {
+    var out = [];
+    var title = S.name || makeTitle();
+    out.push("【圖文翻譯】" + title);
+
+    if (hasTranslation()) {
+      out.push("");
+      out.push("▍譯文");
+      for (var i = 0; i < S.lines.length; i++) out.push(S.lines[i].trans || S.lines[i].text);
+    } else if (els.ocrText.value.trim()) {
+      out.push("");
+      out.push("▍原文");
+      out.push(els.ocrText.value.trim());
+    }
+
+    if (VOCAB.length) {
+      out.push("");
+      out.push("▍生字卡（" + VOCAB.length + "）");
+      for (var j = 0; j < VOCAB.length; j++) {
+        var v = VOCAB[j];
+        out.push(v.zi + "　" + (v.py || "") + (v.mn ? "　" + v.mn : ""));
+      }
+    }
+    return out.join("\n").trim();
+  }
+
+  function openShare() {
+    if (!els.ocrText.value.trim() && !S.lines.length) { toast("還沒有可分享的結果"); return; }
+    stopSpeak();
+    els.shareText.value = buildShareText();
+    els.shareModal.hidden = false;
+  }
+
+  async function copyShare() {
+    var text = els.shareText.value;
+    try {
+      await navigator.clipboard.writeText(text);
+      toast("已複製，可貼到任何地方");
+      return;
+    } catch (e) {}
+    try {
+      els.shareText.focus();
+      els.shareText.select();
+      document.execCommand("copy");
+      toast("已複製");
+    } catch (e2) {
+      toast("請長按或 Ctrl+C 手動複製");
+    }
+  }
+
+  async function shareNative() {
+    var text = els.shareText.value;
+    if (!navigator.share) { copyShare(); return; }
+    try {
+      await navigator.share({ title: "圖文翻譯", text: text });
+      els.shareModal.hidden = true;
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+      copyShare();
+    }
+  }
+
+  function shareImage() {
+    if (!S.src || !hasTranslation()) { toast("請先完成翻譯，才有譯圖可分享"); return; }
+    renderTranslatedCanvas().toBlob(async function (blob) {
+      if (!blob) { toast("產生譯圖失敗"); return; }
+      var name = "譯圖_" + stamp() + ".png";
+      var file = null;
+      try { file = new File([blob], name, { type: "image/png" }); } catch (e) {}
+      if (file && navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], title: "圖文翻譯" }); return; }
+        catch (e) { if (e && e.name === "AbortError") return; }
+      }
+      downloadBlob(blob, name);
+      toast("此環境不支援分享圖片，已改為下載");
+    }, "image/png");
+  }
+
+  els.btnShare.addEventListener("click", openShare);
+  els.btnShareClose.addEventListener("click", function () { els.shareModal.hidden = true; });
+  els.shareModal.addEventListener("click", function (e) { if (e.target === els.shareModal) els.shareModal.hidden = true; });
+  els.btnShareNative.addEventListener("click", shareNative);
+  els.btnShareCopy.addEventListener("click", copyShare);
+  els.btnShareImg.addEventListener("click", shareImage);
+
+  /* ---------------- 語言切換 ---------------- */
+  [els.srcLang, els.dstLang].forEach(function (sel) {
+    sel.addEventListener("change", function () {
+      if (sel === els.srcLang && S.lines.length) {
+        setStatus("來源語言已變更，建議重新辨識", "", null);
+      }
+      try { localStorage.setItem("imgtr_" + sel.id, sel.value); } catch (e) {}
+    });
+  });
+
+  try {
+    var a1 = localStorage.getItem("imgtr_srcLang"), a2 = localStorage.getItem("imgtr_dstLang");
+    if (a1) els.srcLang.value = a1;
+    if (a2) els.dstLang.value = a2;
+    var a3 = localStorage.getItem("imgtr_tts"), a4 = localStorage.getItem("imgtr_rate");
+    if (a3) els.ttsLang.value = a3;
+    if (a4) els.rateSel.value = a4;
+    TTS.lang = els.ttsLang.value;
+    TTS.rate = parseFloat(els.rateSel.value) || 0.9;
+  } catch (e) {}
+
+  /* ---------------- 快捷鍵 ---------------- */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (!els.camModal.hidden) closeCamera();
+      if (!els.drawerMask.hidden) closeDrawer();
+      if (!els.shareModal.hidden) els.shareModal.hidden = true;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && !els.btnTranslate.disabled) {
+      e.preventDefault();
+      els.btnTranslate.click();
+    }
+    if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "S")) {
+      if (!els.btnSaveCurrent.disabled) { e.preventDefault(); saveCurrent(); }
+    }
+  });
+
+  /* ---------------- 環境連線檢查 ---------------- */
+  var NET_OK = null; // null=未知, true=可連外, false=被環境封鎖
+
+  function showNetBanner() {
+    try { if (sessionStorage.getItem("imgtr_netdismiss") === "1") return; } catch (e) {}
+    els.netBanner.hidden = false;
+  }
+  els.btnBannerClose.addEventListener("click", function () {
+    els.netBanner.hidden = true;
+    try { sessionStorage.setItem("imgtr_netdismiss", "1"); } catch (e) {}
+  });
+
+  (function probeNetwork() {
+    var settled = false, ctrl = null;
+    try { ctrl = new AbortController(); } catch (e) {}
+    var t = setTimeout(function () {
+      if (settled) return;
+      settled = true;
+      if (ctrl) { try { ctrl.abort(); } catch (e) {} }
+      showNetBanner();
+    }, 7000);
+    fetch("https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/package.json",
+      ctrl ? { signal: ctrl.signal, cache: "no-store" } : { cache: "no-store" }
+    ).then(function (r) {
+      if (settled) return;
+      settled = true; clearTimeout(t);
+      NET_OK = !!r.ok;
+      if (!r.ok) showNetBanner();
+    }).catch(function () {
+      if (settled) return;
+      settled = true; clearTimeout(t);
+      NET_OK = false;
+      showNetBanner();
+    });
+  })();
+
+  loadSaved();
+
+  /* ---------------- 去筆跡 ---------------- */
+  var E = {
+    active: false, tool: "pick", color: null, tol: 40, brush: 18,
+    w: 0, h: 0, img: null, mask: null, painting: false
+  };
+
+  function enterErase() {
+    if (!S.src || S.busy) return;
+    saveCurrentPage();
+    if (S.rotation % 360 !== 0) {
+      var bc = document.createElement("canvas");
+      bc.width = els.canvas.width; bc.height = els.canvas.height;
+      bc.getContext("2d").drawImage(els.canvas, 0, 0);
+      S.src = bc; S.rotation = 0; S.lines = []; S.cache = {};
+      S.pages[S.page].src = bc; S.pages[S.page].rotation = 0;
+      renderCanvas();
+      clearResults();
+    }
+    var c = document.createElement("canvas");
+    c.width = els.canvas.width; c.height = els.canvas.height;
+    var ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(els.canvas, 0, 0);
+    E.active = true; E.tool = "pick"; E.color = null; E.tol = 40; E.brush = 18;
+    E.w = c.width; E.h = c.height;
+    E.img = ctx.getImageData(0, 0, c.width, c.height);
+    E.mask = new Uint8Array(E.w * E.h);
+    els.tol.value = "40"; els.brushSize.value = "18";
+    updateSwatch();
+    setEraseTool("pick");
+    els.erasebar.hidden = false;
+    renderThumbs();
+    setStatus("去筆跡：先按「💧拾色」再點一下筆跡顏色，或用「🖌️筆刷」塗抹要去除的地方", "");
+    syncButtons();
+  }
+
+  function exitErase() {
+    if (!E.active) return;
+    E.active = false; E.mask = null; E.img = null;
+    els.erasebar.hidden = true;
+    if (S.src) { renderCanvas(); setStatus("已離開去筆跡", ""); }
+    syncButtons();
+  }
+
+  function setEraseTool(t) {
+    E.tool = t;
+    els.btnPick.classList.toggle("on", t === "pick");
+    els.btnBrush.classList.toggle("on", t === "brush");
+    els.canvas.style.cursor = t === "brush" ? "crosshair" : "copy";
+  }
+
+  function updateSwatch() {
+    els.swatch.style.background = E.color
+      ? "rgb(" + E.color[0] + "," + E.color[1] + "," + E.color[2] + ")"
+      : "#ffffff";
+  }
+
+  function evPos(e) {
+    var r = els.canvas.getBoundingClientRect();
+    return {
+      x: Math.round((e.clientX - r.left) * els.canvas.width / Math.max(1, r.width)),
+      y: Math.round((e.clientY - r.top) * els.canvas.height / Math.max(1, r.height))
+    };
+  }
+
+  function sampleColor(x, y) {
+    var d = E.img.data, r = 0, g = 0, b = 0, n = 0;
+    for (var dy = -2; dy <= 2; dy++) {
+      for (var dx = -2; dx <= 2; dx++) {
+        var xx = x + dx, yy = y + dy;
+        if (xx < 0 || yy < 0 || xx >= E.w || yy >= E.h) continue;
+        var p = (yy * E.w + xx) * 4;
+        r += d[p]; g += d[p + 1]; b += d[p + 2]; n++;
+      }
+    }
+    if (!n) return null;
+    return [Math.round(r / n), Math.round(g / n), Math.round(b / n)];
+  }
+
+  function paintMaskOverlay() {
+    if (!E.active || !E.mask) return;
+    var c = els.canvas;
+    var ctx = c.getContext("2d");
+    var id;
+    try { id = ctx.getImageData(0, 0, c.width, c.height); } catch (e) { return; }
+    var d = id.data, m = E.mask, n = Math.min(m.length, c.width * c.height);
+    for (var i = 0, p = 0; i < n; i++, p += 4) {
+      if (m[i]) {
+        d[p] = Math.round(d[p] * 0.35 + 236 * 0.65);
+        d[p + 1] = Math.round(d[p + 1] * 0.15 + 30 * 0.85);
+        d[p + 2] = Math.round(d[p + 2] * 0.45 + 190 * 0.85);
+      }
+    }
+    ctx.putImageData(id, 0, 0);
+  }
+
+  function dilate(m, w, h, r) {
+    var tmp = new Uint8Array(m), x, y, dx, v, xx, yy;
+    for (y = 0; y < h; y++) {
+      for (x = 0; x < w; x++) {
+        v = 0;
+        for (dx = -r; dx <= r; dx++) {
+          xx = x + dx; if (xx < 0 || xx >= w) continue;
+          if (tmp[y * w + xx] > v) v = tmp[y * w + xx];
+        }
+        m[y * w + x] = v;
+      }
+    }
+    tmp = new Uint8Array(m);
+    for (y = 0; y < h; y++) {
+      for (x = 0; x < w; x++) {
+        v = 0;
+        for (dx = -r; dx <= r; dx++) {
+          yy = y + dx; if (yy < 0 || yy >= h) continue;
+          if (tmp[yy * w + x] > v) v = tmp[yy * w + x];
+        }
+        m[y * w + x] = v;
+      }
+    }
+  }
+
+  function countMask(m) {
+    var n = 0;
+    for (var i = 0; i < m.length; i++) if (m[i]) n++;
+    return n;
+  }
+
+  function computeColorMask() {
+    if (!E.color) { toast("請先按「💧拾色」點一下筆跡顏色"); return; }
+    var d = E.img.data, m = E.mask, n = E.w * E.h;
+    var cr = E.color[0], cg = E.color[1], cb = E.color[2];
+    var t = E.tol * 2.4, t2 = t * t;
+    for (var i = 0, p = 0; i < n; i++, p += 4) {
+      if (m[i] === 2) continue;   // 保留筆刷手動標記
+      var dr = d[p] - cr, dg = d[p + 1] - cg, db = d[p + 2] - cb;
+      m[i] = (dr * dr + dg * dg + db * db < t2) ? 1 : 0;
+    }
+    dilate(m, E.w, E.h, 1);
+    paintMaskOverlay();
+    var c = countMask(m);
+    if (!c) setStatus("沒有偵測到這種顏色，試試調大「容差」", "err");
+    else setStatus("已標記 " + c.toLocaleString() + " 個像素（洋紅色），按「套用」去除；也可用筆刷補標", "ok");
+  }
+
+  function brushStroke(x, y) {
+    var r = E.brush / 2, m = E.mask;
+    var x0 = Math.max(0, Math.floor(x - r)), x1 = Math.min(E.w - 1, Math.ceil(x + r));
+    var y0 = Math.max(0, Math.floor(y - r)), y1 = Math.min(E.h - 1, Math.ceil(y + r));
+    for (var yy = y0; yy <= y1; yy++) {
+      for (var xx = x0; xx <= x1; xx++) {
+        var ddx = xx - x, ddy = yy - y;
+        if (ddx * ddx + ddy * ddy <= r * r) m[yy * E.w + xx] = 2;
+      }
+    }
+    paintMaskOverlay();
+  }
+
+  els.btnErase.addEventListener("click", function () {
+    if (E.active) exitErase(); else enterErase();
+  });
+  els.btnCancelErase.addEventListener("click", exitErase);
+  els.btnPick.addEventListener("click", function () { setEraseTool("pick"); });
+  els.btnBrush.addEventListener("click", function () { setEraseTool("brush"); });
+  els.btnAutoMask.addEventListener("click", computeColorMask);
+  els.tol.addEventListener("input", function () {
+    E.tol = parseInt(els.tol.value, 10) || 40;
+    if (E.color) computeColorMask();
+  });
+  els.brushSize.addEventListener("input", function () {
+    E.brush = parseInt(els.brushSize.value, 10) || 18;
+  });
+
+  els.canvas.addEventListener("pointerdown", function (e) {
+    if (!E.active || S.busy) return;
+    e.preventDefault();
+    var pos = evPos(e);
+    if (E.tool === "pick") {
+      var c = sampleColor(pos.x, pos.y);
+      if (c) {
+        E.color = c;
+        updateSwatch();
+        computeColorMask();
+        toast("已選色 rgb(" + c.join(",") + ")，可調容差後按「套用」");
+      }
+    } else {
+      E.painting = true;
+      try { els.canvas.setPointerCapture(e.pointerId); } catch (err) {}
+      brushStroke(pos.x, pos.y);
+    }
+  });
+  els.canvas.addEventListener("pointermove", function (e) {
+    if (!E.active || !E.painting) return;
+    e.preventDefault();
+    var pos = evPos(e);
+    brushStroke(pos.x, pos.y);
+  });
+  ["pointerup", "pointercancel"].forEach(function (ev) {
+    els.canvas.addEventListener(ev, function () { E.painting = false; });
+  });
+
+  els.btnApplyErase.addEventListener("click", async function () {
+    if (!E.active || S.busy) return;
+    var total = countMask(E.mask);
+    if (!total) { toast("沒有標記任何要去除的區域"); return; }
+    S.busy = true; syncButtons();
+    setStatus("去除筆跡中…", "work", 0.1);
+    await sleep(30);
+    try {
+      var w = E.w, h = E.h, d = E.img.data, m = E.mask;
+      var known = new Uint8Array(w * h), i, p;
+      for (i = 0; i < m.length; i++) known[i] = m[i] ? 0 : 1;
+
+      // 洋蔥剝離：由邊緣向內擴散填色
+      var cur = [];
+      for (i = 0; i < m.length; i++) if (!known[i]) cur.push(i);
+      var pass = 0;
+      while (cur.length) {
+        var next = [], fills = [];
+        for (var k = 0; k < cur.length; k++) {
+          i = cur[k];
+          var x = i % w, y = (i / w) | 0, sr = 0, sg = 0, sb = 0, cnt = 0;
+          for (var dy = -1; dy <= 1; dy++) {
+            var yy = y + dy; if (yy < 0 || yy >= h) continue;
+            for (var dx = -1; dx <= 1; dx++) {
+              if (!dx && !dy) continue;
+              var xx = x + dx; if (xx < 0 || xx >= w) continue;
+              var j = yy * w + xx;
+              if (known[j]) {
+                p = j * 4;
+                sr += d[p]; sg += d[p + 1]; sb += d[p + 2]; cnt++;
+              }
+            }
+          }
+          if (cnt) fills.push(i, sr / cnt, sg / cnt, sb / cnt);
+          else next.push(i);
+        }
+        for (k = 0; k < fills.length; k += 4) {
+          i = fills[k]; known[i] = 1;
+          p = i * 4;
+          d[p] = fills[k + 1]; d[p + 1] = fills[k + 2]; d[p + 2] = fills[k + 3];
+        }
+        cur = next;
+        pass++;
+        if (pass % 6 === 0) { setStatus("去除筆跡中…", "work", Math.min(0.9, 0.1 + pass * 0.03)); await sleep(0); }
+      }
+
+      // 平滑填色區，讓修補處更自然
+      for (var s = 0; s < 3; s++) {
+        var snap = new Uint8ClampedArray(d);
+        for (i = 0; i < m.length; i++) {
+          if (!m[i]) continue;
+          var x2 = i % w, y2 = (i / w) | 0, ar = 0, ag = 0, ab = 0, ac = 0;
+          for (var dy2 = -1; dy2 <= 1; dy2++) {
+            var yy2 = y2 + dy2; if (yy2 < 0 || yy2 >= h) continue;
+            for (var dx2 = -1; dx2 <= 1; dx2++) {
+              var xx2 = x2 + dx2; if (xx2 < 0 || xx2 >= w) continue;
+              var q = (yy2 * w + xx2) * 4;
+              ar += snap[q]; ag += snap[q + 1]; ab += snap[q + 2]; ac++;
+            }
+          }
+          p = i * 4;
+          d[p] = ar / ac; d[p + 1] = ag / ac; d[p + 2] = ab / ac;
+        }
+      }
+
+      var out = document.createElement("canvas");
+      out.width = w; out.height = h;
+      out.getContext("2d").putImageData(E.img, 0, 0);
+      S.src = out; S.rotation = 0;
+      S.pages[S.page].src = out;
+      E.active = false; E.mask = null; E.img = null;
+      els.erasebar.hidden = true;
+      S.lines = []; S.cache = {};
+      S.pages[S.page].lines = S.lines;
+      clearResults();
+      renderCanvas();
+      renderThumbs();
+      setStatus("已去除筆跡（" + total.toLocaleString() + " 個像素），可重新辨識", "ok", 1);
+      toast("去筆跡完成");
+    } catch (err) {
+      console.error(err);
+      setStatus("去筆跡失敗：" + (err && err.message ? err.message : err), "err");
+    }
+    S.busy = false; syncButtons();
+  });
+
+  setStatus("等待圖片", "");
+  syncButtons();
+})();
+</script>
+</body>
+</html>
