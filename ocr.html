@@ -258,6 +258,22 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
 .cam-actions .btn{background:#23262d;border-color:#33373f;color:#e9eaec}
 .cam-actions .btn-primary{background:linear-gradient(180deg,#3b76ff,#2563eb);border-color:#2563eb;color:#fff}
 </style>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G7H3M2VW8T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}   // 提前定義，確保頁面載入前也能排隊事件
+  gtag('js', new Date());
+  gtag('config', 'G-G7H3M2VW8T', {
+    send_page_view: true,
+    anonymize_ip: true
+  });
+  // 輕量事件輔助：即使 gtag 尚未載入也可安全呼叫
+  function gaEvent(name, params){
+    try { gtag('event', name, params || {}); } catch(e) {}
+  }
+</script>
 </head>
 <body>
 
@@ -662,6 +678,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     clearResults();
     setStatus("已載入圖片，可以開始辨識", "ok");
     syncButtons();
+    gaEvent("image_loaded", { pages: S.pages.length });
     if (S.pages.length > 1) toast("已加入第 " + S.pages.length + " 張圖片（共 " + S.pages.length + " 張，可點下方縮圖切換）");
   }
 
@@ -1180,6 +1197,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     if (persist) { try { localStorage.setItem("imgtr_tts", v); } catch (e) {} }
     stopSpeak();
     updateTtsInfo();
+    if (persist) gaEvent("tts_lang", { lang: v });
   }
 
   if ("speechSynthesis" in window) {
@@ -1275,6 +1293,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     if (!TTS.stopped) { stopSpeak(); return; }
     var segs = els.reader.querySelectorAll(".seg");
     if (!segs.length) { toast("請先辨識文字"); return; }
+    gaEvent("read_text", { scope: "all", lang: TTS.lang });
     var items = [];
     for (var i = 0; i < segs.length; i++) {
       (function (el) {
@@ -1447,6 +1466,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
   els.btnReadCards.addEventListener("click", function () {
     if (!VOCAB.length) { toast("先辨識或輸入生字"); return; }
     if (!TTS.stopped) { stopSpeak(); return; }
+    gaEvent("read_cards", { count: VOCAB.length, lang: TTS.lang });
     TTS.stopped = false;
     els.btnReadCards.textContent = "■ 停止";
     var items = [];
@@ -1661,6 +1681,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
         els.btnEditText.textContent = "編輯文字";
         renderReader();
         var nCards = buildCards();
+        gaEvent("ocr_done", { lines: S.lines.length, cards: nCards, lang: els.srcLang.value });
         setStatus("辨識完成：" + S.lines.length + " 行文字" + (nCards ? "、" + nCards + " 張生字卡" : ""), "ok", 1);
         switchTab("ocr");
       }
@@ -1794,6 +1815,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       toast("翻譯被攔截，可用「在 Google 翻譯開啟」手動處理");
       switchTab("ocr");
     } else {
+      gaEvent("translate_done", { lines: S.lines.length, fail: fail, src: els.srcLang.value, dst: els.dstLang.value });
       setStatus("翻譯完成" + (fail ? "（" + fail + " 行失敗）" : ""), "ok", 1);
       switchTab("trans");
     }
@@ -2016,6 +2038,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     };
     saved.unshift(item);
     if (saved.length > 24) saved = saved.slice(0, 24);
+    gaEvent("save_result", { pages: S.pages.length, cards: item.vocab.length });
     if (persistSaved()) { renderSaved(); toast("已收藏：" + item.title); }
   }
 
@@ -2188,6 +2211,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     var text = els.shareText.value;
     try {
       await navigator.clipboard.writeText(text);
+      gaEvent("share", { method: "copy" });
       toast("已複製，可貼到任何地方");
       return;
     } catch (e) {}
@@ -2195,6 +2219,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       els.shareText.focus();
       els.shareText.select();
       document.execCommand("copy");
+      gaEvent("share", { method: "copy" });
       toast("已複製");
     } catch (e2) {
       toast("請長按或 Ctrl+C 手動複製");
@@ -2206,6 +2231,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     if (!navigator.share) { copyShare(); return; }
     try {
       await navigator.share({ title: "圖文翻譯", text: text });
+      gaEvent("share", { method: "native" });
       els.shareModal.hidden = true;
     } catch (e) {
       if (e && e.name === "AbortError") return;
@@ -2221,10 +2247,11 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       var file = null;
       try { file = new File([blob], name, { type: "image/png" }); } catch (e) {}
       if (file && navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
-        try { await navigator.share({ files: [file], title: "圖文翻譯" }); return; }
+        try { await navigator.share({ files: [file], title: "圖文翻譯" }); gaEvent("share_image", { method: "native" }); return; }
         catch (e) { if (e && e.name === "AbortError") return; }
       }
       downloadBlob(blob, name);
+      gaEvent("share_image", { method: "download" });
       toast("此環境不支援分享圖片，已改為下載");
     }, "image/png");
   }
@@ -2587,6 +2614,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       clearResults();
       renderCanvas();
       renderThumbs();
+      gaEvent("erase_applied", { pixels: total });
       setStatus("已去除筆跡（" + total.toLocaleString() + " 個像素），可重新辨識", "ok", 1);
       toast("去筆跡完成");
     } catch (err) {
