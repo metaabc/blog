@@ -183,19 +183,35 @@
   .cal-list{margin:4px 2px 14px;border:1px solid var(--line);border-radius:14px;
     background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 6%,var(--card)),var(--card));
     padding:12px 14px;box-shadow:0 10px 24px -20px rgba(60,48,32,.5)}
-  .cal-list-h{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:.02em}
-  .cal-li{display:flex;gap:9px;align-items:baseline;padding:6px 0;border-top:1px dashed var(--line)}
+  .cal-list-h{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    font-size:13px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:.02em}
+  .cal-li{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line)}
   .cal-li:first-of-type{border-top:0}
   .cl-d{flex:0 0 auto;font-size:12.5px;font-weight:800;color:var(--accent);white-space:nowrap}
   .cl-c{font-size:13px;color:var(--ink);line-height:1.45}
   .cl-c.test{color:var(--test-fg)}
   .cl-c.exam{color:var(--exam-fg);font-weight:700}
   .cl-subj{color:var(--ink);margin-right:4px}
+  .cl-due{color:var(--faint);font-weight:600;margin-left:2px}
   .cal-list-empty{font-size:13px;color:var(--faint);text-align:center;padding:14px}
   .ci.cal-tap{cursor:pointer;transition:transform .12s,filter .12s}
   .ci.cal-tap:hover{filter:brightness(.94);transform:translateY(-1px)}
   .cal-li.cal-tap{cursor:pointer;border-radius:8px;padding-left:6px;margin-left:-6px;transition:background .12s}
   .cal-li.cal-tap:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+  .cal-li.past .cl-c{opacity:.72}
+  .cl-past{display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#b0a696;
+    border-radius:999px;padding:1px 7px;margin-left:4px;vertical-align:middle;letter-spacing:.04em}
+  .cal-rm{flex:0 0 auto;align-self:flex-start;margin-left:auto;
+    width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:#fff;
+    color:var(--muted);cursor:pointer;font-size:12px;line-height:1;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:background .14s,color .14s,border-color .14s,transform .1s}
+  .cal-rm:hover{background:#fbeeef;color:#a8244a;border-color:#e6b8c0}
+  .cal-rm:active{transform:scale(.9)}
+  .cal-restore{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .cal-restore button{border:1px solid var(--line);background:#fff;color:#6d6459;font-family:inherit;
+    font-size:12px;font-weight:600;border-radius:999px;padding:3px 12px;cursor:pointer;transition:transform .1s}
+  .cal-restore button:active{transform:scale(.96)}
 
   .empty{text-align:center;color:var(--faint);font-size:14px;padding:52px 20px;
     border:1px dashed #ddd3c2;border-radius:16px;background:rgba(255,253,249,.6)}
@@ -332,7 +348,7 @@
       <div class="srcbar-links" id="sources"></div>
       <div class="layswitch" id="laySwitch" role="group" aria-label="呈現方式">
         <button type="button" data-lay="card" class="on">卡片</button>
-        <button type="button" data-lay="calendar">月曆</button>
+        <button type="button" data-lay="calendar">測驗</button>
         <button type="button" data-lay="subject">科目</button>
       </div>
     </div>
@@ -402,7 +418,7 @@ const MAX_SEL = 6;
 const DEFAULT_SEL = ["s3C", "s1A"];
 const LAYOUTS = [
   { k:"card", t:"卡片" },
-  { k:"calendar", t:"月曆" },
+  { k:"calendar", t:"測驗" },
   { k:"subject", t:"科目" }
 ];
 const LS_LAYOUT = "hw_layout_v1";
@@ -517,6 +533,29 @@ function loadCache(){
   return {};
 }
 function saveCache(){ try{ localStorage.setItem(LS_CACHE, JSON.stringify(state.data)); }catch(e){} }
+
+/* 已隱藏（手動移除）的已過測驗：按班級 + 項目特徵記住，重新抓資料也不會再出現 */
+const LS_DISMISS = "hw_dismiss_v1";
+let DISMISS = loadDismiss();
+function loadDismiss(){
+  try{
+    const o = JSON.parse(localStorage.getItem(LS_DISMISS) || "null");
+    if (o && typeof o === "object") return o;
+  }catch(e){}
+  return {};
+}
+function saveDismiss(){ try{ localStorage.setItem(LS_DISMISS, JSON.stringify(DISMISS)); }catch(e){} }
+function testKey(it){ return [it.srcDate || "", it.subject || "", it.text || ""].join("||"); }
+function isDismissed(code, key){ return !!(DISMISS[code] && DISMISS[code][key]); }
+function dismissTest(code, key){
+  if (!DISMISS[code]) DISMISS[code] = {};
+  DISMISS[code][key] = 1;
+  saveDismiss();
+  renderList();
+}
+function restoreTests(code){
+  if (DISMISS[code]){ delete DISMISS[code]; saveDismiss(); renderList(); }
+}
 
 /* =========================================================
    狀態
@@ -807,15 +846,16 @@ function dueInfo(dueStr){
    畫面
    ========================================================= */
 function renderSources(){
-  document.getElementById("sources").innerHTML = state.sel.map(code =>
-    `<a href="${URL_BASE + code}" target="_blank" rel="noopener"
-        title="開啟${esc(nameOf(code))}作業佈置原頁面">
+  const code = currentCode();
+  document.getElementById("sources").innerHTML = code
+    ? `<a href="${URL_BASE + code}" target="_blank" rel="noopener"
+        title="開啟${esc(nameOf(code))}作業佈置原網址">
        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
          <path d="M14 4h6v6"></path><path d="M20 4l-9 9"></path>
          <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path>
-       </svg>${esc(nameOf(code))} 原頁面</a>`
-  ).join("");
+       </svg>${esc(nameOf(code))} 原網址</a>`
+    : "";
 }
 
 /* 底部：已設定的班級（可橫向滑動） */
@@ -858,6 +898,7 @@ function selectClass(i){
   if (i === state.cls){ centerChip(true); return; }
   state.cls = i;
   refreshNav();
+  renderSources();
   renderList();
   try{ history.replaceState(null, "", "#" + currentCode()); }catch(e){}
   if (window.scrollY > 4) window.scrollTo({ top:0, behavior:"smooth" });
@@ -1002,114 +1043,82 @@ function renderList(){
   list.innerHTML = html;
 }
 
-/* 月曆佈局：只顯示「有測驗/考試」的月份（由近至遠），月份內顯示測驗內容 */
-function firstFlagWord(text, kind){
-  TOKEN_RE.lastIndex = 0; let m;
-  while ((m = TOKEN_RE.exec(text)) !== null){
-    if (clsOfWord(m[0]) === kind) return m[0];
-  }
-  return kind === "exam" ? "考試" : "測驗";
-}
+/* 測驗佈局：列出「上週至本週」被提及（公告）的測驗 / 考試 */
 function renderCalendar(){
   const code = currentCode();
   const rec = state.data[code];
   if (!rec || !rec.days || !rec.days.length) return `<div class="empty">尚無資料</div>`;
 
   const RE_ISO = /^\d{4}-\d{2}-\d{2}$/;
-  const map = new Map();   // date -> {test,exam, items:[{kind,subject,word,srcDate}]}
-  rec.days.forEach(d => (d.items || []).forEach(it => {
-    if (it.img) return;
-    const r = markup(it.text);
-    if (r.flags.sign) return;                       // 月曆不含「簽改 / 改正」（即使內文含「測驗」二字）
-    if (!r.flags.test && !r.flags.exam) return;     // 只顯示 quiz / 測驗 / 考試（需溫習準備者）
-    // 測驗 / 考試以「測驗當日（due）」為歸屬日，而非指派日；點擊仍跳回該作業原始登記日
-    const dispDate = (d.due && RE_ISO.test(d.due)) ? d.due : d.date;
-    if (!map.has(dispDate)) map.set(dispDate, { test:0, exam:0, items:[] });
-    const o = map.get(dispDate);
-    if (r.flags.test) o.test++;
-    if (r.flags.exam) o.exam++;
-    const kind = r.flags.exam ? "exam" : "test";
-    o.items.push({ kind, subject: it.subject || "", word: firstFlagWord(it.text, kind), raw: it.text, srcDate: d.date });
-  }));
-
-  /* 只保留「有測驗或考試」的日期 */
-  const testEntries = [...map.entries()].filter(([, o]) => o.test || o.exam);
-  if (!testEntries.length){
-    return `<div class="empty">這段期間內沒有偵測到「測驗 / 考試」項目` +
-      (state.only ? `<br>試試關閉「簽改/測」篩選` : "") + `</div>`;
-  }
-
-  /* 月曆只顯示「本月」與「下個月」兩個月 */
   const now = today0();
-  const nxt = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  const months = [
-    { y: now.getFullYear(), m: now.getMonth() },
-    { y: nxt.getFullYear(), m: nxt.getMonth() }
-  ];
+  const dow = now.getDay();                                   // 0=週日
+  const diffToMon = (dow === 0) ? -6 : (1 - dow);            // 回算本週一
+  const thisMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMon);
+  const lastMonday = new Date(thisMonday.getFullYear(), thisMonday.getMonth(), thisMonday.getDate() - 7);
+  const thisSunday = new Date(thisMonday.getFullYear(), thisMonday.getMonth(), thisMonday.getDate() + 6);
 
   const DOW = ["日", "一", "二", "三", "四", "五", "六"];
-
-  /* 今日之後的測驗／考試，逐句列出：日期（週X）＋科目＋內容 */
-  const winEnd = new Date(nxt.getFullYear(), nxt.getMonth() + 1, 0);   // 下個月最後一天
-  const upcoming = [];
-  testEntries.forEach(([ds, o]) => {
-    const dt = parseD(ds);
-    if (!dt || dt.getTime() < now.getTime()) return;        // 今日（含）之後
-    if (dt.getTime() > winEnd.getTime()) return;             // 不超出本月＋下月
-    o.items.forEach(it => upcoming.push({ dt, kind: it.kind, subject: it.subject, raw: it.raw, srcDate: it.srcDate }));
+  const all = [];
+  rec.days.forEach(d => {
+    const ad = parseD(d.date);
+    if (!ad || ad < lastMonday || ad > thisSunday) return;    // 只取「上週至本週」被提及者
+    (d.items || []).forEach(it => {
+      if (it.img) return;
+      const r = markup(it.text);
+      if (r.flags.sign) return;                               // 不含簽改 / 改正
+      if (!r.flags.test && !r.flags.exam) return;             // 只收 quiz / 測驗 / 考試
+      const due = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : null;
+      all.push({ ad, due, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text, srcDate: d.date });
+    });
   });
-  upcoming.sort((a, b) => a.dt - b.dt);
+  const t0 = today0();
+  all.sort((a, b) => {
+    const ta = a.due || a.ad, tb = b.due || b.ad;
+    const pa = ta < t0, pb = tb < t0;
+    if (pa !== pb) return pa ? 1 : -1;          // 未過的測驗排前面（由近至遠）
+    return pa ? tb - ta : ta - tb;             // 未過：近→遠；已過：最近的上（便於清理）
+  });
 
-  let listHtml = "";
-  if (upcoming.length){
-    listHtml = `<div class="cal-list">
-      <div class="cal-list-h">即將到來的測驗（今日之後）</div>` +
-      upcoming.map(u => {
-        const md = (u.dt.getMonth() + 1) + "月" + u.dt.getDate() + "日（週" + DOW[u.dt.getDay()] + "）";
-        const subj = u.subject ? `<b class="cl-subj">${esc(u.subject)}</b> ` : "";
-        return `<div class="cal-li cal-tap" data-date="${esc(u.srcDate)}" title="點擊查看當日功課">
-          <span class="cl-d">${md}</span><span class="cl-c ${u.kind}">${subj}${esc(u.raw)}</span></div>`;
-      }).join("") + `</div>`;
-  }else{
-    listHtml = `<div class="cal-list cal-list-empty">這兩個月內暫無偵測到「今日之後」的測驗 / 考試</div>`;
+  let hidden = 0;
+  const items = all.filter(it => {
+    const key = testKey(it);
+    if (isDismissed(code, key)){ hidden++; return false; }    // 手動隱藏過的不再顯示
+    const testDay = it.due || it.ad;
+    it.passed = testDay < t0;                                 // 測驗日已過 → 可手動移除
+    return true;
+  });
+
+  const emptyWrap = (inner) => `<div class="cal-list">
+      <div class="cal-list-h"><span>上週至本週 提過的測驗</span><span class="cal-ref">僅供參考</span></div>
+      ${inner}
+    </div>
+    <div class="cal-foot"><button class="share-btn share-cal" type="button" aria-label="分享本週測驗圖片">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
+      分享</button></div>`;
+
+  if (!all.length){
+    return `<div class="empty">上週至本週尚未偵測到「測驗 / 考試」項目` +
+      (state.only ? `<br>試試關閉「簽改/測」篩選` : "") + `</div>`;
+  }
+  if (!items.length){
+    return emptyWrap(`<div class="cal-restore"><span>已隱藏 ${hidden} 項已過的測驗</span><button class="cal-restore-btn" type="button">還原</button></div>`);
   }
 
-  let html = `${listHtml}<div class="cal-wrap">`;
+  const rows = items.map(it => {
+    const md = (it.ad.getMonth() + 1) + "月" + it.ad.getDate() + "日（週" + DOW[it.ad.getDay()] + "）";
+    const subj = it.subject ? `<b class="cl-subj">${esc(it.subject)}</b> ` : "";
+    const dueTxt = (it.due && it.due.getTime() !== it.ad.getTime())
+      ? ` <span class="cl-due">· 測驗 ${it.due.getMonth() + 1}/${it.due.getDate()}</span>` : "";
+    const rm = it.passed
+      ? `<button class="cal-rm" type="button" aria-label="隱藏這個已過的測驗" data-key="${esc(testKey(it))}">✕</button>` : "";
+    return `<div class="cal-li cal-tap${it.passed ? " past" : ""}" data-date="${esc(it.srcDate)}" title="點擊查看當日功課">
+        <span class="cl-d">${md}${it.passed ? '<span class="cl-past">已過</span>' : ""}</span><span class="cl-c ${it.kind}">${subj}${esc(it.text)}${dueTxt}</span>${rm}</div>`;
+  }).join("");
 
-  months.forEach((mo, mi) => {
-    const first = new Date(mo.y, mo.m, 1);
-    const dim = new Date(mo.y, mo.m + 1, 0).getDate();
-    const lead = first.getDay();   // 0=週日
-    let cells = "";
-    for (let i = 0; i < lead; i++) cells += `<div class="cal-cell empty"></div>`;
-    for (let d = 1; d <= dim; d++){
-      const dt = new Date(mo.y, mo.m, d);
-      const ds = ymd(dt);
-      const o = map.get(ds);
-      const isToday = dt.getTime() === now.getTime();
-      let inner = "";
-      if (o && o.items.length){
-        inner = o.items.map(it => {
-          const label = it.subject || it.word;   // 日格內只顯示測驗科目，顏色區分 測驗/考試
-          return `<span class="ci cal-tap ${it.kind}" data-date="${esc(it.srcDate)}" title="點擊查看當日功課">${esc(label)}</span>`;
-        }).join("");
-      }
-      const hasTE = o && (o.test || o.exam);
-      cells += `<div class="cal-cell${isToday ? " today" : ""}${hasTE ? " has" : ""}">` +
-        `<span class="cal-d">${d}</span>${inner ? `<div class="cal-items">${inner}</div>` : ""}</div>`;
-    }
-    const mk = String(mo.m + 1).padStart(2, "0");
-    html += `<section class="cal${mi === 0 ? " nearest" : ""}">
-      <div class="cal-h"><span>${mo.y} 年 ${mo.m + 1} 月</span><span class="cal-ref">僅供參考</span></div>
-      <div class="cal-grid cal-dow">${DOW.map(w => `<span>${w}</span>`).join("")}</div>
-      <div class="cal-grid">${cells}</div>
-      <div class="cal-foot"><button class="share-btn share-cal" data-month="${mo.y}-${mk}" type="button" aria-label="分享本月測驗圖片">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
-        分享</button></div>
-    </section>`;
-  });
-  html += `</div>`;
-  return html;
+  const restore = hidden
+    ? `<div class="cal-restore"><span>已隱藏 ${hidden} 項已過的測驗</span><button class="cal-restore-btn" type="button">還原</button></div>` : "";
+
+  return emptyWrap(rows + restore);
 }
 
 /* 月曆點測驗 → 跳到對應日期的功課內容（卡片檢視），並高亮該日 */
@@ -1432,35 +1441,42 @@ async function shareImage(filter){
   toast("已生成圖片，可手動分享到 WeChat / WhatsApp");
 }
 
-/* 分享「某個月」的測驗 / 考試清單為圖片（月曆每張卡片右下角的分享鈕） */
-async function shareMonthImage(monthKey){
+/* 分享「上週至本週」的測驗 / 考試清單為圖片（測驗清單右下角的分享鈕） */
+async function shareTestsImage(){
   const code = currentCode();
   const rec = state.data[code];
   if (!rec || !rec.days || !rec.days.length){ toast("尚無資料可分享", true); return; }
-  const parts = String(monthKey).split("-");
-  const y = +parts[0], m = +parts[1];
-  if (!y || !m){ toast("月份資料錯誤", true); return; }
   const RE_ISO = /^\d{4}-\d{2}-\d{2}$/;
+  const now = today0();
+  const dow = now.getDay();
+  const diffToMon = (dow === 0) ? -6 : (1 - dow);
+  const thisMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMon);
+  const lastMonday = new Date(thisMonday.getFullYear(), thisMonday.getMonth(), thisMonday.getDate() - 7);
+  const thisSunday = new Date(thisMonday.getFullYear(), thisMonday.getMonth(), thisMonday.getDate() + 6);
   const items = [];
-  rec.days.forEach(d => (d.items || []).forEach(it => {
-    if (it.img) return;
-    const r = markup(it.text);
-    if (r.flags.sign) return;                       // 月曆分享不含簽改 / 改正
-    if (!r.flags.test && !r.flags.exam) return;     // 只收測驗 / 考試
-    const disp = (d.due && RE_ISO.test(d.due)) ? d.due : d.date;   // 以測驗當日（due）為歸屬
-    const dt = parseD(disp);
-    if (!dt || dt.getFullYear() !== y || dt.getMonth() + 1 !== m) return;
-    items.push({ dt, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text });
-  }));
+  rec.days.forEach(d => {
+    const ad = parseD(d.date);
+    if (!ad || ad < lastMonday || ad > thisSunday) return;   // 只取「上週至本週」被提及者
+    (d.items || []).forEach(it => {
+      if (it.img) return;
+      const r = markup(it.text);
+      if (r.flags.sign) return;                               // 不含簽改 / 改正
+      if (!r.flags.test && !r.flags.exam) return;             // 只收測驗 / 考試
+      const dt = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : ad;   // 以測驗當日（due）歸屬
+      const key = [d.date, it.subject || "", it.text || ""].join("||");
+      if (isDismissed(code, key)) return;                              // 跟隨頁面已隱藏的項目
+      items.push({ dt, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text });
+    });
+  });
   items.sort((a, b) => a.dt - b.dt);
-  if (!items.length){ toast("該月沒有測驗 / 考試", true); return; }
+  if (!items.length){ toast("這段期間沒有測驗 / 考試", true); return; }
 
   const W = 720, pad = 28, cW = W - pad * 2;
   let accent = "#2f6fb0";
   try{ accent = (getComputedStyle(document.documentElement).getPropertyValue("--accent") || "").trim() || accent; }catch(e){}
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  const title = nameOf(code) + ` · ${y}年${m}月 測驗`;
+  const title = nameOf(code) + " · 上週至本週 測驗";
 
   let yPix = pad + 40 + 18 + 14;
   for (const it of items){
@@ -1630,16 +1646,20 @@ function bindSwipe(){
     b.onclick = () => setLayout(b.dataset.lay);
   });
 
-  // 月曆點測驗 → 跳到對應日期功課；分享為圖片：卡片、科目群組右下角的分享鈕
+  // 測驗清單點項目 → 跳到對應日期功課；分享為圖片：卡片、科目群組右下角的分享鈕
   const listEl = document.getElementById("list");
   if (listEl) listEl.addEventListener("click", (e) => {
+    const rm = e.target.closest(".cal-rm");
+    if (rm){ dismissTest(currentCode(), rm.dataset.key); return; }   // 隱藏已過的測驗
+    const rest = e.target.closest(".cal-restore-btn");
+    if (rest){ restoreTests(currentCode()); return; }                // 一次還原全部
     const tap = e.target.closest(".cal-tap");
     if (tap){ gotoDay(tap.dataset.date); return; }
     const b = e.target.closest(".share-day, .share-subj, .share-cal");
     if (!b) return;
     if (b.classList.contains("share-day")) shareImage({ date: b.dataset.date });
     else if (b.classList.contains("share-subj")) shareImage({ subject: b.dataset.subject });
-    else shareMonthImage(b.dataset.month);
+    else shareTestsImage();
   });
 
   const hash = location.hash.replace("#", "");
