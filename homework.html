@@ -386,7 +386,7 @@
       <h3 id="sheetTitle">選擇班級</h3>
       <button class="done" data-close>完成</button>
     </div>
-    <p class="tip">可選多個班級，選好的會排在下方班級條；在內容上左右滑動即可切換下一個班。選擇會記住，抓取時自動換上對應的 classcode。</p>
+    <p class="tip">可選多個班級，選好的會排在下方班級條；在內容上<b>單指左右滑</b>切換「作業／測驗／科目」呈現，<b>雙指左右滑</b>切換班級。選擇會記住，抓取時自動換上對應的 classcode。</p>
     <div id="classGroups"></div>
     <div class="foot" id="sheetFoot"></div>
   </div>
@@ -1578,15 +1578,17 @@ function closeSheet(){
 }
 
 /* =========================================================
-   手勢：左右滑動切換班級
+   手勢：單指左右滑＝切「作業/測驗/科目」呈現；雙指左右滑＝切班級
    ========================================================= */
 const SWIPE_MIN = 54;
-let sw = null;
+let sw = null;     // 單指（呈現）
+let sw2 = null;    // 雙指（班級）
 
 function bindSwipe(){
   const area = document.querySelector("main.wrap");
+  const sheetOpen = () => document.querySelector(".sheet-wrap.on");
 
-  const reset = anim => {
+  const clearTransform = anim => {
     if (anim){
       area.style.transition = "transform .2s ease";
       area.style.transform = "translateX(0)";
@@ -1599,12 +1601,38 @@ function bindSwipe(){
   };
 
   area.addEventListener("touchstart", e => {
-    if (e.touches.length !== 1 || document.querySelector(".sheet-wrap.on")){ sw = null; return; }
-    const t = e.touches[0];
-    sw = { x:t.clientX, y:t.clientY, dx:0, dir:null };
+    if (sheetOpen()){ sw = null; sw2 = null; return; }
+    if (e.touches.length === 2){
+      sw = null;
+      const a = e.touches[0], b = e.touches[1];
+      sw2 = { x:(a.clientX + b.clientX) / 2, y:(a.clientY + b.clientY) / 2, dx:0, dir:null };
+    }else if (e.touches.length === 1){
+      sw2 = null;
+      const t = e.touches[0];
+      sw = { x:t.clientX, y:t.clientY, dx:0, dir:null };
+    }else{
+      sw = null; sw2 = null;
+    }
   }, { passive:true });
 
   area.addEventListener("touchmove", e => {
+    // 雙指 → 切班級
+    if (sw2 && e.touches.length >= 2){
+      const a = e.touches[0], b = e.touches[1];
+      const cx = (a.clientX + b.clientX) / 2, cy = (a.clientY + b.clientY) / 2;
+      const dx = cx - sw2.x, dy = cy - sw2.y;
+      if (sw2.dir === null){
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        sw2.dir = Math.abs(dx) > Math.abs(dy) * 1.15 ? "x" : "y";
+        if (sw2.dir === "x") document.body.classList.add("dragging");
+      }
+      if (sw2.dir !== "x") return;
+      e.preventDefault();
+      sw2.dx = dx;
+      area.style.transform = "translateX(" + dx + "px)";
+      return;
+    }
+    // 單指 → 切呈現
     if (!sw || e.touches.length !== 1) return;
     const t = e.touches[0];
     const dx = t.clientX - sw.x, dy = t.clientY - sw.y;
@@ -1619,16 +1647,29 @@ function bindSwipe(){
     area.style.transform = "translateX(" + dx + "px)";
   }, { passive:false });
 
-  const end = () => {
-    if (!sw) return;
-    const dx = sw.dx, moved = sw.dir === "x";
-    sw = null;
-    if (!moved){ document.body.classList.remove("dragging"); return; }
-    if (Math.abs(dx) >= SWIPE_MIN){
-      reset(false);
-      cycleLayout(dx < 0 ? 1 : -1);     // 向左滑 → 下一個呈現；向右滑 → 上一個（循環）
-    }else{
-      reset(true);
+  const end = e => {
+    if (e.touches && e.touches.length > 0) return;     // 仍有手指未離開，等最後一指才判定（避免雙指先鬆一指就觸發）
+    if (sw2){
+      const dx = sw2.dx, moved = sw2.dir === "x";
+      sw2 = null;
+      if (moved && Math.abs(dx) >= SWIPE_MIN){
+        clearTransform(false);
+        selectClass(state.cls + (dx < 0 ? 1 : -1));   // 向左滑 → 下一班；向右滑 → 上一班
+      }else{
+        clearTransform(true);
+      }
+      return;
+    }
+    if (sw){
+      const dx = sw.dx, moved = sw.dir === "x";
+      sw = null;
+      if (!moved){ document.body.classList.remove("dragging"); return; }
+      if (Math.abs(dx) >= SWIPE_MIN){
+        clearTransform(false);
+        cycleLayout(dx < 0 ? 1 : -1);                 // 單指：向左滑 → 下一個呈現
+      }else{
+        clearTransform(true);
+      }
     }
   };
   area.addEventListener("touchend", end);
@@ -1714,7 +1755,7 @@ function cycleLayout(dir){
   try{
     if (state.sel.length > 1 && !localStorage.getItem("hw_hint_v1")){
       localStorage.setItem("hw_hint_v1", "1");
-      setTimeout(() => toast("在內容上左右滑動，即可切換其他班級"), 1500);
+      setTimeout(() => toast("單指左右滑切換呈現；雙指左右滑切換班級"), 1500);
     }
   }catch(e){}
 })();
