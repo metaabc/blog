@@ -1140,7 +1140,7 @@ async function shareImage(filter){
   const file = new File([blob], fname, { type: "image/png" });
   if (navigator.canShare && navigator.canShare({ files: [file] })){
     try{
-      await navigator.share({ files: [file], title: title + " 功課", text: title + " 每日功課" });
+      await navigator.share({ files: [file], title: title + " 功課", text: title + " 功課" });
       return;
     }catch(e){ if (e && e.name === "AbortError") return; }
   }
