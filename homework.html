@@ -43,15 +43,7 @@
   .toggle input:checked{background:var(--accent)}
   .toggle input:checked::after{transform:translateX(13px)}
 
-  /* 簽改/測：浮動於底部工具條上方，靠右 */
-  .toggle.fab{position:fixed;right:12px;z-index:49;
-    bottom:calc(var(--mbar-h, 86px) + 10px);
-    padding:7px 13px;border-radius:999px;font-size:13px;
-    background:rgba(255,253,249,.97);
-    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-    box-shadow:0 7px 20px -12px rgba(60,48,32,.8),0 1px 2px rgba(60,48,32,.07);
-    transition:box-shadow .16s,transform .12s}
-  .toggle.fab:active{transform:scale(.97)}
+  /* 簽改/測 開關：浮於底部工具條上方（基礎樣式見上方的 .toggle） */
 
   /* ---------- 內容 ---------- */
   main.wrap{max-width:1020px;margin:0 auto;padding:0 20px}
@@ -65,17 +57,62 @@
     padding:2px 10px;font-weight:600;font-size:12.5px}
   .srcbar-links a:hover{background:#f2f7fc}
   .srcbar-links a svg{opacity:.7}
-  .srcbar .law{margin-left:auto;color:#9a9082;font-weight:500;white-space:nowrap}
+  .srcbar .law{margin-left:0;color:#9a9082;font-weight:500;white-space:normal}
+  .srcbar-top{display:flex;align-items:center;gap:10px;width:100%}
 
-  /* 右上角：今日日期（短格式） */
-  .topdate{margin:10px 0 2px;text-align:right;line-height:1.4;
-    font-size:12px;font-weight:700;color:#8b8274;letter-spacing:.03em}
+  /* 頁面內的呈現方式切換（隨手可切，不必進設定；靠右） */
+  .layswitch{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1px solid var(--line);
+    border-radius:999px;padding:2px;flex:0 0 auto;margin-left:auto}
+  .layswitch button{border:0;background:transparent;font-family:inherit;cursor:pointer;
+    font-size:12.5px;font-weight:600;color:#6d6459;padding:4px 12px;border-radius:999px;line-height:1.4;
+    transition:background .15s,color .15s,transform .1s}
+  .layswitch button.on{background:var(--accent);color:#fff}
+  .layswitch button:active{transform:scale(.96)}
+
+  /* 簽改/測 浮動開關：位於底部工具條上方約兩行處（靠右） */
+  .signfilter{position:fixed;right:12px;z-index:48;
+    bottom:calc(var(--mbar-h, 86px) + 48px);
+    padding:7px 13px;border-radius:999px;font-size:13px;
+    background:rgba(255,253,249,.97);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    box-shadow:0 7px 20px -12px rgba(60,48,32,.8),0 1px 2px rgba(60,48,32,.07);
+    transition:box-shadow .16s,transform .12s}
+  .signfilter:active{transform:scale(.97)}
 
   .day{background:var(--card);border:1px solid var(--line);border-radius:16px;
     box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;
     animation:rise .3s ease both}
   @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .body{padding:13px 16px 12px;min-width:0}
+  /* 當天作業：日期高亮 */
+  .day.today{border-color:color-mix(in srgb,var(--accent) 55%, var(--line));
+    box-shadow:0 0 0 1.5px color-mix(in srgb,var(--accent) 55%, transparent), var(--shadow)}
+  .day.today .hd h2{color:var(--accent);
+    background:color-mix(in srgb,var(--accent) 12%, #fff);
+    padding:2px 9px;border-radius:8px;display:inline-block}
+
+  /* 卡片 / 科目群組 右下角的分享鈕 */
+  .dfoot,.sg-foot{display:flex;justify-content:flex-end;margin-top:9px}
+  .sg-foot{margin-top:7px}
+  .share-btn{display:inline-flex;align-items:center;gap:5px;
+    padding:5px 12px;border-radius:999px;cursor:pointer;
+    font-size:12.5px;font-weight:700;letter-spacing:.02em;
+    color:var(--accent);background:color-mix(in srgb,var(--accent) 9%, #fff);
+    border:1px solid color-mix(in srgb,var(--accent) 32%, #fff);
+    transition:background .14s,transform .1s}
+  .share-btn:hover{background:color-mix(in srgb,var(--accent) 16%, #fff)}
+  .share-btn:active{transform:scale(.96)}
+  .share-btn svg{flex:0 0 auto}
+
+  /* ---------- 科目分組佈局（整週功課按科目歸類） ---------- */
+  .subj-group{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+  .sg-head{display:flex;align-items:center;gap:8px;padding:11px 16px 10px;border-bottom:1px solid var(--line)}
+  .sg-count{font-size:12px;color:var(--muted);font-weight:600;margin-left:auto}
+  .sg-items{padding:9px 16px 12px}
+  .sg-items li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline}
+  .dtag{font-size:11.5px;font-weight:700;color:var(--muted);background:#f1ece2;
+    border-radius:6px;padding:1px 7px;white-space:nowrap}
   .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
   .hd h2{font-size:17px;margin:0;font-weight:700;letter-spacing:.01em}
   .chip{font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;line-height:1.6;
@@ -183,28 +220,32 @@
     .toggle{font-size:12px;padding:5px 9px;gap:6px}
     .srcbar{margin:10px 0;padding:8px 11px;gap:7px}
     .srcbar .law{margin-left:0;flex:1 1 auto;white-space:normal;font-size:12px}
-    .topdate{margin:7px 0 1px;font-size:11.5px}
     .srcbar-links{gap:6px}
     .srcbar-links a{padding:2px 9px;font-size:12px}
+    .layswitch button{padding:3px 9px;font-size:12px}
     .body{padding:13px}
     .txt{font-size:15px}
     .mbar{padding:6px 10px calc(6px + env(safe-area-inset-bottom))}
     .cchip{font-size:12.5px;padding:6px 11px}
-    .toggle.fab{font-size:12.5px;padding:6px 11px;right:10px}
   }
   @media print{
     body{background:#fff;padding:0}
-    .srcbar,.mbar,.toast,.sheet-wrap,.fab{display:none}
-    .day{break-inside:avoid;box-shadow:none;page-break-inside:avoid}
+    .srcbar,.mbar,.toast,.sheet-wrap,.fab,.signfilter{display:none}
+    .day,.subj-group{break-inside:avoid;box-shadow:none;page-break-inside:avoid}
   }
 </style>
 </head>
 <body>
 
 <main class="wrap">
-  <div class="topdate"><span id="todayTag" aria-label="今天的日期"></span></div>
   <div class="srcbar">
-    <div class="srcbar-links" id="sources"></div>
+    <div class="srcbar-top">
+      <div class="srcbar-links" id="sources"></div>
+      <div class="layswitch" id="laySwitch" role="group" aria-label="呈現方式">
+        <button type="button" data-lay="card" class="on">卡片</button>
+        <button type="button" data-lay="subject">科目</button>
+      </div>
+    </div>
     <span class="law">以<b>原網址</b>為準 · 本頁僅供參考</span>
   </div>
   <div id="list"></div>
@@ -228,7 +269,7 @@
   </div>
 </nav>
 
-<label class="toggle fab" title="只顯示含「簽改」或「測」的項目">
+<label class="toggle signfilter" title="只顯示含「簽改」或「測」的項目">
   <input type="checkbox" id="onlyFlags"><span>簽改/測</span>
 </label>
 
@@ -269,6 +310,11 @@ const LEVELS = [
 const LEVEL_ACCENT = { s6:"#6d5bd0", s5:"#0e7490", s4:"#b4692b", s3:"#2f6fb0", s2:"#b3457a", s1:"#0e8a7d" };
 const MAX_SEL = 6;
 const DEFAULT_SEL = ["s3C", "s1A"];
+const LAYOUTS = [
+  { k:"card", t:"卡片" },
+  { k:"subject", t:"科目" }
+];
+const LS_LAYOUT = "hw_layout_v1";
 
 const accentOf = code => LEVEL_ACCENT[String(code).slice(0, 2)] || "#2f6fb0";
 const nameOf = code => (CLASSES.find(c => c.v === code) || {}).n || code;
@@ -325,12 +371,6 @@ function toast(msg, isErr){
   toast._t = setTimeout(() => { el.className = "toast" + (isErr ? " err" : ""); }, 3600);
 }
 
-/* 顯示範圍：今天往回，直到「上週一」（含） */
-function lastMonday(){
-  const t = today0();
-  const backToThisMonday = (t.getDay() + 6) % 7;      // 週一=0
-  return new Date(t.getFullYear(), t.getMonth(), t.getDate() - backToThisMonday - 7);
-}
 
 /* =========================================================
    儲存：已選班級 / 各班快取
@@ -355,6 +395,14 @@ function loadSel(){
 }
 function saveSel(){ try{ localStorage.setItem(LS_SEL, JSON.stringify(state.sel)); }catch(e){} }
 
+function loadLayout(){
+  try{
+    const v = localStorage.getItem(LS_LAYOUT);
+    if (v && LAYOUTS.some(l => l.k === v)) return v;
+  }catch(e){}
+  return "card";
+}
+
 function loadCache(){
   try{
     const o = JSON.parse(localStorage.getItem(LS_CACHE) || "null");
@@ -367,7 +415,7 @@ function saveCache(){ try{ localStorage.setItem(LS_CACHE, JSON.stringify(state.d
 /* =========================================================
    狀態
    ========================================================= */
-const state = { sel: loadSel(), cls: 0, only: false, data: loadCache(), busy: {}, err: {} };
+const state = { sel: loadSel(), cls: 0, only: false, layout: loadLayout(), data: loadCache(), busy: {}, err: {} };
 
 /* =========================================================
    抓取（直連失敗 → 多個跨域代理並行，先回先贏）
@@ -576,11 +624,18 @@ function parsePage(html){
 /* =========================================================
    顏色標示：簽改 / 測驗
    ========================================================= */
-const TOKEN_RE = /(簽改|簽名|簽|小測|大測|測驗|測|默書|默|\b(?:Dictation|Dictionary|Dict|Quiz|Test|Sign|Correction|Corr)\b)/gi;
+/* 簽改/測 關鍵字：依據 27 班實際作業用語歸納（見 analyze_signs.py 的分析結果）
+   簽改類：簽改/簽名/改簽/簽/改正/訂正/更正/改X（改簿·改卷·改錯·改題·改本·改作業）/Sign/Corr/Correction/Signing
+   測驗類：小測/大測/測驗/測/默書/默寫/默/背默/背誦/背書/Quiz/Test/Dict/Dictation/Spelling/Exam
+   調整說明：
+   - 補回「改正 / 改簽 / 改簿 / 訂正 / 更正 / 默寫 / 背默 / 背誦」等高頻詞（舊版漏抓）
+   - 移除 Dictionary（「查字典」不是測驗，避免誤判）
+   - 簽(?!到) 排除「簽到」這類非功課簽改 */
+const TOKEN_RE = /(簽改|簽名|改簽|簽(?!到)|改正|訂正|更正|改[正簽簿卷錯題本作業]|小測|大測|測驗|測|默書|默寫|默|背默|背誦|背書|\b(?:Dictation|Dict|Quiz|Test|Sign|Signing|Correction|Corr|Spelling|Exam|Examination)\b)/gi;
 
 function clsOfWord(w){
-  if (/^(簽改|簽名|簽|sign|corr|correction)$/i.test(w)) return "sign";
-  if (/測|默|dict|quiz|test/i.test(w)) return "test";
+  if (/^(簽改|簽名|改簽|簽|改正|訂正|更正|改[正簽簿卷錯題本作業]|sign|corr|correction|signing)$/i.test(w)) return "sign";
+  if (/測|默|背|dict|quiz|test|spelling|exam/i.test(w)) return "test";
   return "";
 }
 function markup(text){
@@ -711,26 +766,19 @@ function renderList(){
     return;
   }
 
-  const cutoff = ymd(lastMonday());
   const days = rec.days
-    .filter(d => d.date >= cutoff)
     .map(d => ({ ...d, shown: matchItems(d, state.only) }))
     .filter(d => d.shown.length > 0);
 
   if (!days.length){
-    list.innerHTML = `<div class="empty">今日至上週一（${mmdd(cutoff)}）沒有符合條件的作業紀錄` +
+    list.innerHTML = `<div class="empty">沒有符合條件的作業紀錄` +
       (state.only ? `<br>試試關閉「簽改/測」篩選` : "") + `</div>`;
     return;
   }
 
-  const t0 = today0();
-  let html = "";
-  days.forEach((d, idx) => {
-    const dt = parseD(d.date);
-    const due = idx === 0 ? dueInfo(d.due) : null;    // 交期只在最近一日顯示
+  function itemsHtml(items){
     let signN = 0, testN = 0;
-
-    const rows = d.shown.map(it => {
+    const rows = items.map(it => {
       if (it.img) return `<li class="note"><a class="img" href="${esc(it.img)}" target="_blank" rel="noopener">📎 附圖</a></li>`;
       const r = markup(it.text);
       if (r.flags.sign) signN++;
@@ -740,20 +788,75 @@ function renderList(){
       return `<li><span class="subj" style="color:${col};border-color:${col}55;background:${col}12">${esc(it.subject)}</span>` +
              `<span class="txt">${r.html}</span></li>`;
     }).join("");
+    return { rows, signN, testN };
+  }
 
-    html += `<article class="day" style="animation-delay:${Math.min(idx * 18, 220)}ms">
-      <div class="body">
-        <div class="hd">
-          <h2>${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · 週${WEEK[dt.getDay()]}</h2>
-          ${dt.getTime() === t0.getTime() ? '<span class="chip today">今天</span>' : ""}
-          ${signN ? `<span class="chip sign">簽改 ${signN}</span>` : ""}
-          ${testN ? `<span class="chip test">測驗 ${testN}</span>` : ""}
-          ${due && d.due ? `<span class="chip due ${due.tone}">交 ${mmdd(d.due)} · ${due.label}</span>` : ""}
+  const t0 = today0();
+  let html = "";
+
+  if (state.layout === "subject"){
+    /* 科目分組：把整週功課按科目歸類 */
+    const map = new Map();
+    days.forEach(d => d.shown.forEach(it => {
+      const key = it.subject || "（說明）";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push({ ...it, date:d.date });
+    }));
+    const keys = [...map.keys()].sort((a, b) => a.localeCompare(b, "zh-Hant"));
+    keys.forEach((key, gi) => {
+      const arr = map.get(key);
+      let sN = 0, tN = 0;
+      const items = arr.map(it => {
+        const mr = markup(it.text);
+        if (mr.flags.sign) sN++;
+        if (mr.flags.test) tN++;
+        return `<li><span class="dtag">${mmdd(it.date)}</span><span class="txt">${mr.html}</span></li>`;
+      }).join("");
+      const col = key === "（說明）" ? "#8b8274" : subjColor(key);
+      html += `<section class="subj-group" style="animation-delay:${Math.min(gi * 18, 220)}ms">
+        <div class="sg-head">
+          <span class="subj" style="color:${col};border-color:${col}55;background:${col}12">${esc(key)}</span>
+          ${sN ? `<span class="chip sign">簽改 ${sN}</span>` : ""}
+          ${tN ? `<span class="chip test">測驗 ${tN}</span>` : ""}
+          <span class="sg-count">${arr.length} 項</span>
         </div>
-        <ul class="items">${rows}</ul>
-      </div>
-    </article>`;
-  });
+        <ul class="items sg-items">${items}</ul>
+        <div class="sg-foot">
+          <button class="share-btn share-subj" data-subject="${esc(key)}" type="button" aria-label="分享此科功課圖片">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
+            分享
+          </button>
+        </div>
+      </section>`;
+    });
+  } else {
+    days.forEach((d, idx) => {
+      const dt = parseD(d.date);
+      const due = idx === 0 ? dueInfo(d.due) : null;    // 交期只在最近一日顯示
+      const r = itemsHtml(d.shown);
+      const isToday = dt.getTime() === t0.getTime();
+      const dateLabel = `${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · 週${WEEK[dt.getDay()]}`;
+
+      html += `<article class="day${isToday ? " today" : ""}" style="animation-delay:${Math.min(idx * 18, 220)}ms">
+        <div class="body">
+          <div class="hd">
+            <h2>${dateLabel}</h2>
+            ${isToday ? '<span class="chip today">今天</span>' : ""}
+            ${r.signN ? `<span class="chip sign">簽改 ${r.signN}</span>` : ""}
+            ${r.testN ? `<span class="chip test">測驗 ${r.testN}</span>` : ""}
+            ${due && d.due ? `<span class="chip due ${due.tone}">交 ${mmdd(d.due)} · ${due.label}</span>` : ""}
+          </div>
+          <ul class="items">${r.rows}</ul>
+          <div class="dfoot">
+            <button class="share-btn share-day" data-date="${esc(d.date)}" type="button" aria-label="分享此日功課圖片">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
+              分享
+            </button>
+          </div>
+        </div>
+      </article>`;
+    });
+  }
   list.innerHTML = html;
 }
 
@@ -795,7 +898,15 @@ async function ensureData(code, force){
    ========================================================= */
 function renderSheet(){
   const groups = document.getElementById("classGroups");
-  groups.innerHTML = LEVELS.map(lv => {
+  const layGrp = `<div class="grp">
+      <div class="lab">顯示方式（選好會記住，作為預設佈局）</div>
+      <div class="opts" id="layoutOpts">${LAYOUTS.map(l =>
+        `<button class="opt" data-lay="${l.k}" aria-pressed="${state.layout === l.k}"
+           ${state.layout === l.k ? `style="background:var(--accent)"` : ""}>
+           ${state.layout === l.k ? '<span class="tick">✓</span>' : ""}${l.t}</button>`
+      ).join("")}</div>
+    </div>`;
+  groups.innerHTML = layGrp + LEVELS.map(lv => {
     const items = CLASSES.filter(c => c.v.startsWith(lv.k))
       .sort((a, b) => a.v.localeCompare(b.v));
     if (!items.length) return "";
@@ -814,6 +925,9 @@ function renderSheet(){
 
   groups.querySelectorAll(".opt").forEach(b => {
     b.onclick = () => toggleClass(b.dataset.v);
+  });
+  groups.querySelectorAll(".opt[data-lay]").forEach(b => {
+    b.onclick = () => setLayout(b.dataset.lay);
   });
 
   document.getElementById("sheetFoot").textContent =
@@ -835,6 +949,205 @@ function toggleClass(code){
   saveSel();
   refreshNav(); renderSources(); renderSheet(); renderList();
   if (i < 0) ensureData(code);
+}
+
+function setLayout(k){
+  if (!LAYOUTS.some(l => l.k === k) || state.layout === k) return;
+  state.layout = k;
+  try{ localStorage.setItem(LS_LAYOUT, k); }catch(e){}
+  renderSheet(); renderList(); syncLaySwitch();
+}
+
+/* 同步頁面內呈現方式切換鈕的選中狀態 */
+function syncLaySwitch(){
+  const sw = document.getElementById("laySwitch");
+  if (!sw) return;
+  sw.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.lay === state.layout));
+}
+
+/* =========================================================
+   分享：把目前功課轉成一張圖（自繪 canvas，無外部依賴）
+   - 手機：優先用 Web Share API 直接分享到 WeChat / WhatsApp
+   - 不支援時：下載 PNG，再手動分享
+   ========================================================= */
+function rr(ctx, x, y, w, h, r){
+  if (w < 2 * r) r = w / 2;
+  if (h < 2 * r) r = h / 2;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function wrapLines(ctx, text, maxW){
+  const lines = [];
+  let line = "";
+  for (const ch of String(text)){
+    const t = line + ch;
+    if (line && ctx.measureText(t).width > maxW){ lines.push(line); line = ch; }
+    else line = t;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+const SHARE_FONT = '"Noto Sans TC","PingFang TC","Microsoft JhengHei","Hiragino Sans GB",sans-serif';
+
+async function shareImage(filter){
+  const code = currentCode();
+  const rec = state.data[code];
+  if (!rec || !rec.days || !rec.days.length){ toast("尚無資料可分享", true); return; }
+  let days = rec.days
+    .map(d => ({ ...d, shown: matchItems(d, state.only) }))
+    .filter(d => d.shown.length > 0);
+  if (!days.length){ toast("目前沒有符合條件的作業", true); return; }
+
+  /* 過濾成「單日」或「單科」 */
+  let title = nameOf(code);
+  if (filter && filter.date){
+    days = days.filter(d => d.date === filter.date);
+    const dt = parseD(filter.date);
+    if (dt && !isNaN(dt.getTime())) title += ` · ${dt.getMonth() + 1}月${dt.getDate()}日`;
+    if (!days.length){ toast("該日沒有作業", true); return; }
+  } else if (filter && filter.subject != null){
+    const subj = filter.subject;
+    days = days.map(d => ({ ...d, shown: d.shown.filter(it => {
+      const s = it.subject || "";
+      return subj === "（說明）" ? !s : s === subj;
+    }) }))
+    .filter(d => d.shown.length > 0);
+    title += ` · ${subj}`;
+    if (!days.length){ toast("該科目沒有作業", true); return; }
+  }
+
+  const W = 720, pad = 28, cW = W - pad * 2;
+  const t0 = today0();
+  let accent = "#2f6fb0";
+  try{ accent = (getComputedStyle(document.documentElement).getPropertyValue("--accent") || "").trim() || accent; }catch(e){}
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  /* 先量總高度 */
+  let y = pad + 40 + 26 + 14;
+  for (const d of days){
+    const dt = parseD(d.date);
+    ctx.font = `700 21px ${SHARE_FONT}`;
+    let hw = ctx.measureText(`${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · 週${WEEK[dt.getDay()]}`).width;
+    if (dt.getTime() === t0.getTime()) hw += 56;
+    y += 32 + 10;
+    for (const it of d.shown){
+      if (it.img){ y += 28; continue; }
+      const r = markup(it.text);
+      const prefix = (r.flags.sign ? "簽改 " : "") + (r.flags.test ? "測驗 " : "");
+      let tx = pad;
+      if (it.subject){ ctx.font = `600 14px ${SHARE_FONT}`; tx = pad + ctx.measureText(it.subject).width + 28; }
+      ctx.font = `19px ${SHARE_FONT}`;
+      const lines = wrapLines(ctx, prefix + it.text, Math.max(40, cW - (tx - pad)));
+      y += Math.max(1, lines.length) * 28 + (it.subject ? 6 : 10);
+    }
+    y += 10;
+  }
+  y += 30;
+  canvas.width = W;
+  canvas.height = Math.max(y + pad, 200);
+
+  /* 背景 */
+  ctx.fillStyle = "#fffdf9";
+  ctx.fillRect(0, 0, W, canvas.height);
+
+  /* 重畫 */
+  y = pad;
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = accent;
+  ctx.font = `800 27px ${SHARE_FONT}`;
+  ctx.fillText(title + " 功課", pad, y + 30);
+  y += 40;
+  ctx.fillStyle = "#8b8274";
+  ctx.font = `15px ${SHARE_FONT}`;
+  ctx.fillText(`更新：${rec.at || "—"} · 以原網址為準`, pad, y + 18);
+  y += 26 + 14;
+
+  for (const d of days){
+    const dt = parseD(d.date);
+    const isToday = dt.getTime() === t0.getTime();
+    const head = `${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · 週${WEEK[dt.getDay()]}`;
+    ctx.fillStyle = "#2c2620";
+    ctx.font = `700 21px ${SHARE_FONT}`;
+    ctx.fillText(head, pad, y + 22);
+    let cx = pad + ctx.measureText(head).width + 12;
+    if (isToday){
+      const tw = 46;
+      rr(ctx, cx, y + 4, tw, 22, 11);
+      ctx.fillStyle = accent; ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.font = `700 13px ${SHARE_FONT}`; ctx.textBaseline = "middle";
+      ctx.fillText("今天", cx + tw / 2, y + 15); ctx.textBaseline = "alphabetic";
+    }
+    y += 32;
+    ctx.strokeStyle = "#e9e1d4"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+    y += 10;
+
+    for (const it of d.shown){
+      if (it.img){ y += 28; continue; }
+      const r = markup(it.text);
+      const isNote = !it.subject;
+      let tx = pad;
+      if (!isNote){
+        const col = subjColor(it.subject);
+        ctx.font = `600 14px ${SHARE_FONT}`;
+        const sw = ctx.measureText(it.subject).width;
+        const cw = sw + 18, chh = 22;
+        rr(ctx, pad, y, cw, chh, 6);
+        ctx.fillStyle = col + "22"; ctx.fill();
+        ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = col; ctx.textBaseline = "middle";
+        ctx.fillText(it.subject, pad + 9, y + chh / 2); ctx.textBaseline = "alphabetic";
+        tx = pad + cw + 10;
+      }
+      const prefix = (r.flags.sign ? "簽改 " : "") + (r.flags.test ? "測驗 " : "");
+      ctx.font = `19px ${SHARE_FONT}`;
+      const full = prefix + it.text;
+      const lines = wrapLines(ctx, full, Math.max(40, cW - (tx - pad)));
+      if (lines.length){
+        let cx2 = tx;
+        if (prefix){
+          ctx.fillStyle = r.flags.sign ? "#9c6a14" : "#a8244a";
+          ctx.fillText(prefix, cx2, y + 19);
+          cx2 += ctx.measureText(prefix).width;
+          ctx.fillStyle = "#332d26";
+        }
+        ctx.fillText(lines[0].slice(prefix.length), cx2, y + 19);
+        for (let i = 1; i < lines.length; i++) ctx.fillText(lines[i], pad, y + 19 + i * 28);
+      }
+      y += Math.max(1, lines.length) * 28 + (isNote ? 10 : 6);
+    }
+    y += 10;
+  }
+
+  ctx.fillStyle = "#a99f8f";
+  ctx.font = `13px ${SHARE_FONT}`;
+  ctx.fillText("本頁僅供參考 · 以學校原網址為準", pad, canvas.height - pad + 6);
+
+  let blob = null;
+  try{ blob = await new Promise(res => canvas.toBlob(res, "image/png")); }catch(e){ blob = null; }
+  if (!blob){ toast("圖片生成失敗", true); return; }
+
+  const fname = `功課_${title}_${ymd(today0())}.png`;
+  const file = new File([blob], fname, { type: "image/png" });
+  if (navigator.canShare && navigator.canShare({ files: [file] })){
+    try{
+      await navigator.share({ files: [file], title: title + " 功課", text: title + " 每日功課" });
+      return;
+    }catch(e){ if (e && e.name === "AbortError") return; }
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = fname;
+  document.body.appendChild(a); a.click(); a.remove();
+  toast("已生成圖片，可手動分享到 WeChat / WhatsApp");
 }
 
 function openSheet(){
@@ -926,39 +1239,41 @@ function bindSwipe(){
   const only = document.getElementById("onlyFlags");
   only.addEventListener("change", () => { state.only = only.checked; renderList(); });
 
+  // 頁面內的呈現方式切換（隨手可切，不必進設定）
+  document.querySelectorAll("#laySwitch button").forEach(b => {
+    b.onclick = () => setLayout(b.dataset.lay);
+  });
+
+  // 分享為圖片（Web Share / 下載）：卡片、科目群組各自右下角的分享鈕
+  const listEl = document.getElementById("list");
+  if (listEl) listEl.addEventListener("click", (e) => {
+    const b = e.target.closest(".share-day, .share-subj");
+    if (!b) return;
+    if (b.classList.contains("share-day")) shareImage({ date: b.dataset.date });
+    else shareImage({ subject: b.dataset.subject });
+  });
+
   const hash = location.hash.replace("#", "");
   const hi = state.sel.indexOf(hash);
   if (hi >= 0) state.cls = hi;
 
   bindSwipe();
-  window.addEventListener("resize", () => { centerChip(false); syncFab(); });
+  window.addEventListener("resize", () => { centerChip(false); syncMbarH(); });
 
-  /* 浮動的「簽改/測」貼在工具條上緣，並與工具條內容右邊緣對齊 */
-  function syncFab(){
+  /* 同步底部工具條高度，供 toast 定位使用（簽改/測 開關已移至頂部） */
+  function syncMbarH(){
     const bar = document.querySelector(".mbar");
-    const inner = bar && bar.querySelector(".mbar-inner");
-    const fab = document.querySelector(".toggle.fab");
     if (bar) document.documentElement.style.setProperty("--mbar-h", bar.offsetHeight + "px");
-    if (inner && fab){
-      const vw = document.documentElement.clientWidth;
-      const pad = Math.max(8, Math.round(vw - inner.getBoundingClientRect().right));
-      fab.style.right = pad + "px";
-    }
   }
-  syncFab();
-  if (window.ResizeObserver) new ResizeObserver(syncFab).observe(document.querySelector(".mbar"));
-  window.addEventListener("load", syncFab);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFab);
+  syncMbarH();
+  if (window.ResizeObserver) new ResizeObserver(syncMbarH).observe(document.querySelector(".mbar"));
+  window.addEventListener("load", syncMbarH);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncMbarH);
 
   renderSources();
 
-  /* 右上角：今日日期（短格式，例如 10-28 週三） */
-  (function todayTag(){
-    const t = today0();
-    const el = document.getElementById("todayTag");
-    if (el) el.textContent = mmdd(ymd(t)) + " 週" + WEEK[t.getDay()];
-  })();
   refreshNav();
+  syncLaySwitch();
   renderList();
 
   // 開頁即抓：各班獨立，先拿到先顯示
