@@ -249,12 +249,12 @@
     scroll-snap-type:x proximity;overscroll-behavior-x:contain}
   .cstrip::-webkit-scrollbar{display:none}
   .cchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;cursor:pointer;
-    font-family:inherit;font-size:13px;font-weight:700;color:#6d6459;background:#fff;
-    border:1px solid var(--line);border-radius:999px;padding:7px 12px;line-height:1.3;
+    font-family:inherit;font-size:15px;font-weight:800;color:#6d6459;background:#fff;
+    border:1px solid var(--line);border-radius:12px;padding:9px 14px;line-height:1.2;
     white-space:nowrap;scroll-snap-align:center;
     transition:background .16s,color .16s,border-color .16s,box-shadow .16s}
   .cchip .cdot{width:6px;height:6px;border-radius:50%;background:var(--c);flex:0 0 auto}
-  .cchip .cnow{font-size:10px;font-weight:800;line-height:1.75;border-radius:999px;
+  .cchip .cnow{font-size:11px;font-weight:800;line-height:1.75;border-radius:8px;
     padding:0 6px;background:var(--c);color:#fff}
   .cchip[aria-selected="true"]{color:#fff;background:var(--c);border-color:transparent;
     box-shadow:0 5px 14px -9px rgba(0,0,0,.85)}
@@ -304,7 +304,7 @@
     .body{padding:13px}
     .txt{font-size:15px}
     .mbar{padding:6px 10px calc(6px + env(safe-area-inset-bottom))}
-    .cchip{font-size:12.5px;padding:6px 11px}
+    .cchip{font-size:15px;padding:9px 14px}
   }
   @media print{
     body{background:#fff;padding:0}
@@ -347,7 +347,7 @@
     <div class="srcbar-top">
       <div class="srcbar-links" id="sources"></div>
       <div class="layswitch" id="laySwitch" role="group" aria-label="呈現方式">
-        <button type="button" data-lay="card" class="on">卡片</button>
+        <button type="button" data-lay="card" class="on">作業</button>
         <button type="button" data-lay="calendar">測驗</button>
         <button type="button" data-lay="subject">科目</button>
       </div>
@@ -417,7 +417,7 @@ const LEVEL_ACCENT = { s6:"#6d5bd0", s5:"#0e7490", s4:"#b4692b", s3:"#2f6fb0", s
 const MAX_SEL = 6;
 const DEFAULT_SEL = ["s3C", "s1A"];
 const LAYOUTS = [
-  { k:"card", t:"卡片" },
+  { k:"card", t:"作業" },
   { k:"calendar", t:"測驗" },
   { k:"subject", t:"科目" }
 ];
@@ -1462,13 +1462,19 @@ async function shareTestsImage(){
       const r = markup(it.text);
       if (r.flags.sign) return;                               // 不含簽改 / 改正
       if (!r.flags.test && !r.flags.exam) return;             // 只收測驗 / 考試
-      const dt = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : ad;   // 以測驗當日（due）歸屬
+      const dt = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : ad;   // 測驗當日（due）
       const key = [d.date, it.subject || "", it.text || ""].join("||");
       if (isDismissed(code, key)) return;                              // 跟隨頁面已隱藏的項目
-      items.push({ dt, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text });
+      items.push({ ad, dt, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text });
     });
   });
-  items.sort((a, b) => a.dt - b.dt);
+  // 與「測驗」清單頁一致：未過的排前面（由近至遠），已過的沉到最底（最近的上）
+  const t0 = today0();
+  items.sort((a, b) => {
+    const pa = a.dt < t0, pb = b.dt < t0;
+    if (pa !== pb) return pa ? 1 : -1;
+    return pa ? b.dt - a.dt : a.dt - b.dt;
+  });
   if (!items.length){ toast("這段期間沒有測驗 / 考試", true); return; }
 
   const W = 720, pad = 28, cW = W - pad * 2;
@@ -1479,14 +1485,14 @@ async function shareTestsImage(){
   const title = nameOf(code) + " · 上週至本週 測驗";
 
   let yPix = pad + 40 + 18 + 14;
+  const dueStr = it => (it.dt.getTime() !== it.ad.getTime()) ? ` · 測驗 ${it.dt.getMonth() + 1}/${it.dt.getDate()}` : "";
   for (const it of items){
-    ctx.font = `700 19px ${SHARE_FONT}`;
-    const head = `${it.dt.getMonth() + 1}月${it.dt.getDate()}日（週${WEEK[it.dt.getDay()]}）`;
-    yPix += 26 + 6;
+    yPix += 32;                                              // 日期行（含「已過」標預留空間）
     ctx.font = `18px ${SHARE_FONT}`;
+    const ds = dueStr(it);
     const lines = it.subject
-      ? wrapLines(ctx, it.text, cW - (pad + measureChip(ctx, it.subject) + 10 - pad))
-      : wrapLines(ctx, it.text, cW - 8);
+      ? wrapLines(ctx, it.text + ds, cW - (ctx.measureText(it.subject + " ").width + 6))
+      : wrapLines(ctx, it.text + ds, cW - 8);
     yPix += Math.max(1, lines.length) * 26 + 8;
   }
   yPix += 30;
@@ -1502,30 +1508,37 @@ async function shareTestsImage(){
 
   let yy = pad + 40 + 18 + 14;
   for (const it of items){
-    const head = `${it.dt.getMonth() + 1}月${it.dt.getDate()}日（週${WEEK[it.dt.getDay()]}）`;
+    const passed = it.dt < t0;
     const kindColor = it.kind === "exam" ? "#b4692b" : "#a8244a";
-    ctx.fillStyle = kindColor; ctx.font = `700 19px ${SHARE_FONT}`;
-    ctx.fillText(head, pad, yy + 18);
-    yy += 26 + 6;
+    // 日期行：與清單頁一致用「公告日」（ad）；已過加灰標
+    ctx.fillStyle = accent; ctx.font = `700 19px ${SHARE_FONT}`;
+    const dHead = `${it.ad.getMonth() + 1}月${it.ad.getDate()}日（週${WEEK[it.ad.getDay()]}）`;
+    ctx.fillText(dHead, pad, yy + 18);
+    let cx = pad + ctx.measureText(dHead).width + 8;
+    if (passed){
+      const tw = 38, th = 20;
+      rr(ctx, cx, yy + 1, tw, th, 10);
+      ctx.fillStyle = "#b0a696"; ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.font = `700 12px ${SHARE_FONT}`; ctx.textBaseline = "middle";
+      ctx.fillText("已過", cx + tw / 2, yy + 1 + th / 2); ctx.textBaseline = "alphabetic";
+    }
+    yy += 32;
+    // 內容行：科目（粗體墨色，與清單頁一致，不用色塊）+ 內文（依 測驗/考試 上色）+ 測驗日
+    const ds = dueStr(it);
     if (it.subject){
-      const col = subjColor(it.subject);
-      const cw = measureChip(ctx, it.subject), chh = 20;
-      rr(ctx, pad, yy, cw, chh, 6);
-      ctx.fillStyle = col + "22"; ctx.fill();
-      ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.stroke();
-      ctx.fillStyle = col; ctx.textBaseline = "middle"; ctx.font = `600 14px ${SHARE_FONT}`;
-      ctx.fillText(it.subject, pad + 8, yy + chh / 2); ctx.textBaseline = "alphabetic";
-      const tw = pad + cw + 10;
-      ctx.font = `18px ${SHARE_FONT}`;
-      const tl = wrapLines(ctx, it.text, cW - (tw - pad));
-      ctx.fillStyle = "#332d26";
-      ctx.fillText(tl[0], tw, yy + 15);
+      ctx.fillStyle = "#2c2620"; ctx.font = `700 15px ${SHARE_FONT}`;
+      ctx.fillText(it.subject + " ", pad, yy + 15);
+      const sw = ctx.measureText(it.subject + " ").width;
+      ctx.font = (it.kind === "exam" ? `700 18px ` : `18px `) + SHARE_FONT;
+      ctx.fillStyle = passed ? "#b0a696" : kindColor;
+      const tl = wrapLines(ctx, it.text + ds, cW - (sw + 6));
+      ctx.fillText(tl[0], pad + sw, yy + 15);
       for (let i = 1; i < tl.length; i++) ctx.fillText(tl[i], pad, yy + 15 + i * 26);
       yy += Math.max(1, tl.length) * 26 + 8;
     } else {
-      ctx.font = `18px ${SHARE_FONT}`;
-      const lines = wrapLines(ctx, it.text, cW - 8);
-      ctx.fillStyle = "#332d26";
+      ctx.font = (it.kind === "exam" ? `700 18px ` : `18px `) + SHARE_FONT;
+      ctx.fillStyle = passed ? "#b0a696" : kindColor;
+      const lines = wrapLines(ctx, it.text + ds, cW - 8);
       lines.forEach((ln, i) => ctx.fillText(ln, pad, yy + 15 + i * 26));
       yy += Math.max(1, lines.length) * 26 + 8;
     }
@@ -1602,9 +1615,8 @@ function bindSwipe(){
     }
     if (sw.dir !== "x") return;
     e.preventDefault();
-    const atEdge = (state.cls === 0 && dx > 0) || (state.cls === state.sel.length - 1 && dx < 0);
-    sw.dx = atEdge ? dx * 0.25 : dx;
-    area.style.transform = "translateX(" + sw.dx + "px)";
+    sw.dx = dx;
+    area.style.transform = "translateX(" + dx + "px)";
   }, { passive:false });
 
   const end = () => {
@@ -1614,13 +1626,20 @@ function bindSwipe(){
     if (!moved){ document.body.classList.remove("dragging"); return; }
     if (Math.abs(dx) >= SWIPE_MIN){
       reset(false);
-      selectClass(state.cls + (dx < 0 ? 1 : -1));
+      cycleLayout(dx < 0 ? 1 : -1);     // 向左滑 → 下一個呈現；向右滑 → 上一個（循環）
     }else{
       reset(true);
     }
   };
   area.addEventListener("touchend", end);
   area.addEventListener("touchcancel", end);
+}
+
+/* 向左 / 向右滑動切換「呈現方式」（作業 / 測驗 / 科目），循環切換 */
+function cycleLayout(dir){
+  const i = LAYOUTS.findIndex(l => l.k === state.layout);
+  const n = (i + (dir > 0 ? 1 : -1) + LAYOUTS.length) % LAYOUTS.length;
+  setLayout(LAYOUTS[n].k);
 }
 
 /* =========================================================
