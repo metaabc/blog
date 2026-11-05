@@ -897,6 +897,7 @@ function refreshNav(){ renderStrip(); }
 function selectClass(i){
   i = Math.max(0, Math.min(state.sel.length - 1, i));
   if (i === state.cls){ centerChip(true); return; }
+  resetSwipe();                                  // 切班前清掉手勢殘留，避免後續滑動失效
   state.cls = i;
   refreshNav();
   renderSources();
@@ -1066,19 +1067,13 @@ function renderCalendar(){
     (d.items || []).forEach(it => {
       if (it.img) return;
       const r = markup(it.text);
-      if (r.flags.sign) return;                               // 不含簽改 / 改正
-      if (!r.flags.test && !r.flags.exam) return;             // 只收 quiz / 測驗 / 考試
+      if (!r.flags.test && !r.flags.exam) return;             // 只收 quiz / 測驗 / 考試（有測/考即收；改正小測等視同測驗）
       const due = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : null;
       all.push({ ad, due, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text, srcDate: d.date });
     });
   });
-  const t0 = today0();
-  all.sort((a, b) => {
-    const ta = a.due || a.ad, tb = b.due || b.ad;
-    const pa = ta < t0, pb = tb < t0;
-    if (pa !== pb) return pa ? 1 : -1;          // 未過的測驗排前面（由近至遠）
-    return pa ? tb - ta : ta - tb;             // 未過：近→遠；已過：最近的上（便於清理）
-  });
+  // 排序：按公告日（被提到的日期）由新至舊，最近被登記的測驗在最上
+  all.sort((a, b) => b.ad - a.ad);
 
   let hidden = 0;
   const items = all.filter(it => {
@@ -1461,21 +1456,15 @@ async function shareTestsImage(){
     (d.items || []).forEach(it => {
       if (it.img) return;
       const r = markup(it.text);
-      if (r.flags.sign) return;                               // 不含簽改 / 改正
-      if (!r.flags.test && !r.flags.exam) return;             // 只收測驗 / 考試
+      if (!r.flags.test && !r.flags.exam) return;             // 只收測驗 / 考試（有測/考即收；改正小測等視同測驗）
       const dt = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : ad;   // 測驗當日（due）
       const key = [d.date, it.subject || "", it.text || ""].join("||");
       if (isDismissed(code, key)) return;                              // 跟隨頁面已隱藏的項目
       items.push({ ad, dt, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text });
     });
   });
-  // 與「測驗」清單頁一致：未過的排前面（由近至遠），已過的沉到最底（最近的上）
-  const t0 = today0();
-  items.sort((a, b) => {
-    const pa = a.dt < t0, pb = b.dt < t0;
-    if (pa !== pb) return pa ? 1 : -1;
-    return pa ? b.dt - a.dt : a.dt - b.dt;
-  });
+  // 與「測驗」清單頁一致：按公告日（被提到的日期）由新至舊
+  items.sort((a, b) => b.ad - a.ad);
   if (!items.length){ toast("這段期間沒有測驗 / 考試", true); return; }
 
   const W = 720, pad = 28, cW = W - pad * 2;
@@ -1585,9 +1574,24 @@ const SWIPE_MIN = 54;
 let sw = null;     // 單指（呈現）
 let sw2 = null;    // 雙指（班級）
 
+/* 強制清掉手勢殘留狀態：切班級（無論點擊或手勢）後呼叫，避免上一個手勢的
+   位移 / dragging / 雙指狀態沒清乾淨，導致下一個手勢失效 */
+function resetSwipe(){
+  sw = null; sw2 = null;
+  const area = document.querySelector("main.wrap");
+  if (area){ area.style.transition = ""; area.style.transform = ""; }
+  document.body.classList.remove("dragging");
+}
+
 function bindSwipe(){
   const area = document.querySelector("main.wrap");
   const sheetOpen = () => document.querySelector(".sheet-wrap.on");
+
+  /* 攔截瀏覽器雙指縮放手勢（iOS Safari 的 gesturestart / Chrome 也會觸發），
+     確保雙指滑動完全由我們接管，避免切班後瀏覽器仍處於「縮放」手勢態，
+     導致隨後的單指滑動被當成縮放/捲動而失效 */
+  ["gesturestart", "gesturechange", "gestureend"].forEach(ev =>
+    area.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, { passive:false }));
 
   const clearTransform = anim => {
     if (anim){
