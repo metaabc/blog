@@ -1045,6 +1045,18 @@ function renderList(){
 }
 
 /* 測驗佈局：列出「上週至本週」被提及（公告）的測驗 / 考試 */
+/* 測驗清單 / 分享圖 排除項（方案 A）：
+   - 大測：指定排除。
+   - 含簽改/改正（r.flags.sign）但「沒有」真正測驗字眼（重測/測驗/考試）的項 → 排除
+     （例如「改正小測」視為批改作業，不列入；「數A 1.改正小測 2.9題計算題 3.下週一重測」
+      因含「重測」視為有真正測驗，保留）。
+   - 純測驗/考試（無簽改）一律保留。 */
+function isExcludedFromTests(r, text){
+  if (/大測/.test(text || "")) return true;                       // 大測：指定排除
+  if (r.flags.sign && !/(重測|測驗|考試)/.test(text || "")) return true;  // 有簽改/改正但無真正測驗
+  return false;
+}
+
 function renderTests(){
   const code = currentCode();
   const rec = state.data[code];
@@ -1066,7 +1078,8 @@ function renderTests(){
     (d.items || []).forEach(it => {
       if (it.img) return;
       const r = markup(it.text);
-      if (!r.flags.test && !r.flags.exam) return;             // 只收 quiz / 測驗 / 考試（有測/考即收；改正小測等視同測驗）
+      if (!r.flags.test && !r.flags.exam) return;             // 只收 quiz / 測驗 / 考試（含 重測/小測/默/Quiz…）
+      if (isExcludedFromTests(r, it.text)) return;            // 排除 大測；及含簽改/改正但無真正測驗者
       const due = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : null;
       all.push({ ad, due, kind: r.flags.exam ? "exam" : "test", subject: it.subject || "", text: it.text, srcDate: d.date });
     });
@@ -1084,7 +1097,7 @@ function renderTests(){
   });
 
   const emptyWrap = (inner) => `<div class="cal-list">
-      <div class="cal-list-h"><span>上週至本週 提過的測驗</span><span class="cal-ref">僅供參考</span></div>
+      <div class="cal-list-h"><span>查找可能有的測驗</span><span class="cal-ref">僅供參考</span></div>
       ${inner}
     </div>
     <div class="cal-foot"><button class="share-btn share-tests" type="button" aria-label="分享本週測驗圖片">
@@ -1092,7 +1105,7 @@ function renderTests(){
       分享</button></div>`;
 
   if (!all.length){
-    return `<div class="empty">上週至本週尚未偵測到「測驗 / 考試」項目` +
+    return `<div class="empty">查找可能有的測驗：尚未偵測到「測驗 / 考試」項目` +
       (state.only ? `<br>試試關閉「簽改/測」篩選` : "") + `</div>`;
   }
   if (!items.length){
@@ -1102,12 +1115,10 @@ function renderTests(){
   const rows = items.map(it => {
     const md = (it.ad.getMonth() + 1) + "月" + it.ad.getDate() + "日（週" + DOW[it.ad.getDay()] + "）";
     const subj = it.subject ? `<b class="cl-subj">${esc(it.subject)}</b> ` : "";
-    const dueTxt = (it.due && it.due.getTime() !== it.ad.getTime())
-      ? ` <span class="cl-due">· 測驗 ${it.due.getMonth() + 1}/${it.due.getDate()}</span>` : "";
     const rm = it.passed
       ? `<button class="cal-rm" type="button" aria-label="隱藏這個已過的測驗" data-key="${esc(testKey(it))}">✕</button>` : "";
     return `<div class="cal-li cal-tap${it.passed ? " past" : ""}" data-date="${esc(it.srcDate)}" title="點擊查看當日功課">
-        <span class="cl-d">${md}${it.passed ? '<span class="cl-past">已過</span>' : ""}</span><span class="cl-c ${it.kind}">${subj}${esc(it.text)}${dueTxt}</span>${rm}</div>`;
+        <span class="cl-d">${md}${it.passed ? '<span class="cl-past">已過</span>' : ""}</span><span class="cl-c ${it.kind}">${subj}${esc(it.text)}</span>${rm}</div>`;
   }).join("");
 
   const restore = hidden
@@ -1455,7 +1466,8 @@ async function shareTestsImage(){
     (d.items || []).forEach(it => {
       if (it.img) return;
       const r = markup(it.text);
-      if (!r.flags.test && !r.flags.exam) return;             // 只收測驗 / 考試（有測/考即收；改正小測等視同測驗）
+      if (!r.flags.test && !r.flags.exam) return;             // 只收測驗 / 考試
+      if (isExcludedFromTests(r, it.text)) return;            // 排除 大測；及含簽改/改正但無真正測驗者
       const dt = (d.due && RE_ISO.test(d.due)) ? parseD(d.due) : ad;   // 測驗當日（due）
       const key = [d.date, it.subject || "", it.text || ""].join("||");
       if (isDismissed(code, key)) return;                              // 跟隨頁面已隱藏的項目
@@ -1576,16 +1588,11 @@ function bindSwipe(){
   const area = document.querySelector("main.wrap");
   const sheetOpen = () => document.querySelector(".sheet-wrap.on");
 
-  const clearTransform = anim => {
-    if (anim){
-      area.style.transition = "transform .2s ease";
-      area.style.transform = "translateX(0)";
-      setTimeout(() => { area.style.transition = ""; area.style.transform = ""; }, 220);
-    }else{
-      area.style.transition = "";
-      area.style.transform = "";
-    }
+  const reset = anim => {
+    area.style.transition = anim ? "transform .2s ease" : "";
+    area.style.transform = "";
     document.body.classList.remove("dragging");
+    if (anim) setTimeout(() => { area.style.transition = ""; }, 220);
   };
 
   area.addEventListener("touchstart", e => {
@@ -1606,6 +1613,8 @@ function bindSwipe(){
     if (sw.dir !== "x") return;
     e.preventDefault();
     sw.dx = dx;
+    // 跟手時同步切掉 transition，避免 iOS 回彈/殘影造成的閃爍
+    area.style.transition = "";
     area.style.transform = "translateX(" + dx + "px)";
   }, { passive:false });
 
@@ -1615,10 +1624,24 @@ function bindSwipe(){
     sw = null;
     if (!moved){ document.body.classList.remove("dragging"); return; }
     if (Math.abs(dx) >= SWIPE_MIN){
-      clearTransform(false);
-      cycleLayout(dx < 0 ? 1 : -1);                 // 向左滑 → 下一個呈現；向右滑 → 上一個（循環）
+      // 順著手勢把當前內容滑出，滑出完成後才換頁重繪，
+      // 避免「瞬間彈回原位 → 再換新內容」造成的閃爍
+      const dir = dx < 0 ? 1 : -1;
+      const out = dir > 0 ? -1 : 1;
+      let fired = false;
+      const commit = () => {
+        if (fired) return; fired = true;
+        area.style.transition = "";
+        area.style.transform = "";
+        document.body.classList.remove("dragging");
+        cycleLayout(dir);                 // 向左滑 → 下一個呈現；向右滑 → 上一個（循環）
+      };
+      area.style.transition = "transform .18s ease-out";
+      area.style.transform = "translateX(" + (out * Math.max(160, Math.abs(dx) + 80)) + "px)";
+      area.addEventListener("transitionend", commit, { once:true });
+      setTimeout(commit, 220);            // 保險：少數瀏覽器 transitionend 不觸發
     }else{
-      clearTransform(true);
+      reset(true);
     }
   };
   area.addEventListener("touchend", end);
