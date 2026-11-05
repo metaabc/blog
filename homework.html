@@ -192,15 +192,12 @@
   .cl-c.test{color:var(--test-fg)}
   .cl-c.exam{color:var(--exam-fg);font-weight:700}
   .cl-subj{color:var(--ink);margin-right:4px}
-  .cl-due{color:var(--faint);font-weight:600;margin-left:2px}
   .cal-list-empty{font-size:13px;color:var(--faint);text-align:center;padding:14px}
   .ci.cal-tap{cursor:pointer;transition:transform .12s,filter .12s}
   .ci.cal-tap:hover{filter:brightness(.94);transform:translateY(-1px)}
   .cal-li.cal-tap{cursor:pointer;border-radius:8px;padding-left:6px;margin-left:-6px;transition:background .12s}
   .cal-li.cal-tap:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
   .cal-li.past .cl-c{opacity:.72}
-  .cl-past{display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#b0a696;
-    border-radius:999px;padding:1px 7px;margin-left:4px;vertical-align:middle;letter-spacing:.04em}
   .cal-rm{flex:0 0 auto;align-self:flex-start;margin-left:auto;
     width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:#fff;
     color:var(--muted);cursor:pointer;font-size:12px;line-height:1;
@@ -1118,7 +1115,7 @@ function renderTests(){
     const rm = it.passed
       ? `<button class="cal-rm" type="button" aria-label="隱藏這個已過的測驗" data-key="${esc(testKey(it))}">✕</button>` : "";
     return `<div class="cal-li cal-tap${it.passed ? " past" : ""}" data-date="${esc(it.srcDate)}" title="點擊查看當日功課">
-        <span class="cl-d">${md}${it.passed ? '<span class="cl-past">已過</span>' : ""}</span><span class="cl-c ${it.kind}">${subj}${esc(it.text)}</span>${rm}</div>`;
+        <span class="cl-d">${md}</span><span class="cl-c ${it.kind}">${subj}${esc(it.text)}</span>${rm}</div>`;
   }).join("");
 
   const restore = hidden
