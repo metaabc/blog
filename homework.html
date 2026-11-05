@@ -94,7 +94,7 @@
   .day.today .hd h2{color:var(--accent);
     background:color-mix(in srgb,var(--accent) 12%, #fff);
     padding:2px 9px;border-radius:8px;display:inline-block}
-  /* 月曆點測驗後，跳轉到該日功課的高亮 */
+  /* 測驗清單點項目後，跳轉到該日功課的高亮 */
   .day.flash{animation:flash 1.6s ease both}
   @keyframes flash{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 70%, transparent)}
     35%{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 55%, transparent), var(--shadow)}
@@ -151,7 +151,7 @@
   a.srctag{text-decoration:none}
   a.srctag:hover{background:color-mix(in srgb,var(--accent) 22%,#fff)}
 
-  /* ---------- 月曆佈局：標示哪天有 簽改 / 測驗 / 考試 ---------- */
+  /* ---------- 舊月曆格線（已停用）：標示哪天有 簽改 / 測驗 / 考試 ---------- */
   .cal-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(284px,1fr));gap:14px}
   .cal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px 14px;
     box-shadow:0 10px 24px -18px rgba(60,48,32,.55);animation:rise .26s ease both}
@@ -349,7 +349,7 @@
       <div class="srcbar-links" id="sources"></div>
       <div class="layswitch" id="laySwitch" role="group" aria-label="呈現方式">
         <button type="button" data-lay="card" class="on">作業</button>
-        <button type="button" data-lay="calendar">測驗</button>
+        <button type="button" data-lay="tests">測驗</button>
         <button type="button" data-lay="subject">科目</button>
       </div>
     </div>
@@ -419,7 +419,7 @@ const MAX_SEL = 6;
 const DEFAULT_SEL = ["s3C", "s1A"];
 const LAYOUTS = [
   { k:"card", t:"作業" },
-  { k:"calendar", t:"測驗" },
+  { k:"tests", t:"測驗" },
   { k:"subject", t:"科目" }
 ];
 const LS_LAYOUT = "hw_layout_v1";
@@ -897,7 +897,6 @@ function refreshNav(){ renderStrip(); }
 function selectClass(i){
   i = Math.max(0, Math.min(state.sel.length - 1, i));
   if (i === state.cls){ centerChip(true); return; }
-  resetSwipe();                                  // 切班前清掉手勢殘留，避免後續滑動失效
   state.cls = i;
   refreshNav();
   renderSources();
@@ -970,8 +969,8 @@ function renderList(){
   const t0 = today0();
   let html = "";
 
-  if (state.layout === "calendar"){
-    list.innerHTML = renderCalendar();
+  if (state.layout === "tests"){
+    list.innerHTML = renderTests();
     return;
   }
 
@@ -1046,7 +1045,7 @@ function renderList(){
 }
 
 /* 測驗佈局：列出「上週至本週」被提及（公告）的測驗 / 考試 */
-function renderCalendar(){
+function renderTests(){
   const code = currentCode();
   const rec = state.data[code];
   if (!rec || !rec.days || !rec.days.length) return `<div class="empty">尚無資料</div>`;
@@ -1080,7 +1079,7 @@ function renderCalendar(){
     const key = testKey(it);
     if (isDismissed(code, key)){ hidden++; return false; }    // 手動隱藏過的不再顯示
     const testDay = it.due || it.ad;
-    it.passed = testDay < t0;                                 // 測驗日已過 → 可手動移除
+    it.passed = testDay < now;                                 // 測驗日已過 → 可手動移除
     return true;
   });
 
@@ -1088,7 +1087,7 @@ function renderCalendar(){
       <div class="cal-list-h"><span>上週至本週 提過的測驗</span><span class="cal-ref">僅供參考</span></div>
       ${inner}
     </div>
-    <div class="cal-foot"><button class="share-btn share-cal" type="button" aria-label="分享本週測驗圖片">
+    <div class="cal-foot"><button class="share-btn share-tests" type="button" aria-label="分享本週測驗圖片">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
       分享</button></div>`;
 
@@ -1117,7 +1116,7 @@ function renderCalendar(){
   return emptyWrap(rows + restore);
 }
 
-/* 月曆點測驗 → 跳到對應日期的功課內容（卡片檢視），並高亮該日 */
+/* 測驗清單點項目 → 跳到對應日期的功課內容（卡片檢視），並高亮該日 */
 function gotoDay(date){
   if (state.layout !== "card") setLayout("card");
   requestAnimationFrame(() => {
@@ -1370,8 +1369,8 @@ async function shareImage(filter){
       const tw = 46;
       rr(ctx, cx, y + 4, tw, 22, 11);
       ctx.fillStyle = accent; ctx.fill();
-      ctx.fillStyle = "#fff"; ctx.font = `700 13px ${SHARE_FONT}`; ctx.textBaseline = "middle";
-      ctx.fillText("今天", cx + tw / 2, y + 15); ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = "#fff"; ctx.font = `700 13px ${SHARE_FONT}`; ctx.textBaseline = "middle"; ctx.textAlign = "center";
+      ctx.fillText("今天", cx + tw / 2, y + 15); ctx.textBaseline = "alphabetic"; ctx.textAlign = "left";
     }
     y += 32;
     ctx.strokeStyle = "#e9e1d4"; ctx.lineWidth = 1;
@@ -1498,7 +1497,7 @@ async function shareTestsImage(){
 
   let yy = pad + 40 + 18 + 14;
   for (const it of items){
-    const passed = it.dt < t0;
+    const passed = it.dt < now;
     const kindColor = it.kind === "exam" ? "#b4692b" : "#a8244a";
     // 日期行：與清單頁一致用「公告日」（ad）；已過加灰標
     ctx.fillStyle = accent; ctx.font = `700 19px ${SHARE_FONT}`;
@@ -1509,8 +1508,8 @@ async function shareTestsImage(){
       const tw = 38, th = 20;
       rr(ctx, cx, yy + 1, tw, th, 10);
       ctx.fillStyle = "#b0a696"; ctx.fill();
-      ctx.fillStyle = "#fff"; ctx.font = `700 12px ${SHARE_FONT}`; ctx.textBaseline = "middle";
-      ctx.fillText("已過", cx + tw / 2, yy + 1 + th / 2); ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = "#fff"; ctx.font = `700 12px ${SHARE_FONT}`; ctx.textBaseline = "middle"; ctx.textAlign = "center";
+      ctx.fillText("已過", cx + tw / 2, yy + 1 + th / 2); ctx.textBaseline = "alphabetic"; ctx.textAlign = "left";
     }
     yy += 32;
     // 內容行：科目（粗體墨色，與清單頁一致，不用色塊）+ 內文（依 測驗/考試 上色）+ 測驗日
@@ -1571,27 +1570,11 @@ function closeSheet(){
    手勢：單指左右滑＝切「作業/測驗/科目」呈現；雙指左右滑＝切班級
    ========================================================= */
 const SWIPE_MIN = 54;
-let sw = null;     // 單指（呈現）
-let sw2 = null;    // 雙指（班級）
-
-/* 強制清掉手勢殘留狀態：切班級（無論點擊或手勢）後呼叫，避免上一個手勢的
-   位移 / dragging / 雙指狀態沒清乾淨，導致下一個手勢失效 */
-function resetSwipe(){
-  sw = null; sw2 = null;
-  const area = document.querySelector("main.wrap");
-  if (area){ area.style.transition = ""; area.style.transform = ""; }
-  document.body.classList.remove("dragging");
-}
+let sw = null;     // 單指（作業/測驗/科目 呈現）
 
 function bindSwipe(){
   const area = document.querySelector("main.wrap");
   const sheetOpen = () => document.querySelector(".sheet-wrap.on");
-
-  /* 攔截瀏覽器雙指縮放手勢（iOS Safari 的 gesturestart / Chrome 也會觸發），
-     確保雙指滑動完全由我們接管，避免切班後瀏覽器仍處於「縮放」手勢態，
-     導致隨後的單指滑動被當成縮放/捲動而失效 */
-  ["gesturestart", "gesturechange", "gestureend"].forEach(ev =>
-    area.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, { passive:false }));
 
   const clearTransform = anim => {
     if (anim){
@@ -1606,38 +1589,12 @@ function bindSwipe(){
   };
 
   area.addEventListener("touchstart", e => {
-    if (sheetOpen()){ sw = null; sw2 = null; return; }
-    if (e.touches.length === 2){
-      sw = null;
-      const a = e.touches[0], b = e.touches[1];
-      sw2 = { x:(a.clientX + b.clientX) / 2, y:(a.clientY + b.clientY) / 2, dx:0, dir:null };
-    }else if (e.touches.length === 1){
-      sw2 = null;
-      const t = e.touches[0];
-      sw = { x:t.clientX, y:t.clientY, dx:0, dir:null };
-    }else{
-      sw = null; sw2 = null;
-    }
+    if (sheetOpen() || e.touches.length !== 1){ sw = null; return; }
+    const t = e.touches[0];
+    sw = { x:t.clientX, y:t.clientY, dx:0, dir:null };
   }, { passive:true });
 
   area.addEventListener("touchmove", e => {
-    // 雙指 → 切班級（一開始就 preventDefault，搶佔手勢，避免瀏覽器啟動雙指縮放而吃掉後續手勢）
-    if (sw2 && e.touches.length >= 2){
-      if (e.cancelable) e.preventDefault();
-      const a = e.touches[0], b = e.touches[1];
-      const cx = (a.clientX + b.clientX) / 2, cy = (a.clientY + b.clientY) / 2;
-      const dx = cx - sw2.x, dy = cy - sw2.y;
-      if (sw2.dir === null){
-        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-        sw2.dir = Math.abs(dx) > Math.abs(dy) * 1.15 ? "x" : "y";
-        if (sw2.dir === "x") document.body.classList.add("dragging");
-      }
-      if (sw2.dir !== "x") return;
-      sw2.dx = dx;
-      area.style.transform = "translateX(" + dx + "px)";
-      return;
-    }
-    // 單指 → 切呈現
     if (!sw || e.touches.length !== 1) return;
     const t = e.touches[0];
     const dx = t.clientX - sw.x, dy = t.clientY - sw.y;
@@ -1652,29 +1609,16 @@ function bindSwipe(){
     area.style.transform = "translateX(" + dx + "px)";
   }, { passive:false });
 
-  const end = e => {
-    if (e.touches && e.touches.length > 0) return;     // 仍有手指未離開，等最後一指才判定（避免雙指先鬆一指就觸發）
-    if (sw2){
-      const dx = sw2.dx, moved = sw2.dir === "x";
-      sw2 = null;
-      if (moved && Math.abs(dx) >= SWIPE_MIN){
-        clearTransform(false);
-        selectClass(state.cls + (dx < 0 ? 1 : -1));   // 向左滑 → 下一班；向右滑 → 上一班
-      }else{
-        clearTransform(true);
-      }
-      return;
-    }
-    if (sw){
-      const dx = sw.dx, moved = sw.dir === "x";
-      sw = null;
-      if (!moved){ document.body.classList.remove("dragging"); return; }
-      if (Math.abs(dx) >= SWIPE_MIN){
-        clearTransform(false);
-        cycleLayout(dx < 0 ? 1 : -1);                 // 單指：向左滑 → 下一個呈現
-      }else{
-        clearTransform(true);
-      }
+  const end = () => {
+    if (!sw) return;
+    const dx = sw.dx, moved = sw.dir === "x";
+    sw = null;
+    if (!moved){ document.body.classList.remove("dragging"); return; }
+    if (Math.abs(dx) >= SWIPE_MIN){
+      clearTransform(false);
+      cycleLayout(dx < 0 ? 1 : -1);                 // 向左滑 → 下一個呈現；向右滑 → 上一個（循環）
+    }else{
+      clearTransform(true);
     }
   };
   area.addEventListener("touchend", end);
@@ -1720,7 +1664,7 @@ function cycleLayout(dir){
     if (rest){ restoreTests(currentCode()); return; }                // 一次還原全部
     const tap = e.target.closest(".cal-tap");
     if (tap){ gotoDay(tap.dataset.date); return; }
-    const b = e.target.closest(".share-day, .share-subj, .share-cal");
+    const b = e.target.closest(".share-day, .share-subj, .share-tests");
     if (!b) return;
     if (b.classList.contains("share-day")) shareImage({ date: b.dataset.date });
     else if (b.classList.contains("share-subj")) shareImage({ subject: b.dataset.subject });
