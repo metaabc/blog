@@ -262,8 +262,9 @@
   .cchip[aria-selected="true"] .cnow{background:#fff;color:var(--c)}
   .cchip.busy{opacity:.65}
 
-  /* 手勢滑動切班 */
-  main.wrap{will-change:transform}
+  /* 手勢滑動切班 / 切呈現：禁止瀏覽器在內文上做水平平移與雙指縮放，
+     讓單指水平滑（切呈現）與雙指滑（切班級）完全由 JS 控制；垂直仍可原生捲動 */
+  main.wrap{will-change:transform;touch-action:pan-y}
   body.dragging{user-select:none;-webkit-user-select:none}
 
   /* ---------- 班級選單（底部彈出） ---------- */
@@ -1616,8 +1617,9 @@ function bindSwipe(){
   }, { passive:true });
 
   area.addEventListener("touchmove", e => {
-    // 雙指 → 切班級
+    // 雙指 → 切班級（一開始就 preventDefault，搶佔手勢，避免瀏覽器啟動雙指縮放而吃掉後續手勢）
     if (sw2 && e.touches.length >= 2){
+      if (e.cancelable) e.preventDefault();
       const a = e.touches[0], b = e.touches[1];
       const cx = (a.clientX + b.clientX) / 2, cy = (a.clientY + b.clientY) / 2;
       const dx = cx - sw2.x, dy = cy - sw2.y;
@@ -1627,7 +1629,6 @@ function bindSwipe(){
         if (sw2.dir === "x") document.body.classList.add("dragging");
       }
       if (sw2.dir !== "x") return;
-      e.preventDefault();
       sw2.dx = dx;
       area.style.transform = "translateX(" + dx + "px)";
       return;
