@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#fffaf3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>小習慣打卡</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --bg1:#fffaf3; --bg2:#fdf0e6;
+  --card:#ffffff;
+  --ink:#3b2530; --ink2:#5f4b55; --muted:#967f89;
+  --line:#f0e2d8; --line2:#f8efe7;
+  --accent:#c23b6a; --accent2:#dc5a8c; --accent-soft:#fdeaf2; --accent-line:#f4c9da;
+  --gold:#e0a63a; --gold-bg:#fdf4dc; --gold-tx:#8a5f10; --gold-line:#efd9a2;
+  --green:#2e8f7e; --green-bg:#e7f5f0; --green-line:#bfe4d9;
+  --gray-bg:#f6f2ec; --gray-tx:#aaa39b;
+  --red:#cf5a4c; --red-bg:#fdecea; --red-line:#f6d4ce;
+}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",system-ui,sans-serif;
+  background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 100%);
+  background-attachment:fixed;color:var(--ink);
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none;
+}
+button,input,select{font-family:inherit}
+button{-webkit-tap-highlight-color:transparent;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:600px;margin:0 auto;padding:0 12px calc(118px + env(safe-area-inset-bottom,0px))}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:30;padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:10px;
+  background:linear-gradient(180deg,var(--bg1) 72%,rgba(255,250,243,0))}
+.h-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;color:var(--ink)}
+.h-stat{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:700;color:var(--muted);white-space:nowrap;letter-spacing:.2px}
+.h-stat b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;margin-left:3px}
+.h-stat .st-a b{color:var(--accent)}
+.h-stat .st-b b{color:var(--gold-tx)}
+.banner{display:none;margin-top:10px;background:var(--red-bg);border:1px solid var(--red-line);color:var(--red);font-size:11.5px;line-height:1.6;border-radius:12px;padding:10px 12px}
+.banner.on{display:block}
+
+/* ---------- common ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 10px rgba(190,120,90,.06);margin-bottom:10px}
+.sec{display:flex;align-items:center;gap:8px;margin:20px 2px 10px}
+.sec h2{margin:0;font-size:13px;font-weight:800;letter-spacing:.6px;color:var(--ink2)}
+.sec .cnt{font-size:11px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 9px}
+.sec .note{margin-left:auto;font-size:10.5px;color:var(--muted)}
+.empty{text-align:center;color:var(--muted);font-size:12.5px;line-height:1.9;padding:26px 14px;border:1px dashed var(--line);border-radius:16px;background:#fffdfb}
+.empty b{color:var(--ink2)}
+.empty .go{display:inline-block;margin-top:12px;padding:11px 18px;border-radius:12px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.24)}
+.ver{margin-top:16px;text-align:center;font-size:10px;color:#c3bcb3;line-height:1.8}
+
+/* ---------- 今日總覽 ---------- */
+.hero{padding:14px;margin-top:10px}
+.hero-date{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.4px;margin-bottom:10px}
+.hero-main{display:flex;align-items:center;gap:14px}
+.ring{width:78px;height:78px;flex:0 0 auto;position:relative}
+.ring svg{width:78px;height:78px;transform:rotate(-90deg)}
+.ring .track{stroke:var(--line2)}
+.ring .fill{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .45s cubic-bezier(.32,.72,0,1)}
+.ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+.ring .pct b{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}
+.ring .pct span{font-size:9px;font-weight:700;color:var(--muted)}
+.hero-txt{min-width:0;flex:1}
+.hero-title{font-size:16px;font-weight:800;letter-spacing:.2px}
+.hero-sub{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:5px;line-height:1.5}
+.hero-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.chip{font-size:10px;font-weight:800;padding:4px 9px;border-radius:99px;background:var(--gold-bg);color:var(--gold-tx);border:1px solid var(--gold-line);white-space:nowrap}
+.chip.g{background:var(--green-bg);color:var(--green);border-color:var(--green-line)}
+.hero-bar{height:7px;border-radius:99px;background:var(--line2);overflow:hidden;margin-top:13px}
+.hero-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--gold));transition:width .45s}
+.hero-done{display:none;margin-top:11px;font-size:11.5px;font-weight:700;color:var(--green);background:var(--green-bg);border:1px solid var(--green-line);border-radius:11px;padding:9px 11px;line-height:1.6}
+.hero-done.on{display:block}
+
+/* ---------- 習慣卡 ---------- */
+.hcard{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;padding:12px;align-items:start;transition:border-color .18s,background .18s}
+.hcard.is-done{border-color:var(--green-line);background:linear-gradient(180deg,#fbfffd,#fff)}
+.hcard.pop{animation:pop .32s cubic-bezier(.32,.72,0,1)}
+@keyframes pop{0%{transform:scale(.985)}55%{transform:scale(1.012)}100%{transform:scale(1)}}
+.hcheck{width:48px;height:48px;border-radius:16px;border:2px solid var(--accent-line);background:#fff;
+  display:flex;align-items:center;justify-content:center;transition:transform .1s,background .18s,border-color .18s}
+.hcheck:active{transform:scale(.92)}
+.hcheck svg{width:24px;height:24px;stroke:#dcc3ce;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.hcard.is-done .hcheck{background:var(--green);border-color:var(--green);box-shadow:0 3px 10px rgba(46,143,126,.22)}
+.hcard.is-done .hcheck svg{stroke:#fff}
+.hcard:not(.is-done) .hcheck svg{display:none}
+.hcard:not(.is-done) .hcheck::after{content:"+";font-size:25px;font-weight:300;line-height:1;color:var(--accent2);opacity:.65}
+.hbody{min-width:0}
+.hrow1{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-right:28px}
+.hemo{font-size:17px;line-height:1}
+.hname{font-size:14.5px;font-weight:800;color:var(--ink);word-break:break-all}
+.hbadge{font-size:9.5px;font-weight:800;color:var(--orange,#b8792f);background:var(--gold-bg);border:1px solid var(--gold-line);border-radius:99px;padding:2px 7px;white-space:nowrap}
+.hbadge.zero{background:var(--gray-bg);color:var(--muted);border-color:transparent}
+.hrow2{font-size:10.5px;font-weight:600;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hrow2 b{color:var(--accent);font-size:12px;font-variant-numeric:tabular-nums}
+.hrow2 .ok{font-size:9.5px;font-weight:800;color:var(--green);background:var(--green-bg);border-radius:99px;padding:2px 7px}
+.hmore{position:absolute;right:7px;top:7px;width:28px;height:28px;border-radius:9px;color:#b9ada5;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center}
+.hmore:hover{background:var(--gray-bg)}
+.d7{display:flex;gap:4px;margin-top:10px}
+.d7 button{flex:1;min-width:0;padding:5px 0 4px;border-radius:9px;background:var(--gray-bg);border:1px solid transparent;
+  display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--gray-tx);transition:transform .08s,background .15s}
+.d7 button:active{transform:scale(.93)}
+.d7 .dw{font-size:9px;font-weight:700;line-height:1.2}
+.d7 .dm{font-size:10px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
+.d7 .dt{font-size:10px;font-weight:800;line-height:1.2;height:11px}
+.d7 button.on{background:var(--green-bg);border-color:var(--green-line);color:var(--green)}
+.d7 button.today{border-color:var(--accent);border-style:dashed}
+.d7 button.na{opacity:.42}
+.d7-tip{font-size:9.5px;color:var(--muted);margin:7px 2px 0;line-height:1.5}
+/* 左右滑動切換分頁 */
+.page.swipe-next{animation:swNext .24s cubic-bezier(.32,.72,0,1)}
+.page.swipe-prev{animation:swPrev .24s cubic-bezier(.32,.72,0,1)}
+@keyframes swNext{from{opacity:.45;transform:translateX(22px)}to{opacity:1;transform:none}}
+@keyframes swPrev{from{opacity:.45;transform:translateX(-22px)}to{opacity:1;transform:none}}
+.share-preview.swipe-next,.share-preview.swipe-prev{animation:swFade .24s ease-out}
+@keyframes swFade{from{opacity:.45}to{opacity:1}}
+
+/* ---------- 回顧 ---------- */
+.stat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 6px;text-align:center;box-shadow:0 2px 10px rgba(190,120,90,.05)}
+.stat b{display:block;font-size:21px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.2}
+.stat b small{font-size:11px;font-weight:700;margin-left:1px}
+.stat span{display:block;font-size:10px;font-weight:700;color:var(--muted);margin-top:5px}
+.panel{padding:14px}
+.panel h3{margin:0 0 3px;font-size:13px;font-weight:800;color:var(--ink2)}
+.panel .sub{font-size:10.5px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.heatwrap{display:flex;gap:6px;align-items:flex-start;justify-content:center}
+.heatlab{display:grid;grid-template-rows:repeat(7,30px);gap:5px;width:14px;flex:0 0 auto;font-size:9px;color:var(--muted);font-weight:700;text-align:center}
+.heatlab span{display:flex;align-items:center;justify-content:center}
+.heatgrid{display:grid;grid-template-rows:repeat(7,30px);grid-auto-flow:column;grid-auto-columns:30px;gap:5px;flex:0 0 auto;min-width:0}
+.heatgrid i{display:block;width:30px;height:30px;border-radius:6px;background:var(--gray-bg);border:1px solid rgba(0,0,0,.02);cursor:pointer}
+.heatgrid i.future{opacity:.3}
+.legend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:10px;font-size:9.5px;color:var(--muted);font-weight:700}
+.legend i{width:12px;height:12px;border-radius:3px;display:block}
+.rrow{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:3px 7px;align-items:center;margin-bottom:11px}
+.rrow:last-child{margin-bottom:2px}
+.rrow .remo{font-size:15px}
+.rrow .rname{font-size:12px;font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rrow .rnum{font-size:10.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.rrow .rbar{grid-column:2/4;height:7px;border-radius:99px;background:var(--line2);overflow:hidden}
+.rrow .rbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+
+/* ---------- 習慣名單 ---------- */
+.add-bar{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:8px}
+.emo-btn{width:40px;height:40px;flex:0 0 auto;border-radius:11px;background:var(--accent-soft);border:1px solid var(--accent-line);font-size:20px;line-height:1}
+.add-bar input{flex:1;min-width:0;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 10px;font-size:14px;font-weight:600;color:var(--ink);outline:none}
+.add-bar input:focus{border-color:var(--accent-line);background:#fff}
+.add-bar select{width:58px;flex:0 0 auto;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 2px;font-size:11px;font-weight:700;color:var(--ink2);outline:none;text-align:center}
+.add-bar .go{flex:0 0 auto;padding:0 13px;height:38px;border-radius:11px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.22)}
+.add-tip{font-size:10px;color:var(--muted);margin:0 3px 10px;line-height:1.6}
+.emo-quick{display:none;flex-wrap:wrap;gap:5px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px;margin-bottom:9px}
+.emo-quick.on{display:flex}
+.emo-quick button{width:34px;height:34px;border-radius:9px;background:var(--gray-bg);font-size:18px;line-height:1}
+.emo-quick button.on{background:var(--accent-soft);border:1px solid var(--accent-line)}
+.hrow{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px 7px;margin-bottom:7px}
+.hrow .he{font-size:17px;width:22px;flex:0 0 auto;text-align:center}
+.hrow input{flex:1;min-width:0;border:1.2px solid transparent;background:transparent;border-radius:9px;padding:8px 7px;font-size:13.5px;font-weight:700;color:var(--ink);outline:none}
+.hrow input:focus{border-color:var(--accent-line);background:#fff}
+.hrow select{flex:0 0 auto;width:52px;border:1.2px solid var(--line);background:#fbfaf8;border-radius:9px;padding:7px 1px;font-size:10.5px;font-weight:700;color:var(--ink2);outline:none;text-align:center}
+.hrow .mv,.hrow .del{flex:0 0 auto;width:26px;height:30px;border-radius:8px;font-size:12px;font-weight:800;color:var(--muted)}
+.hrow .mv{background:var(--gray-bg)}
+.hrow .mv:disabled{opacity:.3}
+.hrow .del{background:var(--red-bg);color:var(--red);font-size:13px}
+
+/* ---------- 底部選單 ---------- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;max-width:600px;margin:0 auto;display:flex;align-items:stretch;justify-content:space-around;
+  background:rgba(255,253,251,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -3px 16px rgba(190,120,90,.09)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:700;color:var(--muted);padding:5px 0;border-radius:12px;min-height:48px}
+.tab svg{width:21px;height:21px;stroke-width:1.9}
+.tab.active{color:var(--accent)}
+
+/* ---------- 面板 / toast ---------- */
+.mask{position:fixed;inset:0;background:rgba(51,61,67,.4);opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+.mask.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:600px;margin:0 auto;background:#fff;border-radius:22px 22px 0 0;
+  padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(115%);transition:transform .26s cubic-bezier(.32,.72,0,1);
+  z-index:55;box-shadow:0 -8px 30px rgba(51,61,67,.15);max-height:86vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sheet.on{transform:translateY(0)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sheet-head h3{margin:0;font-size:15px;font-weight:800}
+.x{width:30px;height:30px;border-radius:10px;background:var(--gray-bg);color:#9aa2a7;font-size:13px;display:flex;align-items:center;justify-content:center}
+.lbl{display:block;font-size:11px;color:var(--muted);font-weight:700;margin:0 0 6px;letter-spacing:.4px}
+.sheet .inp{width:100%;border:1.5px solid var(--line);background:#fbfaf8;border-radius:12px;padding:12px 13px;font-size:16px;font-weight:600;color:var(--ink);outline:none;margin-bottom:12px}
+.sheet .inp:focus{border-color:var(--accent-line);background:#fff}
+.emo-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin:0 0 14px}
+.emo-grid button{aspect-ratio:1;border-radius:10px;background:var(--gray-bg);font-size:18px;line-height:1}
+.emo-grid button.on{background:var(--accent-soft);border:1px solid var(--accent-line)}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line2)}
+.set-row b{display:block;font-size:13.5px}
+.set-row small{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+.set-row select{width:118px;flex:0 0 auto;margin:0;border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;padding:8px;font-size:12.5px;font-weight:700;color:var(--ink);outline:none}
+.set-sec-title{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.6px;margin:18px 2px 8px}
+.set-btn{display:block;width:100%;text-align:left;padding:13px 14px;border-radius:12px;background:#fff;border:1px solid var(--line);color:var(--ink2);font-size:13.5px;font-weight:700;margin-bottom:8px}
+.set-btn.danger{background:var(--red-bg);border-color:var(--red-line);color:var(--red)}
+.set-btn.danger.armed{background:var(--red);border-color:var(--red);color:#fff}
+.set-hint{font-size:11.5px;color:var(--red);line-height:1.7;background:var(--red-bg);border:1px solid var(--red-line);border-radius:12px;padding:10px 12px;margin:-2px 0 10px}
+.help-body{font-size:12px;color:var(--ink2);line-height:1.95;background:var(--gray-bg);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.help-body b{color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);
+  background:rgba(51,61,67,.95);color:#fff;font-size:12.5px;font-weight:600;padding:10px 14px 10px 16px;border-radius:99px;
+  opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:90;display:flex;align-items:center;gap:12px;white-space:nowrap;max-width:92vw}
+.toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast .undo{background:var(--gold);color:#3b2530;padding:5px 12px;border-radius:99px;font-weight:800;font-size:12px}
+
+/* ---------- v2：計次 / 循環 ---------- */
+.hrow2 .cnt{font-size:10.5px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.hlog{margin-left:auto;font-size:9.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--accent-line);border-radius:99px;padding:3px 8px;white-space:nowrap;flex:0 0 auto}
+.hlog:active{transform:scale(.96)}
+.cyc{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:10px;font-weight:800;color:var(--gold-tx);white-space:nowrap}
+.cyc .cyc-bar{flex:1;min-width:36px;height:6px;border-radius:99px;background:var(--gold-bg);overflow:hidden}
+.cyc .cyc-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#ecc774,var(--accent));transition:width .3s}
+.htime{font-size:9.5px;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.5}
+.linkbtn{margin-left:auto;font-size:10.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--accent-line);border-radius:99px;padding:5px 11px;white-space:nowrap}
+.hero-share{display:flex;gap:8px;margin-top:11px}
+.hero-share button{flex:1;padding:10px 6px;border-radius:11px;font-size:11.5px;font-weight:700;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line);transition:transform .08s}
+.hero-share button:active{transform:scale(.98)}
+.hrow .cycin{flex:0 0 auto;width:38px;border:1.2px solid var(--line);background:#fbfaf8;border-radius:9px;
+  padding:7px 1px;font-size:10.5px;font-weight:800;color:var(--ink2);outline:none;text-align:center}
+.hrow .cyc-mark{font-size:11px;color:var(--gold-tx);font-weight:800;flex:0 0 auto}
+
+/* ---------- v2：打卡紀錄面板 ---------- */
+.log-sum{background:var(--gray-bg);border:1px solid var(--line);border-radius:13px;padding:11px 12px;
+  font-size:11.5px;font-weight:700;color:var(--ink2);line-height:1.8;margin-bottom:10px}
+.log-sum b{color:var(--accent);font-size:14px;font-variant-numeric:tabular-nums}
+.log-list{max-height:42vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.logrow{display:flex;align-items:center;gap:9px;padding:8px 2px;border-bottom:1px dashed var(--line2)}
+.logrow .ln{width:56px;flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.logrow .lt{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
+.logrow .lt small{display:block;font-size:9.5px;color:var(--muted);font-weight:600;margin-top:2px}
+.logrow .lx{width:28px;height:28px;flex:0 0 auto;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px}
+
+/* ---------- v2：分享面板 ---------- */
+.share-sw{display:flex;gap:4px;background:var(--gray-bg);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:12px}
+.share-sw button{flex:1;padding:9px 4px;border-radius:9px;font-size:12px;font-weight:800;color:var(--muted)}
+.share-sw button.on{background:#fff;color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.share-preview{background:var(--bg1);border:1px solid var(--line);border-radius:13px;padding:8px;margin-bottom:10px;text-align:center}
+.share-preview img{display:block;width:100%;max-height:44vh;object-fit:contain;border-radius:9px}
+.share-hint{font-size:10.5px;color:var(--muted);line-height:1.7;margin-bottom:10px}
+.share-btns{display:flex;gap:8px;margin-bottom:9px}
+.share-btns button{flex:1;padding:12px 6px;border-radius:12px;font-size:13px;font-weight:800;color:#fff;transition:transform .08s}
+.share-btns button:active{transform:scale(.98)}
+.share-btns .wx{background:#07a85a;box-shadow:0 3px 10px rgba(7,168,90,.22)}
+.share-btns .wa{background:#1fa855;box-shadow:0 3px 10px rgba(31,168,85,.22)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="h-top">
+      <h1>小習慣打卡</h1>
+      <div class="h-stat">
+        <span class="st-a">今日 <b id="sToday">0/0</b></span>
+        <span class="st-b">全勤連續 <b id="sStreak">0</b></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="banner" id="banner">⚠️ 瀏覽器不允許本機儲存，資料只會保留到關閉頁面。建議用 Chrome 開啟本檔。</div>
+
+  <!-- 今日 -->
+  <div class="page" id="pageToday">
+    <section class="card hero">
+      <div class="hero-date" id="heroDate"></div>
+      <div class="hero-main">
+        <div class="ring">
+          <svg viewBox="0 0 78 78" aria-hidden="true">
+            <circle class="track" cx="39" cy="39" r="32" fill="none" stroke-width="8"></circle>
+            <circle class="fill" id="ringFill" cx="39" cy="39" r="32" fill="none" stroke-width="8" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
+          </svg>
+          <div class="pct"><b id="ringPct">0%</b><span>今日</span></div>
+        </div>
+        <div class="hero-txt">
+          <div class="hero-title" id="heroTitle">今日完成 0 / 0</div>
+          <div class="hero-sub" id="heroSub"></div>
+          <div class="hero-chips" id="heroChips"></div>
+        </div>
+      </div>
+      <div class="hero-bar"><i id="heroBar" style="width:0%"></i></div>
+      <div class="hero-done" id="heroDone">🎉 今日全部完成！細細步，慢慢就變成習慣。</div>
+      <div class="hero-share">
+        <button type="button" data-share="today">分享打卡畫面 ↗</button>
+        <button type="button" data-share="list">分享習慣清單圖 ↗</button>
+      </div>
+    </section>
+
+    <div class="sec"><h2>今日打卡</h2><span class="cnt" id="tCnt">0</span><span class="note">撳圓鈕記一次</span></div>
+    <div id="todayList"></div>
+    <div class="d7-tip">圓鈕每撳一次就記一筆（連時間），一日可記多次；下面七格可補打／扣回過去六日，所有改動 5 秒內可「復原」。<br>👉 手指<b>左右滑動</b>可切換「今日／回顧／習慣」。</div>
+  </div>
+
+  <!-- 回顧 -->
+  <div class="page" id="pageReview" style="display:none">
+    <div class="sec"><h2>回顧</h2><span class="note">近 5 週紀錄</span></div>
+    <div class="stat3">
+      <div class="stat"><b id="stTotal">0</b><span>累計打卡</span></div>
+      <div class="stat"><b id="stBest">0<small> 日</small></b><span>最長連續</span></div>
+      <div class="stat"><b id="stRate">0<small>%</small></b><span>30 日完成率</span></div>
+    </div>
+    <div class="card panel">
+      <h3>打卡熱力圖</h3>
+      <div class="sub">顏色愈深，嗰日完成嘅習慣愈多；撳一格睇詳情。</div>
+      <div class="heatwrap">
+        <div class="heatlab" id="heatLab"></div>
+        <div class="heatgrid" id="heatGrid"></div>
+      </div>
+      <div class="legend">少 <i style="background:#f6f2ec"></i><i style="background:#f8d7e5"></i><i style="background:#eda9c4"></i><i style="background:#d76a9a"></i><i style="background:#c23b6a"></i> 多</div>
+    </div>
+    <div class="card panel">
+      <h3>各習慣 · 近 30 日</h3>
+      <div class="sub">由建立日開始計，方便睇邊個習慣最穩陣。</div>
+      <div id="rateList"></div>
+    </div>
+  </div>
+
+  <!-- 習慣名單 -->
+  <div class="page" id="pageHabits" style="display:none">
+    <div class="sec"><h2>新增習慣</h2><span class="note">目標＝每週想做幾次</span></div>
+    <div class="add-bar">
+      <button class="emo-btn" id="newEmoBtn" type="button" title="揀圖示" aria-label="揀圖示">💧</button>
+      <input id="newName" type="text" placeholder="例如：閱讀 10 分鐘" maxlength="24" autocomplete="off">
+      <select id="newGoal" aria-label="每週目標次數"></select>
+      <button class="go" id="addBtn" type="button">新增</button>
+    </div>
+    <div class="emo-quick" id="emoQuick"></div>
+    <div class="add-tip">撳左邊圖示可換一個；名稱、每週目標同「循環次數」之後都可以直接改。</div>
+    <div class="sec"><h2>習慣名單</h2><span class="cnt" id="hCnt">0</span>
+      <button class="linkbtn" type="button" data-share="list">分享清單圖 ↗</button>
+      <span class="note" style="margin-left:0">↑↓ 排序</span>
+    </div>
+    <div id="habitList"></div>
+  </div>
+
+  <div class="ver">單檔離線 · 資料只存本機 · 版本 2026-11-07 v2</div>
+</div>
+
+<!-- 底部選單 -->
+<nav class="tabbar" id="tabbar">
+  <button class="tab active" data-tab="today" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M8 15l2.5 2.5L16 13"/></svg>
+    <span>今日</span>
+  </button>
+  <button class="tab" data-tab="review" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    <span>回顧</span>
+  </button>
+  <button class="tab" data-tab="habits" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+    <span>習慣</span>
+  </button>
+  <button class="tab" data-tab="settings" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 4.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.63.7 1.08 1.51 1.09H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>設定</span>
+  </button>
+</nav>
+
+<div class="mask" id="mask"></div>
+
+<!-- 編輯習慣 -->
+<div class="sheet" id="editSheet">
+  <div class="sheet-head"><h3>編輯習慣</h3><button class="x" data-close type="button">✕</button></div>
+  <label class="lbl" for="edName">名稱</label>
+  <input class="inp" id="edName" type="text" maxlength="24" autocomplete="off">
+  <label class="lbl">圖示</label>
+  <div class="emo-grid" id="edEmoGrid"></div>
+  <label class="lbl" for="edGoal">每週目標</label>
+  <select class="inp" id="edGoal"></select>
+  <label class="lbl" for="edCycle">幾多次後循環（0＝不循環）</label>
+  <input class="inp" id="edCycle" type="number" inputmode="numeric" min="0" max="99" value="0">
+  <div class="set-hint" style="display:block;background:var(--gold-bg);border-color:var(--gold-line);color:var(--gold-tx);margin:-6px 0 12px">
+    設 10 即每打滿 10 次為一輪，之後由 0 重新計；<b>累計次數唔會清零</b>。
+  </div>
+  <div class="set-sec-title">其他</div>
+  <button class="set-btn" id="edOpenLog" type="button">查看每次打卡時間 ⏱</button>
+  <button class="set-btn danger" id="delHabit" type="button">刪除此習慣（同時清除佢嘅打卡紀錄）</button>
+  <button class="set-btn" data-close type="button" style="text-align:center;background:var(--accent);border-color:var(--accent);color:#fff">完成</button>
+</div>
+
+<!-- 設定 -->
+<div class="sheet" id="settingsSheet">
+  <div class="sheet-head"><h3>設定</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="set-row">
+    <div><b>一週開始日</b><small>影響「本週次數」同熱力圖排列</small></div>
+    <select id="weekStart"><option value="1">星期一</option><option value="0">星期日</option></select>
+  </div>
+  <div class="set-row">
+    <div><b>本機儲存</b><small id="storeInfo">localStorage</small></div>
+  </div>
+  <div class="set-sec-title">資料管理</div>
+  <button class="set-btn" id="exportBtn" type="button">匯出備份（JSON 檔）</button>
+  <button class="set-btn" id="importBtn" type="button">匯入備份（覆蓋現有資料）</button>
+  <input id="importFile" type="file" accept="application/json,.json" style="display:none">
+  <button class="set-btn danger" id="clearAllBtn" type="button">清除所有資料</button>
+  <div class="set-hint" id="clearHint" style="display:none"></div>
+  <button class="set-btn" id="helpBtn" type="button">使用說明</button>
+</div>
+
+<!-- 使用說明 -->
+<div class="sheet" id="helpSheet">
+  <div class="sheet-head"><h3>使用說明</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="help-body">
+    1. 到「<b>習慣</b>」新增小習慣，可揀圖示、改名、設<b>每週目標</b>（1–7 次）；第一次用可一鍵加入 3 個入門習慣。<br>
+    2. 「<b>今日</b>」撳左邊圓鈕就記<b>一次打卡（連日期時間）</b>，一日可記多次；卡上顯示<b>累計次數</b>、本輪進度、最近打卡時間同 🔥 連續日數。<br>
+    3. <b>循環次數</b>喺名單「循」欄或「⋯」編輯面板設：例如 10＝每打滿 10 次為一輪，之後由 0 重新計；<b>累計次數唔會清零</b>。填 0 即不循環，只累計。<br>
+    4. 撳卡上「<b>⏱ 紀錄</b>」可睇<b>每次打卡嘅日期時間</b>，逐筆刪除（5 秒內可復原）；補登嘅會標「補登」。<br>
+    5. 卡下面<b>近 7 日格仔</b>：未打嘅日子撳一下補打一筆，已打嘅日子撳一下扣回最後一筆；建立日之前唔可以補打。所有改動 5 秒內都可「<b>復原</b>」。<br>
+    6. 「<b>回顧</b>」有累計打卡、最長連續、30 日完成率、<b>近 5 週熱力圖</b>；每日完成率按「當日有冇打過卡」計，同次數多少無關。<br>
+    7. <b>分享</b>：今日頁上方兩個按鈕會畫出「打卡畫面」或「習慣清單」PNG；撳<b>微信／WhatsApp</b>叫起系統分享選單再揀 App，瀏覽器唔支援就直接<b>存圖</b>，亦可長按預覽圖儲存或複製文字摘要。<br>
+    8. 「<b>設定</b>」可改一週開始日、<b>匯出／匯入 JSON 備份</b>；清除所有資料要按兩次確定，清除後 5 秒內仍可復原。舊版備份會自動升級，打卡紀錄唔會唔見。<br>
+    9. <b>私隱</b>：習慣、次數同打卡時間只存喺呢部機，<b>永不上傳</b>，冇網絡都用得；分享圖片係即時喺本機畫出嚟，只有你撳分享先會傳出去。<br>
+    10. 建議用 Chrome 開啟本檔或「加到主畫面」當 App 用；跨日會自動更新，唔使重新載入。<br>
+    11. 手指<b>左右滑動</b>可喺「今日／回顧／習慣」之間切換；分享面板入面左右滑就切換兩張圖，滑完唔會誤觸按鈕。
+  </div>
+</div>
+
+<!-- v2：逐筆打卡紀錄 -->
+<div class="sheet" id="logSheet">
+  <div class="sheet-head"><h3 id="logTitle">打卡紀錄</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="log-sum" id="logSum"></div>
+  <div class="log-list" id="logList"></div>
+  <button class="set-btn" id="logCopy" type="button">複製打卡時間清單</button>
+  <button class="set-btn" data-close type="button" style="text-align:center;background:var(--accent);border-color:var(--accent);color:#fff">完成</button>
+</div>
+
+<!-- v2：分享圖片 -->
+<div class="sheet" id="shareSheet">
+  <div class="sheet-head"><h3>分享</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="share-sw">
+    <button type="button" data-sk="today" class="on">今日打卡畫面</button>
+    <button type="button" data-sk="list">習慣清單圖</button>
+  </div>
+  <div class="share-preview"><img id="shareImg" alt="分享圖片預覽"></div>
+  <div class="share-hint">撳下面按鈕會叫起<b>系統分享選單</b>，喺入面揀微信／WhatsApp 就得；瀏覽器唔支援就直接幫你存圖。亦可<b>長按預覽圖</b>儲存後傳送。</div>
+  <div class="share-btns">
+    <button class="wx" id="shareWechat" type="button">微信 WeChat</button>
+    <button class="wa" id="shareWhatsapp" type="button">WhatsApp</button>
+  </div>
+  <button class="set-btn" id="shareSave" type="button">儲存圖片到裝置</button>
+  <button class="set-btn" id="shareText" type="button">複製文字摘要</button>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span><button class="undo" id="toastUndo" style="display:none">復原</button></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var KEY='habit_checkin_v1';
+var EMOJIS=['💧','📖','🏃','🧘','🌅','🥗','✍️','🛌','🎧','🚶','🧹','💊','☕','🌱','🦷','📵','🎨','🧠','🚭','🍎','🙏','🪴','🏋️','⏰'];
+var DW=['日','一','二','三','四','五','六'];
+var CHEERS=['好叻，繼續落去 💪','又完成一個 ✨','持之以恆就係咁嚟 🌱','今日都有做到 👍','慢慢嚟，最緊要持續 🙂'];
+var SHEETS=['editSheet','settingsSheet','helpSheet','logSheet','shareSheet'];
+/* habits: {id,name,emoji,goal,cycle,created}
+   logs  : { 'YYYY-MM-DD': [{k,id,t,back?}] }  ← 每筆打卡一個事件，t 為打卡時間 */
+var state={habits:[],logs:{},settings:{weekStart:1}};
+var curTab='today', storageOK=true, editId=null, logId=null, newEmo='💧', toastTimer=null, undoFn=null;
+var shareKind='today', shareBlob=null, shareUrl=null, shareName='';
+var clearArmed=false, clearTimer=null, lastToday=today();
+
+/* ============ 日期工具 ============ */
+function isoOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function today(){return isoOf(new Date());}
+function pd(s){return new Date(s+'T00:00:00');}
+function addDays(s,n){var d=pd(s);d.setDate(d.getDate()+n);return isoOf(d);}
+function diffDays(a,b){return Math.round((pd(a)-pd(b))/86400000);}
+function dow(s){return pd(s).getDay();}
+function weekFirst(s){var ws=state.settings.weekStart;var off=ws===1?(dow(s)+6)%7:dow(s);return addDays(s,-off);}
+function fmtMD(s){return (+s.slice(5,7))+'/'+(+s.slice(8,10));}
+function fmtDate(s){var t=pd(s);return (t.getMonth()+1)+' 月 '+t.getDate()+' 日 · 星期'+DW[dow(s)];}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+
+/* ============ 資料 ============ */
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return false;}}
+function emptyState(){return {habits:[],logs:{},settings:{weekStart:1}};}
+function normalize(raw){
+  var s=emptyState();
+  if(!raw||typeof raw!=='object')return s;
+  var hs=Array.isArray(raw.habits)?raw.habits:[];
+  s.habits=hs.slice(0,60).map(function(h){
+    if(!h||typeof h!=='object')return null;
+    var g=parseInt(h.goal,10);if(!isFinite(g)||g<1||g>7)g=7;
+    var cy=parseInt(h.cycle,10);if(!isFinite(cy)||cy<0||cy>99)cy=0;
+    var cr=(/^\d{4}-\d{2}-\d{2}$/.test(h.created)?h.created:today());
+    return {id:String(h.id||uid()),name:String(h.name||'新習慣').trim().slice(0,24)||'新習慣',
+      emoji:String(h.emoji||'🌱').slice(0,4),goal:g,cycle:cy,created:cr};
+  }).filter(Boolean);
+  var ids={};s.habits.forEach(function(h){ids[h.id]=1;});
+  var lg=(raw.logs&&typeof raw.logs==='object'&&!Array.isArray(raw.logs))?raw.logs:{};
+  Object.keys(lg).forEach(function(k){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(k)||!Array.isArray(lg[k]))return;
+    var noon=pd(k).getTime()+12*3600000;
+    var arr=lg[k].map(function(x){
+      /* 舊版：日期 -> ['h1','h2']，升級成逐筆事件 */
+      if(typeof x==='string')return {k:uid(),id:x,t:noon,legacy:true};
+      if(x&&typeof x==='object'&&typeof x.id==='string'){
+        var tt=+x.t;if(!isFinite(tt))tt=noon;
+        return {k:String(x.k||uid()),id:x.id,t:tt,back:!!x.back,legacy:!!x.legacy};
+      }
+      return null;
+    }).filter(function(e){return e&&ids[e.id];});
+    if(arr.length)s.logs[k]=arr;
+  });
+  if(raw.settings&&+raw.settings.weekStart===0)s.settings.weekStart=0;
+  return s;
+}
+function load(){
+  try{
+    var raw=lsGet(KEY);
+    state=normalize(raw?JSON.parse(raw):null);
+  }catch(e){state=emptyState();}
+  if(lsSet('habit_checkin_probe','1')===false){storageOK=false;$('banner').classList.add('on');}
+}
+function save(){
+  if(!lsSet(KEY,JSON.stringify(state))){
+    storageOK=false;$('banner').classList.add('on');
+  }
+}
+function findH(id){return state.habits.find(function(h){return h.id===id;})||null;}
+/* 每日「完成」只睇有冇打過卡；同一日打幾多次都當完成一次 */
+function has(id,iso){return (state.logs[iso]||[]).some(function(e){return e.id===id;});}
+function countOn(id,iso){return (state.logs[iso]||[]).filter(function(e){return e.id===id;}).length;}
+function habitsOn(iso){return state.habits.filter(function(h){return diffDays(iso,h.created)>=0;});}
+function doneOn(iso){var hs=habitsOn(iso);return hs.filter(function(h){return has(h.id,iso);}).length;}
+function totalChecks(){
+  var n=0;Object.keys(state.logs).forEach(function(k){n+=state.logs[k].length;});return n;
+}
+/* ============ 逐筆事件 / 循環輪次 ============ */
+function entriesOf(id){
+  var a=[];
+  Object.keys(state.logs).forEach(function(k){
+    state.logs[k].forEach(function(e){
+      if(e.id===id)a.push({k:e.k,id:e.id,t:e.t,back:!!e.back,legacy:!!e.legacy,iso:k});
+    });
+  });
+  a.sort(function(x,y){return x.t-y.t||(x.iso<y.iso?-1:(x.iso>y.iso?1:0));});
+  return a;
+}
+function totalCount(id){return entriesOf(id).length;}
+function cycleInfo(h){
+  var n=totalCount(h.id),c=h.cycle||0;
+  if(!c)return {total:n,cycle:0,round:0,inRound:0,done:0,p:0};
+  var done=Math.floor(n/c);
+  return {total:n,cycle:c,round:done+1,inRound:n%c,done:done,p:(n%c)/c};
+}
+function lastEntry(id){var a=entriesOf(id);return a.length?a[a.length-1]:null;}
+function fmtClock(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+/* 補登：顯示「補打嗰日 · 實際補登時間」，唔會扮成當日現場打卡 */
+function fmtStamp(e){
+  if(e.back)return fmtMD(e.iso)+' · '+fmtMD(isoOf(new Date(e.t)))+' '+fmtClock(e.t)+' 補登';
+  return fmtMD(e.iso)+' '+fmtClock(e.t);
+}
+function addEntry(id,iso,back){
+  var e={k:uid(),id:id,t:Date.now(),back:!!back};
+  if(!state.logs[iso])state.logs[iso]=[];
+  state.logs[iso].push(e);save();return e;
+}
+function restoreEntry(iso,e){
+  if(!state.logs[iso])state.logs[iso]=[];
+  state.logs[iso].push(e);
+  state.logs[iso].sort(function(a,b){return a.t-b.t;});
+  save();
+}
+function removeEntry(k){
+  var days=Object.keys(state.logs);
+  for(var i=0;i<days.length;i++){
+    var iso=days[i],arr=state.logs[iso],j;
+    for(j=0;j<arr.length;j++){
+      if(arr[j].k===k){
+        var e=arr[j];arr.splice(j,1);
+        if(arr.length)state.logs[iso]=arr;else delete state.logs[iso];
+        save();return {iso:iso,entry:e};
+      }
+    }
+  }
+  return null;
+}
+function removeLast(id,iso){
+  var arr=state.logs[iso]||[],i;
+  for(i=arr.length-1;i>=0;i--){if(arr[i].id===id)break;}
+  if(i<0)return null;
+  var e=arr[i];arr.splice(i,1);
+  if(arr.length)state.logs[iso]=arr;else delete state.logs[iso];
+  save();return {iso:iso,entry:e};
+}
+function streak(h){
+  var t=today(),cur=has(h.id,t)?t:addDays(t,-1),n=0;
+  for(var i=0;i<400;i++){
+    if(diffDays(cur,h.created)<0||!has(h.id,cur))break;
+    n++;cur=addDays(cur,-1);
+  }
+  return n;
+}
+function bestStreak(h){
+  var days=Object.keys(state.logs).filter(function(k){return has(h.id,k)&&diffDays(k,h.created)>=0;}).sort();
+  var best=0,run=0,prev=null;
+  days.forEach(function(k){
+    run=(prev&&diffDays(k,prev)===1)?run+1:1;
+    if(run>best)best=run;prev=k;
+  });
+  return best;
+}
+function allDoneStreak(){
+  var t=today(),cur=(habitsOn(t).length&&doneOn(t)===habitsOn(t).length)?t:addDays(t,-1),n=0;
+  for(var i=0;i<400;i++){
+    var hs=habitsOn(cur);
+    if(!hs.length||doneOn(cur)!==hs.length)break;
+    n++;cur=addDays(cur,-1);
+  }
+  return n;
+}
+function weekCount(h){var f=weekFirst(today()),n=0;for(var i=0;i<7;i++){if(has(h.id,addDays(f,i)))n++;}return n;}
+
+/* ============ toast / 面板 ============ */
+function toast(msg,undo){
+  clearTimeout(toastTimer);
+  $('toastMsg').textContent=msg;
+  if(undo){undoFn=undo;$('toastUndo').style.display='inline-block';}
+  else{undoFn=null;$('toastUndo').style.display='none';}
+  $('toast').classList.add('on');
+  toastTimer=setTimeout(function(){$('toast').classList.remove('on');undoFn=null;},undo?5000:2300);
+}
+function openSheet(id){SHEETS.forEach(function(s){$(s).classList.toggle('on',s===id);});$('mask').classList.add('on');}
+function closeSheet(){SHEETS.forEach(function(s){$(s).classList.remove('on');});$('mask').classList.remove('on');disarmClear();editId=null;logId=null;}
+function goalOptions(cur,short){
+  var h='';for(var i=1;i<=7;i++){h+='<option value="'+i+'"'+(i===+cur?' selected':'')+'>'+i+' 次'+(short?'':' / 週')+'</option>';}return h;
+}
+function emoGrid(el,cur,onPick){
+  el.innerHTML=EMOJIS.map(function(e){return '<button type="button" data-emo="'+esc(e)+'" class="'+(e===cur?'on':'')+'">'+esc(e)+'</button>';}).join('');
+  el.onclick=function(ev){var b=ev.target.closest('[data-emo]');if(!b)return;onPick(b.getAttribute('data-emo'));};
+}
+
+/* ============ 渲染：今日 ============ */
+function renderHero(){
+  var t=today(),hs=habitsOn(t),tot=hs.length,done=doneOn(t),p=tot?done/tot:0;
+  $('heroDate').textContent=fmtDate(t);
+  $('ringFill').setAttribute('stroke-dashoffset',String(201.06*(1-p)));
+  $('ringPct').textContent=Math.round(p*100)+'%';
+  $('heroTitle').textContent='今日完成 '+done+' / '+tot;
+  $('heroSub').textContent=!tot?'先加一個小習慣，由今日開始 🌱':(done===tot?'全部完成，好好獎勵自己 🎉':'仲差 '+(tot-done)+' 個就全達陣');
+  $('heroBar').style.width=(p*100)+'%';
+  $('heroDone').classList.toggle('on',tot>0&&done===tot);
+  var wk=0,wt=0;
+  state.habits.forEach(function(h){wk+=Math.min(weekCount(h),h.goal);wt+=h.goal;});
+  $('heroChips').innerHTML='<span class="chip g">🔥 全勤連續 '+allDoneStreak()+' 日</span>'
+    +'<span class="chip">本週 '+wk+' / '+wt+' 次</span>';
+  $('sToday').textContent=done+'/'+tot;
+  $('sStreak').textContent=allDoneStreak();
+}
+function renderToday(){
+  var t=today(),hs=state.habits;
+  $('tCnt').textContent=hs.length;
+  if(!hs.length){
+    $('todayList').innerHTML='<div class="empty">仲未有小習慣 👆<br>由一件好細、好容易做到嘅事開始<br>'
+      +'<button class="go" id="starterBtn" type="button">一鍵加入 3 個入門習慣</button></div>';
+    return;
+  }
+  var h='';
+  hs.forEach(function(x){
+    var id=esc(x.id),on=has(x.id,t),st=streak(x),wc=weekCount(x),ok=wc>=x.goal;
+    var ci=cycleInfo(x),le=lastEntry(x.id);
+    var days='';
+    for(var i=6;i>=0;i--){
+      var iso=addDays(t,-i),n=countOn(x.id,iso),na=diffDays(iso,x.created)<0;
+      days+='<button type="button" data-day="'+iso+'" data-hid="'+id+'"'
+        +' class="'+(n?'on ':'')+(i===0?'today ':'')+(na?'na':'')+'"'
+        +(na?' disabled':'')+' title="'+fmtMD(iso)+(n?(' 已打卡 '+n+' 次 · 撳一下扣回一筆'):' 未打卡 · 撳一下補打')+'">'
+        +'<span class="dw">'+DW[dow(iso)]+'</span><span class="dm">'+(+iso.slice(8,10))+'</span>'
+        +'<span class="dt">'+(n>1?'×'+n:(n?'✓':'·'))+'</span></button>';
+    }
+    var cyc=ci.cycle
+      ? '<div class="cyc"><span>循環 第 '+ci.round+' 輪 · '+ci.inRound+' / '+ci.cycle+' 次</span>'
+        +'<span class="cyc-bar"><i style="width:'+(ci.p*100)+'%"></i></span></div>'
+      : '';
+    h+='<div class="card hcard'+(on?' is-done':'')+'" data-card="'+id+'">'
+      +'<button class="hcheck" data-check="'+id+'" type="button" aria-label="記一次打卡">'
+        +'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>'
+      +'<div class="hbody">'
+        +'<div class="hrow1"><span class="hemo">'+esc(x.emoji)+'</span><span class="hname">'+esc(x.name)+'</span>'
+          +'<span class="hbadge'+(st?'':' zero')+'">'+(st?'🔥 '+st+' 日':'由今日開始')+'</span></div>'
+        +'<div class="hrow2">本週 <b>'+wc+'</b> / '+x.goal+' 次'+(ok?' <span class="ok">本週達標</span>':'')
+          +'<span class="cnt">累計 '+ci.total+' 次</span>'
+          +'<button class="hlog" data-log="'+id+'" type="button">⏱ 紀錄</button></div>'
+        +cyc
+        +'<div class="htime">'+(le?'最近 '+fmtStamp(le):'仲未打過卡 · 撳左邊圓鈕開始')+'</div>'
+        +'<div class="d7">'+days+'</div>'
+      +'</div>'
+      +'<button class="hmore" data-edit="'+id+'" type="button" aria-label="編輯習慣">⋯</button>'
+    +'</div>';
+  });
+  $('todayList').innerHTML=h;
+}
+
+/* ============ 渲染：回顧 ============ */
+function heatColor(r){
+  if(r===null||r<=0)return '#f6f2ec';
+  if(r<0.34)return '#f8d7e5';
+  if(r<0.67)return '#eda9c4';
+  if(r<1)return '#d76a9a';
+  return '#c23b6a';
+}
+function renderReview(){
+  var t=today(),best=0;
+  state.habits.forEach(function(h){var b=bestStreak(h);if(b>best)best=b;});
+  $('stTotal').textContent=totalChecks();
+  $('stBest').innerHTML=best+'<small> 日</small>';
+  var num=0,den=0;
+  for(var i=29;i>=0;i--){var iso=addDays(t,-i),hs=habitsOn(iso);if(!hs.length)continue;num+=doneOn(iso);den+=hs.length;}
+  var rate=den?Math.round(num/den*100):0;
+  $('stRate').innerHTML=rate+'<small>%</small>';
+
+  var ws=state.settings.weekStart;
+  var labels=ws===1?['一','二','三','四','五','六','日']:['日','一','二','三','四','五','六'];
+  $('heatLab').innerHTML=labels.map(function(x){return '<span>'+x+'</span>';}).join('');
+  var start=addDays(weekFirst(t),-28),cells='';
+  for(var j=0;j<35;j++){
+    var k=addDays(start,j),hs2=habitsOn(k),d=doneOn(k);
+    var r=(diffDays(k,t)>0||!hs2.length)?null:d/hs2.length;
+    cells+='<i data-heat="'+k+'" style="background:'+heatColor(r)+'" class="'+(diffDays(k,t)>0?'future':'')+'" title="'+fmtMD(k)+' · '+(r===null?'未有紀錄':(d+' / '+hs2.length))+'"></i>';
+  }
+  $('heatGrid').innerHTML=cells;
+
+  if(!state.habits.length){$('rateList').innerHTML='<div class="empty" style="padding:16px">未有習慣，暫時冇得統計</div>';return;}
+  $('rateList').innerHTML=state.habits.map(function(h){
+    var c=0,base=0;
+    for(var i=29;i>=0;i--){var k=addDays(t,-i);if(diffDays(k,h.created)<0)continue;base++;if(has(h.id,k))c++;}
+    var p=base?Math.round(c/base*100):0;
+    return '<div class="rrow"><span class="remo">'+esc(h.emoji)+'</span>'
+      +'<span class="rname">'+esc(h.name)+'</span><span class="rnum">'+c+' / '+base+' 日 · '+p+'%</span>'
+      +'<div class="rbar"><i style="width:'+p+'%"></i></div></div>';
+  }).join('');
+}
+
+/* ============ 渲染：習慣名單 ============ */
+function renderHabits(){
+  $('hCnt').textContent=state.habits.length;
+  if(!state.habits.length){
+    $('habitList').innerHTML='<div class="empty">仲未有習慣<br>上方輸入名稱，撳「<b>新增</b>」就得<br>'
+      +'<button class="go" id="starterBtn2" type="button">一鍵加入 3 個入門習慣</button></div>';
+    return;
+  }
+  $('habitList').innerHTML=state.habits.map(function(h,i){
+    return '<div class="hrow">'
+      +'<span class="he">'+esc(h.emoji)+'</span>'
+      +'<input data-hname="'+esc(h.id)+'" value="'+esc(h.name)+'" maxlength="24" aria-label="修改習慣名稱">'
+      +'<select data-hgoal="'+esc(h.id)+'" aria-label="每週目標">'+goalOptions(h.goal,true)+'</select>'
+      +'<span class="cyc-mark" title="每幾次循環（0＝不循環）">循</span>'
+      +'<input class="cycin" data-hcycle="'+esc(h.id)+'" type="number" inputmode="numeric" min="0" max="99" value="'+h.cycle+'" aria-label="循環次數，0 表示不循環">'
+      +'<button class="mv" data-mv="'+esc(h.id)+'" data-dir="-1" type="button" '+(i===0?'disabled':'')+' aria-label="上移">↑</button>'
+      +'<button class="mv" data-mv="'+esc(h.id)+'" data-dir="1" type="button" '+(i===state.habits.length-1?'disabled':'')+' aria-label="下移">↓</button>'
+      +'<button class="del" data-hdel="'+esc(h.id)+'" type="button" aria-label="刪除習慣">✕</button>'
+    +'</div>';
+  }).join('');
+}
+function renderAll(){
+  renderHero();renderToday();renderReview();
+  var ae=document.activeElement;
+  if(!(ae&&ae.closest&&ae.closest('#habitList')))renderHabits();
+  if(logId&&$('logSheet').classList.contains('on'))renderLog();
+  $('storeInfo').textContent=(storageOK?'localStorage':'記憶體（本機儲存被封鎖）')+' · '+state.habits.length+' 個習慣 · '+totalChecks()+' 次打卡';
+}
+
+/* ============ 動作 ============ */
+function popCard(id){
+  var card=document.querySelector('[data-card="'+id+'"]');
+  if(!card)return;
+  card.classList.remove('pop');void card.offsetWidth;card.classList.add('pop');
+  setTimeout(function(){card.classList.remove('pop');},340);
+}
+/* 撳一次＝新增一筆打卡事件（連時間）；一日可記多次 */
+function punch(id,iso,back){
+  var h=findH(id);if(!h)return;
+  if(diffDays(iso,today())>0)return;
+  if(diffDays(iso,h.created)<0){toast('呢日仲未建立「'+h.name+'」');return;}
+  var before=cycleInfo(h),first=(iso===today()&&countOn(id,iso)===0);
+  var e=addEntry(id,iso,back),after=cycleInfo(h);
+  renderAll();popCard(id);
+  var t=today(),hs=habitsOn(t),all=hs.length>0&&doneOn(t)===hs.length;
+  var msg;
+  if(after.cycle&&after.done>before.done)msg='🎉 第 '+after.done+' 輪完成！累計 '+after.total+' 次';
+  else if(back)msg='已補打 '+fmtMD(iso)+' · 累計 '+after.total+' 次';
+  else if(first&&all)msg='🎉 今日全部完成，好叻！';
+  else if(first)msg=CHEERS[doneOn(t)%CHEERS.length];
+  else msg='+1 次 · 累計 '+after.total+' 次';
+  toast(msg,function(){removeEntry(e.k);renderAll();toast('已復原');});
+}
+/* 7 日格撳已打卡嘅日子＝扣回該日最後一筆 */
+function unpunch(id,iso){
+  var h=findH(id);if(!h)return;
+  var r=removeLast(id,iso);if(!r)return;
+  renderAll();popCard(id);
+  toast('已扣回 '+fmtMD(iso)+' 一筆 · 累計 '+cycleInfo(h).total+' 次',function(){
+    restoreEntry(r.iso,r.entry);renderAll();toast('已復原');
+  });
+}
+/* 紀錄面板逐筆刪除 */
+function delLogEntry(k){
+  var r=removeEntry(k);if(!r)return;
+  renderAll();
+  toast('已刪除一筆打卡時間',function(){restoreEntry(r.iso,r.entry);renderAll();toast('已復原');});
+}
+function openLog(id){
+  var h=findH(id);if(!h)return;
+  logId=id;renderLog();openSheet('logSheet');
+}
+function renderLog(){
+  var h=findH(logId);if(!h)return;
+  var a=entriesOf(logId),ci=cycleInfo(h);
+  $('logTitle').textContent='打卡紀錄 · '+h.name;
+  $('logSum').innerHTML='累計 <b>'+ci.total+'</b> 次'
+    +(ci.cycle?' · 第 '+ci.round+' 輪 '+ci.inRound+' / '+ci.cycle+' 次（完成 '+ci.done+' 輪）':' · 不循環')
+    +'<br>每筆都有日期時間，刪除後 5 秒內可復原。';
+  if(!a.length){$('logList').innerHTML='<div class="empty" style="padding:16px">仲未打過卡</div>';return;}
+  var rev=a.slice().reverse();
+  $('logList').innerHTML=rev.slice(0,100).map(function(e,i){
+    return '<div class="logrow"><span class="ln">第 '+(a.length-i)+' 次</span>'
+      +'<span class="lt">'+fmtStamp(e)+'</span>'
+      +'<button class="lx" data-delentry="'+esc(e.k)+'" type="button" aria-label="刪除此筆">✕</button></div>';
+  }).join('');
+}
+function logText(){
+  var h=findH(logId);if(!h)return '';
+  var a=entriesOf(logId),ci=cycleInfo(h);
+  var lines=['打卡紀錄 · '+h.name,'累計 '+ci.total+' 次'+(ci.cycle?' · 第 '+ci.round+' 輪 '+ci.inRound+'/'+ci.cycle:''),''];
+  a.slice().reverse().forEach(function(e,i){
+    lines.push('第 '+(a.length-i)+' 次  '+fmtStamp(e));
+  });
+  return lines.join('\n');
+}
+function addHabit(name,emoji,goal,cycle){
+  name=String(name||'').trim();if(!name){toast('請輸入習慣名稱');return false;}
+  var cy=parseInt(cycle,10);if(!isFinite(cy)||cy<0||cy>99)cy=0;
+  var h={id:uid(),name:name.slice(0,24),emoji:emoji||'🌱',goal:goal||7,cycle:cy,created:today()};
+  state.habits.push(h);save();renderAll();toast('已新增「'+h.name+'」');return true;
+}
+function addStarter(){
+  var arr=[['飲 8 杯水','💧',7,0],['閱讀 10 分鐘','📖',7,10],['伸展 5 分鐘','🧘',5,0]];
+  arr.forEach(function(a){state.habits.push({id:uid(),name:a[0],emoji:a[1],goal:a[2],cycle:a[3],created:today()});});
+  save();renderAll();toast('已加入 3 個入門習慣（閱讀設咗 10 次一輪）');
+}
+function openEdit(id){
+  var h=findH(id);if(!h)return;
+  editId=id;
+  $('edName').value=h.name;
+  $('edGoal').innerHTML=goalOptions(h.goal);
+  $('edCycle').value=h.cycle;
+  openEmoEdit(h);
+  openSheet('editSheet');
+}
+function openEmoEdit(h){
+  emoGrid($('edEmoGrid'),h.emoji,function(e){var x=findH(editId);if(!x)return;x.emoji=e;save();renderAll();openEmoEdit(x);});
+}
+function deleteHabit(id){
+  var h=findH(id);if(!h)return;
+  if(!confirm('刪除「'+h.name+'」？佢嘅打卡紀錄都會一齊清除，無法復原。'))return;
+  state.habits=state.habits.filter(function(x){return x.id!==id;});
+  Object.keys(state.logs).forEach(function(k){
+    var a=state.logs[k].filter(function(e){return e.id!==id;});
+    if(a.length)state.logs[k]=a;else delete state.logs[k];
+  });
+  save();closeSheet();renderAll();toast('已刪除「'+h.name+'」');
+}
+function moveHabit(id,dir){
+  var i=state.habits.findIndex(function(h){return h.id===id;});if(i<0)return;
+  var j=i+dir;if(j<0||j>=state.habits.length)return;
+  var tmp=state.habits[i];state.habits[i]=state.habits[j];state.habits[j]=tmp;
+  save();renderAll();
+}
+function setTab(tab,dir){
+  if(['today','review','habits'].indexOf(tab)<0)tab='today';
+  var changed=(curTab!==tab);
+  curTab=tab;
+  document.querySelectorAll('.tab[data-tab]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===tab);});
+  ['today','review','habits'].forEach(function(k){
+    var p=$('page'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(p)p.style.display=(k===tab)?'':'none';
+  });
+  if(dir&&changed){
+    var cur=$('page'+tab.charAt(0).toUpperCase()+tab.slice(1));
+    if(cur){
+      cur.classList.remove('swipe-next','swipe-prev');void cur.offsetWidth;
+      cur.classList.add(dir>0?'swipe-next':'swipe-prev');
+      setTimeout(function(){cur.classList.remove('swipe-next','swipe-prev');},260);
+    }
+  }
+  try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){try{window.scrollTo(0,0);}catch(e2){}}
+}
+
+/* ============ 匯出／匯入／清除 ============ */
+function exportData(){
+  var payload={app:'habit-checkin',version:2,exportedAt:new Date().toISOString(),state:state};
+  try{
+    var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    var url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='習慣打卡-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},1500);
+    toast('已匯出備份檔');
+  }catch(e){toast('匯出失敗，請改用 Chrome');}
+}
+function importData(file){
+  var fr=new FileReader();
+  fr.onload=function(){
+    var obj;
+    try{obj=JSON.parse(fr.result);}catch(e){toast('檔案唔係有效 JSON');return;}
+    var s=normalize(obj&&obj.state?obj.state:obj);
+    if(!s.habits.length&&!Object.keys(s.logs).length){toast('檔案入面冇習慣資料');return;}
+    if(!confirm('匯入會覆蓋現有 '+state.habits.length+' 個習慣同所有打卡紀錄，確定？'))return;
+    state=s;save();closeSheet();renderAll();toast('已匯入 '+state.habits.length+' 個習慣');
+  };
+  fr.onerror=function(){toast('讀取檔案失敗');};
+  fr.readAsText(file);
+}
+function disarmClear(){
+  clearArmed=false;clearTimeout(clearTimer);
+  var b=$('clearAllBtn');if(b){b.textContent='清除所有資料';b.classList.remove('armed');}
+  $('clearHint').style.display='none';
+}
+function armClear(){
+  if(!state.habits.length&&!totalChecks()){toast('目前冇任何資料');return;}
+  clearArmed=true;
+  $('clearAllBtn').textContent='再按一次確定清除';
+  $('clearAllBtn').classList.add('armed');
+  $('clearHint').textContent='⚠️ 會清除全部習慣同打卡紀錄。建議先「匯出備份」。';
+  $('clearHint').style.display='block';
+  clearTimer=setTimeout(disarmClear,6000);
+}
+function clearAll(){
+  var old=JSON.parse(JSON.stringify(state));
+  state=emptyState();save();disarmClear();renderAll();
+  closeSheet();
+  toast('已清除所有資料',function(){state=old;save();renderAll();toast('已復原');});
+}
+
+/* ============ v2：分享圖片（全部喺本機 canvas 畫，絕不上傳） ============ */
+var SH_FONT='-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif';
+function rr(c,x,y,w,h,r){
+  c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath();
+}
+function shText(c,s,x,y,size,color,weight,align,maxW){
+  c.fillStyle=color;c.textAlign=align||'left';c.textBaseline='middle';
+  c.font=(weight||700)+' '+size+'px '+SH_FONT;
+  var t=String(s);
+  if(maxW&&c.measureText(t).width>maxW){
+    while(t.length>1&&c.measureText(t+'…').width>maxW)t=t.slice(0,-1);
+    t+='…';
+  }
+  c.fillText(t,x,y);
+}
+function shEmoji(c,s,x,y,size){
+  c.font=size+'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
+  c.textAlign='left';c.textBaseline='middle';c.fillStyle='#3b2530';c.fillText(s,x,y);
+}
+function drawShare(kind){
+  var W=720,P=36,CW=W-P*2,n=state.habits.length;
+  var rowH=kind==='list'?92:112,top=kind==='list'?170:196;
+  var H=top+Math.max(n,1)*rowH+96;
+  var cv=document.createElement('canvas');cv.width=W*2;cv.height=H*2;
+  var c=cv.getContext('2d');c.scale(2,2);
+  var g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#fffaf3');g.addColorStop(1,'#fdf0e6');
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+  shText(c,'小習慣打卡 · HABIT CHECK-IN',P,40,17,'#967f89',700);
+  var t=today(),hs=habitsOn(t),done=doneOn(t),tot=hs.length;
+  if(kind==='today'){
+    shText(c,fmtDate(t),P,86,34,'#3b2530',800,'left',CW-150);
+    var cx=W-P-46,cy=84,r=34,p=tot?done/tot:0;
+    c.lineWidth=9;c.strokeStyle='#f8efe7';c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();
+    if(p>0){c.strokeStyle='#c23b6a';c.lineCap='round';c.beginPath();c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);c.stroke();}
+    shText(c,done+'/'+tot,cx,cy,24,'#c23b6a',800,'center');
+    shText(c,'今日完成 '+done+' / '+tot+' · 🔥 全勤連續 '+allDoneStreak()+' 日 · 累計打卡 '+totalChecks()+' 次',P,140,17,'#5f4b55',700,'left',CW);
+  }else{
+    shText(c,'我的小習慣',P,86,36,'#3b2530',800);
+    shText(c,'共 '+n+' 個 · '+t,P,132,17,'#5f4b55',700);
+  }
+  var y=top;
+  if(!n){
+    rr(c,P,y,CW,rowH-12,16);c.fillStyle='#fff';c.fill();c.strokeStyle='#f0e2d8';c.lineWidth=1;c.stroke();
+    shText(c,'仲未有小習慣，由今日開始 🌱',W/2,y+(rowH-12)/2,20,'#967f89',700,'center');
+  }
+  state.habits.forEach(function(h){
+    var chh=rowH-12;
+    rr(c,P,y,CW,chh,16);c.fillStyle='#fff';c.fill();c.strokeStyle='#f0e2d8';c.lineWidth=1;c.stroke();
+    shEmoji(c,h.emoji,P+20,y+34,28);
+    var ci=cycleInfo(h),le=lastEntry(h.id);
+    if(kind==='today'){
+      var on=has(h.id,t);
+      shText(c,h.name,P+62,y+30,21,'#3b2530',800,'left',CW-215);
+      shText(c,on?'✓ 已完成':'○ 未完成',W-P-18,y+30,16,on?'#2e8f7e':'#967f89',800,'right');
+      shText(c,'累計 '+ci.total+' 次'+(ci.cycle?' · 循環第 '+ci.round+' 輪 '+ci.inRound+'/'+ci.cycle:'')
+        +(le?' · 最近 '+fmtMD(le.iso)+' '+fmtClock(le.t):' · 未打卡'),P+62,y+62,15,'#967f89',600,'left',CW-100);
+      var bw=CW-82,bx=P+62,by=y+84;
+      c.fillStyle='#f8efe7';rr(c,bx,by,bw,7,4);c.fill();
+      if(ci.cycle&&ci.p>0){c.fillStyle='#c23b6a';rr(c,bx,by,Math.max(5,bw*ci.p),7,4);c.fill();}
+    }else{
+      shText(c,h.name,P+62,y+30,21,'#3b2530',800,'left',CW-180);
+      shText(c,'累計 '+ci.total+' 次',W-P-18,y+30,16,'#c23b6a',800,'right');
+      shText(c,'每週 '+h.goal+' 次 · '+(ci.cycle?'循環 '+ci.cycle+' 次一輪':'不循環')+' · 🔥 '+streak(h)+' 日'
+        +(le?' · 最近 '+fmtMD(le.iso)+' '+fmtClock(le.t):''),P+62,y+60,14.5,'#967f89',600,'left',CW-100);
+    }
+    y+=rowH;
+  });
+  c.strokeStyle='#f0e2d8';c.lineWidth=1;c.beginPath();c.moveTo(P,H-72);c.lineTo(W-P,H-72);c.stroke();
+  shText(c,'單檔離線 · 資料只存本機 · 由「小習慣打卡」產生',P,H-44,14,'#967f89',600);
+  shText(c,t,W-P,H-44,14,'#967f89',600,'right');
+  return cv;
+}
+function dataURLtoBlob(u){
+  var b=atob(u.slice(u.indexOf(',')+1)),n=b.length,a=new Uint8Array(n);
+  while(n--)a[n]=b.charCodeAt(n);
+  return new Blob([a],{type:'image/png'});
+}
+function refreshShare(){
+  try{
+    var cv=drawShare(shareKind),blob=dataURLtoBlob(cv.toDataURL('image/png'));
+    if(shareUrl){try{URL.revokeObjectURL(shareUrl);}catch(e){}}
+    shareBlob=blob;
+    shareName=(shareKind==='today'?'習慣打卡-':'小習慣清單-')+today()+'.png';
+    shareUrl=URL.createObjectURL(blob);
+    $('shareImg').src=shareUrl;
+    $('shareImg').alt=(shareKind==='today'?'今日打卡畫面':'習慣清單圖')+'預覽';
+  }catch(e){shareBlob=null;toast('畫圖失敗，請改用「複製文字摘要」');}
+}
+function openSharePanel(kind){
+  shareKind=(kind==='list'?'list':'today');
+  document.querySelectorAll('[data-sk]').forEach(function(b){
+    b.classList.toggle('on',b.getAttribute('data-sk')===shareKind);
+  });
+  refreshShare();openSheet('shareSheet');
+}
+function shareTextFor(kind){
+  var t=today(),lines=[];
+  if(kind==='today'){
+    lines.push('小習慣打卡 · '+fmtDate(t));
+    lines.push('今日完成 '+doneOn(t)+' / '+habitsOn(t).length+' · 🔥 全勤連續 '+allDoneStreak()+' 日');
+    lines.push('');
+    state.habits.forEach(function(h){
+      var ci=cycleInfo(h);
+      lines.push((has(h.id,t)?'✅':'⬜')+' '+h.emoji+' '+h.name+' · 累計 '+ci.total+' 次'
+        +(ci.cycle?' · 第 '+ci.round+' 輪 '+ci.inRound+'/'+ci.cycle:''));
+    });
+  }else{
+    lines.push('我的小習慣（'+state.habits.length+' 個）· '+t);lines.push('');
+    state.habits.forEach(function(h){
+      var ci=cycleInfo(h);
+      lines.push(h.emoji+' '+h.name+' · 累計 '+ci.total+' 次 · 每週 '+h.goal+' 次'
+        +(ci.cycle?' · 循環 '+ci.cycle+' 次一輪':''));
+    });
+  }
+  return lines.join('\n');
+}
+function copyText(s){
+  function fallback(){
+    try{
+      var ta=document.createElement('textarea');ta.value=s;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.select();var ok=document.execCommand('copy');ta.remove();
+      toast(ok?'已複製文字':'複製失敗，請手動選取');
+    }catch(e){toast('複製失敗');}
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(s).then(function(){toast('已複製文字');},fallback);
+  }else fallback();
+}
+function saveShareImage(){
+  if(!shareBlob)return false;
+  try{
+    var u=URL.createObjectURL(shareBlob),a=document.createElement('a');
+    a.href=u;a.download=shareName;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(u);},1500);
+    return true;
+  }catch(e){return false;}
+}
+/* 網頁無法定址指定 App：用系統分享選單（用戶自己揀微信／WhatsApp）；不支援就存圖 */
+function shareTo(app){
+  if(!shareBlob){toast('圖片準備中，請再撳一次');return;}
+  var label=(app==='wx'?'微信':'WhatsApp '),file=null;
+  try{file=new File([shareBlob],shareName,{type:'image/png'});}catch(e){}
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    var p;
+    try{p=navigator.share({files:[file],title:(shareKind==='today'?'今日打卡':'我的小習慣'),text:shareTextFor(shareKind)});}
+    catch(e){p=Promise.reject(e);}
+    Promise.resolve(p).then(function(){},function(e){
+      if(e&&e.name==='AbortError')return;
+      toast(saveShareImage()?('瀏覽器唔支援直接分享，已存圖，請喺'+label+'揀相傳送'):'分享失敗，請長按預覽圖儲存');
+    });
+    return;
+  }
+  toast(saveShareImage()?('已儲存圖片，請喺'+label+'揀相簿傳送'):'分享失敗，請長按預覽圖儲存');
+}
+
+/* ============ 事件 ============ */
+$('tabbar').addEventListener('click',function(e){
+  var t=e.target.closest('[data-tab]');if(!t)return;
+  var tab=t.getAttribute('data-tab');
+  if(tab==='settings'){$('weekStart').value=String(state.settings.weekStart);renderAll();openSheet('settingsSheet');return;}
+  setTab(tab);
+});
+$('todayList').addEventListener('click',function(e){
+  var b,id,iso;
+  if((b=e.target.closest('[data-check]'))){punch(b.getAttribute('data-check'),today());return;}
+  if((b=e.target.closest('[data-day]'))){
+    id=b.getAttribute('data-hid');iso=b.getAttribute('data-day');
+    if(countOn(id,iso)>0)unpunch(id,iso);else punch(id,iso,true);
+    return;
+  }
+  if((b=e.target.closest('[data-log]'))){openLog(b.getAttribute('data-log'));return;}
+  if((b=e.target.closest('[data-edit]'))){openEdit(b.getAttribute('data-edit'));return;}
+  if((b=e.target.closest('#starterBtn'))){addStarter();return;}
+});
+/* 今日頁與習慣頁嘅分享入口 */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-share]');
+  if(b){openSharePanel(b.getAttribute('data-share'));}
+});
+$('heatGrid').addEventListener('click',function(e){
+  var c=e.target.closest('[data-heat]');if(!c)return;
+  var k=c.getAttribute('data-heat'),hs=habitsOn(k);
+  if(diffDays(k,today())>0){toast('呢日仲未到');return;}
+  if(!hs.length){toast(fmtMD(k)+' · 當時未有習慣');return;}
+  toast(fmtMD(k)+' · 完成 '+doneOn(k)+' / '+hs.length);
+});
+
+/* 新增習慣 */
+$('newGoal').innerHTML=goalOptions(7,true);
+function bindQuick(){
+  emoGrid($('emoQuick'),newEmo,function(e){
+    newEmo=e;$('newEmoBtn').textContent=e;
+    $('emoQuick').classList.remove('on');
+    bindQuick();
+  });
+}
+bindQuick();
+$('newEmoBtn').addEventListener('click',function(){$('emoQuick').classList.toggle('on');});
+$('addBtn').addEventListener('click',function(){
+  if(addHabit($('newName').value,newEmo,parseInt($('newGoal').value,10)))$('newName').value='';
+});
+$('newName').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();if(addHabit(this.value,newEmo,parseInt($('newGoal').value,10)))this.value='';}
+});
+$('habitList').addEventListener('click',function(e){
+  var b;
+  if((b=e.target.closest('#starterBtn2'))){addStarter();return;}
+  if((b=e.target.closest('[data-mv]'))){moveHabit(b.getAttribute('data-mv'),parseInt(b.getAttribute('data-dir'),10));return;}
+  if((b=e.target.closest('[data-hdel]'))){deleteHabit(b.getAttribute('data-hdel'));return;}
+});
+$('habitList').addEventListener('change',function(e){
+  var el=e.target,h;
+  if(el.hasAttribute&&el.hasAttribute('data-hname')){
+    h=findH(el.getAttribute('data-hname'));if(!h)return;
+    var s=el.value.trim();if(!s){el.value=h.name;return;}
+    h.name=s.slice(0,24);el.value=h.name;save();renderAll();toast('已改名');
+  }else if(el.hasAttribute&&el.hasAttribute('data-hgoal')){
+    h=findH(el.getAttribute('data-hgoal'));if(!h)return;
+    h.goal=parseInt(el.value,10)||7;save();renderAll();toast('每週目標改為 '+h.goal+' 次');
+  }else if(el.hasAttribute&&el.hasAttribute('data-hcycle')){
+    h=findH(el.getAttribute('data-hcycle'));if(!h)return;
+    var cy=parseInt(el.value,10);if(!isFinite(cy)||cy<0||cy>99)cy=0;
+    h.cycle=cy;el.value=cy;save();renderAll();toast(cy?('每 '+cy+' 次循環一輪'):'改為不循環，只累計');
+  }
+});
+
+/* 編輯面板：即改即存 */
+$('edName').addEventListener('change',function(){
+  var h=findH(editId);if(!h)return;
+  var s=this.value.trim();if(!s){this.value=h.name;return;}
+  h.name=s.slice(0,24);this.value=h.name;save();renderAll();toast('已改名');
+});
+$('edGoal').addEventListener('change',function(){
+  var h=findH(editId);if(!h)return;
+  h.goal=parseInt(this.value,10)||7;save();renderAll();toast('每週目標改為 '+h.goal+' 次');
+});
+$('edCycle').addEventListener('change',function(){
+  var h=findH(editId);if(!h)return;
+  var cy=parseInt(this.value,10);if(!isFinite(cy)||cy<0||cy>99)cy=0;
+  h.cycle=cy;this.value=cy;save();renderAll();toast(cy?('每 '+cy+' 次循環一輪，累計唔清零'):'改為不循環，只累計');
+});
+$('edOpenLog').addEventListener('click',function(){if(editId)openLog(editId);});
+$('delHabit').addEventListener('click',function(){if(editId)deleteHabit(editId);});
+
+/* 設定 */
+$('weekStart').addEventListener('change',function(){
+  state.settings.weekStart=parseInt(this.value,10)===0?0:1;save();renderAll();toast('一週開始日已改');
+});
+$('exportBtn').addEventListener('click',exportData);
+$('importBtn').addEventListener('click',function(){$('importFile').click();});
+$('importFile').addEventListener('change',function(e){if(e.target.files&&e.target.files[0])importData(e.target.files[0]);e.target.value='';});
+$('clearAllBtn').addEventListener('click',function(){if(clearArmed)clearAll();else armClear();});
+$('helpBtn').addEventListener('click',function(){openSheet('helpSheet');});
+
+/* v2：打卡紀錄面板 */
+$('logList').addEventListener('click',function(e){
+  var b=e.target.closest('[data-delentry]');
+  if(b)delLogEntry(b.getAttribute('data-delentry'));
+});
+$('logCopy').addEventListener('click',function(){copyText(logText());});
+
+/* v2：分享面板 */
+$('shareSheet').addEventListener('click',function(e){
+  var b=e.target.closest('[data-sk]');
+  if(b){
+    var k=b.getAttribute('data-sk');
+    if(k!==shareKind){shareKind=k;
+      document.querySelectorAll('[data-sk]').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-sk')===shareKind);});
+      refreshShare();
+    }
+  }
+});
+$('shareWechat').addEventListener('click',function(){shareTo('wx');});
+$('shareWhatsapp').addEventListener('click',function(){shareTo('wa');});
+$('shareSave').addEventListener('click',function(){toast(saveShareImage()?'已儲存圖片':'儲存失敗，請長按預覽圖');});
+$('shareText').addEventListener('click',function(){copyText(shareTextFor(shareKind));});
+
+$('mask').addEventListener('click',closeSheet);
+SHEETS.forEach(function(id){$(id).addEventListener('click',function(e){if(e.target.closest('[data-close]'))closeSheet();});});
+$('toastUndo').addEventListener('click',function(){if(undoFn){var f=undoFn;undoFn=null;f();$('toast').classList.remove('on');}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet();});
+
+/* ============ 手指左右滑動切換內容 ============ */
+var TABS=['today','review','habits'];
+var swipe=null, swipedAt=0;
+function swipeAnim(el,dir){
+  if(!el)return;
+  el.classList.remove('swipe-next','swipe-prev');void el.offsetWidth;
+  el.classList.add(dir>0?'swipe-next':'swipe-prev');
+  setTimeout(function(){el.classList.remove('swipe-next','swipe-prev');},260);
+}
+document.addEventListener('pointerdown',function(e){
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  if(e.target.closest&&e.target.closest('input,select,textarea,.log-list'))return;
+  swipe={x:e.clientX,y:e.clientY,t:Date.now()};
+},{passive:true});
+document.addEventListener('pointerup',function(e){
+  if(!swipe)return;
+  var s=swipe;swipe=null;
+  var dx=e.clientX-s.x,dy=e.clientY-s.y;
+  if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.3||Date.now()-s.t>900)return;
+  var dir=dx<0?1:-1;
+  swipedAt=Date.now();
+  if($('shareSheet').classList.contains('on')){
+    shareKind=(shareKind==='today'?'list':'today');
+    document.querySelectorAll('[data-sk]').forEach(function(b){
+      b.classList.toggle('on',b.getAttribute('data-sk')===shareKind);
+    });
+    refreshShare();swipeAnim(document.querySelector('.share-preview'),dir);
+    return;
+  }
+  if($('mask').classList.contains('on'))return;   // 其他面板開住，唔好郁分頁
+  var i=TABS.indexOf(curTab),j=Math.max(0,Math.min(TABS.length-1,i+dir));
+  if(j!==i)setTab(TABS[j],dir);
+},{passive:true});
+document.addEventListener('pointercancel',function(){swipe=null;},{passive:true});
+/* 滑完隨後嗰下 click 要攔低，避免手指掃過按鈕就誤觸打卡 */
+document.addEventListener('click',function(e){
+  if(Date.now()-swipedAt<350){swipedAt=0;e.preventDefault();e.stopPropagation();}
+},true);
+
+/* 跨日自動更新 */
+setInterval(function(){
+  if(today()!==lastToday){lastToday=today();renderAll();toast('新嘅一日，開始打卡啦 🌅');}
+},60000);
+
+/* ============ init ============ */
+load();setTab('today');renderAll();
+})();
+</script>
+</body>
+</html>
