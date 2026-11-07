@@ -299,6 +299,52 @@ td.c-op{white-space:nowrap;width:110px}
 .pset .si{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .pset .tip{font-size:10px;color:var(--muted);font-weight:600;width:100%;line-height:1.6}
 
+/* quiz */
+.quiz-wrap{background:linear-gradient(160deg,#f7f5f0,#eef1f6);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:18px;overflow:auto}
+.quiz-wrap .qhead{width:100%;max-width:680px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;color:var(--sub)}
+.quiz-wrap .qhead .sp{flex:1}
+.qpanel{width:100%;max-width:680px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:18px}
+.qsetup h3{margin:0 0 4px;font-size:15px;font-weight:800}
+.qsetup .opt-row{margin-top:14px}
+.qsetup .opt-row .lab{font-size:11.5px;font-weight:800;color:var(--sub);margin-bottom:7px;display:block}
+.qsetup .chips button{padding:7px 12px;font-size:12px}
+.qsetup select.sel{max-width:none}
+.qbar{display:flex;align-items:center;gap:9px;margin-bottom:12px;font-size:11px;color:var(--muted);font-weight:800}
+.qbar .sp{flex:1}
+.qcard{background:#fff;border:1px solid var(--line2);border-radius:16px;box-shadow:0 12px 34px rgba(40,50,60,.12);padding:28px 24px;text-align:center;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.qcard .tag{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--muted)}
+.qcard .qtxt{font-size:clamp(19px,3.4vw,28px);font-weight:800;line-height:1.55;white-space:pre-wrap;word-break:break-word;max-width:100%}
+.qans input{width:100%;border:2px solid var(--line2);border-radius:12px;padding:13px 14px;font-size:16px;outline:none;margin-top:14px;background:#fff}
+.qans input:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-soft)}
+.qchoices{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.qchoices button{text-align:left;border:1px solid var(--line2);background:#fff;border-radius:12px;padding:13px 15px;font-size:14.5px;font-weight:700;color:var(--ink);transition:.14s;line-height:1.5;word-break:break-word}
+.qchoices button:hover:not(:disabled){border-color:var(--acc);background:var(--acc-soft)}
+.qchoices button.correct{border-color:var(--acc);background:var(--acc-soft);color:var(--acc-d)}
+.qchoices button.wrong{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.qchoices button.dim{opacity:.4}
+.qfeedback{margin-top:14px;font-size:13px;font-weight:800;line-height:1.7;display:none}
+.qfeedback.show{display:block}
+.qfeedback.ok{color:var(--acc)}
+.qfeedback.no{color:var(--red)}
+.qfeedback .exp{color:var(--sub);font-weight:700;display:block;margin-top:3px;font-size:12px}
+.qctl{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.qresult .score{text-align:center;margin-bottom:14px}
+.qresult .score .big{font-size:34px;font-weight:800}
+.qresult .score .big.ok{color:var(--acc)}
+.qresult .score .big.no{color:var(--red)}
+.qresult .list{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.qresult .ri{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border-bottom:1px solid var(--line);font-size:12.5px;line-height:1.6}
+.qresult .ri:last-child{border-bottom:none}
+.qresult .ri .mk{flex:0 0 auto;font-weight:800;width:18px;text-align:center}
+.qresult .ri.ok .mk{color:var(--acc)}
+.qresult .ri.no .mk{color:var(--red)}
+.qresult .ri .q{font-weight:800;flex:1;min-width:0;word-break:break-word;white-space:pre-wrap}
+.qresult .ri .a{color:var(--sub);flex:1.4;min-width:0;word-break:break-word;white-space:pre-wrap}
+.qresult .ri.no{background:var(--red-soft)}
+.qresult .ri .you{color:var(--red);font-weight:800}
+.qresult .ri .good{color:var(--acc-d);font-weight:800}
+.qnote{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.7}
+
 /* toast */
 #toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:300;background:#2c2a26;color:#fff;padding:11px 18px;border-radius:11px;font-size:12.5px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:.25s;max-width:min(90vw,520px);text-align:center;line-height:1.6}
 #toast.on{opacity:1;transform:translate(-50%,0)}
@@ -363,6 +409,7 @@ td.c-op{white-space:nowrap;width:110px}
       </div>
       <div class="lb-btns">
         <button class="btn pri" id="btnPlayList">▶ 播放清單</button>
+        <button class="btn" id="btnQuiz">📝 測驗</button>
         <button class="btn" id="btnXlsx">⬇ 匯出 Excel</button>
         <button class="btn warm" id="btnPdf">🖨 匯出 PDF</button>
         <button class="btn" id="btnSharePdf">↗ 分享 PDF</button>
@@ -559,6 +606,77 @@ td.c-op{white-space:nowrap;width:110px}
   </div>
 </div></div>
 
+<!-- ===== 測驗 ===== -->
+<div class="mask" id="quizMask"><div class="modal full quiz-wrap">
+  <div class="qhead"><span id="quizTitle">測驗</span><span class="sp"></span><span id="quizCounter"></span><button class="btn sm" data-close="quizMask">✕ 結束</button></div>
+
+  <div class="qpanel qsetup" id="quizSetup">
+    <h3>測驗設定</h3>
+    <div class="opt-row">
+      <span class="lab">出題方式（看什麼、答什麼）</span>
+      <div class="chips" id="qDir">
+        <button data-v="front" class="on">看正面 → 答反面</button>
+        <button data-v="back">看反面 → 答正面</button>
+      </div>
+    </div>
+    <div class="opt-row">
+      <span class="lab">作答方式</span>
+      <div class="chips" id="qMode">
+        <button data-v="input" class="on">輸入答案</button>
+        <button data-v="choice">選擇題（混入其他卡答案）</button>
+      </div>
+    </div>
+    <div class="opt-row" id="qOptsRow" style="display:none">
+      <span class="lab">選項數</span>
+      <div class="chips" id="qOpts">
+        <button data-v="3">3 項</button>
+        <button data-v="4" class="on">4 項</button>
+        <button data-v="5">5 項</button>
+      </div>
+    </div>
+    <div class="opt-row">
+      <span class="lab">出題範圍</span>
+      <select class="sel" id="qScope">
+        <option value="all">全部卡片</option>
+        <option value="undone">未熟練</option>
+        <option value="star">已加星</option>
+        <option value="hasback">有底面內容</option>
+      </select>
+    </div>
+    <div class="opt-row">
+      <span class="lab">題目順序</span>
+      <div class="chips" id="qOrder">
+        <button data-v="seq" class="on">依清單順序</button>
+        <button data-v="shuffle">隨機</button>
+      </div>
+    </div>
+    <div class="qnote" id="quizSetupNote"></div>
+    <div class="qctl"><span class="sp"></span><button class="btn pri" id="btnQuizStart">▶ 開始測驗</button></div>
+  </div>
+
+  <div class="qpanel" id="quizBody" style="display:none">
+    <div class="qbar"><span id="qProgress">1 / 1</span><span class="sp"></span><button class="btn sm" id="qGiveUp">提前結束並看結果</button></div>
+    <div class="qcard"><span class="tag" id="qPromptTag">正面 FRONT</span><div class="qtxt" id="qPrompt"></div></div>
+    <div class="qans" id="qAns"></div>
+    <div class="qfeedback" id="qFeedback"></div>
+    <div class="qctl" id="qCtl">
+      <button class="btn" id="qPrev">← 上一題</button>
+      <button class="btn pri" id="qNext">下一題 →</button>
+    </div>
+  </div>
+
+  <div class="qpanel qresult" id="quizResult" style="display:none">
+    <div class="score"><div class="big" id="qScoreBig">0 / 0</div><div id="qScorePct" style="color:var(--sub);font-weight:700"></div></div>
+    <div class="list" id="qResultList"></div>
+    <div class="qnote">標示 ✗ 的題目即為答錯的題目（含未作答）。可選擇重測全部，或只重測剛才答錯的題目。</div>
+    <div class="qctl">
+      <button class="btn pri" id="qRetryAll">🔁 重測全部</button>
+      <button class="btn warm" id="qRetryWrong">🔁 只重測錯題</button>
+      <button class="btn" id="qQuizClose">✕ 結束</button>
+    </div>
+  </div>
+</div></div>
+
 <!-- ===== 說明 ===== -->
 <div class="mask" id="helpMask"><div class="modal">
   <div class="mhead"><b>使用說明</b><button class="x" data-close="helpMask">×</button></div>
@@ -570,6 +688,7 @@ td.c-op{white-space:nowrap;width:110px}
     <p><b style="color:var(--ink)">⑤ PDF 雙面對齊</b><br>PDF 頁次為「第1張正面、第1張背面、第2張正面、第2張背面…」，背面卡的位置依翻面方式鏡射對調，因此印表機選「雙面・長邊裝訂」後，正反內容會落在同一張小卡的兩面。沿裁切線剪開即可。<br><b>首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。</p>
     <div class="note">列印設定：縮放 <b>100%</b>／實際大小，<b>不要</b>勾「配合頁面大小」，關閉頁首頁尾與自動置中，紙張尺寸與此處選擇一致。</div>
     <p><b style="color:var(--ink)">⑥ 直接分享 PDF</b><br>按「↗ 分享 PDF」會用目前設定即時產生檔案並叫起系統分享選單（手機／平板可直接傳到通訊軟體、電郵或雲端）；PDF 對話框內的「↗ 直接分享」則用對話框裏的設定。桌面瀏覽器若不支援檔案分享，會依序降級為：複製 PDF 到剪貼簿 → 開新分頁預覽 → 下載檔案，並以提示說明。</p>
+    <p><b style="color:var(--ink)">⑦ 自測／測驗</b><br>按「📝 測驗」可自測：先選「看正面答反面」或「看反面答正面」；作答方式可選「輸入答案」（自動忽略空白與標點比對），或「選擇題」（從同清單其他卡的答案中隨機混入干擾項，選出正確）。可設定出題範圍（全部／未熟練／已加星／有底面）與題目順序。完成後會列出每題的✓／✗ 與正確答案，並可<b>「重測全部」</b>或<b>「只重測錯題」</b>。</p>
     <p><b style="color:var(--ink)">資料保存</b><br>資料存於本機瀏覽器。換電腦或清除瀏覽器資料前，請按「⬇ 備份」下載 JSON，再到新環境按「還原」。清單的語音設定一併保存在備份內。</p>
     <p style="margin-bottom:0"><b style="color:var(--ink)">匿名使用統計</b><br>以網頁方式（http／https）開啟時，會透過 Google Analytics（G-G7H3M2VW8T）記錄<b>匿名的功能使用次數</b>，例如匯出、分享、播放，用來改善工具。<b>卡片內容、清單名稱及任何個人資料都不會上傳</b>。直接以本機檔案（file://）開啟、沒有網路、瀏覽器啟用「不追蹤」或在下方關閉時，都不會連線。<br><label class="chk" style="margin-top:6px"><input type="checkbox" id="gaOptOut"> 關閉匿名使用統計</label></p>
   </div>
@@ -1686,6 +1805,165 @@ $$('#playMask input,#playMask select').forEach(el=>{
     }
   });
 });
+
+/* ---------------- quiz ---------------- */
+let Q={active:false,items:[],idx:0,dir:'front',mode:'input',optsNum:4,scope:'all',order:'seq',answered:[],wrong:new Set()};
+function setChip(sel,v){ $$(sel+' button').forEach(x=>x.classList.toggle('on',x.dataset.v===v)); }
+function updateQuizNote(){
+  const l=cur(); const ps=Q.dir==='front'?'front':'back', as=Q.dir==='front'?'back':'front';
+  let pool=l.cards.filter(c=>(c[ps]||'').trim()&&(c[as]||'').trim());
+  if(Q.scope==='undone')pool=pool.filter(c=>!c.done);
+  else if(Q.scope==='star')pool=pool.filter(c=>c.star);
+  else if(Q.scope==='hasback')pool=pool.filter(c=>c.front&&c.back);
+  let msg='可出題卡片：'+pool.length+' 張';
+  if(Q.mode==='choice')msg+='　·　選擇題會從這批卡片的答案中隨機混入 '+(Q.optsNum-1)+' 個干擾項（不夠時自動減少選項）';
+  else msg+='　·　請輸入答案，系統會忽略空白與標點自動比對';
+  $('#quizSetupNote').textContent=msg;
+}
+function openQuiz(){
+  Q.mode='input'; Q.dir='front'; Q.optsNum=4; Q.scope='all'; Q.order='seq';
+  setChip('#qDir','front'); setChip('#qMode','input'); setChip('#qOpts','4'); setChip('#qOrder','seq');
+  $('#qScope').value='all'; $('#qOptsRow').style.display='none'; updateQuizNote();
+  $('#quizResult').style.display='none'; $('#quizBody').style.display='none'; $('#quizSetup').style.display='block';
+  $('#quizTitle').textContent='測驗 · '+esc(cur().name);
+  maskOpen('#quizMask');
+}
+function quizPool(explicitIds){
+  const l=cur(); const ps=Q.dir==='front'?'front':'back', as=Q.dir==='front'?'back':'front';
+  let pool;
+  if(explicitIds){ pool=(explicitIds.map(id=>l.cards.find(c=>c.id===id)).filter(Boolean)); }
+  else {
+    pool=l.cards.slice();
+    if(Q.scope==='undone')pool=pool.filter(c=>!c.done);
+    else if(Q.scope==='star')pool=pool.filter(c=>c.star);
+    else if(Q.scope==='hasback')pool=pool.filter(c=>c.front&&c.back);
+  }
+  pool=pool.filter(c=>(c[ps]||'').trim()&&(c[as]||'').trim())
+           .map(c=>({cardId:c.id,prompt:c[ps].trim(),answer:c[as].trim()}));
+  if(Q.order==='shuffle')pool=shuffle(pool);
+  return pool;
+}
+function startQuiz(explicitIds){
+  const items=quizPool(explicitIds);
+  if(!items.length){ toast(Q.dir==='front'?'這個範圍內沒有「正面＋反面」都填寫的卡片，無法出題':'這個範圍內沒有「反面＋正面」都填寫的卡片，無法出題',4000); return; }
+  Q.items=items; Q.answered=new Array(items.length); Q.wrong=new Set(); Q.idx=0; Q.active=true;
+  $('#quizResult').style.display='none'; $('#quizSetup').style.display='none'; $('#quizBody').style.display='block';
+  gaTrack('quiz_start',{mode:Q.mode,dir:Q.dir,scope:Q.scope,opts:String(Q.optsNum)});
+  renderQuiz();
+}
+function normAnswer(s){ return (s||'').toLowerCase().replace(/[ 　\s]+/g,'').replace(/[。.，,、！!？?；;：:「」『』“”''（）()《》<>…—\-_~·]/g,''); }
+function checkAnswer(user,answer){
+  const u=normAnswer(user); if(!u)return false;
+  const lines=(answer||'').split(/[\n\r]+/).map(normAnswer).filter(Boolean);
+  if(lines.indexOf(u)>=0)return true;
+  if(u===normAnswer(answer))return true;
+  return false;
+}
+function updateQuizWrong(){ Q.wrong=new Set(); Q.items.forEach((it,i)=>{ const r=Q.answered[i]; if(!r||!r.correct)Q.wrong.add(i); }); }
+function distractorsFor(it){
+  const uniq=[...new Set(Q.items.map(i=>i.answer).filter(a=>a!==it.answer))];
+  return shuffle(uniq).slice(0,Math.max(0,Q.optsNum-1));
+}
+function buildChoices(it){ const opts=[it.answer,...distractorsFor(it)]; return shuffle(opts); }
+function showFeedback(rec){
+  const fb=$('#qFeedback'); fb.className='qfeedback show '+(rec.correct?'ok':'no');
+  if(rec.correct){ fb.textContent='✓ 答對了！'; }
+  else {
+    const shown=rec.answered?('你的答案：'+rec.user):'（未作答）';
+    fb.innerHTML='✗ 答錯　'+esc(shown)+(rec.expected?'<span class="exp">正確答案：'+esc(rec.expected)+'</span>':'');
+  }
+}
+function renderQuiz(){
+  const it=Q.items[Q.idx];
+  $('#qProgress').textContent=(Q.idx+1)+' / '+Q.items.length;
+  $('#quizCounter').textContent=(Q.idx+1)+' / '+Q.items.length;
+  $('#qPromptTag').textContent=Q.dir==='front'?'正面 FRONT':'反面 BACK';
+  $('#qPrompt').textContent=it.prompt;
+  const ans=$('#qAns'); ans.innerHTML=''; const fb=$('#qFeedback'); fb.className='qfeedback'; fb.innerHTML='';
+  const rec=Q.answered[Q.idx];
+  if(Q.mode==='input'){
+    const inp=document.createElement('input'); inp.type='text'; inp.id='qInput'; inp.placeholder='在此輸入答案…'; inp.autocomplete='off';
+    ans.appendChild(inp);
+    if(rec){ inp.value=rec.user; showFeedback(rec); }
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); if(!Q.answered[Q.idx])submitInput(); else nextQuiz(); } });
+    setTimeout(()=>{ inp.focus(); },30);
+  } else {
+    const wrap=document.createElement('div'); wrap.className='qchoices';
+    buildChoices(it).forEach(c=>{
+      const b=document.createElement('button'); b.textContent=c; b.dataset.choice=c;
+      if(rec){ b.disabled=true; if(c===it.answer)b.classList.add('correct'); else if(c===rec.user)b.classList.add('wrong'); else b.classList.add('dim'); }
+      b.onclick=()=>{ if(Q.answered[Q.idx])return; submitChoice(c,b); };
+      wrap.appendChild(b);
+    });
+    ans.appendChild(wrap);
+  }
+  $('#qPrev').disabled=Q.idx===0;
+  $('#qNext').textContent=(Q.idx===Q.items.length-1)?'看結果 →':'下一題 →';
+}
+function submitInput(){
+  if(Q.answered[Q.idx])return;
+  const inp=$('#qInput'); const it=Q.items[Q.idx]; const user=inp?inp.value:'';
+  const correct=checkAnswer(user,it.answer);
+  Q.answered[Q.idx]={user:user,expected:it.answer,correct,answered:user.trim().length>0};
+  showFeedback(Q.answered[Q.idx]); updateQuizWrong();
+}
+function submitChoice(c,b){
+  if(Q.answered[Q.idx])return;
+  const it=Q.items[Q.idx]; const correct=c===it.answer;
+  Q.answered[Q.idx]={user:c,expected:it.answer,correct,answered:true};
+  $$('#qAns .qchoices button').forEach(x=>{
+    x.disabled=true;
+    if(x.dataset.choice===it.answer)x.classList.add('correct');
+    else if(x.dataset.choice===c)x.classList.add('wrong');
+    else x.classList.add('dim');
+  });
+  const fb=$('#qFeedback'); fb.className='qfeedback show '+(correct?'ok':'no');
+  fb.innerHTML=correct?'✓ 答對了！':'✗ 答錯　<span class="exp">正確答案：'+esc(it.answer)+'</span>';
+  updateQuizWrong();
+}
+function nextQuiz(){
+  if(Q.answered[Q.idx]===undefined){
+    if(Q.mode==='input'){ const inp=$('#qInput'); if(inp&&inp.value.trim())submitInput(); }
+    if(Q.answered[Q.idx]===undefined){ const it=Q.items[Q.idx]; Q.answered[Q.idx]={user:'',expected:it.answer,correct:false,answered:false}; updateQuizWrong(); }
+  }
+  if(Q.idx===Q.items.length-1)finishQuiz();
+  else { Q.idx++; renderQuiz(); }
+}
+function finishQuiz(){
+  Q.active=false;
+  let correct=0; Q.items.forEach((it,i)=>{ if(Q.answered[i]&&Q.answered[i].correct)correct++; });
+  updateQuizWrong();
+  const total=Q.items.length, pct=total?Math.round(correct/total*100):0;
+  $('#qScoreBig').textContent=correct+' / '+total;
+  $('#qScoreBig').className='big '+(pct>=60?'ok':'no');
+  $('#qScorePct').textContent='答對 '+pct+'%　·　答錯 '+Q.wrong.size+' 題';
+  const list=$('#qResultList'); list.innerHTML='';
+  Q.items.forEach((it,i)=>{
+    const r=Q.answered[i]||{}, ok=!!r.correct;
+    const you=ok?'<span class="good">答對</span>':(r.answered?('你的答案：<span class="you">'+esc(r.user)+'</span>'):'<span class="you">未作答</span>');
+    const div=document.createElement('div'); div.className='ri '+(ok?'ok':'no');
+    div.innerHTML='<div class="mk">'+(ok?'✓':'✗')+'</div><div class="q">'+esc(it.prompt)+'</div><div class="a">'+you+'<br>正確：'+esc(it.answer)+'</div>';
+    list.appendChild(div);
+  });
+  $('#quizBody').style.display='none'; $('#quizResult').style.display='block';
+  $('#quizCounter').textContent='完成';
+  gaTrack('quiz_complete',{mode:Q.mode,dir:Q.dir,total:String(total),correct:String(correct),scope:Q.scope,wrong:String(Q.wrong.size)});
+}
+
+/* quiz wiring */
+$('#btnQuiz').onclick=()=>openQuiz();
+$$('#qDir button').forEach(b=>b.onclick=()=>{ setChip('#qDir',b.dataset.v); Q.dir=b.dataset.v; updateQuizNote(); });
+$$('#qMode button').forEach(b=>b.onclick=()=>{ setChip('#qMode',b.dataset.v); Q.mode=b.dataset.v; $('#qOptsRow').style.display=Q.mode==='choice'?'':'none'; updateQuizNote(); });
+$$('#qOpts button').forEach(b=>b.onclick=()=>{ setChip('#qOpts',b.dataset.v); Q.optsNum=+b.dataset.v; updateQuizNote(); });
+$$('#qOrder button').forEach(b=>b.onclick=()=>{ setChip('#qOrder',b.dataset.v); Q.order=b.dataset.v; });
+$('#qScope').onchange=()=>{ Q.scope=$('#qScope').value; updateQuizNote(); };
+$('#btnQuizStart').onclick=()=>startQuiz();
+$('#qPrev').onclick=()=>{ if(Q.idx>0){ Q.idx--; renderQuiz(); } };
+$('#qNext').onclick=()=>nextQuiz();
+$('#qGiveUp').onclick=()=>finishQuiz();
+$('#qRetryAll').onclick=()=>startQuiz(Q.items.map(i=>i.cardId));
+$('#qRetryWrong').onclick=()=>{ const ids=[...Q.wrong].map(i=>Q.items[i].cardId); if(!ids.length){ toast('沒有答錯的題目 🎉'); return; } startQuiz(ids); };
+$('#qQuizClose').onclick=()=>maskClose('#quizMask');
 
 /* ---------------- boot ---------------- */
 load(); render();
