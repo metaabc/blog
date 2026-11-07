@@ -391,8 +391,8 @@ h1{font-size:calc(17px * var(--fs))}
 #pageToday .weekbar{padding:5px 7px;margin-bottom:5px;gap:6px}
 #pageToday .weekbar>button{width:28px;height:28px;font-size:calc(17px * var(--fs));border-radius:8px}
 #pageToday .weekbar>button.jump{font-size:calc(9.5px * var(--fs));padding:0 7px}
-#pageToday .weekbar .wmid b{font-size:calc(11px * var(--fs))}
-#pageToday .weekbar .wmid small{font-size:calc(8.5px * var(--fs))}
+#pageToday .weekbar .wmid b{font-size:calc(14px * var(--fs))}
+#pageToday .weekbar .wmid small{font-size:calc(10.5px * var(--fs))}
 #pageToday .card.hcard{padding:8px 10px;gap:9px;grid-template-columns:52px minmax(0,1fr);border-radius:14px;margin-bottom:6px}
 #pageToday .hcheck{width:52px;height:52px;border-radius:14px}
 #pageToday .hcheck svg{width:28px;height:28px}
@@ -1955,6 +1955,7 @@ $('todayList').addEventListener('click',function(e){
   if((b=e.target.closest('.hcard'))){openHabitHeat(b.getAttribute('data-card'));return;}
 });
 /* v3.6：長按習慣卡開編輯（短撳開熱力圖；長撳開編輯，減少點擊） */
+/* v3.7（已撤銷）：進度條加粗／單色、移除「仲差 X 次達標」句、切換週文字加大等改動，用家確認係打錯、整項唔做，已還原回 v3.6 */
 var lpTimer=null, lpFiredAt=0, lpId=null, lpX=0, lpY=0;
 $('todayList').addEventListener('pointerdown',function(e){
   var card=e.target.closest('.hcard');
