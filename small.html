@@ -7,6 +7,42 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>小習慣打卡</title>
+<!-- logo：SVG 以 data URI 內嵌（單檔都用得），PNG 檔供 iOS／分享卡片用 -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2UwNjk5YSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjAuNTUiIHN0b3AtY29sb3I9IiNjMjNiNmEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOWMyNzUzIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJzcGFyayIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZmU5YTgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZTBhNjNhIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgcng9IjYwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjIzNiIgaGVpZ2h0PSIyMzYiIHJ4PSI1MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utb3BhY2l0eT0iMC4xNiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGNpcmNsZSBjeD0iMTI2IiBjeT0iMTMyIiByPSI4MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utb3BhY2l0eT0iMC4zMCIgc3Ryb2tlLXdpZHRoPSIxMSIvPgogIDxwYXRoIGQ9Ik04NCAxMzMgTDExMyAxNjIgTDE3MiA5OSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cGF0aCBkPSJNMTk4IDQ0IEwyMDMgNjAgTDIxOSA2NSBMMjAzIDcwIEwxOTggODYgTDE5MyA3MCBMMTc3IDY1IEwxOTMgNjAgWiIgZmlsbD0idXJsKCNzcGFyaykiLz4KICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjIwMSIgcj0iNyIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjU1Ii8+CiAgPGNpcmNsZSBjeD0iODIiIGN5PSIyMTMiIHI9IjQiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4zNSIvPgo8L3N2Zz4K">
+<link rel="icon" type="image/png" sizes="180x180" href="habit-logo-180.png">
+<link rel="apple-touch-icon" href="habit-logo-180.png">
+<link rel="image_src" href="habit-logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小習慣打卡">
+<meta property="og:description" content="每日打卡、循環集點、補打舊週、指標趨勢 · 資料只存本機">
+<meta property="og:image" content="habit-logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="小習慣打卡">
+<meta name="twitter:image" content="habit-logo.png">
+<!-- Google Analytics 4 (gtag.js) · 只記匿名功能用量，絕不傳習慣名稱／打卡時間 -->
+<script>
+(function(){
+  var ID='G-G7H3M2VW8T', K='habit_ga_optout', off=false;
+  try{off=localStorage.getItem(K)==='1';}catch(e){}
+  window['ga-disable-'+ID]=off;                 /* 停用旗標必須喺 gtag.js 載入前設好 */
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=function(){window.dataLayer.push(arguments);};
+  if(!off){                                      /* 停用時連 Google 嘅 script 都唔載入 */
+    window.gtag('js',new Date());
+    window.gtag('config',ID,{send_page_view:true});
+    var sc=document.createElement('script');
+    sc.async=true;
+    sc.src='https://www.googletagmanager.com/gtag/js?id='+ID;
+    document.head.appendChild(sc);
+  }
+  window.gaEvent=function(name,params){          /* 離線／被封鎖／停用都唔會影響主程式 */
+    try{
+      if(window['ga-disable-'+ID]||typeof window.gtag!=='function')return;
+      window.gtag('event',name,params||{});
+    }catch(e){}
+  };
+})();
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box}
 :root{
@@ -29,7 +65,7 @@ body{
 }
 button,input,select{font-family:inherit}
 button{-webkit-tap-highlight-color:transparent;cursor:pointer;border:none;background:none;color:inherit}
-.wrap{max-width:600px;margin:0 auto;padding:0 12px calc(118px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:600px;margin:0 auto;padding:0 12px calc(230px + env(safe-area-inset-bottom,0px))}
 
 /* ---------- header ---------- */
 header{position:sticky;top:0;z-index:30;padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:10px;
@@ -111,6 +147,15 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .d7 button.today{border-color:var(--accent);border-style:dashed}
 .d7 button.na{opacity:.42}
 .d7-tip{font-size:9.5px;color:var(--muted);margin:7px 2px 0;line-height:1.5}
+/* 週數切換列 */
+.weekbar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(190,120,90,.06);padding:8px 9px;margin-bottom:10px}
+.weekbar>button{width:34px;height:34px;flex:0 0 auto;border:1.5px solid var(--line);background:var(--gray-bg);color:var(--ink);border-radius:10px;font-size:20px;font-weight:800;line-height:1;cursor:pointer}
+.weekbar>button:active{transform:scale(.94)}
+.weekbar>button:disabled{opacity:.32;cursor:default;transform:none}
+.weekbar>button.jump{width:auto;padding:0 9px;font-size:10px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line);white-space:nowrap}
+.weekbar .wmid{flex:1;min-width:0;text-align:center}
+.weekbar .wmid b{display:block;font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weekbar .wmid small{display:block;font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 左右滑動切換分頁 */
 .page.swipe-next{animation:swNext .24s cubic-bezier(.32,.72,0,1)}
 .page.swipe-prev{animation:swPrev .24s cubic-bezier(.32,.72,0,1)}
@@ -205,6 +250,9 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
   background:rgba(51,61,67,.95);color:#fff;font-size:12.5px;font-weight:600;padding:10px 14px 10px 16px;border-radius:99px;
   opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:90;display:flex;align-items:center;gap:12px;white-space:nowrap;max-width:92vw}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+/* 面板開啟時提示列移到頂部，唔好遮住面板底部嘅按鈕 */
+body.sheet-open .toast{top:calc(16px + env(safe-area-inset-top,0px));bottom:auto;transform:translate(-50%,-10px)}
+body.sheet-open .toast.on{transform:translate(-50%,0)}
 .toast .undo{background:var(--gold);color:#3b2530;padding:5px 12px;border-radius:99px;font-weight:800;font-size:12px}
 
 /* ---------- v2：計次 / 循環 ---------- */
@@ -218,10 +266,86 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .htime{font-size:9.5px;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.5}
 .linkbtn{margin-left:auto;font-size:10.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
   border:1px solid var(--accent-line);border-radius:99px;padding:5px 11px;white-space:nowrap}
-.hero-share{display:flex;gap:8px;margin-top:11px}
-.hero-share button{flex:1;padding:10px 6px;border-radius:11px;font-size:11.5px;font-weight:700;
-  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line);transition:transform .08s}
-.hero-share button:active{transform:scale(.98)}
+/* ---------- v3：浮動分享鈕 ---------- */
+.fab-share{position:fixed;right:14px;bottom:calc(152px + env(safe-area-inset-bottom,0px));z-index:45;
+  display:flex;align-items:center;gap:6px;padding:11px 15px;border-radius:99px;border:none;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-size:12.5px;font-weight:800;
+  box-shadow:0 6px 18px rgba(194,59,106,.32);cursor:pointer;transition:transform .12s}
+.fab-share:active{transform:scale(.94)}
+.fab-share svg{width:16px;height:16px;stroke-width:2.2}
+
+/* ---------- v3：習慣模板 ---------- */
+.tpl-open{display:block;width:100%;margin:0 0 12px;padding:11px;border-radius:12px;border:1.5px dashed var(--accent-line);
+  background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:800}
+.tpl-tabs{display:flex;gap:6px;margin-bottom:12px}
+.tpl-tabs button{flex:1;padding:9px 4px;border-radius:11px;background:var(--gray-bg);border:1px solid transparent;font-size:12px;font-weight:800;color:var(--muted)}
+.tpl-tabs button.on{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
+.tpl-list{max-height:44vh;overflow-y:auto;margin-bottom:12px}
+.tpl-item{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px dashed var(--line2);cursor:pointer}
+.tpl-item input{width:18px;height:18px;accent-color:var(--accent);flex:0 0 auto}
+.tpl-item .te{font-size:18px;flex:0 0 auto}
+.tpl-item .tn{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tpl-item .tg{font-size:10px;font-weight:800;color:var(--muted);white-space:nowrap}
+
+/* ---------- v3：循環輪次 ---------- */
+.rnd-btn{margin-left:auto;font-size:9px;font-weight:800;color:var(--gold-tx);background:var(--gold-bg);
+  border:1px solid var(--gold-line);border-radius:99px;padding:2px 7px;white-space:nowrap;flex:0 0 auto}
+.round-sum{background:var(--gold-bg);border:1px solid var(--gold-line);border-radius:13px;padding:11px 12px;
+  font-size:11.5px;font-weight:700;color:var(--gold-tx);line-height:1.8;margin-bottom:10px}
+.roundrow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;align-items:center;
+  padding:10px 2px;border-bottom:1px dashed var(--line2)}
+.roundrow .rn{font-size:11px;font-weight:800;color:var(--accent)}
+.roundrow .rd{font-size:11.5px;font-weight:700;color:var(--ink2);line-height:1.5}
+.roundrow .rd small{display:block;font-size:9.5px;color:var(--muted);font-weight:600}
+.roundrow .rv{font-size:10.5px;font-weight:800;color:var(--green);white-space:nowrap}
+.roundrow.cur .rv{color:var(--gold-tx)}
+
+/* ---------- v3：指標與目標 ---------- */
+.m-add{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.m-add input,.m-add select,.m-form input{border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;
+  padding:9px 10px;font-size:13px;font-weight:700;color:var(--ink);outline:none;min-width:0}
+.m-add input:focus,.m-form input:focus{border-color:var(--accent-line);background:#fff}
+.m-add #mName{flex:1 1 100%}
+.m-add #mUnit{flex:0 0 72px}
+.m-add #mTarget{flex:1 1 88px}
+.m-add #mBetter{flex:1 1 112px;border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;padding:9px 6px;font-size:12px;font-weight:700;color:var(--ink);outline:none}
+.m-add .go,.m-form .go{border:none;background:var(--accent);color:#fff;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:800}
+.mcard{padding:13px}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.mhead b{font-size:14px;font-weight:800}
+.mhead .mx{width:26px;height:26px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px}
+.mline{font-size:11px;font-weight:700;color:var(--muted);line-height:1.7;margin-bottom:8px}
+.mline b{color:var(--ink);font-variant-numeric:tabular-nums}
+.mchart{display:block;width:100%;height:auto;border-radius:10px;background:var(--bg1);margin-bottom:9px}
+.m-form{display:flex;gap:6px;align-items:center;margin-bottom:7px;flex-wrap:wrap}
+.m-form input[type=date]{flex:1 1 118px}
+.m-form input[type=number]{flex:1 1 78px}
+.m-form button{border:1.5px solid var(--line);background:#fff;color:var(--ink2);border-radius:10px;padding:9px 11px;font-size:11.5px;font-weight:800}
+.mhist-line{font-size:10px;color:var(--muted);font-weight:600;line-height:1.6}
+/* v3.1：目標類型（單一值／區間）＋拖曳排序 */
+.m-add[data-tmode="point"] .range-only,.mcard[data-tmode="point"] .range-only{display:none}
+.m-add[data-tmode="range"] .point-only,.mcard[data-tmode="range"] .point-only{display:none}
+.m-add select,.m-form select{border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;padding:9px 6px;
+  font-size:12px;font-weight:700;color:var(--ink);outline:none;min-width:0}
+.m-add #mMode{flex:1 1 132px}
+.m-add #mLo,.m-add #mHi{flex:1 1 82px}
+.mcard .m-form select{flex:0 0 86px;font-size:11.5px}
+.mcard .m-form input.range-only{flex:1 1 76px}
+.m-add .tmode-hint{flex:1 1 100%;font-size:10px;color:var(--muted);font-weight:600;line-height:1.5;margin:-2px 2px 0}
+.hrow .drag-h{display:none;flex:0 0 24px;width:24px;height:30px;border-radius:8px;background:var(--gold-bg);
+  color:var(--gold-tx);font-size:13px;font-weight:800;touch-action:none;cursor:grab;user-select:none}
+#habitList.sorting .drag-h{display:flex;align-items:center;justify-content:center}
+#habitList.sorting .hrow{border-style:dashed;border-color:var(--accent-line)}
+#habitList.sorting .hrow .mv{display:none}
+#habitList .hrow.dragging{opacity:.72;box-shadow:0 8px 20px rgba(194,59,106,.22);border-style:solid;background:#fff}
+.sort-tip{display:none;font-size:10.5px;font-weight:700;color:var(--gold-tx);background:var(--gold-bg);
+  border:1px solid var(--gold-line);border-radius:11px;padding:9px 11px;margin:0 0 9px;line-height:1.6}
+.sort-tip.on{display:block}
+.histrow{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px dashed var(--line2)}
+.histrow .hd{width:64px;flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--muted)}
+.histrow .hv{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--ink2)}
+.histrow .hv small{display:block;font-size:9.5px;color:var(--muted);font-weight:600}
+.histrow .hx{width:28px;height:28px;flex:0 0 auto;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px}
 .hrow .cycin{flex:0 0 auto;width:38px;border:1.2px solid var(--line);background:#fbfaf8;border-radius:9px;
   padding:7px 1px;font-size:10.5px;font-weight:800;color:var(--ink2);outline:none;text-align:center}
 .hrow .cyc-mark{font-size:11px;color:var(--gold-tx);font-weight:800;flex:0 0 auto}
@@ -286,15 +410,17 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
       </div>
       <div class="hero-bar"><i id="heroBar" style="width:0%"></i></div>
       <div class="hero-done" id="heroDone">🎉 今日全部完成！細細步，慢慢就變成習慣。</div>
-      <div class="hero-share">
-        <button type="button" data-share="today">分享打卡畫面 ↗</button>
-        <button type="button" data-share="list">分享習慣清單圖 ↗</button>
-      </div>
     </section>
 
     <div class="sec"><h2>今日打卡</h2><span class="cnt" id="tCnt">0</span><span class="note">撳圓鈕記一次</span></div>
+    <div class="weekbar">
+      <button type="button" id="weekPrev" aria-label="上一週">‹</button>
+      <div class="wmid"><b id="weekLabel">本週</b><small id="weekSub">–</small></div>
+      <button type="button" id="weekBack" class="jump" style="display:none">回本週</button>
+      <button type="button" id="weekNext" aria-label="下一週">›</button>
+    </div>
     <div id="todayList"></div>
-    <div class="d7-tip">圓鈕每撳一次就記一筆（連時間），一日可記多次；下面七格可補打／扣回過去六日，所有改動 5 秒內可「復原」。<br>👉 手指<b>左右滑動</b>可切換「今日／回顧／習慣」。</div>
+    <div class="d7-tip"><b>每日每事最多打一次卡</b>：圓鈕／格仔撳一下記一筆（連時間），再撳一下扣回；目標係<b>每週期望次數</b>，唔係每日次數。<br>用上面 <b>‹ ›</b> 可最少睇返<b>前三週</b>；<b>除咗未到嘅未來日子，其餘日子（連建立習慣之前）都可以補打</b>，所有改動 5 秒內可「復原」。<br>👉 手指左右滑：滑<b>頁面</b>切分頁，滑<b>七格</b>切週數。</div>
   </div>
 
   <!-- 回顧 -->
@@ -323,7 +449,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 
   <!-- 習慣名單 -->
   <div class="page" id="pageHabits" style="display:none">
-    <div class="sec"><h2>新增習慣</h2><span class="note">目標＝每週想做幾次</span></div>
+    <div class="sec"><h2>新增習慣</h2><span class="note">次數＝每週期望（非每日）</span></div>
     <div class="add-bar">
       <button class="emo-btn" id="newEmoBtn" type="button" title="揀圖示" aria-label="揀圖示">💧</button>
       <input id="newName" type="text" placeholder="例如：閱讀 10 分鐘" maxlength="24" autocomplete="off">
@@ -331,19 +457,61 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
       <button class="go" id="addBtn" type="button">新增</button>
     </div>
     <div class="emo-quick" id="emoQuick"></div>
-    <div class="add-tip">撳左邊圖示可換一個；名稱、每週目標同「循環次數」之後都可以直接改。</div>
+    <button class="tpl-open" id="tplBtn" type="button">📚 從模板揀一個或多個習慣（健康／學習／財富）</button>
+    <div class="add-tip">撳左邊圖示可換一個；<b>每週期望次數</b>係一週想做幾次（每日每事最多打一次）；名稱、目標同「每輪幾多次」之後都可以直接改。</div>
     <div class="sec"><h2>習慣名單</h2><span class="cnt" id="hCnt">0</span>
       <button class="linkbtn" type="button" data-share="list">分享清單圖 ↗</button>
-      <span class="note" style="margin-left:0">↑↓ 排序</span>
+      <button class="linkbtn" id="sortToggle" type="button">⇅ 整理順序</button>
     </div>
+    <div class="sort-tip" id="sortTip">排序模式：<b>長按左邊 ☰ 手柄約 0.2 秒</b>先可以拖；拖完撳「✓ 完成排序」閂返。一般撳圓鈕打卡、改名、改次數都唔會郁到順序。</div>
     <div id="habitList"></div>
   </div>
 
-  <div class="ver">單檔離線 · 資料只存本機 · 版本 2026-11-07 v2</div>
+  <!-- 指標與目標 -->
+  <div class="page" id="pageMetrics" style="display:none">
+    <div class="sec"><h2>指標與目標</h2><span class="cnt" id="mCnt">0</span><span class="note">每次變更都記日期</span></div>
+    <div class="card panel">
+      <h3>新增指標</h3>
+      <div class="sub">例如體重、睡眠時數、儲蓄金額。<b>每次輸入數值或改目標都會記低日期</b>，用趨勢圖對照評估。</div>
+      <div class="m-add" id="mAddRow" data-tmode="point">
+        <input id="mName" type="text" placeholder="指標名稱，例如：體重" maxlength="20" autocomplete="off">
+        <input id="mUnit" type="text" placeholder="單位" maxlength="6" autocomplete="off">
+        <select id="mMode" aria-label="目標類型">
+          <option value="point">目標：單一值</option>
+          <option value="range">目標：區間</option>
+        </select>
+        <input class="point-only" id="mTarget" type="number" step="any" placeholder="目標值" autocomplete="off">
+        <select class="point-only" id="mBetter"><option value="high">愈高愈好</option><option value="low">愈低愈好</option></select>
+        <input class="range-only" id="mLo" type="number" step="any" placeholder="下限" autocomplete="off">
+        <input class="range-only" id="mHi" type="number" step="any" placeholder="上限" autocomplete="off">
+        <div class="tmode-hint point-only">單一值：達標＝高過／低過目標（可揀愈高或愈低愈好）。</div>
+        <div class="tmode-hint range-only">區間：設定下限～上限，<b>數值保持喺區間內先算達標</b>（例如睡眠 7～9 小時）。</div>
+        <button class="go" id="mAdd" type="button">新增</button>
+      </div>
+      <div class="mhist-line">提示：目標可以係<b>單一值</b>或<b>區間</b>，日後都可以互相切換；可以揀返之前嘅日期補錄數值，每次改目標都會留低日期紀錄。</div>
+    </div>
+    <div id="metricList"></div>
+  </div>
+
+  <div class="ver">單檔網頁 · 資料只存本機 · 版本 2026-11-07 v3.1</div>
 </div>
+
+<!-- v3：浮動分享鈕（底部選單上兩行、靠右） -->
+<button class="fab-share" id="fabShare" type="button" aria-label="分享打卡畫面或習慣清單">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3M8 7l4-4 4 4M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>
+  分享
+</button>
 
 <!-- 底部選單 -->
 <nav class="tabbar" id="tabbar">
+  <button class="tab" data-tab="settings" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 4.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.63.7 1.08 1.51 1.09H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>設定</span>
+  </button>
+  <button class="tab" data-tab="habits" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+    <span>習慣</span>
+  </button>
   <button class="tab active" data-tab="today" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M8 15l2.5 2.5L16 13"/></svg>
     <span>今日</span>
@@ -352,13 +520,9 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
     <span>回顧</span>
   </button>
-  <button class="tab" data-tab="habits" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
-    <span>習慣</span>
-  </button>
-  <button class="tab" data-tab="settings" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 4.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.63.7 1.08 1.51 1.09H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    <span>設定</span>
+  <button class="tab" data-tab="metrics" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 5-8 4 4"/><circle cx="3" cy="17" r="1.4"/><circle cx="8" cy="11" r="1.4"/><circle cx="12" cy="14" r="1.4"/><circle cx="17" cy="6" r="1.4"/></svg>
+    <span>指標</span>
   </button>
 </nav>
 
@@ -371,12 +535,12 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
   <input class="inp" id="edName" type="text" maxlength="24" autocomplete="off">
   <label class="lbl">圖示</label>
   <div class="emo-grid" id="edEmoGrid"></div>
-  <label class="lbl" for="edGoal">每週目標</label>
+  <label class="lbl" for="edGoal">每週期望次數（唔係每日）</label>
   <select class="inp" id="edGoal"></select>
-  <label class="lbl" for="edCycle">幾多次後循環（0＝不循環）</label>
+  <label class="lbl" for="edCycle">每輪幾多次打卡（0＝不循環）</label>
   <input class="inp" id="edCycle" type="number" inputmode="numeric" min="0" max="99" value="0">
   <div class="set-hint" style="display:block;background:var(--gold-bg);border-color:var(--gold-line);color:var(--gold-tx);margin:-6px 0 12px">
-    設 10 即每打滿 10 次為一輪，之後由 0 重新計；<b>累計次數唔會清零</b>。
+    設 10 即每打滿 10 次為一輪，之後由 0 重新計；<b>累計次數唔會清零</b>。撳卡上「輪次」可睇<b>每輪用咗幾多日、完成咗幾多次</b>。
   </div>
   <div class="set-sec-title">其他</div>
   <button class="set-btn" id="edOpenLog" type="button">查看每次打卡時間 ⏱</button>
@@ -394,6 +558,10 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
   <div class="set-row">
     <div><b>本機儲存</b><small id="storeInfo">localStorage</small></div>
   </div>
+  <div class="set-row">
+    <div><b>匿名用量統計</b><small>Google Analytics · 只記功能使用次數，唔包括習慣名稱同打卡時間</small></div>
+    <select id="gaMode"><option value="on">開啟</option><option value="off">關閉</option></select>
+  </div>
   <div class="set-sec-title">資料管理</div>
   <button class="set-btn" id="exportBtn" type="button">匯出備份（JSON 檔）</button>
   <button class="set-btn" id="importBtn" type="button">匯入備份（覆蓋現有資料）</button>
@@ -407,17 +575,20 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 <div class="sheet" id="helpSheet">
   <div class="sheet-head"><h3>使用說明</h3><button class="x" data-close type="button">✕</button></div>
   <div class="help-body">
-    1. 到「<b>習慣</b>」新增小習慣，可揀圖示、改名、設<b>每週目標</b>（1–7 次）；第一次用可一鍵加入 3 個入門習慣。<br>
-    2. 「<b>今日</b>」撳左邊圓鈕就記<b>一次打卡（連日期時間）</b>，一日可記多次；卡上顯示<b>累計次數</b>、本輪進度、最近打卡時間同 🔥 連續日數。<br>
-    3. <b>循環次數</b>喺名單「循」欄或「⋯」編輯面板設：例如 10＝每打滿 10 次為一輪，之後由 0 重新計；<b>累計次數唔會清零</b>。填 0 即不循環，只累計。<br>
-    4. 撳卡上「<b>⏱ 紀錄</b>」可睇<b>每次打卡嘅日期時間</b>，逐筆刪除（5 秒內可復原）；補登嘅會標「補登」。<br>
-    5. 卡下面<b>近 7 日格仔</b>：未打嘅日子撳一下補打一筆，已打嘅日子撳一下扣回最後一筆；建立日之前唔可以補打。所有改動 5 秒內都可「<b>復原</b>」。<br>
-    6. 「<b>回顧</b>」有累計打卡、最長連續、30 日完成率、<b>近 5 週熱力圖</b>；每日完成率按「當日有冇打過卡」計，同次數多少無關。<br>
-    7. <b>分享</b>：今日頁上方兩個按鈕會畫出「打卡畫面」或「習慣清單」PNG；撳<b>微信／WhatsApp</b>叫起系統分享選單再揀 App，瀏覽器唔支援就直接<b>存圖</b>，亦可長按預覽圖儲存或複製文字摘要。<br>
-    8. 「<b>設定</b>」可改一週開始日、<b>匯出／匯入 JSON 備份</b>；清除所有資料要按兩次確定，清除後 5 秒內仍可復原。舊版備份會自動升級，打卡紀錄唔會唔見。<br>
-    9. <b>私隱</b>：習慣、次數同打卡時間只存喺呢部機，<b>永不上傳</b>，冇網絡都用得；分享圖片係即時喺本機畫出嚟，只有你撳分享先會傳出去。<br>
-    10. 建議用 Chrome 開啟本檔或「加到主畫面」當 App 用；跨日會自動更新，唔使重新載入。<br>
-    11. 手指<b>左右滑動</b>可喺「今日／回顧／習慣」之間切換；分享面板入面左右滑就切換兩張圖，滑完唔會誤觸按鈕。
+    1. 「<b>習慣</b>」可自己輸入名稱、揀圖示、設<b>每週期望次數</b>（1–7 次，<b>唔係每日次數</b>）；亦可撳「<b>📚 從模板揀</b>」，喺<b>健康／學習／財富</b>三個主題入面<b>多選</b>，一次加入所選，同名會自動略過。<br>
+    2. 「<b>今日</b>」撳左邊圓鈕記一次打卡（連日期時間），<b>每日每事最多一次</b>；再撳一次就扣回。卡上顯示<b>累計次數</b>、本輪進度、最近打卡時間同 🔥 連續日數。<br>
+    3. <b>循環</b>＝每輪幾多次打卡，喺名單「循」欄或「⋯」編輯面板設；例如 10＝打滿 10 次為一輪。<b>累計次數唔會清零</b>。撳卡上「<b>輪次</b>」可逐輪睇<b>用咗幾多日、完成咗幾多次、起訖日期</b>同平均每輪日數。<br>
+    4. 撳卡上「<b>⏱ 紀錄</b>」可睇每次打卡嘅日期時間，逐筆刪除（5 秒內可復原）；補登嘅會標「補登」。<br>
+    5. 卡下面<b>一週七格</b>：未打嘅日子撳一下補打，已打嘅日子撳一下扣回；<b>除咗未到嘅未來日子，其餘日子（連建立習慣之前）都可以補打</b>。用 <b>‹ ›</b> 或「<b>回本週</b>」最少可睇返<b>前三週</b>（有更舊習慣就仲可以再往前），切到舊週時卡上顯示<b>「該週」</b>進度。所有改動 5 秒內都可「<b>復原</b>」。<br>
+    6. 「<b>回顧</b>」有累計打卡、最長連續、30 日完成率、<b>近 5 週熱力圖</b>；撳熱力圖一格會跳去嗰週補打。每日完成率按「當日有冇打過卡」計。<br>
+    7. 「<b>指標</b>」可新增要評估嘅數值（例如體重、睡眠時數、儲蓄）；目標可以係<b>單一值</b>（配「愈高／愈低愈好」）或<b>區間</b>（設下限～上限，<b>數值保持喺區間內先算達標</b>），新增後亦可以隨時互相切換。<b>每次輸入數值或改目標都會自動記低日期</b>，可揀返舊日期補錄。趨勢圖實線＝實際數值、<b>金色虛線＝單一目標／金色帶＝目標區間</b>（改過目標會見到階梯或分段），另有達標率同「變更紀錄」。輸入同一日期會視為修正並留低紀錄。<br>
+    8. <b>分享</b>：右下角<b>浮動分享鈕</b>會畫出「今日打卡畫面」或「習慣清單」PNG（喺「習慣」頁撳會開清單圖）；撳<b>微信／WhatsApp</b>叫起系統分享選單再揀 App，瀏覽器唔支援就直接<b>存圖</b>，亦可長按預覽圖儲存或複製文字摘要。<br>
+    9. 「<b>設定</b>」可改一週開始日、<b>匯出／匯入 JSON 備份</b>（包括指標）；清除所有資料要按兩次確定，清除後 5 秒內仍可復原。舊版備份會自動升級；同日重複打卡會合併成最早一筆並提示。<br>
+    10. <b>私隱</b>：習慣、指標同打卡時間只存喺呢部機，<b>永不上傳</b>；分享圖片係本機畫出嚟，只有你撳分享先會傳出去。本頁另載入 <b>Google Analytics</b>（G-G7H3M2VW8T）記<b>匿名用量</b>：開頁、切頁、打卡／分享次數、切週、模板、指標操作等，<b>唔包含任何習慣內容、數值或打卡時間</b>；可喺「設定 → 匿名用量統計」關閉，關閉後連追蹤碼都唔載入。冇網絡時主功能照常可用。<br>
+    11. 建議用 Chrome 開啟本檔或「加到主畫面」當 App 用；跨日會自動更新。追蹤數據要喺<b>有網絡</b>同以 http(s) 開啟（例如發佈成網頁）時先會完整回報，直接開本機檔案可能被瀏覽器擋。<br>
+    12. 手指<b>左右滑動</b>可依底部選單順序喺「習慣／今日／回顧／指標」之間切換；<b>喺七格上滑動就切週</b>；分享面板入面左右滑就切換兩張圖，滑完唔會誤觸按鈕。
+    13. <b>Logo</b>：分頁圖示用內嵌 SVG（單檔都用得）；iOS 主畫面同連結卡片會用同目錄嘅 <b>habit-logo.png</b>／<b>habit-logo-180.png</b>，複製 HTML 時記得連圖檔一齊放。<br>
+    14. <b>調順序</b>：習慣名單撳「<b>⇅ 整理順序</b>」先會出現 ☰ 手柄，<b>長按約 0.2 秒</b>先拖得；拖完撳「✓ 完成排序」閂返。平時喺「今日」打卡、改名或改次數都<b>唔會郁到順序</b>；唔想拖亦可以用 ↑↓ 逐格移。底部選單左至右：<b>設定 → 習慣 → 今日 → 回顧 → 指標</b>。
   </div>
 </div>
 
@@ -447,6 +618,28 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
   <button class="set-btn" id="shareText" type="button">複製文字摘要</button>
 </div>
 
+<!-- v3：習慣模板庫 -->
+<div class="sheet" id="tplSheet">
+  <div class="sheet-head"><h3>習慣模板</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="tpl-tabs" id="tplTabs"></div>
+  <div class="tpl-list" id="tplList"></div>
+  <button class="set-btn" id="tplAdd" type="button" style="background:var(--accent);border-color:var(--accent);color:#fff;text-align:center">加入所選（0）</button>
+  <div class="set-hint">可以跨主題揀多個；同名習慣會自動略過。加入後每週期望次數同循環都可以再改。</div>
+</div>
+
+<!-- v3：循環輪次紀錄 -->
+<div class="sheet" id="roundSheet">
+  <div class="sheet-head"><h3 id="roundTitle">循環輪次</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="round-sum" id="roundSum"></div>
+  <div id="roundList"></div>
+</div>
+
+<!-- v3：指標變更紀錄 -->
+<div class="sheet" id="mHistSheet">
+  <div class="sheet-head"><h3 id="mHistTitle">變更紀錄</h3><button class="x" data-close type="button">✕</button></div>
+  <div id="mHistList"></div>
+</div>
+
 <div class="toast" id="toast"><span id="toastMsg"></span><button class="undo" id="toastUndo" style="display:none">復原</button></div>
 
 <script>
@@ -454,16 +647,33 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 'use strict';
 var $=function(id){return document.getElementById(id);};
 var KEY='habit_checkin_v1';
+var GA_ID='G-G7H3M2VW8T', GA_KEY='habit_ga_optout';
+var gaEvent=window.gaEvent||function(){};   /* head 入面定義；萬一被擋都唔會出錯 */
 var EMOJIS=['💧','📖','🏃','🧘','🌅','🥗','✍️','🛌','🎧','🚶','🧹','💊','☕','🌱','🦷','📵','🎨','🧠','🚭','🍎','🙏','🪴','🏋️','⏰'];
 var DW=['日','一','二','三','四','五','六'];
 var CHEERS=['好叻，繼續落去 💪','又完成一個 ✨','持之以恆就係咁嚟 🌱','今日都有做到 👍','慢慢嚟，最緊要持續 🙂'];
-var SHEETS=['editSheet','settingsSheet','helpSheet','logSheet','shareSheet'];
-/* habits: {id,name,emoji,goal,cycle,created}
-   logs  : { 'YYYY-MM-DD': [{k,id,t,back?}] }  ← 每筆打卡一個事件，t 為打卡時間 */
-var state={habits:[],logs:{},settings:{weekStart:1}};
+var SHEETS=['editSheet','settingsSheet','helpSheet','logSheet','shareSheet','tplSheet','roundSheet','mHistSheet'];
+/* habits : {id,name,emoji,goal(每週期望次數),cycle(每輪幾多次),created}
+   logs   : { 'YYYY-MM-DD': [{k,id,t,back?}] } ← 每日每習慣最多一筆
+   metrics: {id,name,unit,better,created,points[],targets[],log[]} */
+var TEMPLATES=[
+ {key:'health',name:'健康',icon:'💚',items:[
+   ['飲 8 杯水','💧',7,0],['伸展 5 分鐘','🧘',5,0],['早瞓（23:00 前）','🛌',5,0],
+   ['行路 20 分鐘','🚶',4,0],['食一份蔬果','🥗',7,0],['深呼吸 3 分鐘','🌿',3,0],['拉筋放鬆','🤸',3,0]]},
+ {key:'learn',name:'學習',icon:'📚',items:[
+   ['閱讀 10 分鐘','📖',5,10],['背 5 個生字','✍️',5,0],['聽一段英文 Podcast','🎧',4,0],
+   ['寫 3 行反思','📝',3,0],['練字 10 分鐘','🖊️',4,0],['整理今日筆記','🗂️',3,0],['溫習 15 分鐘','🧠',5,0]]},
+ {key:'wealth',name:'財富',icon:'💰',items:[
+   ['記低今日使費','💳',7,0],['唔飲手搖飲品','🥤',5,0],['睇 5 分鐘理財資訊','📈',3,0],
+   ['每日儲 $10','🪙',5,10],['檢查訂閱／月費','🧾',1,0],['列一份想買清單','🛒',2,0],['執好單據收據','📁',3,0]]}
+];
+var state={habits:[],logs:{},metrics:[],settings:{weekStart:1}};
 var curTab='today', storageOK=true, editId=null, logId=null, newEmo='💧', toastTimer=null, undoFn=null;
 var shareKind='today', shareBlob=null, shareUrl=null, shareName='';
 var clearArmed=false, clearTimer=null, lastToday=today();
+var weekOffset=0;   /* 0＝本週，-1＝上週… 用嚟切去舊週補打 */
+var migrationMerged=0, tplTab='health', tplSel={}, roundId=null, mHistId=null;
+var sortMode=false, dragState=null;   /* 排序模式：要手動開＋長按手柄先拖得，避免誤郁順序 */
 
 /* ============ 日期工具 ============ */
 function isoOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -481,9 +691,9 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 /* ============ 資料 ============ */
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return false;}}
-function emptyState(){return {habits:[],logs:{},settings:{weekStart:1}};}
+function emptyState(){return {habits:[],logs:{},metrics:[],settings:{weekStart:1}};}
 function normalize(raw){
-  var s=emptyState();
+  var s=emptyState();migrationMerged=0;
   if(!raw||typeof raw!=='object')return s;
   var hs=Array.isArray(raw.habits)?raw.habits:[];
   s.habits=hs.slice(0,60).map(function(h){
@@ -508,8 +718,73 @@ function normalize(raw){
       }
       return null;
     }).filter(function(e){return e&&ids[e.id];});
-    if(arr.length)s.logs[k]=arr;
+    /* v3：每日每習慣最多一筆，舊資料同日重複嘅保留最早一筆 */
+    var seen={},keep=[];
+    arr.sort(function(a,b){return a.t-b.t;});
+    arr.forEach(function(e){
+      if(seen[e.id]){migrationMerged++;return;}
+      seen[e.id]=1;keep.push(e);
+    });
+    if(keep.length)s.logs[k]=keep;
   });
+  /* v3：指標與目標值 */
+  function recList(a,kind){
+    var out=[];
+    (Array.isArray(a)?a:[]).slice(0,400).forEach(function(x){
+      if(!x||typeof x!=='object')return;
+      var d=(/^\d{4}-\d{2}-\d{2}$/.test(x.d)?x.d:today());
+      var v=+x.v;if(!isFinite(v))return;
+      var t=+x.t;if(!isFinite(t))t=pd(d).getTime()+12*3600000;
+      out.push({k:String(x.k||uid()),d:d,v:v,t:t});
+    });
+    return out;
+  }
+  /* v3.1：目標可以是單一值或區間；舊版只有 v → 單一值 */
+  function targetList(a){
+    var out=[];
+    (Array.isArray(a)?a:[]).slice(0,400).forEach(function(x){
+      if(!x||typeof x!=='object')return;
+      var d=(/^\d{4}-\d{2}-\d{2}$/.test(x.d)?x.d:today());
+      var t=+x.t;if(!isFinite(t))t=pd(d).getTime()+12*3600000;
+      var v=+x.v,lo=+x.lo,hi=+x.hi,mode=x.mode==='range'?'range':'point';
+      if(mode==='range'){
+        if(!isFinite(lo))lo=v;
+        if(!isFinite(hi))hi=v;
+        if(!isFinite(lo)||!isFinite(hi))return;
+        if(lo>hi){var z=lo;lo=hi;hi=z;}
+        out.push({k:String(x.k||uid()),d:d,t:t,mode:'range',v:lo,lo:lo,hi:hi});
+      }else{
+        if(!isFinite(v)){if(!isFinite(lo))return;v=lo;}
+        out.push({k:String(x.k||uid()),d:d,t:t,mode:'point',v:v,lo:v,hi:v});
+      }
+    });
+    return out;
+  }
+  var ms=Array.isArray(raw.metrics)?raw.metrics.slice(0,30):[];
+  s.metrics=ms.map(function(m){
+    if(!m||typeof m!=='object')return null;
+    var cr=(/^\d{4}-\d{2}-\d{2}$/.test(m.created)?m.created:today());
+    var pts=recList(m.points),tgs=targetList(m.targets);
+    var tg=+m.target;
+    if(!tgs.length&&isFinite(tg))tgs=[{k:uid(),d:cr,v:tg,lo:tg,hi:tg,mode:'point',t:pd(cr).getTime()+12*3600000}];
+    var lg=Array.isArray(m.log)?m.log.slice(0,600).filter(function(x){return x&&typeof x==='object';}).map(function(x){
+      var v=+x.v||0,lo=+x.lo,hi=+x.hi,mode=x.mode==='range'?'range':'point';
+      if(mode==='range'){
+        if(!isFinite(lo))lo=v;if(!isFinite(hi))hi=v;
+        if(lo>hi){var z=lo;lo=hi;hi=z;}
+      }else{lo=v;hi=v;}
+      return {k:String(x.k||uid()),type:x.type==='target'?'target':'value',
+        d:(/^\d{4}-\d{2}-\d{2}$/.test(x.d)?x.d:cr),v:v,lo:lo,hi:hi,mode:mode,
+        t:+x.t||Date.now(),act:String(x.act||'變更')};
+    }):[];
+    if(!lg.length){
+      pts.forEach(function(p){lg.push({k:uid(),type:'value',d:p.d,v:p.v,lo:p.v,hi:p.v,mode:'point',t:p.t,act:'輸入'});});
+      tgs.forEach(function(p){lg.push({k:uid(),type:'target',d:p.d,v:p.v,lo:p.lo,hi:p.hi,mode:p.mode,t:p.t,act:'設目標'});});
+    }
+    return {id:String(m.id||uid()),name:String(m.name||'指標').trim().slice(0,20)||'指標',
+      unit:String(m.unit||'').trim().slice(0,6),better:m.better==='low'?'low':'high',
+      created:cr,points:pts,targets:tgs,log:lg};
+  }).filter(Boolean);
   if(raw.settings&&+raw.settings.weekStart===0)s.settings.weekStart=0;
   return s;
 }
@@ -529,7 +804,8 @@ function findH(id){return state.habits.find(function(h){return h.id===id;})||nul
 /* 每日「完成」只睇有冇打過卡；同一日打幾多次都當完成一次 */
 function has(id,iso){return (state.logs[iso]||[]).some(function(e){return e.id===id;});}
 function countOn(id,iso){return (state.logs[iso]||[]).filter(function(e){return e.id===id;}).length;}
-function habitsOn(iso){return state.habits.filter(function(h){return diffDays(iso,h.created)>=0;});}
+/* v3.1：補打可以打到建立日之前，所以有紀錄嘅舊日子都要計入統計 */
+function habitsOn(iso){return state.habits.filter(function(h){return diffDays(iso,h.created)>=0||has(h.id,iso);});}
 function doneOn(iso){var hs=habitsOn(iso);return hs.filter(function(h){return has(h.id,iso);}).length;}
 function totalChecks(){
   var n=0;Object.keys(state.logs).forEach(function(k){n+=state.logs[k].length;});return n;
@@ -542,10 +818,22 @@ function entriesOf(id){
       if(e.id===id)a.push({k:e.k,id:e.id,t:e.t,back:!!e.back,legacy:!!e.legacy,iso:k});
     });
   });
-  a.sort(function(x,y){return x.t-y.t||(x.iso<y.iso?-1:(x.iso>y.iso?1:0));});
+  /* 以打卡「日子」排序：補登唔會打亂輪次同紀錄順序 */
+  a.sort(function(x,y){return x.iso<y.iso?-1:(x.iso>y.iso?1:(x.t-y.t));});
   return a;
 }
 function totalCount(id){return entriesOf(id).length;}
+/* 每輪用咗幾多日、完成咗幾多次 */
+function roundsOf(h){
+  var c=h.cycle||0;if(!c)return [];
+  var a=entriesOf(h.id),out=[];
+  for(var i=0;i<a.length;i+=c){
+    var g=a.slice(i,i+c),first=g[0].iso,last=g[g.length-1].iso;
+    out.push({n:out.length+1,count:g.length,start:first,end:last,
+      days:diffDays(last,first)+1,complete:g.length===c});
+  }
+  return out;
+}
 function cycleInfo(h){
   var n=totalCount(h.id),c=h.cycle||0;
   if(!c)return {total:n,cycle:0,round:0,inRound:0,done:0,p:0};
@@ -595,13 +883,13 @@ function removeLast(id,iso){
 function streak(h){
   var t=today(),cur=has(h.id,t)?t:addDays(t,-1),n=0;
   for(var i=0;i<400;i++){
-    if(diffDays(cur,h.created)<0||!has(h.id,cur))break;
+    if(!has(h.id,cur))break;
     n++;cur=addDays(cur,-1);
   }
   return n;
 }
 function bestStreak(h){
-  var days=Object.keys(state.logs).filter(function(k){return has(h.id,k)&&diffDays(k,h.created)>=0;}).sort();
+  var days=Object.keys(state.logs).filter(function(k){return has(h.id,k);}).sort();
   var best=0,run=0,prev=null;
   days.forEach(function(k){
     run=(prev&&diffDays(k,prev)===1)?run+1:1;
@@ -619,6 +907,52 @@ function allDoneStreak(){
   return n;
 }
 function weekCount(h){var f=weekFirst(today()),n=0;for(var i=0;i<7;i++){if(has(h.id,addDays(f,i)))n++;}return n;}
+function weekCountAt(h,f){var n=0;for(var i=0;i<7;i++){if(has(h.id,addDays(f,i)))n++;}return n;}
+
+/* ============ 週數切換（補打舊週） ============ */
+function weekStartShown(){return addDays(weekFirst(today()),weekOffset*7);}
+function weekNo(s){ /* ISO 8601 週數 */
+  var d=pd(s);d.setDate(d.getDate()+3-((d.getDay()+6)%7));
+  var y=new Date(d.getFullYear(),0,4);
+  return 1+Math.round(((d-y)/86400000-3+((y.getDay()+6)%7))/7);
+}
+function minWeekOffset(){
+  /* 最少可睇返前三週；有更舊嘅習慣就一路去到建立嗰週 */
+  var w=0;
+  if(state.habits.length){
+    var e=state.habits.reduce(function(a,h){return h.created<a?h.created:a;},today());
+    w=-Math.floor(diffDays(weekFirst(today()),weekFirst(e))/7);
+  }
+  return Math.max(Math.min(-3,w),-260);
+}
+function clampWeek(){weekOffset=Math.max(Math.min(weekOffset,0),minWeekOffset());}
+function renderWeekBar(){
+  var s=weekStartShown(),en=addDays(s,6),o=weekOffset;
+  var name=o===0?'本週':(o===-1?'上週':Math.abs(o)+' 週前');
+  $('weekLabel').textContent=name+' · 第 '+weekNo(s)+' 週';
+  $('weekSub').textContent=fmtMD(s)+' – '+fmtMD(en)+' · '+(o===0?'除未來日子外都可打卡／補打':'所有舊日子都可補打／扣回');
+  $('weekPrev').disabled=(o<=minWeekOffset());
+  $('weekNext').disabled=(o>=0);
+  $('weekBack').style.display=o<0?'':'none';
+}
+function shiftWeek(n){
+  var v=weekOffset+n;
+  if(v>0||v<minWeekOffset())return;
+  weekOffset=v;renderAll();gaEvent('week_switch',{direction:n>0?'forward':'back'});
+}
+function gotoWeekOf(iso){
+  weekOffset=-Math.round(diffDays(weekFirst(today()),weekFirst(iso))/7);
+  clampWeek();
+}
+
+/* ============ GA 匿名用量開關 ============ */
+function gaEnabled(){return lsGet(GA_KEY)!=='1';}
+function setGaEnabled(on){
+  try{
+    if(on)localStorage.removeItem(GA_KEY);else localStorage.setItem(GA_KEY,'1');
+  }catch(e){}
+  window['ga-disable-'+GA_ID]=!on;
+}
 
 /* ============ toast / 面板 ============ */
 function toast(msg,undo){
@@ -629,8 +963,8 @@ function toast(msg,undo){
   $('toast').classList.add('on');
   toastTimer=setTimeout(function(){$('toast').classList.remove('on');undoFn=null;},undo?5000:2300);
 }
-function openSheet(id){SHEETS.forEach(function(s){$(s).classList.toggle('on',s===id);});$('mask').classList.add('on');}
-function closeSheet(){SHEETS.forEach(function(s){$(s).classList.remove('on');});$('mask').classList.remove('on');disarmClear();editId=null;logId=null;}
+function openSheet(id){SHEETS.forEach(function(s){$(s).classList.toggle('on',s===id);});$('mask').classList.add('on');document.body.classList.add('sheet-open');}
+function closeSheet(){SHEETS.forEach(function(s){$(s).classList.remove('on');});$('mask').classList.remove('on');document.body.classList.remove('sheet-open');disarmClear();editId=null;logId=null;roundId=null;mHistId=null;}
 function goalOptions(cur,short){
   var h='';for(var i=1;i<=7;i++){h+='<option value="'+i+'"'+(i===+cur?' selected':'')+'>'+i+' 次'+(short?'':' / 週')+'</option>';}return h;
 }
@@ -660,26 +994,31 @@ function renderToday(){
   var t=today(),hs=state.habits;
   $('tCnt').textContent=hs.length;
   if(!hs.length){
-    $('todayList').innerHTML='<div class="empty">仲未有小習慣 👆<br>由一件好細、好容易做到嘅事開始<br>'
-      +'<button class="go" id="starterBtn" type="button">一鍵加入 3 個入門習慣</button></div>';
+    $('todayList').innerHTML='<div class="empty">仲未有小習慣 👆<br>自己輸入，或由健康／學習／財富模板揀<br>'
+      +'<button class="go" id="starterBtn" type="button">📚 從模板揀習慣</button></div>';
     return;
   }
-  var h='';
+  var h='',wkStart=weekStartShown(),wkLabel=(weekOffset<0?'該週':'本週');
   hs.forEach(function(x){
-    var id=esc(x.id),on=has(x.id,t),st=streak(x),wc=weekCount(x),ok=wc>=x.goal;
+    var id=esc(x.id),on=has(x.id,t),st=streak(x),wc=weekCountAt(x,wkStart),ok=wc>=x.goal;
     var ci=cycleInfo(x),le=lastEntry(x.id);
     var days='';
-    for(var i=6;i>=0;i--){
-      var iso=addDays(t,-i),n=countOn(x.id,iso),na=diffDays(iso,x.created)<0;
+    for(var i=0;i<7;i++){
+      var iso=addDays(wkStart,i),n=countOn(x.id,iso);
+      var future=diffDays(iso,t)>0,na=future;   /* 除咗未到嘅日子，其餘（包括建立日前）都可以補打 */
+      var tip=future?' 未到':(n?(' 已打卡 · 撳一下扣回'):' 未打卡 · 撳一下補打');
       days+='<button type="button" data-day="'+iso+'" data-hid="'+id+'"'
-        +' class="'+(n?'on ':'')+(i===0?'today ':'')+(na?'na':'')+'"'
-        +(na?' disabled':'')+' title="'+fmtMD(iso)+(n?(' 已打卡 '+n+' 次 · 撳一下扣回一筆'):' 未打卡 · 撳一下補打')+'">'
+        +' class="'+(n?'on ':'')+(iso===t?'today ':'')+(na?'na':'')+'"'
+        +(na?' disabled':'')+' title="'+fmtMD(iso)+tip+'">'
         +'<span class="dw">'+DW[dow(iso)]+'</span><span class="dm">'+(+iso.slice(8,10))+'</span>'
         +'<span class="dt">'+(n>1?'×'+n:(n?'✓':'·'))+'</span></button>';
     }
+    var rs=ci.cycle?roundsOf(x):[],lastDone=rs.filter(function(r){return r.complete;}).slice(-1)[0];
     var cyc=ci.cycle
-      ? '<div class="cyc"><span>循環 第 '+ci.round+' 輪 · '+ci.inRound+' / '+ci.cycle+' 次</span>'
-        +'<span class="cyc-bar"><i style="width:'+(ci.p*100)+'%"></i></span></div>'
+      ? '<div class="cyc"><span>循環 第 '+ci.round+' 輪 · '+ci.inRound+' / '+ci.cycle+' 次'
+        +(lastDone?' · 上輪 '+lastDone.days+' 日':'')+'</span>'
+        +'<span class="cyc-bar"><i style="width:'+(ci.p*100)+'%"></i></span>'
+        +'<button class="rnd-btn" data-rounds="'+id+'" type="button">輪次</button></div>'
       : '';
     h+='<div class="card hcard'+(on?' is-done':'')+'" data-card="'+id+'">'
       +'<button class="hcheck" data-check="'+id+'" type="button" aria-label="記一次打卡">'
@@ -687,7 +1026,7 @@ function renderToday(){
       +'<div class="hbody">'
         +'<div class="hrow1"><span class="hemo">'+esc(x.emoji)+'</span><span class="hname">'+esc(x.name)+'</span>'
           +'<span class="hbadge'+(st?'':' zero')+'">'+(st?'🔥 '+st+' 日':'由今日開始')+'</span></div>'
-        +'<div class="hrow2">本週 <b>'+wc+'</b> / '+x.goal+' 次'+(ok?' <span class="ok">本週達標</span>':'')
+        +'<div class="hrow2">'+wkLabel+' <b>'+wc+'</b> / '+x.goal+' 次'+(ok?' <span class="ok">'+wkLabel+'達標</span>':'')
           +'<span class="cnt">累計 '+ci.total+' 次</span>'
           +'<button class="hlog" data-log="'+id+'" type="button">⏱ 紀錄</button></div>'
         +cyc
@@ -732,7 +1071,7 @@ function renderReview(){
   if(!state.habits.length){$('rateList').innerHTML='<div class="empty" style="padding:16px">未有習慣，暫時冇得統計</div>';return;}
   $('rateList').innerHTML=state.habits.map(function(h){
     var c=0,base=0;
-    for(var i=29;i>=0;i--){var k=addDays(t,-i);if(diffDays(k,h.created)<0)continue;base++;if(has(h.id,k))c++;}
+    for(var i=29;i>=0;i--){var k=addDays(t,-i);if(diffDays(k,h.created)<0&&!has(h.id,k))continue;base++;if(has(h.id,k))c++;}
     var p=base?Math.round(c/base*100):0;
     return '<div class="rrow"><span class="remo">'+esc(h.emoji)+'</span>'
       +'<span class="rname">'+esc(h.name)+'</span><span class="rnum">'+c+' / '+base+' 日 · '+p+'%</span>'
@@ -744,15 +1083,16 @@ function renderReview(){
 function renderHabits(){
   $('hCnt').textContent=state.habits.length;
   if(!state.habits.length){
-    $('habitList').innerHTML='<div class="empty">仲未有習慣<br>上方輸入名稱，撳「<b>新增</b>」就得<br>'
-      +'<button class="go" id="starterBtn2" type="button">一鍵加入 3 個入門習慣</button></div>';
+    $('habitList').innerHTML='<div class="empty">仲未有習慣<br>上方輸入名稱撳「<b>新增</b>」，或用模板一次加幾個<br>'
+      +'<button class="go" id="starterBtn2" type="button">📚 從模板揀習慣</button></div>';
     return;
   }
   $('habitList').innerHTML=state.habits.map(function(h,i){
-    return '<div class="hrow">'
+    return '<div class="hrow" data-hid="'+esc(h.id)+'">'
+      +'<button class="drag-h" data-drag="'+esc(h.id)+'" type="button" aria-label="長按拖曳調整順序">☰</button>'
       +'<span class="he">'+esc(h.emoji)+'</span>'
       +'<input data-hname="'+esc(h.id)+'" value="'+esc(h.name)+'" maxlength="24" aria-label="修改習慣名稱">'
-      +'<select data-hgoal="'+esc(h.id)+'" aria-label="每週目標">'+goalOptions(h.goal,true)+'</select>'
+      +'<select data-hgoal="'+esc(h.id)+'" aria-label="每週期望次數">'+goalOptions(h.goal,true)+'</select>'
       +'<span class="cyc-mark" title="每幾次循環（0＝不循環）">循</span>'
       +'<input class="cycin" data-hcycle="'+esc(h.id)+'" type="number" inputmode="numeric" min="0" max="99" value="'+h.cycle+'" aria-label="循環次數，0 表示不循環">'
       +'<button class="mv" data-mv="'+esc(h.id)+'" data-dir="-1" type="button" '+(i===0?'disabled':'')+' aria-label="上移">↑</button>'
@@ -761,12 +1101,336 @@ function renderHabits(){
     +'</div>';
   }).join('');
 }
+/* ============ v3.1：安全嘅拖曳排序（要開模式＋長按手柄） ============ */
+function setSortMode(on){
+  sortMode=!!on;
+  $('habitList').classList.toggle('sorting',sortMode);
+  $('sortTip').classList.toggle('on',sortMode);
+  $('sortToggle').textContent=sortMode?'✓ 完成排序':'⇅ 整理順序';
+  if(!sortMode)endDrag(false);
+}
+function endDrag(commit){
+  if(!dragState)return;
+  var d=dragState;dragState=null;
+  clearTimeout(d.timer);
+  d.row.classList.remove('dragging');
+  $('habitList').classList.remove('dragging-now');
+  if(!commit||!d.active)return;
+  var ids=[].slice.call($('habitList').querySelectorAll('.hrow')).map(function(r){return r.getAttribute('data-hid');});
+  var map={};state.habits.forEach(function(h){map[h.id]=h;});
+  var arr=ids.map(function(k){return map[k];}).filter(Boolean);
+  if(arr.length!==state.habits.length)return;
+  var old=state.habits.slice();
+  if(!arr.some(function(h,i){return h.id!==old[i].id;})){renderHabits();return;}
+  state.habits=arr;save();blurActive();renderAll();renderHabits();
+  toast('順序已更新',function(){
+    state.habits=old;save();renderAll();renderHabits();toast('已復原');
+  });
+  gaEvent('habit_reorder',{by:'drag'});
+}
+$('sortToggle').addEventListener('click',function(){
+  setSortMode(!sortMode);gaEvent('habit_sort_mode',{on:sortMode?1:0});
+});
+$('habitList').addEventListener('pointerdown',function(e){
+  var h=e.target.closest&&e.target.closest('[data-drag]');
+  if(!h||!sortMode)return;
+  e.preventDefault();e.stopPropagation();      /* 唔好觸發全域滑動切頁 */
+  var row=h.closest('.hrow'),d={row:row,active:false,timer:null};
+  dragState=d;
+  d.timer=setTimeout(function(){
+    if(dragState!==d)return;
+    d.active=true;row.classList.add('dragging');
+    $('habitList').classList.add('dragging-now');
+  },170);
+});
+document.addEventListener('pointermove',function(e){
+  var d=dragState;
+  if(!d||!d.active)return;
+  e.preventDefault();
+  var list=$('habitList');
+  var rows=[].slice.call(list.querySelectorAll('.hrow')).filter(function(r){return r!==d.row;});
+  var before=null;
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i].getBoundingClientRect();
+    if(e.clientY<r.top+r.height/2){before=rows[i];break;}
+  }
+  if(before)list.insertBefore(d.row,before);else list.appendChild(d.row);
+},{passive:false});
+document.addEventListener('pointerup',function(){endDrag(true);},{passive:true});
+document.addEventListener('pointercancel',function(){endDrag(false);},{passive:true});
+/* ============ v3：指標與目標值 ============ */
+function findM(id){return state.metrics.find(function(m){return m.id===id;})||null;}
+function byDate(a,b){return a.d<b.d?-1:(a.d>b.d?1:(a.t-b.t));}
+function fmtNum(v){return String(Math.round(v*100)/100);}
+/* v3.1：目標紀錄統一成 {mode:'point'|'range',v,lo,hi} */
+function targetRec(lo,hi,mode){
+  if(mode==='range'){
+    if(!isFinite(lo))lo=0;if(!isFinite(hi))hi=lo;
+    if(lo>hi){var z=lo;lo=hi;hi=z;}
+    return {mode:'range',v:lo,lo:lo,hi:hi};
+  }
+  if(!isFinite(lo))lo=0;
+  return {mode:'point',v:lo,lo:lo,hi:lo};
+}
+function normTarget(x){
+  if(!x)return {k:'',d:'',t:0,mode:'point',v:0,lo:0,hi:0};
+  return Object.assign({k:String(x.k||''),d:String(x.d||today()),t:+x.t||0},targetRec(
+    x.mode==='range'?+x.lo:+x.v,
+    x.mode==='range'?+x.hi:+x.v,
+    x.mode==='range'?'range':'point'));
+}
+function curTarget(m){
+  if(!m.targets.length)return normTarget(null);
+  var a=m.targets.slice().sort(byDate);return normTarget(a[a.length-1]);
+}
+function latestPoint(m){
+  if(!m.points.length)return null;
+  var a=m.points.slice().sort(byDate);return a[a.length-1];
+}
+function targetText(tg){return tg.mode==='range'?fmtNum(tg.lo)+' ～ '+fmtNum(tg.hi):fmtNum(tg.v);}
+function targetVals(tg){return tg.mode==='range'?[tg.lo,tg.hi]:[tg.v];}
+function metricHit(m,v,tg){
+  tg=normTarget(tg);
+  return tg.mode==='range'?(v>=tg.lo&&v<=tg.hi):(m.better==='low'?v<=tg.v:v>=tg.v);
+}
+function metricGap(m,v,tg){
+  tg=normTarget(tg);
+  if(tg.mode==='range'){
+    if(v<tg.lo)return '低於下限 <b>'+fmtNum(tg.lo-v)+'</b>';
+    if(v>tg.hi)return '高於上限 <b>'+fmtNum(v-tg.hi)+'</b>';
+    return '區間內 <b>✓</b>';
+  }
+  var d=v-tg.v;return '距目標 <b>'+(d>0?'+':'')+fmtNum(d)+'</b>';
+}
+function targetAt(m,d){
+  var a=m.targets.slice().sort(byDate),r=a.length?a[0]:null;
+  a.forEach(function(t){if(t.d<=d)r=t;});
+  return normTarget(r);
+}
+function metricChart(m){
+  var W=320,H=132,L=36,R=10,T=12,B=20;
+  var pts=m.points.slice().sort(byDate),tgs=m.targets.slice().sort(byDate).map(normTarget);
+  var all=pts.concat(tgs),vs=[];
+  pts.forEach(function(p){vs.push(p.v);});
+  tgs.forEach(function(tg){vs=vs.concat(targetVals(tg));});
+  if(!vs.length)return '<div class="empty" style="padding:16px">未有數值，輸入第一筆就見到趨勢</div>';
+  var ds=all.map(function(x){return x.d;}).sort(),d0=ds[0],d1=ds[ds.length-1];
+  var span=Math.max(1,diffDays(d1,d0));
+  var vmin=Math.min.apply(null,vs),vmax=Math.max.apply(null,vs);
+  if(vmax===vmin){vmax+=1;vmin-=1;}
+  var pad=(vmax-vmin)*0.12;vmin-=pad;vmax+=pad;
+  function X(d){return L+(diffDays(d,d0)/span)*(W-L-R);}
+  function Y(v){return T+(1-(v-vmin)/(vmax-vmin))*(H-T-B);}
+  var g='',i,yy,vv;
+  for(i=0;i<3;i++){
+    yy=T+i*(H-T-B)/2;vv=vmax-i*(vmax-vmin)/2;
+    g+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#f0e2d8" stroke-width="1"/>'
+      +'<text x="'+(L-4)+'" y="'+(yy+3)+'" text-anchor="end" font-size="8" fill="#967f89">'+fmtNum(vv)+'</text>';
+  }
+  /* 目標：逐段畫。單一值＝金色虛線；區間＝金色帶＋上下虛線 */
+  tgs.forEach(function(tg,i){
+    var x1=X(tg.d),x2=(i+1<tgs.length?X(tgs[i+1].d):(W-R));
+    if(x2<x1+1.5)x2=Math.min(W-R,x1+1.5);
+    if(tg.mode==='range'){
+      var yTop=Y(tg.hi),yBot=Y(tg.lo);
+      g+='<rect x="'+x1+'" y="'+yTop+'" width="'+(x2-x1)+'" height="'+Math.max(1,yBot-yTop)
+        +'" fill="#e0a63a" fill-opacity="0.15"/>'
+        +'<line x1="'+x1+'" y1="'+yTop+'" x2="'+x2+'" y2="'+yTop+'" stroke="#e0a63a" stroke-width="1.5" stroke-dasharray="5 4"/>'
+        +'<line x1="'+x1+'" y1="'+yBot+'" x2="'+x2+'" y2="'+yBot+'" stroke="#e0a63a" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    }else{
+      var y=Y(tg.v);
+      g+='<line x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+y+'" stroke="#e0a63a" stroke-width="1.8" stroke-dasharray="5 4"/>';
+      if(i>0){
+        var prev=tgs[i-1],py=Y(prev.mode==='range'?prev.hi:prev.v);
+        g+='<line x1="'+x1+'" y1="'+py+'" x2="'+x1+'" y2="'+y+'" stroke="#e0a63a" stroke-width="1.4" stroke-dasharray="3 3"/>';
+      }
+    }
+  });
+  if(pts.length>1){
+    g+='<path d="'+pts.map(function(p,i2){return (i2?'L ':'M ')+X(p.d)+' '+Y(p.v);}).join(' ')
+      +'" fill="none" stroke="#c23b6a" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+  }
+  pts.forEach(function(p){
+    var tg=targetAt(m,p.d),ok=metricHit(m,p.v,tg);
+    g+='<circle cx="'+X(p.d)+'" cy="'+Y(p.v)+'" r="3.2" fill="'+(ok?'#fff':'#f6f2ec')+'" stroke="#c23b6a" stroke-width="2">'
+      +'<title>'+fmtMD(p.d)+' · '+fmtNum(p.v)+' '+esc(m.unit)+' · '+(ok?'達標':'未達標')+'</title></circle>';
+  });
+  g+='<text x="'+L+'" y="'+(H-5)+'" font-size="8" fill="#967f89">'+fmtMD(d0)+'</text>'
+    +'<text x="'+(W-R)+'" y="'+(H-5)+'" text-anchor="end" font-size="8" fill="#967f89">'+fmtMD(d1)+'</text>';
+  return '<svg class="mchart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(m.name)+' 趨勢圖">'+g+'</svg>';
+}
+function renderMetrics(){
+  $('mCnt').textContent=state.metrics.length;
+  if(!state.metrics.length){
+    $('metricList').innerHTML='<div class="empty">仲未設指標 👆<br>設一個想改善嘅數值，例如體重、睡眠時數、儲蓄金額</div>';return;
+  }
+  var t=today();
+  $('metricList').innerHTML=state.metrics.map(function(m){
+    var id=esc(m.id),tg=curTarget(m),lp=latestPoint(m),range=(tg.mode==='range');
+    var hits=m.points.filter(function(p){return metricHit(m,p.v,targetAt(m,p.d));}).length;
+    var rate=m.points.length?Math.round(hits/m.points.length*100):0;
+    var stat=lp?('最新 <b>'+fmtNum(lp.v)+'</b> '+esc(m.unit)+' ('+fmtMD(lp.d)+')'):'仲未輸入數值';
+    var gapTx=lp?(' · '+metricGap(m,lp.v,tg)+' '+esc(m.unit)):'';
+    return '<div class="card mcard" data-mid="'+id+'" data-tmode="'+tg.mode+'">'
+      +'<div class="mhead"><div><b>'+esc(m.name)+'</b> <span style="font-size:10px;color:var(--muted)">'+esc(m.unit)+'</span></div>'
+        +'<button class="mx" data-mdel="'+id+'" type="button" aria-label="刪除此指標">✕</button></div>'
+      +'<div class="mline">'+(range?'目標區間':'目標')+' <b>'+targetText(tg)+'</b> '+esc(m.unit)
+        +' · '+(range?'區間內算達標':(m.better==='low'?'愈低愈好':'愈高愈好'))
+        +'<br>'+stat+gapTx+' · 達標 <b>'+hits+'/'+m.points.length+'</b>（'+rate+'%）</div>'
+      +metricChart(m)
+      +'<div class="m-form">'
+        +'<input type="date" data-mdate="'+id+'" value="'+t+'" max="'+t+'" aria-label="數值日期">'
+        +'<input type="number" step="any" data-mval="'+id+'" placeholder="數值" aria-label="指標數值">'
+        +'<button class="go" data-msave="'+id+'" type="button">記錄數值</button></div>'
+      +'<div class="m-form">'
+        +'<select data-mtmode="'+id+'" aria-label="目標類型">'
+          +'<option value="point"'+(range?'':' selected')+'>單一值</option>'
+          +'<option value="range"'+(range?' selected':'')+'>區間</option></select>'
+        +'<input class="point-only" type="number" step="any" data-mnewtgt="'+id+'" placeholder="新目標值" aria-label="新目標值">'
+        +'<input class="range-only" type="number" step="any" data-mnewlo="'+id+'" placeholder="下限" aria-label="區間下限">'
+        +'<input class="range-only" type="number" step="any" data-mnewhi="'+id+'" placeholder="上限" aria-label="區間上限">'
+        +'<button data-mtgt="'+id+'" type="button">改目標</button>'
+        +'<button data-mhist="'+id+'" type="button">變更紀錄 ('+m.log.length+')</button></div>'
+      +'<div class="mhist-line">實線＝實際數值 · 金色虛線＝單一目標／金色帶＝目標區間（改過目標會見到階梯或分段）；空心點＝未達標。</div>'
+    +'</div>';
+  }).join('');
+}
+function addMetric(){
+  var name=$('mName').value.trim().slice(0,20);
+  if(!name){toast('請輸入指標名稱');return;}
+  var unit=$('mUnit').value.trim().slice(0,6),mode=$('mMode').value==='range'?'range':'point',rec;
+  if(mode==='range'){
+    var lo=parseFloat($('mLo').value),hi=parseFloat($('mHi').value);
+    if(!isFinite(lo)||!isFinite(hi)){toast('請輸入區間下限同上限');return;}
+    rec=targetRec(lo,hi,'range');
+  }else{
+    var tv=parseFloat($('mTarget').value);
+    if(!isFinite(tv)){toast('請輸入目標值');return;}
+    rec=targetRec(tv,tv,'point');
+  }
+  var t=today(),now=Date.now();
+  state.metrics.push({id:uid(),name:name,unit:unit,better:$('mBetter').value==='low'?'low':'high',created:t,
+    points:[],targets:[Object.assign({k:uid(),d:t,t:now},rec)],
+    log:[Object.assign({k:uid(),type:'target',d:t,t:now,act:'設目標'},rec)]});
+  save();renderAll();
+  $('mName').value='';$('mUnit').value='';$('mTarget').value='';$('mLo').value='';$('mHi').value='';
+  toast('已新增指標「'+name+'」· 目標 '+targetText(rec));gaEvent('metric_add',{target_mode:mode});
+}
+function setMetricValue(mid,d,v){
+  var m=findM(mid);if(!m)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){toast('請揀日期');return;}
+  if(diffDays(d,today())>0){toast('未嚟嘅日子唔可以記錄');return;}
+  if(!isFinite(v)){toast('請輸入數值');return;}
+  var now=Date.now(),i=m.points.findIndex(function(p){return p.d===d;}),act='輸入';
+  if(i>=0){m.points[i].v=v;m.points[i].t=now;act='修正';}
+  else{m.points.push({k:uid(),d:d,v:v,t:now});}
+  m.log.push({k:uid(),type:'value',d:d,v:v,t:now,act:act});
+  save();blurActive();renderAll();toast(act+' '+fmtMD(d)+' · '+fmtNum(v)+' '+m.unit+'（已記日期）');
+  gaEvent('metric_value',{backfill:d!==today()?1:0});
+}
+function setMetricTarget(mid,mode,v,lo,hi){
+  var m=findM(mid);if(!m)return;
+  var rec;
+  if(mode==='range'){
+    if(!isFinite(lo)||!isFinite(hi)){toast('請輸入區間下限同上限');return;}
+    rec=targetRec(lo,hi,'range');
+  }else{
+    if(!isFinite(v)){toast('請輸入新目標值');return;}
+    rec=targetRec(v,v,'point');
+  }
+  var d=today(),now=Date.now(),i=m.targets.findIndex(function(p){return p.d===d;});
+  var base=Object.assign({k:i>=0?m.targets[i].k:uid(),d:d,t:now},rec);
+  if(i>=0)m.targets[i]=base;else m.targets.push(base);
+  m.log.push(Object.assign({k:uid(),type:'target',d:d,t:now,act:'改目標'},rec));
+  save();blurActive();renderAll();
+  toast('目標改為 '+targetText(rec)+' '+m.unit+'（已記低 '+fmtMD(d)+'）');
+  gaEvent('metric_target',{target_mode:mode});
+}
+function deleteMetric(mid){
+  var i=state.metrics.findIndex(function(m){return m.id===mid;});if(i<0)return;
+  if(!confirm('刪除指標會同時清除佢嘅數值同變更紀錄，確定？'))return;
+  var old=state.metrics.splice(i,1)[0];save();blurActive();renderAll();
+  toast('已刪除「'+old.name+'」',function(){
+    state.metrics.splice(i,0,old);save();renderAll();toast('已復原');
+  });
+  gaEvent('metric_delete');
+}
+function openMHist(mid){
+  var m=findM(mid);if(!m)return;
+  mHistId=mid;$('mHistTitle').textContent=m.name+' · 變更紀錄';renderMHist();
+  openSheet('mHistSheet');gaEvent('metric_history');
+}
+function renderMHist(){
+  var m=findM(mHistId);if(!m)return;
+  var a=m.log.slice().sort(function(x,y){return y.t-x.t;});
+  if(!a.length){$('mHistList').innerHTML='<div class="empty" style="padding:14px">未有變更紀錄</div>';return;}
+  $('mHistList').innerHTML=a.slice(0,200).map(function(x){
+    return '<div class="histrow"><span class="hd">'+fmtMD(x.d)+'</span>'
+      +'<span class="hv">'+(x.type==='target'?'🎯 目標':'📈 數值')+' <b>'
+        +(x.mode==='range'?(fmtNum(x.lo)+' ～ '+fmtNum(x.hi)):fmtNum(x.v))+'</b> '+esc(m.unit)
+      +'<small>'+esc(x.act)+' · 記錄於 '+fmtMD(isoOf(new Date(x.t)))+' '+fmtClock(x.t)+'</small></span></div>';
+  }).join('');
+}
+
+/* ============ v3：循環輪次紀錄 ============ */
+function openRounds(id){
+  var h=findH(id);if(!h)return;
+  roundId=id;var ci=cycleInfo(h),rs=roundsOf(h),done=rs.filter(function(r){return r.complete;});
+  var avg=done.length?Math.round(done.reduce(function(s,r){return s+r.days;},0)/done.length):0;
+  $('roundTitle').textContent=h.emoji+' '+h.name+' · 循環輪次';
+  $('roundSum').innerHTML='每 <b>'+ci.cycle+'</b> 次打卡為一輪 · 累計 <b>'+ci.total+'</b> 次 · 已完成 <b>'+done.length+'</b> 輪'
+    +(avg?('<br>平均每輪用 <b>'+avg+'</b> 日完成 '+ci.cycle+' 次'):'')
+    +'<br>每日每習慣最多打一次，所以「幾多日」＝該輪由第一次到最後一次打卡嘅日數。';
+  $('roundList').innerHTML=rs.length?rs.slice().reverse().map(function(r){
+    return '<div class="roundrow'+(r.complete?'':' cur')+'">'
+      +'<span class="rn">第 '+r.n+' 輪</span>'
+      +'<span class="rd">用咗 <b>'+r.days+'</b> 日 · 完成 <b>'+r.count+'</b> / '+ci.cycle+' 次'
+      +'<small>'+fmtMD(r.start)+' – '+fmtMD(r.end)+'</small></span>'
+      +'<span class="rv">'+(r.complete?'✓ 完成':'進行中')+'</span></div>';
+  }).join(''):'<div class="empty" style="padding:16px">仲未打卡，完成第一輪後就有紀錄</div>';
+  openSheet('roundSheet');gaEvent('cycle_rounds');
+}
+
+/* ============ v3：習慣模板庫 ============ */
+function renderTpl(){
+  $('tplTabs').innerHTML=TEMPLATES.map(function(t){
+    return '<button type="button" data-tpltab="'+t.key+'" class="'+(tplTab===t.key?'on':'')+'">'+t.icon+' '+t.name+'</button>';
+  }).join('');
+  var g=TEMPLATES.find(function(t){return t.key===tplTab;})||TEMPLATES[0];
+  $('tplList').innerHTML=g.items.map(function(it,i){
+    var key=g.key+':'+i;
+    return '<label class="tpl-item"><input type="checkbox" data-tplitem="'+key+'"'+(tplSel[key]?' checked':'')+'>'
+      +'<span class="te">'+it[1]+'</span><span class="tn">'+esc(it[0])+'</span>'
+      +'<span class="tg">每週 '+it[2]+' 次'+(it[3]?' · '+it[3]+' 次/輪':'')+'</span></label>';
+  }).join('');
+  var n=Object.keys(tplSel).filter(function(k){return tplSel[k];}).length;
+  $('tplAdd').textContent='加入所選（'+n+'）';
+}
+function openTpl(){tplSel={};tplTab='health';renderTpl();openSheet('tplSheet');gaEvent('template_open');}
+function addTemplateHabits(){
+  var added=0,skipped=0;
+  TEMPLATES.forEach(function(g){
+    g.items.forEach(function(it,i){
+      if(!tplSel[g.key+':'+i])return;
+      if(state.habits.some(function(h){return h.name===it[0];})){skipped++;return;}
+      state.habits.push({id:uid(),name:it[0],emoji:it[1],goal:it[2],cycle:it[3],created:today()});
+      added++;
+    });
+  });
+  if(!added){toast(skipped?'揀咗嘅習慣都已經喺名單':'請先揀最少一個習慣');return;}
+  save();closeSheet();renderAll();
+  toast('已加入 '+added+' 個習慣'+(skipped?'（'+skipped+' 個同名略過）':'')+'，去今日頁打卡啦');
+  gaEvent('template_add',{count:added});
+}
+
+function blurActive(){try{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();}catch(e){}}
 function renderAll(){
-  renderHero();renderToday();renderReview();
+  clampWeek();renderWeekBar();renderHero();renderToday();renderReview();
   var ae=document.activeElement;
   if(!(ae&&ae.closest&&ae.closest('#habitList')))renderHabits();
+  if(!(ae&&ae.closest&&ae.closest('#metricList')))renderMetrics();
   if(logId&&$('logSheet').classList.contains('on'))renderLog();
-  $('storeInfo').textContent=(storageOK?'localStorage':'記憶體（本機儲存被封鎖）')+' · '+state.habits.length+' 個習慣 · '+totalChecks()+' 次打卡';
+  $('storeInfo').textContent=(storageOK?'localStorage':'記憶體（本機儲存被封鎖）')+' · '+state.habits.length+' 個習慣 · '+state.metrics.length+' 個指標 · '+totalChecks()+' 次打卡';
 }
 
 /* ============ 動作 ============ */
@@ -779,8 +1443,8 @@ function popCard(id){
 /* 撳一次＝新增一筆打卡事件（連時間）；一日可記多次 */
 function punch(id,iso,back){
   var h=findH(id);if(!h)return;
+  if(countOn(id,iso)>0){toast('「'+h.name+'」'+fmtMD(iso)+'已經打咗卡，每日每事一次就夠');return;}
   if(diffDays(iso,today())>0)return;
-  if(diffDays(iso,h.created)<0){toast('呢日仲未建立「'+h.name+'」');return;}
   var before=cycleInfo(h),first=(iso===today()&&countOn(id,iso)===0);
   var e=addEntry(id,iso,back),after=cycleInfo(h);
   renderAll();popCard(id);
@@ -792,6 +1456,7 @@ function punch(id,iso,back){
   else if(first)msg=CHEERS[doneOn(t)%CHEERS.length];
   else msg='+1 次 · 累計 '+after.total+' 次';
   toast(msg,function(){removeEntry(e.k);renderAll();toast('已復原');});
+  gaEvent('habit_checkin',{is_backfill:back?1:0});
 }
 /* 7 日格撳已打卡嘅日子＝扣回該日最後一筆 */
 function unpunch(id,iso){
@@ -801,6 +1466,7 @@ function unpunch(id,iso){
   toast('已扣回 '+fmtMD(iso)+' 一筆 · 累計 '+cycleInfo(h).total+' 次',function(){
     restoreEntry(r.iso,r.entry);renderAll();toast('已復原');
   });
+  gaEvent('habit_uncheck');
 }
 /* 紀錄面板逐筆刪除 */
 function delLogEntry(k){
@@ -840,12 +1506,13 @@ function addHabit(name,emoji,goal,cycle){
   name=String(name||'').trim();if(!name){toast('請輸入習慣名稱');return false;}
   var cy=parseInt(cycle,10);if(!isFinite(cy)||cy<0||cy>99)cy=0;
   var h={id:uid(),name:name.slice(0,24),emoji:emoji||'🌱',goal:goal||7,cycle:cy,created:today()};
-  state.habits.push(h);save();renderAll();toast('已新增「'+h.name+'」');return true;
+  state.habits.push(h);save();renderAll();toast('已新增「'+h.name+'」');
+  gaEvent('habit_add');return true;
 }
 function addStarter(){
   var arr=[['飲 8 杯水','💧',7,0],['閱讀 10 分鐘','📖',7,10],['伸展 5 分鐘','🧘',5,0]];
   arr.forEach(function(a){state.habits.push({id:uid(),name:a[0],emoji:a[1],goal:a[2],cycle:a[3],created:today()});});
-  save();renderAll();toast('已加入 3 個入門習慣（閱讀設咗 10 次一輪）');
+  save();renderAll();toast('已加入 3 個入門習慣（閱讀設咗 10 次一輪）');gaEvent('habit_add_starter');
 }
 function openEdit(id){
   var h=findH(id);if(!h)return;
@@ -876,11 +1543,13 @@ function moveHabit(id,dir){
   save();renderAll();
 }
 function setTab(tab,dir){
-  if(['today','review','habits'].indexOf(tab)<0)tab='today';
+  if(['today','review','habits','metrics'].indexOf(tab)<0)tab='today';
+  if(tab!=='habits'&&sortMode)setSortMode(false);   /* 離開名單就自動閂排序模式，避免誤拖 */
   var changed=(curTab!==tab);
+  if(changed)gaEvent('tab_view',{tab:tab});
   curTab=tab;
   document.querySelectorAll('.tab[data-tab]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===tab);});
-  ['today','review','habits'].forEach(function(k){
+  ['today','review','habits','metrics'].forEach(function(k){
     var p=$('page'+k.charAt(0).toUpperCase()+k.slice(1));
     if(p)p.style.display=(k===tab)?'':'none';
   });
@@ -897,13 +1566,13 @@ function setTab(tab,dir){
 
 /* ============ 匯出／匯入／清除 ============ */
 function exportData(){
-  var payload={app:'habit-checkin',version:2,exportedAt:new Date().toISOString(),state:state};
+  var payload={app:'habit-checkin',version:4,exportedAt:new Date().toISOString(),state:state};
   try{
     var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     var url=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=url;a.download='習慣打卡-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();
     setTimeout(function(){URL.revokeObjectURL(url);},1500);
-    toast('已匯出備份檔');
+    toast('已匯出備份檔');gaEvent('backup_export');
   }catch(e){toast('匯出失敗，請改用 Chrome');}
 }
 function importData(file){
@@ -914,7 +1583,7 @@ function importData(file){
     var s=normalize(obj&&obj.state?obj.state:obj);
     if(!s.habits.length&&!Object.keys(s.logs).length){toast('檔案入面冇習慣資料');return;}
     if(!confirm('匯入會覆蓋現有 '+state.habits.length+' 個習慣同所有打卡紀錄，確定？'))return;
-    state=s;save();closeSheet();renderAll();toast('已匯入 '+state.habits.length+' 個習慣');
+    state=s;save();closeSheet();clampWeek();renderAll();toast('已匯入 '+state.habits.length+' 個習慣');gaEvent('backup_import');
   };
   fr.onerror=function(){toast('讀取檔案失敗');};
   fr.readAsText(file);
@@ -1011,7 +1680,7 @@ function drawShare(kind){
     y+=rowH;
   });
   c.strokeStyle='#f0e2d8';c.lineWidth=1;c.beginPath();c.moveTo(P,H-72);c.lineTo(W-P,H-72);c.stroke();
-  shText(c,'單檔離線 · 資料只存本機 · 由「小習慣打卡」產生',P,H-44,14,'#967f89',600);
+  shText(c,'資料只存本機 · 由「小習慣打卡」產生',P,H-44,14,'#967f89',600);
   shText(c,t,W-P,H-44,14,'#967f89',600,'right');
   return cv;
 }
@@ -1036,7 +1705,7 @@ function openSharePanel(kind){
   document.querySelectorAll('[data-sk]').forEach(function(b){
     b.classList.toggle('on',b.getAttribute('data-sk')===shareKind);
   });
-  refreshShare();openSheet('shareSheet');
+  refreshShare();openSheet('shareSheet');gaEvent('share_open',{image:shareKind});
 }
 function shareTextFor(kind){
   var t=today(),lines=[];
@@ -1084,6 +1753,7 @@ function saveShareImage(){
 /* 網頁無法定址指定 App：用系統分享選單（用戶自己揀微信／WhatsApp）；不支援就存圖 */
 function shareTo(app){
   if(!shareBlob){toast('圖片準備中，請再撳一次');return;}
+  gaEvent('share_send',{app:app,image:shareKind});
   var label=(app==='wx'?'微信':'WhatsApp '),file=null;
   try{file=new File([shareBlob],shareName,{type:'image/png'});}catch(e){}
   if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
@@ -1103,20 +1773,25 @@ function shareTo(app){
 $('tabbar').addEventListener('click',function(e){
   var t=e.target.closest('[data-tab]');if(!t)return;
   var tab=t.getAttribute('data-tab');
-  if(tab==='settings'){$('weekStart').value=String(state.settings.weekStart);renderAll();openSheet('settingsSheet');return;}
+  if(tab==='settings'){if(sortMode)setSortMode(false);$('weekStart').value=String(state.settings.weekStart);$('gaMode').value=gaEnabled()?'on':'off';renderAll();openSheet('settingsSheet');return;}
   setTab(tab);
 });
 $('todayList').addEventListener('click',function(e){
   var b,id,iso;
-  if((b=e.target.closest('[data-check]'))){punch(b.getAttribute('data-check'),today());return;}
+  if((b=e.target.closest('[data-check]'))){
+    id=b.getAttribute('data-check');
+    if(has(id,today()))unpunch(id,today());else punch(id,today(),false);
+    return;
+  }
   if((b=e.target.closest('[data-day]'))){
     id=b.getAttribute('data-hid');iso=b.getAttribute('data-day');
-    if(countOn(id,iso)>0)unpunch(id,iso);else punch(id,iso,true);
+    if(countOn(id,iso)>0)unpunch(id,iso);else punch(id,iso,iso!==today());
     return;
   }
   if((b=e.target.closest('[data-log]'))){openLog(b.getAttribute('data-log'));return;}
   if((b=e.target.closest('[data-edit]'))){openEdit(b.getAttribute('data-edit'));return;}
-  if((b=e.target.closest('#starterBtn'))){addStarter();return;}
+  if((b=e.target.closest('#starterBtn'))){openTpl();return;}
+  if((b=e.target.closest('[data-rounds]'))){openRounds(b.getAttribute('data-rounds'));return;}
 });
 /* 今日頁與習慣頁嘅分享入口 */
 document.addEventListener('click',function(e){
@@ -1128,7 +1803,78 @@ $('heatGrid').addEventListener('click',function(e){
   var k=c.getAttribute('data-heat'),hs=habitsOn(k);
   if(diffDays(k,today())>0){toast('呢日仲未到');return;}
   if(!hs.length){toast(fmtMD(k)+' · 當時未有習慣');return;}
-  toast(fmtMD(k)+' · 完成 '+doneOn(k)+' / '+hs.length);
+  var done=doneOn(k),n=hs.length;
+  gotoWeekOf(k);setTab('today');renderAll();
+  gaEvent('heat_jump');
+  toast('已跳到 '+fmtMD(weekStartShown())+' 嗰週 · '+fmtMD(k)+' 完成 '+done+' / '+n+'，撳格仔補打');
+});
+/* 週數切換按鈕 */
+$('weekPrev').addEventListener('click',function(){shiftWeek(-1);});
+$('weekNext').addEventListener('click',function(){shiftWeek(1);});
+$('weekBack').addEventListener('click',function(){weekOffset=0;renderAll();gaEvent('week_switch',{direction:'today'});});
+
+/* v3：浮動分享鈕 */
+$('fabShare').addEventListener('click',function(){
+  openSharePanel(curTab==='habits'?'list':'today');
+});
+
+/* v3：習慣模板庫 */
+$('tplBtn').addEventListener('click',openTpl);
+$('tplTabs').addEventListener('click',function(e){
+  var b=e.target.closest('[data-tpltab]');if(!b)return;
+  tplTab=b.getAttribute('data-tpltab');renderTpl();
+});
+$('tplList').addEventListener('change',function(e){
+  var b=e.target.closest('[data-tplitem]');if(!b)return;
+  var k=b.getAttribute('data-tplitem');tplSel[k]=b.checked;
+  var n=Object.keys(tplSel).filter(function(x){return tplSel[x];}).length;
+  $('tplAdd').textContent='加入所選（'+n+'）';
+});
+$('tplAdd').addEventListener('click',addTemplateHabits);
+
+/* v3.1：指標與目標（單一值／區間） */
+$('mAdd').addEventListener('click',addMetric);
+$('mMode').addEventListener('change',function(){
+  $('mAddRow').setAttribute('data-tmode',this.value==='range'?'range':'point');
+});
+['mName','mTarget','mLo','mHi'].forEach(function(k){
+  $(k).addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addMetric();}});
+});
+$('metricList').addEventListener('change',function(e){
+  var s=e.target.closest('[data-mtmode]');if(!s)return;
+  var card=s.closest('.mcard');
+  if(card)card.setAttribute('data-tmode',s.value==='range'?'range':'point');
+});
+$('metricList').addEventListener('click',function(e){
+  var b,id,card,v;
+  if((b=e.target.closest('[data-mdel]'))){deleteMetric(b.getAttribute('data-mdel'));return;}
+  if((b=e.target.closest('[data-mhist]'))){openMHist(b.getAttribute('data-mhist'));return;}
+  if((b=e.target.closest('[data-msave]'))){
+    id=b.getAttribute('data-msave');card=b.closest('.mcard');
+    v=parseFloat(card.querySelector('[data-mval]').value);
+    setMetricValue(id,card.querySelector('[data-mdate]').value,v);
+    return;
+  }
+  if((b=e.target.closest('[data-mtgt]'))){
+    id=b.getAttribute('data-mtgt');card=b.closest('.mcard');
+    var mode=card.querySelector('[data-mtmode]').value==='range'?'range':'point';
+    if(mode==='range'){
+      setMetricTarget(id,'range',NaN,
+        parseFloat(card.querySelector('[data-mnewlo]').value),
+        parseFloat(card.querySelector('[data-mnewhi]').value));
+    }else{
+      setMetricTarget(id,'point',parseFloat(card.querySelector('[data-mnewtgt]').value),NaN,NaN);
+    }
+    return;
+  }
+});
+$('metricList').addEventListener('keydown',function(e){
+  if(e.key!=='Enter')return;
+  var inp=e.target.closest('[data-mval],[data-mnewtgt],[data-mnewlo],[data-mnewhi]');if(!inp)return;
+  e.preventDefault();
+  var card=inp.closest('.mcard');
+  var btn=inp.hasAttribute('data-mval')?card.querySelector('[data-msave]'):card.querySelector('[data-mtgt]');
+  if(btn)btn.click();
 });
 
 /* 新增習慣 */
@@ -1150,7 +1896,7 @@ $('newName').addEventListener('keydown',function(e){
 });
 $('habitList').addEventListener('click',function(e){
   var b;
-  if((b=e.target.closest('#starterBtn2'))){addStarter();return;}
+  if((b=e.target.closest('#starterBtn2'))){openTpl();return;}
   if((b=e.target.closest('[data-mv]'))){moveHabit(b.getAttribute('data-mv'),parseInt(b.getAttribute('data-dir'),10));return;}
   if((b=e.target.closest('[data-hdel]'))){deleteHabit(b.getAttribute('data-hdel'));return;}
 });
@@ -1190,7 +1936,12 @@ $('delHabit').addEventListener('click',function(){if(editId)deleteHabit(editId);
 
 /* 設定 */
 $('weekStart').addEventListener('change',function(){
-  state.settings.weekStart=parseInt(this.value,10)===0?0:1;save();renderAll();toast('一週開始日已改');
+  state.settings.weekStart=parseInt(this.value,10)===0?0:1;save();clampWeek();renderAll();toast('一週開始日已改');
+});
+$('gaMode').addEventListener('change',function(){
+  var on=this.value!=='off';setGaEnabled(on);
+  if(on)gaEvent('analytics_toggle',{enabled:1});
+  toast(on?'已開啟匿名用量統計（唔會傳習慣內容）':'已關閉用量統計，之後唔會再傳送任何數據');
 });
 $('exportBtn').addEventListener('click',exportData);
 $('importBtn').addEventListener('click',function(){$('importFile').click();});
@@ -1227,7 +1978,7 @@ $('toastUndo').addEventListener('click',function(){if(undoFn){var f=undoFn;undoF
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet();});
 
 /* ============ 手指左右滑動切換內容 ============ */
-var TABS=['today','review','habits'];
+var TABS=['habits','today','review','metrics'];  /* 跟底部選單嘅可滑動分頁順序（設定係面板，唔入去） */
 var swipe=null, swipedAt=0;
 function swipeAnim(el,dir){
   if(!el)return;
@@ -1237,8 +1988,9 @@ function swipeAnim(el,dir){
 }
 document.addEventListener('pointerdown',function(e){
   if(e.pointerType==='mouse'&&e.button!==0)return;
-  if(e.target.closest&&e.target.closest('input,select,textarea,.log-list'))return;
-  swipe={x:e.clientX,y:e.clientY,t:Date.now()};
+  if(e.target.closest&&e.target.closest('input,select,textarea,.log-list,.drag-h'))return;
+  swipe={x:e.clientX,y:e.clientY,t:Date.now(),
+    onWeek:!!(e.target.closest&&e.target.closest('.d7,.weekbar'))};
 },{passive:true});
 document.addEventListener('pointerup',function(e){
   if(!swipe)return;
@@ -1256,6 +2008,10 @@ document.addEventListener('pointerup',function(e){
     return;
   }
   if($('mask').classList.contains('on'))return;   // 其他面板開住，唔好郁分頁
+  if(s.onWeek&&curTab==='today'){                 // 喺七格／週數列上滑動＝切週補打
+    shiftWeek(dir>0?1:-1);swipeAnim($('todayList'),dir);
+    return;
+  }
   var i=TABS.indexOf(curTab),j=Math.max(0,Math.min(TABS.length-1,i+dir));
   if(j!==i)setTab(TABS[j],dir);
 },{passive:true});
@@ -1272,6 +2028,9 @@ setInterval(function(){
 
 /* ============ init ============ */
 load();setTab('today');renderAll();
+if(migrationMerged)setTimeout(function(){
+  toast('已合併 '+migrationMerged+' 筆同日重複打卡（每日每事只計一次）');
+},500);
 })();
 </script>
 </body>
