@@ -219,6 +219,21 @@ td.c-op{white-space:nowrap;width:110px}
 .modal{background:var(--panel);border:1px solid var(--line2);border-radius:18px;box-shadow:0 24px 70px rgba(30,25,18,.28);width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
 .modal.wide{max-width:1000px}
 .modal.full{max-width:820px}
+/* 匯出／分享格式選擇：手機底部上滑清單，桌面置中卡片 */
+.mask.sheet{align-items:flex-end;padding:0}
+.actsheet{width:100%;max-width:480px;background:var(--panel);border:1px solid var(--line2);border-bottom:none;border-radius:20px 20px 0 0;box-shadow:0 -14px 44px rgba(30,25,18,.30);padding:14px 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:9px;animation:su .22s ease}
+@keyframes su{from{transform:translateY(110%)}to{transform:translateY(0)}}
+@media(min-width:560px){ .mask.sheet{align-items:center;padding:16px} .actsheet{border-radius:18px;border-bottom:1px solid var(--line2);max-width:420px} }
+.as-head{display:flex;flex-direction:column;gap:2px;padding:2px 6px 5px}
+.as-head b{font-size:16px;color:var(--ink)}
+.as-head .sub{font-size:12px;color:var(--muted)}
+.as-list{display:flex;flex-direction:column;gap:8px}
+.as-opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:1px solid var(--line2);background:var(--card);border-radius:13px;padding:14px;min-height:50px;font-size:15px;color:var(--ink);cursor:pointer}
+.as-opt:hover{background:var(--bg2)}
+.as-opt .ic{font-size:19px;width:22px;text-align:center}
+.as-opt .lb{font-weight:600}
+.as-opt .ds{font-size:11.5px;color:var(--muted);margin-left:auto;padding-left:8px}
+.as-cancel{margin-top:2px;padding:13px;border-radius:13px;font-size:15px;color:var(--muted)}
 .mhead{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex:0 0 auto}
 .mhead b{font-size:15px;font-weight:800;flex:1}
 .mhead .sub{font-size:10.5px;color:var(--muted);font-weight:600}
@@ -449,11 +464,8 @@ td.c-op{white-space:nowrap;width:110px}
       <div class="lb-btns">
         <button class="btn pri" id="btnPlayList">▶ 播放清單</button>
         <button class="btn" id="btnQuiz">📝 測驗</button>
-        <button class="btn" id="btnXlsx">⬇ 匯出 Excel</button>
-        <button class="btn warm" id="btnPdf">🖨 匯出 PDF</button>
-        <button class="btn" id="btnExportHtml">🌐 匯出 HTML</button>
-        <button class="btn" id="btnSharePdf">↗ 分享 PDF</button>
-        <button class="btn" id="btnShareExcel">↗ 分享 Excel</button>
+        <button class="btn" id="btnExport">📤 匯出</button>
+        <button class="btn" id="btnShare">↗ 分享</button>
         <button class="btn" id="btnAddCard">＋ 新增卡片</button>
         <div class="menu-wrap">
           <button class="btn icon" id="btnMore">⋯</button>
@@ -461,11 +473,6 @@ td.c-op{white-space:nowrap;width:110px}
             <button data-m="rename">✎ 重新命名清單</button>
             <button data-m="dup">⧉ 複製清單</button>
             <button data-m="paste">📋 批量貼上卡片</button>
-            <hr>
-            <button data-m="sharepdf">↗ 分享 PDF（用上次設定）</button>
-            <button data-m="shareexcel">↗ 分享 Excel</button>
-            <button data-m="csv">⬇ 匯出 CSV</button>
-            <button data-m="json">⬇ 匯出此清單 JSON</button>
             <hr>
             <button data-m="clear" class="red">⌫ 清空此清單卡片</button>
             <button data-m="del" class="red">🗑 刪除清單</button>
@@ -731,13 +738,21 @@ td.c-op{white-space:nowrap;width:110px}
     <p><b style="color:var(--ink)">④ 播放與中文語音</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張自動朗讀：先讀正面 → 自動翻面 → 讀反面 → 下一張。可調語速、間隔、循環、隨機；單張播放後可「續播整份」。<br><b>每份清單各自記住「普通話／粵語」</b>：清單標題下或播放面板的切換鈕一按即換，切換時會立即用新語音重讀。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。語音來自系統／瀏覽器內建，若沒有粵語語音包，播放面板會提示（可到系統語言設定新增）。</p>
     <p><b style="color:var(--ink)">⑤ PDF 雙面對齊</b><br>PDF 頁次為「第1張正面、第1張背面、第2張正面、第2張背面…」，背面卡的位置依翻面方式鏡射對調，因此印表機選「雙面・長邊裝訂」後，正反內容會落在同一張小卡的兩面。沿裁切線剪開即可。<br><b>首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。</p>
     <div class="note">列印設定：縮放 <b>100%</b>／實際大小，<b>不要</b>勾「配合頁面大小」，關閉頁首頁尾與自動置中，紙張尺寸與此處選擇一致。</div>
-    <p><b style="color:var(--ink)">⑥ 直接分享 PDF</b><br>按「↗ 分享 PDF」會用目前設定即時產生檔案並叫起系統分享選單（手機／平板可直接傳到通訊軟體、電郵或雲端）；PDF 對話框內的「↗ 直接分享」則用對話框裏的設定。桌面瀏覽器若不支援檔案分享，會依序降級為：複製 PDF 到剪貼簿 → 開新分頁預覽 → 下載檔案，並以提示說明。</p>
+    <p><b style="color:var(--ink)">⑥ 直接分享</b><br>按「↗ 分享」選 PDF 或 Excel 後，會用目前設定即時產生檔案並叫起系統分享選單（手機／平板可直接傳到通訊軟體、電郵或雲端）；PDF 對話框內的「↗ 直接分享」則用對話框裏的設定。桌面瀏覽器若不支援檔案分享，會依序降級為：複製檔案到剪貼簿 → 開新分頁預覽 → 下載檔案，並以提示說明。</p>
     <p><b style="color:var(--ink)">⑦ 自測／測驗</b><br>按「📝 測驗」可自測：先選「看正面答反面」或「看反面答正面」；作答方式可選「輸入答案」（自動忽略空白與標點比對），或「選擇題」（從同清單其他卡的答案中隨機混入干擾項，選出正確）。可設定出題範圍（全部／未熟練／已加星／有底面）與題目順序。完成後會列出每題的✓／✗ 與正確答案，並可<b>「重測全部」</b>或<b>「只重測錯題」</b>。</p>
     <p><b style="color:var(--ink)">資料保存</b><br>資料存於本機瀏覽器。換電腦或清除瀏覽器資料前，請按「⬇ 備份」下載 JSON，再到新環境按「還原」。清單的語音設定一併保存在備份內。</p>
     <p style="margin-bottom:0"><b style="color:var(--ink)">匿名使用統計</b><br>以網頁方式（http／https）開啟時，會透過 Google Analytics（G-G7H3M2VW8T）記錄<b>匿名的功能使用次數</b>，例如匯出、分享、播放，用來改善工具。<b>卡片內容、清單名稱及任何個人資料都不會上傳</b>。直接以本機檔案（file://）開啟、沒有網路、瀏覽器啟用「不追蹤」或在下方關閉時，都不會連線。<br><label class="chk" style="margin-top:6px"><input type="checkbox" id="gaOptOut"> 關閉匿名使用統計</label></p>
   </div>
   <div class="mfoot"><span class="sp"></span><button class="btn pri" data-close="helpMask">知道了</button></div>
 </div></div>
+
+<div class="mask sheet" id="fmtMask">
+  <div class="actsheet">
+    <div class="as-head"><b id="fmtTitle">匯出格式</b><span class="sub" id="fmtSub"></span></div>
+    <div class="as-list" id="fmtList"></div>
+    <button class="btn as-cancel" data-close="fmtMask">取消</button>
+  </div>
+</div>
 
 <div id="toast"></div>
 <input type="file" id="restoreInput" accept=".json" style="display:none">
@@ -1030,9 +1045,8 @@ $('#btnHelp').onclick=()=>{ maskOpen('#helpMask'); gaTrack('help_open'); };
 $$('.lang-seg').forEach(seg=>seg.addEventListener('click',e=>{
   const b=e.target.closest('button[data-v]'); if(!b)return; setListLang(b.dataset.v);
 }));
-$('#btnSharePdf').onclick=()=>sharePdf(false);
-$('#btnShareExcel').onclick=()=>shareExcel();
-$('#btnExportHtml').onclick=()=>exportHtml();
+$('#btnExport').onclick=()=>showChooser('export');
+$('#btnShare').onclick=()=>showChooser('share');
 $('#listNav').addEventListener('click',e=>{
   const it=e.target.closest('[data-list]'); if(!it)return;
   S.active=it.dataset.list; revealed.clear(); focusIdx=0; focusShow=false; save(); render(); closeSide();
@@ -1040,8 +1054,6 @@ $('#listNav').addEventListener('click',e=>{
 $('#listName').onchange=e=>{ cur().name=e.target.value.trim()||'未命名'; touch(); render(); };
 $('#btnAddCard').onclick=()=>openCard(null);
 $('#btnPlayList').onclick=()=>startPlay(null);
-$('#btnXlsx').onclick=()=>exportXlsx();
-$('#btnPdf').onclick=()=>openPdf();
 $('#btnMore').onclick=e=>{ e.stopPropagation(); $('#moreMenu').classList.toggle('on'); };
 $('#moreMenu').addEventListener('click',e=>{
   const b=e.target.closest('[data-m]'); if(!b)return; closeMenus();
@@ -1050,10 +1062,6 @@ $('#moreMenu').addEventListener('click',e=>{
   if(m==='dup'){ const c=JSON.parse(JSON.stringify(l)); c.id=uid(); c.name=l.name+'（複本）'; c.created=c.updated=Date.now();
     c.cards.forEach(x=>x.id=uid()); S.lists.push(c); S.active=c.id; save(); render(); toast('已複製清單'); gaTrack('list_duplicate',{card_count:bucket(c.cards.length)}); }
   if(m==='paste'){ openImport('paste'); }
-  if(m==='sharepdf'){ sharePdf(false); }
-  if(m==='shareexcel'){ shareExcel(); }
-  if(m==='csv'){ exportCsv(); }
-  if(m==='json'){ dlText(JSON.stringify({name:l.name,cards:l.cards.map(c=>({front:c.front,back:c.back,star:c.star,done:c.done}))},null,2),safeName(l.name)+'_'+stamp()+'.json','application/json'); toast('已匯出此清單 JSON'); gaTrack('export_list_json',{card_count:bucket(l.cards.length)}); }
   if(m==='clear'){ if(l.cards.length&&confirm('確定清空「'+l.name+'」的 '+l.cards.length+' 張卡片？此動作無法復原。')){ l.cards=[]; touch(); render(); toast('已清空'); } }
   if(m==='del'){
     if(S.lists.length===1){ toast('至少要保留一份清單'); return; }
@@ -1246,6 +1254,37 @@ function exportHtml(){
   dl(new Blob([buildCardsHtml(l)],{type:'text/html;charset=utf-8'}),safeName(l.name)+'_記憶卡_'+stamp()+'.html');
   toast('已匯出 HTML（'+l.cards.length+' 張卡，可另存或列印）');
   gaTrack('export_html',{card_count:bucket(l.cards.length)});
+}
+function exportListJson(){
+  const l=cur();
+  dlText(JSON.stringify({name:l.name,cards:l.cards.map(c=>({front:c.front,back:c.back,star:c.star,done:c.done}))},null,2),safeName(l.name)+'_'+stamp()+'.json','application/json');
+  toast('已匯出此清單 JSON'); gaTrack('export_list_json',{card_count:bucket(l.cards.length)});
+}
+/* 匯出／分享：先點按鈕，再選格式，減少頁面按鈕 */
+function showChooser(mode){
+  const exportOpts=[
+    {ic:'🖨',lb:'PDF',ds:'雙面對齊列印',fn:()=>openPdf()},
+    {ic:'⬇',lb:'Excel',ds:'正面／反面兩欄',fn:()=>exportXlsx()},
+    {ic:'🌐',lb:'HTML',ds:'可另存或列印',fn:()=>exportHtml()},
+    {ic:'⬇',lb:'CSV',ds:'Excel 可直接開啟',fn:()=>exportCsv()},
+    {ic:'⬇',lb:'JSON',ds:'此清單備份',fn:()=>exportListJson()},
+  ];
+  const shareOpts=[
+    {ic:'🖨',lb:'PDF',ds:'雙面記憶卡',fn:()=>sharePdf(false)},
+    {ic:'⬇',lb:'Excel',ds:'可直接匯入',fn:()=>shareExcel()},
+  ];
+  const opts = mode==='share'?shareOpts:exportOpts;
+  $('#fmtTitle').textContent = mode==='share'?'分享格式':'匯出格式';
+  $('#fmtSub').textContent = mode==='share'?'選擇要分享的格式':'選擇要匯出的格式';
+  const list=$('#fmtList'); list.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='as-opt'; b.dataset.f=o.lb;
+    b.innerHTML='<span class="ic">'+o.ic+'</span><span class="lb">'+o.lb+'</span><span class="ds">'+o.ds+'</span>';
+    b.onclick=()=>{ maskClose('#fmtMask'); setTimeout(o.fn,80); };
+    list.appendChild(b);
+  });
+  maskOpen('#fmtMask');
 }
 async function readZip(ab){
   const u=new Uint8Array(ab), v=new DataView(ab); let eo=-1;
