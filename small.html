@@ -20,6 +20,12 @@
 <meta name="twitter:title" content="小習慣打卡">
 <meta name="twitter:image" content="habit-logo.png">
 <style>
+/* v3.4：字型大小（小／中／大）— 全部文字按 --fs 縮放 */
+:root{--fs:1}
+html[data-fs="s"]{--fs:.9}
+html[data-fs="m"]{--fs:1}
+html[data-fs="l"]{--fs:1.16}
+
 *,*::before,*::after{box-sizing:border-box}
 :root{
   --bg1:#fffaf3; --bg2:#fdf0e6;
@@ -48,38 +54,40 @@ header{position:sticky;top:0;z-index:30;padding-top:calc(14px + env(safe-area-in
   background:linear-gradient(180deg,var(--bg1) 72%,rgba(255,250,243,0))}
 .h-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;color:var(--ink)}
-.h-stat{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:700;color:var(--muted);white-space:nowrap;letter-spacing:.2px}
-.h-stat b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;margin-left:3px}
+.h-stat{display:flex;align-items:center;gap:12px;font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--muted);white-space:nowrap;letter-spacing:.2px}
+.h-stat b{font-size:calc(15px * var(--fs));font-weight:800;font-variant-numeric:tabular-nums;margin-left:3px}
 .h-stat .st-a b{color:var(--accent)}
 .h-stat .st-b b{color:var(--gold-tx)}
-.banner{display:none;margin-top:10px;background:var(--red-bg);border:1px solid var(--red-line);color:var(--red);font-size:11.5px;line-height:1.6;border-radius:12px;padding:10px 12px}
+.banner{display:none;margin-top:10px;background:var(--red-bg);border:1px solid var(--red-line);color:var(--red);font-size:calc(11.5px * var(--fs));line-height:1.6;border-radius:12px;padding:10px 12px}
 .banner.on{display:block}
 
 /* ---------- common ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 10px rgba(190,120,90,.06);margin-bottom:10px}
 .sec{display:flex;align-items:center;gap:8px;margin:20px 2px 10px}
-.sec h2{margin:0;font-size:13px;font-weight:800;letter-spacing:.6px;color:var(--ink2)}
-.sec .cnt{font-size:11px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 9px}
-.sec .note{margin-left:auto;font-size:10.5px;color:var(--muted)}
-.empty{text-align:center;color:var(--muted);font-size:12.5px;line-height:1.9;padding:26px 14px;border:1px dashed var(--line);border-radius:16px;background:#fffdfb}
+.sec h2{margin:0;font-size:calc(13px * var(--fs));font-weight:800;letter-spacing:.6px;color:var(--ink2)}
+.sec .cnt{font-size:calc(11px * var(--fs));font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 9px}
+.sec .note{margin-left:auto;font-size:calc(10.5px * var(--fs));color:var(--muted)}
+.empty{text-align:center;color:var(--muted);font-size:calc(12.5px * var(--fs));line-height:1.9;padding:26px 14px;border:1px dashed var(--line);border-radius:16px;background:#fffdfb}
 .empty b{color:var(--ink2)}
-.empty .go{display:inline-block;margin-top:12px;padding:11px 18px;border-radius:12px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.24)}
-.ver{margin-top:16px;text-align:center;font-size:10px;color:#c3bcb3;line-height:1.8}
+.empty .go{display:inline-block;margin-top:12px;padding:11px 18px;border-radius:12px;background:var(--accent);color:#fff;font-size:calc(12.5px * var(--fs));font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.24)}
+.ver{margin-top:16px;text-align:center;font-size:calc(10px * var(--fs));color:#c3bcb3;line-height:1.8}
 
 /* ---------- 今日總覽 ---------- */
 .hero{padding:14px;margin-top:10px}
-.hero-date{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.4px;margin-bottom:10px}
+.hero-date{font-size:calc(11px * var(--fs));font-weight:700;color:var(--muted);letter-spacing:.4px;margin-bottom:10px}
 .hero-main{display:flex;align-items:center;gap:14px}
 .ring{width:78px;height:78px;flex:0 0 auto;position:relative}
 .ring svg{width:78px;height:78px;transform:rotate(-90deg)}
 .ring .track{stroke:var(--line2)}
 .ring .fill{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .45s cubic-bezier(.32,.72,0,1)}
 .ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
-.ring .pct b{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}
-.ring .pct span{font-size:9px;font-weight:700;color:var(--muted)}
+.ring .pct b{font-size:calc(18px * var(--fs));font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}
+.ring .pct span{font-size:calc(9px * var(--fs));font-weight:700;color:var(--muted)}
 .hero-txt{min-width:0;flex:1}
-.hero-title{font-size:16px;font-weight:800;letter-spacing:.2px}
-.hero-sub{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:5px;line-height:1.5}
+.hero-title{font-size:calc(16px * var(--fs));font-weight:800;letter-spacing:.2px}
+.hero-sub{font-size:calc(11.5px * var(--fs));color:var(--muted);font-weight:600;margin-top:5px;line-height:1.5}
+.hero-bar{height:8px;border-radius:99px;background:var(--line2);margin-top:10px;overflow:hidden}
+.hero-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .45s cubic-bezier(.32,.72,0,1)}
 
 /* ---------- 習慣卡 ---------- */
 .hcard{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;padding:12px;align-items:start;transition:border-color .18s,background .18s}
@@ -93,38 +101,55 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .hcard.is-done .hcheck{background:var(--green);border-color:var(--green);box-shadow:0 3px 10px rgba(46,143,126,.22)}
 .hcard.is-done .hcheck svg{stroke:#fff}
 .hcard:not(.is-done) .hcheck svg{display:none}
-.hcard:not(.is-done) .hcheck::after{content:"+";font-size:25px;font-weight:300;line-height:1;color:var(--accent2);opacity:.65}
+.hcard:not(.is-done) .hcheck::after{content:"+";font-size:calc(25px * var(--fs));font-weight:300;line-height:1;color:var(--accent2);opacity:.65}
 .hbody{min-width:0}
 .hrow1{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-right:28px}
-.hemo{font-size:17px;line-height:1}
-.hname{font-size:14.5px;font-weight:800;color:var(--ink);word-break:break-all}
-.hbadge{font-size:9.5px;font-weight:800;color:var(--orange,#b8792f);background:var(--gold-bg);border:1px solid var(--gold-line);border-radius:99px;padding:2px 7px;white-space:nowrap}
+.hemo{font-size:calc(17px * var(--fs));line-height:1}
+.hname{font-size:calc(14.5px * var(--fs));font-weight:800;color:var(--ink);word-break:break-all}
+.hbadge{font-size:calc(9.5px * var(--fs));font-weight:800;color:var(--orange,#b8792f);background:var(--gold-bg);border:1px solid var(--gold-line);border-radius:99px;padding:2px 7px;white-space:nowrap}
 .hbadge.zero{background:var(--gray-bg);color:var(--muted);border-color:transparent}
-.hrow2{font-size:10.5px;font-weight:600;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.hrow2 b{color:var(--accent);font-size:12px;font-variant-numeric:tabular-nums}
-.hrow2 .ok{font-size:9.5px;font-weight:800;color:var(--green);background:var(--green-bg);border-radius:99px;padding:2px 7px}
-.hmore{position:absolute;right:7px;top:7px;width:28px;height:28px;border-radius:9px;color:#b9ada5;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center}
+.hrow2{font-size:calc(10.5px * var(--fs));font-weight:600;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hrow2 b{color:var(--accent);font-size:calc(12px * var(--fs));font-variant-numeric:tabular-nums}
+.hrow2 .ok{font-size:calc(9.5px * var(--fs));font-weight:800;color:var(--green);background:var(--green-bg);border-radius:99px;padding:2px 7px}
+.hmore{position:absolute;right:6px;top:6px;width:34px;height:34px;border-radius:10px;color:#b9ada5;font-size:calc(20px * var(--fs));line-height:1;display:flex;align-items:center;justify-content:center;background:var(--gray-bg)}
 .hmore:hover{background:var(--gray-bg)}
-.d7{display:flex;gap:4px;margin-top:10px}
-.d7 button{flex:1;min-width:0;padding:5px 0 4px;border-radius:9px;background:var(--gray-bg);border:1px solid transparent;
-  display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--gray-tx);transition:transform .08s,background .15s}
-.d7 button:active{transform:scale(.93)}
-.d7 .dw{font-size:9px;font-weight:700;line-height:1.2}
-.d7 .dm{font-size:10px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
-.d7 .dt{font-size:10px;font-weight:800;line-height:1.2;height:11px}
-.d7 button.on{background:var(--green-bg);border-color:var(--green-line);color:var(--green)}
-.d7 button.today{border-color:var(--accent);border-style:dashed}
-.d7 button.na{opacity:.42}
-.d7-tip{font-size:9.5px;color:var(--muted);margin:7px 2px 0;line-height:1.5}
+/* v3.4：本週七日共用一條（唔再喺每張習慣卡重複） */
+.wkd{display:flex;gap:5px;margin:0 0 7px}
+.wkd button{flex:1;min-width:0;padding:6px 0 5px;border-radius:11px;background:var(--card);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--gray-tx);
+  box-shadow:0 2px 8px rgba(190,120,90,.05);transition:transform .08s,background .15s}
+.wkd button:active{transform:scale(.94)}
+.wkd .dw{font-size:calc(11px * var(--fs));font-weight:800;line-height:1.2;opacity:.9}
+.wkd .dm{font-size:calc(16px * var(--fs));font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15}
+.wkd .dd{font-size:calc(10.5px * var(--fs));font-weight:800;line-height:1.2;color:#7d6871;font-variant-numeric:tabular-nums}
+.wkd button.some{border-color:var(--accent-line);background:var(--accent-soft)}
+.wkd button.some .dd{color:var(--accent)}
+.wkd button.full{background:var(--green-bg);border-color:var(--green-line);color:var(--green)}
+.wkd button.full .dd{color:var(--green)}
+.wkd button.today{border-color:var(--accent);border-style:dashed}
+.wkd button.na{opacity:.4}
+/* 該日補打面板 */
+.day-sum{font-size:calc(12px * var(--fs));color:var(--muted);font-weight:700;margin:2px 2px 10px}
+.day-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:13px;
+  margin-bottom:8px;background:#fff}
+.day-row.on{background:#f2fbf7;border-color:var(--green-line)}
+.day-row .de{font-size:calc(18px * var(--fs));line-height:1}
+.day-row .dmid{flex:1;min-width:0}
+.day-row .dn{font-size:calc(15px * var(--fs));font-weight:800;color:var(--ink);word-break:break-all;line-height:1.25}
+.day-row .dst{font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--muted);margin-top:3px}
+.day-row.on .dst{color:var(--green)}
+.day-toggle{flex:0 0 auto;width:40px;height:40px;border-radius:12px;border:1.5px solid var(--line);background:var(--gray-bg);
+  color:var(--muted);font-size:calc(21px * var(--fs));font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center}
+.day-row.on .day-toggle{background:var(--green);border-color:var(--green);color:#fff}
 /* 週數切換列 */
 .weekbar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(190,120,90,.06);padding:8px 9px;margin-bottom:10px}
-.weekbar>button{width:34px;height:34px;flex:0 0 auto;border:1.5px solid var(--line);background:var(--gray-bg);color:var(--ink);border-radius:10px;font-size:20px;font-weight:800;line-height:1;cursor:pointer}
+.weekbar>button{width:34px;height:34px;flex:0 0 auto;border:1.5px solid var(--line);background:var(--gray-bg);color:var(--ink);border-radius:10px;font-size:calc(20px * var(--fs));font-weight:800;line-height:1;cursor:pointer}
 .weekbar>button:active{transform:scale(.94)}
 .weekbar>button:disabled{opacity:.32;cursor:default;transform:none}
-.weekbar>button.jump{width:auto;padding:0 9px;font-size:10px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line);white-space:nowrap}
-.weekbar .wmid{flex:1;min-width:0;text-align:center}
-.weekbar .wmid b{display:block;font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.weekbar .wmid small{display:block;font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weekbar>button.jump{width:auto;padding:0 9px;font-size:calc(10px * var(--fs));font-weight:800;color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line);white-space:nowrap}
+.weekbar .wmid{flex:1;min-width:0;display:flex;align-items:baseline;justify-content:center;gap:6px;flex-wrap:nowrap}
+.weekbar .wmid b{font-size:calc(12.5px * var(--fs));font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weekbar .wmid small{font-size:calc(9.5px * var(--fs));color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 左右滑動切換分頁 */
 .page.swipe-next{animation:swNext .24s cubic-bezier(.32,.72,0,1)}
 .page.swipe-prev{animation:swPrev .24s cubic-bezier(.32,.72,0,1)}
@@ -136,55 +161,60 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 /* ---------- 回顧 ---------- */
 .stat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
 .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 6px;text-align:center;box-shadow:0 2px 10px rgba(190,120,90,.05)}
-.stat b{display:block;font-size:21px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.2}
-.stat b small{font-size:11px;font-weight:700;margin-left:1px}
-.stat span{display:block;font-size:10px;font-weight:700;color:var(--muted);margin-top:5px}
+.stat b{display:block;font-size:calc(21px * var(--fs));font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.2}
+.stat b small{font-size:calc(11px * var(--fs));font-weight:700;margin-left:1px}
+.stat span{display:block;font-size:calc(10px * var(--fs));font-weight:700;color:var(--muted);margin-top:5px}
 .panel{padding:14px}
-.panel h3{margin:0 0 3px;font-size:13px;font-weight:800;color:var(--ink2)}
-.panel .sub{font-size:10.5px;color:var(--muted);line-height:1.6;margin-bottom:12px}
-.heatwrap{display:flex;gap:6px;align-items:flex-start;justify-content:center}
-.heatlab{display:grid;grid-template-rows:repeat(7,30px);gap:5px;width:14px;flex:0 0 auto;font-size:9px;color:var(--muted);font-weight:700;text-align:center}
+.panel h3{margin:0 0 3px;font-size:calc(13px * var(--fs));font-weight:800;color:var(--ink2)}
+.panel .sub{font-size:calc(10.5px * var(--fs));color:var(--muted);line-height:1.6;margin-bottom:12px}
+.heatwrap{display:flex;gap:8px;align-items:flex-start;justify-content:center;background:#faf8f5;border:1px solid var(--line);border-radius:14px;padding:12px 10px;margin-bottom:6px}
+.heatlab{display:grid;grid-template-rows:repeat(7,30px);gap:6px;width:20px;flex:0 0 auto;font-size:calc(10px * var(--fs));color:var(--muted);font-weight:700;text-align:center}
 .heatlab span{display:flex;align-items:center;justify-content:center}
-.heatgrid{display:grid;grid-template-rows:repeat(7,30px);grid-auto-flow:column;grid-auto-columns:30px;gap:5px;flex:0 0 auto;min-width:0}
-.heatgrid i{display:block;width:30px;height:30px;border-radius:6px;background:var(--gray-bg);border:1px solid rgba(0,0,0,.02);cursor:pointer}
+.heatgrid{display:grid;grid-template-rows:repeat(7,30px);grid-auto-flow:column;grid-auto-columns:30px;gap:6px;flex:0 0 auto;min-width:0}
+.heatgrid i{display:block;width:30px;height:30px;border-radius:6px;background:var(--gray-bg);border:1px solid rgba(0,0,0,.02);cursor:default}
+.heatgrid i.on{background:var(--accent);border-color:rgba(0,0,0,.04)}
 .heatgrid i.future{opacity:.3}
-.legend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:10px;font-size:9.5px;color:var(--muted);font-weight:700}
+.hheat-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.hh-stat{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 6px;text-align:center;box-shadow:0 2px 10px rgba(190,120,90,.05)}
+.hh-stat b{display:block;font-size:calc(18px * var(--fs));font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.2}
+.hh-stat span{display:block;font-size:calc(10px * var(--fs));font-weight:700;color:var(--muted);margin-top:4px}
+.legend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:10px;font-size:calc(9.5px * var(--fs));color:var(--muted);font-weight:700}
 .legend i{width:12px;height:12px;border-radius:3px;display:block}
 .rrow{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:3px 7px;align-items:center;margin-bottom:11px}
 .rrow:last-child{margin-bottom:2px}
-.rrow .remo{font-size:15px}
-.rrow .rname{font-size:12px;font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rrow .rnum{font-size:10.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.rrow .remo{font-size:calc(15px * var(--fs))}
+.rrow .rname{font-size:calc(12px * var(--fs));font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rrow .rnum{font-size:calc(10.5px * var(--fs));font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
 .rrow .rbar{grid-column:2/4;height:7px;border-radius:99px;background:var(--line2);overflow:hidden}
 .rrow .rbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
 
 /* ---------- 習慣名單 ---------- */
 .add-bar{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:8px}
-.emo-btn{width:40px;height:40px;flex:0 0 auto;border-radius:11px;background:var(--accent-soft);border:1px solid var(--accent-line);font-size:20px;line-height:1}
-.add-bar input{flex:1;min-width:0;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 10px;font-size:14px;font-weight:600;color:var(--ink);outline:none}
+.emo-btn{width:40px;height:40px;flex:0 0 auto;border-radius:11px;background:var(--accent-soft);border:1px solid var(--accent-line);font-size:calc(20px * var(--fs));line-height:1}
+.add-bar input{flex:1;min-width:0;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 10px;font-size:calc(14px * var(--fs));font-weight:600;color:var(--ink);outline:none}
 .add-bar input:focus{border-color:var(--accent-line);background:#fff}
-.add-bar select{width:58px;flex:0 0 auto;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 2px;font-size:11px;font-weight:700;color:var(--ink2);outline:none;text-align:center}
-.add-bar .go{flex:0 0 auto;padding:0 13px;height:38px;border-radius:11px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.22)}
-.add-tip{font-size:10px;color:var(--muted);margin:0 3px 10px;line-height:1.6}
+.add-bar select{width:58px;flex:0 0 auto;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 2px;font-size:calc(11px * var(--fs));font-weight:700;color:var(--ink2);outline:none;text-align:center}
+.add-bar .go{flex:0 0 auto;padding:0 13px;height:38px;border-radius:11px;background:var(--accent);color:#fff;font-size:calc(12.5px * var(--fs));font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.22)}
+.add-tip{font-size:calc(10px * var(--fs));color:var(--muted);margin:0 3px 10px;line-height:1.6}
 .emo-quick{display:none;flex-wrap:wrap;gap:5px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px;margin-bottom:9px}
 .emo-quick.on{display:flex}
-.emo-quick button{width:34px;height:34px;border-radius:9px;background:var(--gray-bg);font-size:18px;line-height:1}
+.emo-quick button{width:34px;height:34px;border-radius:9px;background:var(--gray-bg);font-size:calc(18px * var(--fs));line-height:1}
 .emo-quick button.on{background:var(--accent-soft);border:1px solid var(--accent-line)}
 .hrow{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px 7px;margin-bottom:7px}
-.hrow .he{font-size:17px;width:22px;flex:0 0 auto;text-align:center}
-.hrow input{flex:1;min-width:0;border:1.2px solid transparent;background:transparent;border-radius:9px;padding:8px 7px;font-size:13.5px;font-weight:700;color:var(--ink);outline:none}
+.hrow .he{font-size:calc(17px * var(--fs));width:22px;flex:0 0 auto;text-align:center}
+.hrow input{flex:1;min-width:0;border:1.2px solid transparent;background:transparent;border-radius:9px;padding:8px 7px;font-size:calc(13.5px * var(--fs));font-weight:700;color:var(--ink);outline:none}
 .hrow input:focus{border-color:var(--accent-line);background:#fff}
-.hrow select{flex:0 0 auto;width:52px;border:1.2px solid var(--line);background:#fbfaf8;border-radius:9px;padding:7px 1px;font-size:10.5px;font-weight:700;color:var(--ink2);outline:none;text-align:center}
-.hrow .mv,.hrow .del{flex:0 0 auto;width:26px;height:30px;border-radius:8px;font-size:12px;font-weight:800;color:var(--muted)}
+.hrow select{flex:0 0 auto;width:52px;border:1.2px solid var(--line);background:#fbfaf8;border-radius:9px;padding:7px 1px;font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--ink2);outline:none;text-align:center}
+.hrow .mv,.hrow .del{flex:0 0 auto;width:26px;height:30px;border-radius:8px;font-size:calc(12px * var(--fs));font-weight:800;color:var(--muted)}
 .hrow .mv{background:var(--gray-bg)}
 .hrow .mv:disabled{opacity:.3}
-.hrow .del{background:var(--red-bg);color:var(--red);font-size:13px}
+.hrow .del{background:var(--red-bg);color:var(--red);font-size:calc(13px * var(--fs))}
 
 /* ---------- 底部選單 ---------- */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;max-width:600px;margin:0 auto;display:flex;align-items:stretch;justify-content:space-around;
   background:rgba(255,253,251,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);
   padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -3px 16px rgba(190,120,90,.09)}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:700;color:var(--muted);padding:5px 0;border-radius:12px;min-height:48px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:calc(10px * var(--fs));font-weight:700;color:var(--muted);padding:5px 0;border-radius:12px;min-height:48px}
 .tab svg{width:21px;height:21px;stroke-width:1.9}
 .tab.active{color:var(--accent)}
 
@@ -196,196 +226,193 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
   z-index:55;box-shadow:0 -8px 30px rgba(51,61,67,.15);max-height:86vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .sheet.on{transform:translateY(0)}
 .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.sheet-head h3{margin:0;font-size:15px;font-weight:800}
-.x{width:30px;height:30px;border-radius:10px;background:var(--gray-bg);color:#9aa2a7;font-size:13px;display:flex;align-items:center;justify-content:center}
-.lbl{display:block;font-size:11px;color:var(--muted);font-weight:700;margin:0 0 6px;letter-spacing:.4px}
-.sheet .inp{width:100%;border:1.5px solid var(--line);background:#fbfaf8;border-radius:12px;padding:12px 13px;font-size:16px;font-weight:600;color:var(--ink);outline:none;margin-bottom:12px}
+.sheet-head h3{margin:0;font-size:calc(15px * var(--fs));font-weight:800}
+.x{width:30px;height:30px;border-radius:10px;background:var(--gray-bg);color:#9aa2a7;font-size:calc(13px * var(--fs));display:flex;align-items:center;justify-content:center}
+.lbl{display:block;font-size:calc(11px * var(--fs));color:var(--muted);font-weight:700;margin:0 0 6px;letter-spacing:.4px}
+.sheet .inp{width:100%;border:1.5px solid var(--line);background:#fbfaf8;border-radius:12px;padding:12px 13px;font-size:calc(16px * var(--fs));font-weight:600;color:var(--ink);outline:none;margin-bottom:12px}
 .sheet .inp:focus{border-color:var(--accent-line);background:#fff}
 .emo-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin:0 0 14px}
-.emo-grid button{aspect-ratio:1;border-radius:10px;background:var(--gray-bg);font-size:18px;line-height:1}
+.emo-grid button{aspect-ratio:1;border-radius:10px;background:var(--gray-bg);font-size:calc(18px * var(--fs));line-height:1}
 .emo-grid button.on{background:var(--accent-soft);border:1px solid var(--accent-line)}
 .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line2)}
-.set-row b{display:block;font-size:13.5px}
-.set-row small{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
-.set-row select{width:118px;flex:0 0 auto;margin:0;border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;padding:8px;font-size:12.5px;font-weight:700;color:var(--ink);outline:none}
-.set-sec-title{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.6px;margin:18px 2px 8px}
-.set-btn{display:block;width:100%;text-align:left;padding:13px 14px;border-radius:12px;background:#fff;border:1px solid var(--line);color:var(--ink2);font-size:13.5px;font-weight:700;margin-bottom:8px}
+.set-row b{display:block;font-size:calc(13.5px * var(--fs))}
+.set-row small{display:block;font-size:calc(11px * var(--fs));color:var(--muted);margin-top:3px;line-height:1.5}
+.set-row select{width:124px;flex:0 0 auto;margin:0;border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;padding:8px;font-size:calc(12.5px * var(--fs));font-weight:700;color:var(--ink);outline:none}
+.set-sec-title{font-size:calc(11px * var(--fs));font-weight:800;color:var(--muted);letter-spacing:.6px;margin:18px 2px 8px}
+.set-btn{display:block;width:100%;text-align:left;padding:13px 14px;border-radius:12px;background:#fff;border:1px solid var(--line);color:var(--ink2);font-size:calc(13.5px * var(--fs));font-weight:700;margin-bottom:8px}
 .set-btn.danger{background:var(--red-bg);border-color:var(--red-line);color:var(--red)}
 .set-btn.danger.armed{background:var(--red);border-color:var(--red);color:#fff}
-.set-hint{font-size:11.5px;color:var(--red);line-height:1.7;background:var(--red-bg);border:1px solid var(--red-line);border-radius:12px;padding:10px 12px;margin:-2px 0 10px}
-.help-body{font-size:12px;color:var(--ink2);line-height:1.95;background:var(--gray-bg);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.set-hint{font-size:calc(11.5px * var(--fs));color:var(--red);line-height:1.7;background:var(--red-bg);border:1px solid var(--red-line);border-radius:12px;padding:10px 12px;margin:-2px 0 10px}
+.help-body{font-size:calc(12px * var(--fs));color:var(--ink2);line-height:1.95;background:var(--gray-bg);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
 .help-body b{color:var(--accent)}
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);
-  background:rgba(51,61,67,.95);color:#fff;font-size:12.5px;font-weight:600;padding:10px 14px 10px 16px;border-radius:99px;
+  background:rgba(51,61,67,.95);color:#fff;font-size:calc(12.5px * var(--fs));font-weight:600;padding:10px 14px 10px 16px;border-radius:99px;
   opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:90;display:flex;align-items:center;gap:12px;white-space:nowrap;max-width:92vw}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 /* 面板開啟時提示列移到頂部，唔好遮住面板底部嘅按鈕 */
 body.sheet-open .toast{top:calc(16px + env(safe-area-inset-top,0px));bottom:auto;transform:translate(-50%,-10px)}
 body.sheet-open .toast.on{transform:translate(-50%,0)}
-.toast .undo{background:var(--gold);color:#3b2530;padding:5px 12px;border-radius:99px;font-weight:800;font-size:12px}
+.toast .undo{background:var(--gold);color:#3b2530;padding:5px 12px;border-radius:99px;font-weight:800;font-size:calc(12px * var(--fs))}
 
 /* ---------- v2：計次 / 循環 ---------- */
-.hrow2 .cnt{font-size:10.5px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
-.hlog{margin-left:auto;font-size:9.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+.hrow2 .cnt{font-size:calc(10.5px * var(--fs));font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.hlog{margin-left:auto;font-size:calc(9.5px * var(--fs));font-weight:800;color:var(--accent);background:var(--accent-soft);
   border:1px solid var(--accent-line);border-radius:99px;padding:3px 8px;white-space:nowrap;flex:0 0 auto}
 .hlog:active{transform:scale(.96)}
-.cyc{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:10px;font-weight:800;color:var(--gold-tx);white-space:nowrap}
+.cyc{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:calc(10px * var(--fs));font-weight:800;color:var(--gold-tx);white-space:nowrap}
 .cyc .cyc-bar{flex:1;min-width:36px;height:6px;border-radius:99px;background:var(--gold-bg);overflow:hidden}
 .cyc .cyc-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#ecc774,var(--accent));transition:width .3s}
-.htime{font-size:9.5px;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.5}
-.linkbtn{margin-left:auto;font-size:10.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+.linkbtn{margin-left:auto;font-size:calc(10.5px * var(--fs));font-weight:800;color:var(--accent);background:var(--accent-soft);
   border:1px solid var(--accent-line);border-radius:99px;padding:5px 11px;white-space:nowrap}
 /* ---------- v3：浮動分享鈕 ---------- */
 .fab-share{position:fixed;right:14px;bottom:calc(152px + env(safe-area-inset-bottom,0px));z-index:45;
   display:flex;align-items:center;gap:6px;padding:11px 15px;border-radius:99px;border:none;
-  background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-size:12.5px;font-weight:800;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-size:calc(12.5px * var(--fs));font-weight:800;
   box-shadow:0 6px 18px rgba(194,59,106,.32);cursor:pointer;transition:transform .12s}
 .fab-share:active{transform:scale(.94)}
 .fab-share svg{width:16px;height:16px;stroke-width:2.2}
 
 /* ---------- v3：習慣模板 ---------- */
 .tpl-open{display:block;width:100%;margin:0 0 12px;padding:11px;border-radius:12px;border:1.5px dashed var(--accent-line);
-  background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:800}
+  background:var(--accent-soft);color:var(--accent);font-size:calc(12px * var(--fs));font-weight:800}
 .tpl-tabs{display:flex;gap:6px;margin-bottom:12px}
-.tpl-tabs button{flex:1;padding:9px 4px;border-radius:11px;background:var(--gray-bg);border:1px solid transparent;font-size:12px;font-weight:800;color:var(--muted)}
+.tpl-tabs button{flex:1;padding:9px 4px;border-radius:11px;background:var(--gray-bg);border:1px solid transparent;font-size:calc(12px * var(--fs));font-weight:800;color:var(--muted)}
 .tpl-tabs button.on{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
 .tpl-list{max-height:44vh;overflow-y:auto;margin-bottom:12px}
 .tpl-item{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px dashed var(--line2);cursor:pointer}
 .tpl-item input{width:18px;height:18px;accent-color:var(--accent);flex:0 0 auto}
-.tpl-item .te{font-size:18px;flex:0 0 auto}
-.tpl-item .tn{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tpl-item .tg{font-size:10px;font-weight:800;color:var(--muted);white-space:nowrap}
+.tpl-item .te{font-size:calc(18px * var(--fs));flex:0 0 auto}
+.tpl-item .tn{flex:1;min-width:0;font-size:calc(12.5px * var(--fs));font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tpl-item .tg{font-size:calc(10px * var(--fs));font-weight:800;color:var(--muted);white-space:nowrap}
 
 /* ---------- v3：循環輪次 ---------- */
-.rnd-btn{margin-left:auto;font-size:9px;font-weight:800;color:var(--gold-tx);background:var(--gold-bg);
+.rnd-btn{margin-left:auto;font-size:calc(9px * var(--fs));font-weight:800;color:var(--gold-tx);background:var(--gold-bg);
   border:1px solid var(--gold-line);border-radius:99px;padding:2px 7px;white-space:nowrap;flex:0 0 auto}
 .round-sum{background:var(--gold-bg);border:1px solid var(--gold-line);border-radius:13px;padding:11px 12px;
-  font-size:11.5px;font-weight:700;color:var(--gold-tx);line-height:1.8;margin-bottom:10px}
+  font-size:calc(11.5px * var(--fs));font-weight:700;color:var(--gold-tx);line-height:1.8;margin-bottom:10px}
 .roundrow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;align-items:center;
   padding:10px 2px;border-bottom:1px dashed var(--line2)}
-.roundrow .rn{font-size:11px;font-weight:800;color:var(--accent)}
-.roundrow .rd{font-size:11.5px;font-weight:700;color:var(--ink2);line-height:1.5}
-.roundrow .rd small{display:block;font-size:9.5px;color:var(--muted);font-weight:600}
-.roundrow .rv{font-size:10.5px;font-weight:800;color:var(--green);white-space:nowrap}
+.roundrow .rn{font-size:calc(11px * var(--fs));font-weight:800;color:var(--accent)}
+.roundrow .rd{font-size:calc(11.5px * var(--fs));font-weight:700;color:var(--ink2);line-height:1.5}
+.roundrow .rd small{display:block;font-size:calc(9.5px * var(--fs));color:var(--muted);font-weight:600}
+.roundrow .rv{font-size:calc(10.5px * var(--fs));font-weight:800;color:var(--green);white-space:nowrap}
 .roundrow.cur .rv{color:var(--gold-tx)}
 
 /* ---------- v3：指標與目標 ---------- */
 .m-add{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .m-add input,.m-add select,.m-form input{border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;
-  padding:9px 10px;font-size:13px;font-weight:700;color:var(--ink);outline:none;min-width:0}
+  padding:9px 10px;font-size:calc(13px * var(--fs));font-weight:700;color:var(--ink);outline:none;min-width:0}
 .m-add input:focus,.m-form input:focus{border-color:var(--accent-line);background:#fff}
 .m-add #mName{flex:1 1 100%}
 .m-add #mUnit{flex:0 0 72px}
 .m-add #mTarget{flex:1 1 88px}
-.m-add .go,.m-form .go{border:none;background:var(--accent);color:#fff;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:800}
+.m-add .go,.m-form .go{border:none;background:var(--accent);color:#fff;border-radius:10px;padding:9px 13px;font-size:calc(12px * var(--fs));font-weight:800}
 .mcard{padding:13px}
 .mhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-.mhead b{font-size:14px;font-weight:800}
-.mhead .mx{width:26px;height:26px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px}
-.mline{font-size:11px;font-weight:700;color:var(--muted);line-height:1.7;margin-bottom:8px}
+.mhead b{font-size:calc(14px * var(--fs));font-weight:800}
+.mhead .mx{width:26px;height:26px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:calc(12px * var(--fs))}
+.mline{font-size:calc(11px * var(--fs));font-weight:700;color:var(--muted);line-height:1.7;margin-bottom:8px}
 .mline b{color:var(--ink);font-variant-numeric:tabular-nums}
 .mchart{display:block;width:100%;height:auto;border-radius:10px;background:var(--bg1);margin-bottom:9px}
 .m-form{display:flex;gap:6px;align-items:center;margin-bottom:7px;flex-wrap:wrap}
 .m-form input[type=date]{flex:1 1 118px}
 .m-form input[type=number]{flex:1 1 78px}
-.m-form button{border:1.5px solid var(--line);background:#fff;color:var(--ink2);border-radius:10px;padding:9px 11px;font-size:11.5px;font-weight:800}
-.mhist-line{font-size:10px;color:var(--muted);font-weight:600;line-height:1.6}
+.m-form button{border:1.5px solid var(--line);background:#fff;color:var(--ink2);border-radius:10px;padding:9px 11px;font-size:calc(11.5px * var(--fs));font-weight:800}
+.mhist-line{font-size:calc(10px * var(--fs));color:var(--muted);font-weight:600;line-height:1.6}
 /* v3.1：目標類型（單一值／區間）＋拖曳排序 */
 .m-add[data-tmode="point"] .range-only,.mcard[data-tmode="point"] .range-only{display:none}
 .m-add[data-tmode="range"] .point-only,.mcard[data-tmode="range"] .point-only{display:none}
 .m-add select,.m-form select{border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;padding:9px 6px;
-  font-size:12px;font-weight:700;color:var(--ink);outline:none;min-width:0}
+  font-size:calc(12px * var(--fs));font-weight:700;color:var(--ink);outline:none;min-width:0}
 .m-add #mMode{flex:1 1 132px}
 .m-add #mLo,.m-add #mHi{flex:1 1 82px}
-.mcard .m-form select{flex:0 0 86px;font-size:11.5px}
+.mcard .m-form select{flex:0 0 86px;font-size:calc(11.5px * var(--fs))}
 .mcard .m-form input.range-only{flex:1 1 76px}
-.m-add .tmode-hint{flex:1 1 100%;font-size:10px;color:var(--muted);font-weight:600;line-height:1.5;margin:-2px 2px 0}
+.m-add .tmode-hint{flex:1 1 100%;font-size:calc(10px * var(--fs));color:var(--muted);font-weight:600;line-height:1.5;margin:-2px 2px 0}
 .hrow .drag-h{display:none;flex:0 0 24px;width:24px;height:30px;border-radius:8px;background:var(--gold-bg);
-  color:var(--gold-tx);font-size:13px;font-weight:800;touch-action:none;cursor:grab;user-select:none}
+  color:var(--gold-tx);font-size:calc(13px * var(--fs));font-weight:800;touch-action:none;cursor:grab;user-select:none}
 #habitList.sorting .drag-h{display:flex;align-items:center;justify-content:center}
 #habitList.sorting .hrow{border-style:dashed;border-color:var(--accent-line)}
 #habitList.sorting .hrow .mv{display:none}
 #habitList .hrow.dragging{opacity:.72;box-shadow:0 8px 20px rgba(194,59,106,.22);border-style:solid;background:#fff}
-.sort-tip{display:none;font-size:10.5px;font-weight:700;color:var(--gold-tx);background:var(--gold-bg);
+.sort-tip{display:none;font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--gold-tx);background:var(--gold-bg);
   border:1px solid var(--gold-line);border-radius:11px;padding:9px 11px;margin:0 0 9px;line-height:1.6}
 .sort-tip.on{display:block}
 .histrow{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px dashed var(--line2)}
-.histrow .hd{width:64px;flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--muted)}
-.histrow .hv{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--ink2)}
-.histrow .hv small{display:block;font-size:9.5px;color:var(--muted);font-weight:600}
-.histrow .hx{width:28px;height:28px;flex:0 0 auto;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px}
+.histrow .hd{width:64px;flex:0 0 auto;font-size:calc(10.5px * var(--fs));font-weight:800;color:var(--muted)}
+.histrow .hv{flex:1;min-width:0;font-size:calc(12px * var(--fs));font-weight:700;color:var(--ink2)}
+.histrow .hv small{display:block;font-size:calc(9.5px * var(--fs));color:var(--muted);font-weight:600}
+.histrow .hx{width:28px;height:28px;flex:0 0 auto;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:calc(12px * var(--fs))}
 .hrow .cycin{flex:0 0 auto;width:38px;border:1.2px solid var(--line);background:#fbfaf8;border-radius:9px;
-  padding:7px 1px;font-size:10.5px;font-weight:800;color:var(--ink2);outline:none;text-align:center}
-.hrow .cyc-mark{font-size:11px;color:var(--gold-tx);font-weight:800;flex:0 0 auto}
+  padding:7px 1px;font-size:calc(10.5px * var(--fs));font-weight:800;color:var(--ink2);outline:none;text-align:center}
+.hrow .cyc-mark{font-size:calc(11px * var(--fs));color:var(--gold-tx);font-weight:800;flex:0 0 auto}
 
 /* ---------- v2：打卡紀錄面板 ---------- */
 .log-sum{background:var(--gray-bg);border:1px solid var(--line);border-radius:13px;padding:11px 12px;
-  font-size:11.5px;font-weight:700;color:var(--ink2);line-height:1.8;margin-bottom:10px}
-.log-sum b{color:var(--accent);font-size:14px;font-variant-numeric:tabular-nums}
+  font-size:calc(11.5px * var(--fs));font-weight:700;color:var(--ink2);line-height:1.8;margin-bottom:10px}
+.log-sum b{color:var(--accent);font-size:calc(14px * var(--fs));font-variant-numeric:tabular-nums}
 .log-list{max-height:42vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .logrow{display:flex;align-items:center;gap:9px;padding:8px 2px;border-bottom:1px dashed var(--line2)}
-.logrow .ln{width:56px;flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
-.logrow .lt{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
-.logrow .lt small{display:block;font-size:9.5px;color:var(--muted);font-weight:600;margin-top:2px}
-.logrow .lx{width:28px;height:28px;flex:0 0 auto;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px}
+.logrow .ln{width:56px;flex:0 0 auto;font-size:calc(10.5px * var(--fs));font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.logrow .lt{flex:1;min-width:0;font-size:calc(12.5px * var(--fs));font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
+.logrow .lt small{display:block;font-size:calc(9.5px * var(--fs));color:var(--muted);font-weight:600;margin-top:2px}
+.logrow .lx{width:28px;height:28px;flex:0 0 auto;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:calc(12px * var(--fs))}
 
 /* ---------- v2：分享面板 ---------- */
 .share-sw{display:flex;gap:4px;background:var(--gray-bg);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:12px}
-.share-sw button{flex:1;padding:9px 4px;border-radius:9px;font-size:12px;font-weight:800;color:var(--muted)}
+.share-sw button{flex:1;padding:9px 4px;border-radius:9px;font-size:calc(12px * var(--fs));font-weight:800;color:var(--muted)}
 .share-sw button.on{background:#fff;color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .share-preview{background:var(--bg1);border:1px solid var(--line);border-radius:13px;padding:8px;margin-bottom:10px;text-align:center}
 .share-preview img{display:block;width:100%;max-height:44vh;object-fit:contain;border-radius:9px}
-.share-hint{font-size:10.5px;color:var(--muted);line-height:1.7;margin-bottom:10px}
+.share-hint{font-size:calc(10.5px * var(--fs));color:var(--muted);line-height:1.7;margin-bottom:10px}
 .share-btns{display:flex;gap:8px;margin-bottom:9px}
-.share-btns button{flex:1;padding:12px 6px;border-radius:12px;font-size:13px;font-weight:800;color:#fff;transition:transform .08s}
+.share-btns button{flex:1;padding:12px 6px;border-radius:12px;font-size:calc(13px * var(--fs));font-weight:800;color:#fff;transition:transform .08s}
 .share-btns button:active{transform:scale(.98)}
 .share-btns .wx{background:#07a85a;box-shadow:0 3px 10px rgba(7,168,90,.22)}
 .share-btns .wa{background:#1fa855;box-shadow:0 3px 10px rgba(31,168,85,.22)}
 
 /* ---------- v3.2：今日頁壓縮，一屏睇到四個打卡習慣 ---------- */
 header{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:5px}
-h1{font-size:17px}
-.h-stat{font-size:10px;gap:9px}
-.h-stat b{font-size:13px}
+h1{font-size:calc(17px * var(--fs))}
+.h-stat{font-size:calc(10px * var(--fs));gap:9px}
+.h-stat b{font-size:calc(13px * var(--fs))}
 .wrap{padding-bottom:calc(160px + env(safe-area-inset-bottom,0px))}
-#pageToday .hero{padding:8px 10px;margin-top:6px;margin-bottom:7px}
-#pageToday .hero-date{font-size:10px;margin-bottom:5px}
+#pageToday .hero{padding:8px 10px;margin-top:4px;margin-bottom:6px}
+#pageToday .hero-date{font-size:calc(10px * var(--fs));margin-bottom:5px}
 #pageToday .ring,#pageToday .ring svg{width:46px;height:46px}
-#pageToday .ring .pct b{font-size:13px}
-#pageToday .ring .pct span{font-size:8px}
+#pageToday .ring .pct b{font-size:calc(13px * var(--fs))}
+#pageToday .ring .pct span{font-size:calc(8px * var(--fs))}
 #pageToday .hero-main{gap:10px}
-#pageToday .hero-title{font-size:13.5px}
-#pageToday .hero-sub{font-size:10px;margin-top:2px;line-height:1.35}
-#pageToday .sec{margin:8px 2px 6px}
-#pageToday .sec h2{font-size:12px}
-#pageToday .sec .cnt{font-size:10px;padding:1px 7px}
-#pageToday .weekbar{padding:5px 7px;margin-bottom:6px;gap:6px}
-#pageToday .weekbar>button{width:28px;height:28px;font-size:17px;border-radius:8px}
-#pageToday .weekbar>button.jump{font-size:9.5px;padding:0 7px}
-#pageToday .weekbar .wmid b{font-size:11px}
-#pageToday .weekbar .wmid small{font-size:8.5px;margin-top:1px}
-#pageToday .card.hcard{padding:7px 8px;gap:8px;grid-template-columns:36px minmax(0,1fr);border-radius:13px;margin-bottom:6px}
-#pageToday .hcheck{width:36px;height:36px;border-radius:11px}
-#pageToday .hcheck svg{width:20px;height:20px}
-#pageToday .hcard:not(.is-done) .hcheck::after{font-size:21px}
-#pageToday .hrow1{gap:5px;padding-right:24px}
-#pageToday .hemo{font-size:14px}
-#pageToday .hname{font-size:13px}
-#pageToday .hbadge{font-size:9px;padding:1px 6px}
-#pageToday .hrow2{margin-top:3px;font-size:9.5px;gap:5px}
-#pageToday .hrow2 b{font-size:11px}
-#pageToday .hrow2 .cnt{font-size:9.5px}
-#pageToday .hrow2 .ok{font-size:9px;padding:1px 6px}
-#pageToday .hlog{font-size:9px;padding:2px 7px}
-#pageToday .cyc{margin-top:4px;font-size:9px;gap:5px}
-#pageToday .cyc .cyc-bar{height:5px}
-#pageToday .rnd-btn{font-size:8.5px;padding:1px 6px}
-#pageToday .htime{font-size:9px;margin-top:2px;line-height:1.3}
-#pageToday .d7{gap:3px;margin-top:5px}
-#pageToday .d7 button{padding:3px 0 2px;gap:0;border-radius:7px}
-#pageToday .d7 .dw{font-size:8px;line-height:1.1}
-#pageToday .d7 .dm{font-size:9.5px;line-height:1.1}
-#pageToday .d7 .dt{font-size:9px;line-height:1.1;height:10px}
+#pageToday .hero-title{font-size:calc(13.5px * var(--fs))}
+#pageToday .hero-sub{font-size:calc(10px * var(--fs));margin-top:2px;line-height:1.35}
+#pageToday .sec{margin:6px 2px 5px}
+#pageToday .sec h2{font-size:calc(12px * var(--fs))}
+#pageToday .sec .cnt{font-size:calc(10px * var(--fs));padding:1px 7px}
+#pageToday .weekbar{padding:5px 7px;margin-bottom:5px;gap:6px}
+#pageToday .weekbar>button{width:28px;height:28px;font-size:calc(17px * var(--fs));border-radius:8px}
+#pageToday .weekbar>button.jump{font-size:calc(9.5px * var(--fs));padding:0 7px}
+#pageToday .weekbar .wmid b{font-size:calc(11px * var(--fs))}
+#pageToday .weekbar .wmid small{font-size:calc(8.5px * var(--fs))}
+#pageToday .card.hcard{padding:8px 10px;gap:9px;grid-template-columns:52px minmax(0,1fr);border-radius:14px;margin-bottom:6px}
+#pageToday .hcheck{width:52px;height:52px;border-radius:14px}
+#pageToday .hcheck svg{width:28px;height:28px}
+#pageToday .hcard:not(.is-done) .hcheck::after{font-size:calc(28px * var(--fs))}
+#pageToday .hrow1{gap:6px;padding-right:42px}
+#pageToday .hemo{font-size:calc(18px * var(--fs))}
+#pageToday .hname{font-size:calc(16px * var(--fs));line-height:1.25}
+#pageToday .hbadge{font-size:calc(10.5px * var(--fs));padding:2px 7px}
+#pageToday .hrow2{margin-top:4px;font-size:calc(12px * var(--fs));gap:6px;color:#6b5560}
+#pageToday .hrow2 b{font-size:calc(14px * var(--fs))}
+#pageToday .hrow2 .cnt{font-size:calc(11px * var(--fs))}
+#pageToday .hrow2 .ok{font-size:calc(10px * var(--fs));padding:2px 7px}
+#pageToday .hlog{font-size:calc(11px * var(--fs));padding:3px 9px}
+#pageToday .cyc{margin-top:5px;font-size:calc(10.5px * var(--fs));gap:6px}
+#pageToday .cyc .cyc-bar{height:6px}
+#pageToday .rnd-btn{font-size:calc(10px * var(--fs));padding:2px 8px}
+#pageToday .wkd{margin-bottom:8px}
+#pageToday .wkd button{padding:5px 0 4px;border-radius:10px}
+#pageToday .wkd .dm{font-size:calc(15.5px * var(--fs))}
+#pageToday .wkd .dd{font-size:calc(9px * var(--fs))}
 /* 矮屏幕：分享掣收埋喺卡片同選單之間，唔好遮住第四張卡 */
 @media (max-height:884px){
   .fab-share{bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:9px 13px}
@@ -417,11 +444,12 @@ h1{font-size:17px}
             <circle class="track" cx="39" cy="39" r="32" fill="none" stroke-width="8"></circle>
             <circle class="fill" id="ringFill" cx="39" cy="39" r="32" fill="none" stroke-width="8" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
           </svg>
-          <div class="pct"><b id="ringPct">0%</b><span>今日</span></div>
+          <div class="pct"><b id="ringPct">0%</b><span>本週</span></div>
         </div>
         <div class="hero-txt">
-          <div class="hero-title" id="heroTitle">今日完成 0 / 0</div>
+          <div class="hero-title" id="heroTitle">本週完成 0 / 0 次</div>
           <div class="hero-sub" id="heroSub"></div>
+          <div class="hero-bar"><i id="heroBar"></i></div>
         </div>
       </div>
     </section>
@@ -433,25 +461,17 @@ h1{font-size:17px}
       <button type="button" id="weekBack" class="jump" style="display:none">回本週</button>
       <button type="button" id="weekNext" aria-label="下一週">›</button>
     </div>
+    <div class="wkd" id="weekDays"></div>
     <div id="todayList"></div>
   </div>
 
   <!-- 回顧 -->
   <div class="page" id="pageReview" style="display:none">
-    <div class="sec"><h2>回顧</h2><span class="note">近 5 週</span></div>
+    <div class="sec"><h2>回顧</h2><span class="note">近 30 日</span></div>
     <div class="stat3">
       <div class="stat"><b id="stTotal">0</b><span>累計打卡</span></div>
       <div class="stat"><b id="stBest">0<small> 日</small></b><span>最長連續</span></div>
       <div class="stat"><b id="stRate">0<small>%</small></b><span>30 日完成率</span></div>
-    </div>
-    <div class="card panel">
-      <h3>打卡熱力圖</h3>
-      <div class="sub">顏色愈深，完成愈多；撳一格睇詳情。</div>
-      <div class="heatwrap">
-        <div class="heatlab" id="heatLab"></div>
-        <div class="heatgrid" id="heatGrid"></div>
-      </div>
-      <div class="legend">少 <i style="background:#f6f2ec"></i><i style="background:#f8d7e5"></i><i style="background:#eda9c4"></i><i style="background:#d76a9a"></i><i style="background:#c23b6a"></i> 多</div>
     </div>
     <div class="card panel">
       <h3>各習慣 · 近 30 日</h3>
@@ -500,7 +520,7 @@ h1{font-size:17px}
     <div id="metricList"></div>
   </div>
 
-  <div class="ver">單檔網頁 · 資料只存本機 · 版本 2026-11-07 v3.3</div>
+  <div class="ver">單檔網頁 · 資料只存本機 · 版本 2026-11-08 v3.6</div>
 </div>
 
 <!-- v3：浮動分享鈕（底部選單上兩行、靠右） -->
@@ -568,7 +588,15 @@ h1{font-size:17px}
     </select>
   </div>
   <div class="set-row">
-    <div><b>一週開始日</b><small>影響「本週次數」同熱力圖排列</small></div>
+    <div><b>字型大小</b><small>全部文字一齊放大或縮小</small></div>
+    <select id="fsSel" aria-label="字型大小">
+      <option value="s">小</option>
+      <option value="m">中</option>
+      <option value="l">大</option>
+    </select>
+  </div>
+  <div class="set-row">
+    <div><b>一週開始日</b><small>影響「本週次數」同七日條排列</small></div>
     <select id="weekStart"><option value="1">星期一</option><option value="0">星期日</option></select>
   </div>
   <div class="set-row">
@@ -588,12 +616,12 @@ h1{font-size:17px}
   <div class="sheet-head"><h3>使用說明</h3><button class="x" data-close type="button">✕</button></div>
   <div class="help-body" id="helpBody" data-noi18n>
     1. <b>習慣</b>：自己輸入名稱，或由<b>健康／學習／財富</b>模板多選加入；設<b>每週期望次數</b>同<b>循環</b>（每幾次打卡為一輪，累計次數唔清零）。<br>
-    2. <b>今日</b>：撳圓鈕打卡，<b>每日每事一次</b>，再撳一次扣回。七格可補打或扣回舊日（未到嘅日子除外）；<b>‹ ›</b> 切週，最少睇返前三週。<br>
-    3. <b>打卡紀錄</b>：卡上「⏱ 紀錄」睇每筆打卡時間；「輪次」睇每輪用咗幾多日、完成幾多次。所有改動 5 秒內可<b>復原</b>。<br>
-    4. <b>回顧</b>：累計打卡、最長連續、30 日完成率、近 5 週熱力圖；撳熱力圖一格跳去嗰週補打。<br>
+    2. <b>今日</b>：撳圓鈕打卡，<b>每日每事一次</b>，再撳一次扣回。本週七格可撳入去補打或扣回舊日（未到嘅日子除外）；<b>‹ ›</b> 切週，最少睇返前三週；撳習慣卡（除咗打卡掣）睇佢嘅打卡熱力圖。<br>
+    3. <b>打卡紀錄</b>：撳習慣卡睇佢嘅打卡熱力圖；「⋯」或長按卡開編輯，入面有「打卡紀錄」睇每筆時間；「輪次」睇每輪用咗幾多日、完成幾多次。所有改動 5 秒內可<b>復原</b>。<br>
+    4. <b>回顧</b>：累計打卡、最長連續、30 日完成率，同各習慣近 30 日完成率。<br>
     5. <b>指標</b>：目標可設<b>單一值</b>或<b>區間</b>（數值喺區間內算達標）；每次記錄數值或改目標都記錄日期，趨勢圖對照評估，另有<b>變更紀錄</b>。<br>
     6. <b>分享</b>：右下角浮動掣畫出「今日打卡」或「習慣清單」圖，經系統分享選單揀微信／WhatsApp；唔支援就直接存圖。<br>
-    7. <b>設定</b>：改一週開始日、介面語言、匯出／匯入 JSON 備份；清除所有資料要按兩次，之後仍可復原。<br>
+    7. <b>設定</b>：改一週開始日、介面語言、字型大小、匯出／匯入 JSON 備份；清除所有資料要按兩次，之後仍可復原。<br>
     8. <b>滑動</b>：左右滑頁面依底部選單切分頁；喺七格／週數列左右滑切週；分享面板內滑動切換兩張圖。<br>
     9. <b>排序</b>：習慣名單撳「⇅ 整理順序」後，長按 ☰ 先可拖曳；平時打卡唔會郁到順序。<br>
     10. 資料只存<b>本機</b>，永不上傳；分享圖片係本機畫出，只有你撳分享先會傳出去。底部選單左至右：<b>設定 → 習慣 → 指標 → 回顧 → 今日</b>。
@@ -634,6 +662,27 @@ h1{font-size:17px}
   <button class="set-btn" id="tplAdd" type="button" style="background:var(--accent);border-color:var(--accent);color:#fff;text-align:center">加入所選（0）</button>
 </div>
 
+<!-- v3.4：該日補打 -->
+<div class="sheet" id="daySheet">
+  <div class="sheet-head"><h3 id="dayTitle">該日打卡</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="day-sum" id="daySum"></div>
+  <div id="dayList"></div>
+  <button class="set-btn" data-close type="button" style="text-align:center;background:var(--accent);border-color:var(--accent);color:#fff">完成</button>
+</div>
+
+<!-- v3.5：點習慣 → 該習慣熱力圖 -->
+<div class="sheet" id="habitHeatSheet">
+  <div class="sheet-head"><h3 id="hHeatTitle" data-noi18n>習慣</h3><button class="x" data-close type="button">✕</button></div>
+  <div class="heatwrap">
+    <div class="heatlab" id="hHeatLab"></div>
+    <div class="heatgrid" id="hHeatGrid"></div>
+  </div>
+  <div class="legend">未打卡 <i style="background:#f6f2ec"></i> 已打卡 <i style="background:#c23b6a"></i></div>
+  <div class="hheat-stats" id="hHeatStats"></div>
+  <button class="set-btn" id="hHeatLog" type="button">打卡紀錄 ⏱</button>
+  <button class="set-btn" data-close type="button" style="text-align:center;background:var(--accent);border-color:var(--accent);color:#fff">完成</button>
+</div>
+
 <!-- v3：循環輪次紀錄 -->
 <div class="sheet" id="roundSheet">
   <div class="sheet-head"><h3 id="roundTitle" data-noi18n>循環輪次</h3><button class="x" data-close type="button">✕</button></div>
@@ -658,12 +707,12 @@ var KEY='habit_checkin_v1';
 var LANG_KEY='habit_ui_lang_v1';
 var LANGS=['zh-Hant','zh-Hans','en','pt'];
 var lang='zh-Hant';
-var DICT={"en":{"小習慣打卡":"Habit Check-in","習慣打卡":"Habit Check-in","小習慣清單":"My Habit List","習慣清單":"Habit List","今日打卡":"Today's Check-in","今日":"Today","設定":"Settings","習慣":"Habits","指標":"Metrics","回顧":"Review","分享":"Share","使用說明":"Help","介面語言":"Language","切換後即時生效":"Applies immediately","資料管理":"Data","本機儲存":"Local storage","一週開始日":"Week starts on","星期一":"Monday","星期日":"Sunday","影響「本週次數」同熱力圖排列":"Affects weekly counts and the heatmap","單檔網頁":"Single-file page","資料只存本機":"Data stays on this device","版本":"Version","新增":"Add","完成":"Done","復原":"Undo","名稱":"Name","圖示":"Icon","單位":"Unit","其他":"Other","刪除":"Delete","編輯習慣":"Edit Habit","上移":"Move up","下移":"Move down","排序":"Order","整理順序":"Reorder","完成排序":"Done Sorting","分享清單 ↗":"Share List ↗","從模板加入":"Add from Templates","從模板加入習慣（健康／學習／財富）":"Add from templates (Health / Study / Money)","加入所選":"Add Selected","改目標":"Target changed","記錄數值":"Log Value","複製文字摘要":"Copy Text Summary","儲存圖片到裝置":"Save Image","複製打卡時間清單":"Copy Check-in Times","匯出備份（JSON 檔）":"Export Backup (JSON)","匯入備份（覆蓋現有資料）":"Import Backup (overwrites data)","清除所有資料":"Clear All Data","再按一次確定清除":"Tap again to confirm","打卡紀錄 ⏱":"Check-in Log ⏱","輪次":"Rounds","⏱ 紀錄":"⏱ Log","紀錄":"Log","記錄":"Record","補打":"Backfill","扣回":"Undo check-in","打卡":"Check-in","循環":"Cycle","循環輪次":"Cycle Rounds","不循環":"No cycle","目標":"Target","達標":"Met meta","未達標":"Off target","區間":"Range","單一值":"Single","下限":"Lower bound","上限":"Upper bound","數值":"Value","數值日期":"Value date","指標數值":"Metric value","目標類型":"Target type","目標：單一值":"Target: single value","目標：區間":"Target: range","新目標":"New target","區間下限":"Range lower bound","區間上限":"Range upper bound","變更紀錄":"History","打卡紀錄":"Check-in Log","趨勢圖":"Trend chart","變更":"Change","輸入":"Entry","修正":"Edited","設目標":"Target set","記錄於":"Logged at","最新":"Latest","距目標":"To target","低於下限":"Below lower bound","高於上限":"Above upper bound","區間內":"In range","未有變更紀錄":"No changes yet","未有數值，輸入第一筆就見到趨勢":"No values yet — add one to see the trend","仲未輸入數值":"No value logged yet","仲未設指標 👆":"No metrics yet 👆","例如體重、睡眠時數、儲蓄金額":"e.g. weight, sleep hours, savings","例如體重、睡眠時數、儲蓄金額。":"e.g. weight, sleep hours, savings.","指標名稱，例如：體重":"Metric name, e.g. Weight","刪除此指標":"Delete this metric","請輸入指標名稱":"Enter a metric name","請輸入區間下限同上限":"Enter lower and upper bounds","請輸入目標":"Enter a target","請輸入新目標":"Enter a new target","請揀日期":"Pick a date","請輸入數值":"Enter a value","未嚟嘅日子唔可以記錄":"Cannot log a future date","刪除指標會同時清除佢嘅數值同變更紀錄，確定？":"Deleting this metric also removes its values and history. Continue?","（已記錄）":"(saved)","（已記錄 ":"(saved ","今日完成":"Today","今日完成 0 / 0":"Today 0 / 0","先加一個小習慣 🌱":"Add your first habit 🌱","全部完成 🎉":"All done 🎉","仲差":"Still","全勤連續":"Streak","累計打卡":"Total check-ins","累計":"Total","最長連續":"Best streak","30 日完成率":"30-day rate","近 5 週":"Last 5 weeks","打卡熱力圖":"Check-in Heatmap","顏色愈深，完成愈多；撳一格睇詳情。":"Darker = more done. Tap a square for details.","各習慣 · 近 30 日":"By habit · last 30 days","未有習慣，暫時冇得統計":"No habits yet — nothing to show","未有紀錄":"No record","少":"Less","多":"More","本週":"This week","上週":"Last week","該週":"That week","回本週":"Back to this week","上一週":"Previous week","下一週":"Next week","可打卡／補打":"Check in / backfill","可補打／扣回":"Backfill / undo","週前":"weeks ago","週":"Week","由今日開始":"Start today","上輪":"Last round","輪":"Round","最近":"Last","仲未打過卡":"No check-ins yet","未打卡 · 撳一下補打":"Not done · tap to backfill","已打卡 · 撳一下扣回":"Done · tap to undo","未到":"Not yet","每週期望次數":"Weekly target","每週期望":"Weekly target","每週":"Weekly","每輪打卡次數（0＝不循環）":"Check-ins per cycle (0 = no cycle)","循環次數，0 表示不循環":"Cycle length, 0 = no cycle","每打滿一輪由 0 重新計，":"Each cycle restarts from 0,","累計次數唔會清零":"The total never resets","刪除此習慣（同時清除佢嘅打卡紀錄）":"Delete this habit (and its check-in log)","修改習慣名稱":"Edit habit name","長按拖曳調整順序":"Long-press to drag","刪除習慣":"Delete habit","長按 ☰ 拖曳；完成後撳「✓ 完成排序」。":"Long-press ☰ to drag, then tap Done Sorting.","仲未有習慣":"No habits yet","仲未有小習慣 👆":"No habits yet 👆","自己輸入，或從模板加入":"Type your own or pick from templates","輸入名稱撳「":"Enter a name and tap \"","」，或從模板加入":"\", or pick from templates","例如：閱讀 10 分鐘":"e.g. Read for 10 min","揀圖示":"Pick an icon","新增習慣":"Add Habit","習慣名單":"My Habits","習慣模板":"Habit Templates","健康":"Health","學習":"Study","財富":"Money","健康／學習／財富":"Health / Study / Money","飲 8 杯水":"Drink 8 glasses of water","伸展 5 分鐘":"Stretch for 5 min","早瞓（23:00 前）":"Sleep before 23:00","行路 20 分鐘":"Walk for 20 min","食一份蔬果":"Eat a serving of fruit/veg","深呼吸 3 分鐘":"Breathe deeply for 3 min","拉筋放鬆":"Stretch & relax","閱讀 10 分鐘":"Read for 10 min","背 5 個生字":"Memorise 5 new words","聽一段英文 Podcast":"Listen to an English podcast","寫 3 行反思":"Write 3 lines of reflection","練字 10 分鐘":"Practise handwriting 10 min","整理今日筆記":"Tidy up today's notes","溫習 15 分鐘":"Revise for 15 min","記低今日使費":"Log today's spending","唔飲手搖飲品":"Skip bubble tea","睇 5 分鐘理財資訊":"Read money news for 5 min","每日儲 $10":"Save $10 a day","檢查訂閱／月費":"Review subscriptions","列一份想買清單":"Make a wish list","執好單據收據":"File receipts","次/輪":"per cycle","刪除後 5 秒內可復原。":"Undo is available for 5 seconds after deleting.","刪除此筆":"Delete this entry","仲未打卡，完成第一輪後就有紀錄":"No check-ins yet — rounds appear after the first cycle","進行中":"In progress","✓ 完成":"✓ Done","系統分享選單揀微信／WhatsApp；唔支援就直接存圖，亦可長按預覽圖儲存。":"Choose WeChat / WhatsApp in the share menu; otherwise the image is saved. Long-press the preview to save too.","分享圖片預覽":"Share image preview","圖片預覽":"Image preview","分享失敗，請長按預覽圖儲存":"Share failed — long-press the preview to save","已儲存圖片":"Image saved","儲存失敗，請長按預覽圖":"Save failed — long-press the preview","已複製文字":"Text copied","複製失敗，請手動選取":"Copy failed — select the text manually","複製失敗":"Copy failed","畫圖失敗，請改用「複製文字摘要」":"Image failed — use Copy Text Summary instead","圖片準備中，請再撳一次":"Image is preparing — tap again","瀏覽器唔支援直接分享，已存圖，請喺":"Direct sharing is unsupported. Image saved — open ","揀相傳送":" and pick the photo","已儲存圖片，請喺":"Image saved — open ","揀相簿傳送":" and choose from your photos","分享今日打卡或習慣清單":"Share today's check-in or habit list","⚠️ 瀏覽器不允許本機儲存，資料只會保留到關閉頁面。建議用 Chrome 開啟本檔。":"⚠️ Local storage is blocked; data will be lost when this page closes. Open it in Chrome.","⚠️ 會清除全部習慣同打卡紀錄。建議先「匯出備份」。":"⚠️ This clears all habits and check-ins. Export a backup first.","目前冇任何資料":"Nothing to clear yet","已清除所有資料":"All data cleared","已復原":"Restored","已匯出備份檔":"Backup exported","匯出失敗，請改用 Chrome":"Export failed — try Chrome","檔案唔係有效 JSON":"Not a valid JSON file","檔案入面冇習慣資料":"No habit data in this file","讀取檔案失敗":"Could not read the file","一週開始日已改":"Week start updated","已改名":"Renamed","順序已更新":"Order updated","已刪除一筆打卡時間":"Check-in entry deleted","已刪除「":"Deleted \"","已新增「":"Added \"","已加入 3 個習慣":"Added 3 habits","請輸入習慣名稱":"Enter a habit name","呢日仲未到":"That day hasn't come yet"," · 當時未有習慣":" · No habits then","每日每事一次":"Once a day per habit","已打卡，每日每事一次":"Already checked in — once a day","好叻，繼續落去 💪":"Great work, keep going 💪","又完成一個 ✨":"Another one done ✨","持之以恆就係咁嚟 🌱":"Consistency is built like this 🌱","今日都有做到 👍":"You showed up today 👍","慢慢嚟，最緊要持續 🙂":"Go slow — consistency matters 🙂","🎉 今日全部完成，好叻！":"🎉 All done today, well done!","新嘅一日，開始打卡啦 🌅":"A new day — start checking in 🌅","筆同日重複打卡（每日每事只計一次）":"duplicate same-day check-ins merged (one per day)","小習慣打卡 · HABIT CHECK-IN":"HABIT CHECK-IN","仲未有小習慣，由今日開始 🌱":"No habits yet — start today 🌱","✓ 已完成":"✓ Done","○ 未完成":"○ Not done","資料只存本機 · 由「小習慣打卡」產生":"Data stays local · made with Habit Check-in","習慣打卡-":"habit-checkin-","小習慣清單-":"habit-list-","共 ":"Total "," · 🔥 全勤連續 ":" · 🔥 Full-day streak "," 日 · 累計打卡 ":" days · total check-ins "," · 循環第 ":" · Cycle "," · 最近 ":" · Last "," · 未打卡":" · No check-ins"," · 循環 ":" · Cycle "," 次一輪":" per cycle"," · 不循環":" · No cycle"," · 上輪 ":" · Last round "," · 累計 ":" · Total "," · 本週 ":" · This week "," · 第 ":" · Round "," · 變更紀錄":" · History"," · 循環輪次":" · Cycle Rounds"," · 記錄於 ":" · Logged at "," · 達標 ":" · On target "," 個習慣":" habits"," 個指標":" metrics"," 個同名略過":" duplicates skipped"," 次打卡":" check-ins"," 次一輪，累計唔清零":" per cycle, total never resets"," 次/輪":"per cycle"," 次 ":" times "," 日 ":" days "," 輪 ":" rounds "," 個 ":" items "," 週前":" weeks ago"," 嗰週 · ":" that week · "," 完成 ":" done "," 一筆 · 累計 ":" entry removed · total "," 輪完成！累計 ":" rounds done! Total "," 個）· ":") · ","，去今日頁打卡啦":", head to Today to check in","揀咗嘅習慣都已經喺名單":"All selected habits are already on your list","請先揀最少一個習慣":"Select at least one habit","，或從模板加入":", or add from templates","今日完成 {0} / {1}":"Today {0} / {1} done","{0} · 本週 {1} / {2} 次":"{0} · This week {1} / {2}","先加一個小習慣 🌱 · 本週 {0} / {1} 次":"Add a habit 🌱 · This week {0} / {1}","全部完成 🎉 · 本週 {0} / {1} 次":"All done 🎉 · This week {0} / {1}","仲差 {0} 個 · 本週 {1} / {2} 次":"{0} to go · This week {1} / {2}","{0} 月 {1} 日 · 星期{2}":"{0} 月 {1} 日 · 星期{2}","{0} · 第 {1} 週":"{0} · Week {1}","{0} 週前 · 第 {1} 週":"{0} weeks ago · Week {1}","本週 · 第 {0} 週":"This week · Week {0}","上週 · 第 {0} 週":"Last week · Week {0}","{0} 次 / 週":"{0} times / week","{0} 次":"{0} times","{0} 次 / 輪":"{0} per cycle","每週期望 {0} 次":"Weekly target: {0}","每 {0} 次一輪":"{0} check-ins per cycle","每 {0} 次一輪，累計唔清零":"{0} per cycle, total never resets","改為不循環，只累計":"No cycle — total only","第 {0} 輪完成！累計 {1} 次":"🎉 Round {0} done! Total {1}","已補打 {0} · 累計 {1} 次":"Backfilled {0} · Total {1}","+1 次 · 累計 {0} 次":"+1 · Total {0}","已扣回 {0} 一筆 · 累計 {1} 次":"Undid {0} · Total {1}","「{0}」{1}已打卡，每日每事一次":"\"{0}\" already checked in on {1} — once a day","已跳到 {0} 嗰週 · {1} 完成 {2} / {3}":"Jumped to week of {0} · {1}: {2} / {3} done","{0} 個習慣 · {1} 個指標 · {2} 次打卡":"{0} habits · {1} metrics · {2} check-ins","已加入 {0} 個習慣{1}，去今日頁打卡啦":"Added {0} habits{1} — head to Today","（{0} 個同名略過）":"({0} duplicates skipped)","已匯入 {0} 個習慣":"Imported {0} habits","匯入會覆蓋現有 {0} 個習慣同所有打卡紀錄，確定？":"Importing overwrites your {0} habits and all check-ins. Continue?","已合併 {0} 筆同日重複打卡（每日每事只計一次）":"Merged {0} duplicate same-day check-ins (one per day)","已新增指標「{0}」· 目標 {1}":"Added metric \"{0}\" · Target {1}","目標改為 {0} {1}（已記錄 {2}）":"Target changed to {0} {1} (logged {2})","{0} {1} · {2} {3}（已記錄）":"{0} {1} · {2} {3} (saved)","已刪除「{0}」":"Deleted \"{0}\"","刪除「{0}」？佢嘅打卡紀錄都會一齊清除，無法復原。":"Delete \"{0}\"? Its check-in history will also be erased permanently.","距目標 <b>{0}</b>":"To target <b>{0}</b>","低於下限 <b>{0}</b>":"Below lower bound by <b>{0}</b>","高於上限 <b>{0}</b>":"Above upper bound by <b>{0}</b>","區間內 <b>✓</b>":"In range <b>✓</b>","目標 <b>{0}</b> {1}":"Target <b>{0}</b> {1}","最新 <b>{0}</b> {1} ({2})":"Latest <b>{0}</b> {1} ({2})"," · 達標 <b>{0}/{1}</b>（{2}%）":" · On target <b>{0}/{1}</b> ({2}%)","循環第 {0} 輪 · {1} / {2} 次":"Cycle {0} · {1} / {2}","{0} <b>{1}</b> / {2} 次":"{0} <b>{1}</b> / {2}","{0}達標":"{0} target met","累計 {0} 次":"Total {0}","第 {0} 次":"#{0}","第 {0} 輪":"Round {0}","第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":"Round {0}: {1} / {2} (done: {3})"," · 第 {0} 輪 {1} / {2} 次":" · Round {0}: {1} / {2}","用咗 <b>{0}</b> 日 · 完成 <b>{1}</b> / {2} 次":"Took <b>{0}</b> days · <b>{1}</b> / {2} done","每 <b>{0}</b> 次打卡為一輪 · 累計 <b>{1}</b> 次 · 已完成 <b>{2}</b> 輪":"<b>{0}</b> check-ins per cycle · Total <b>{1}</b> · <b>{2}</b> cycles done","平均每輪用 <b>{0}</b> 日完成 {1} 次":"Average <b>{0}</b> days per cycle ({1} check-ins)","加入所選（{0}）":"Add Selected ({0})","變更紀錄 ({0})":"History ({0})","打卡紀錄 · {0}":"Check-in Log · {0}","{0} · 變更紀錄":"{0} · History","{0} {1} · 循環輪次":"{0} {1} · Cycle Rounds","累計 <b>{0}</b> 次":"Total <b>{0}</b>","每週期望 {0} 次{1}":"Weekly {0}{1}","{0} · {1}":"{0} · {1}","共 {0} 個 · {1}":"{0} habits · {1}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日 · 累計打卡 {3} 次":"Today {0}/{1} · 🔥 Streak {2} days · {3} total check-ins","小習慣打卡 · {0}":"Habit Check-in · {0}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日":"Today {0} / {1} · 🔥 Full-day streak {2} days","{0} {1} {2} · 累計 {3} 次{4}":"{0} {1} {2} · Total {3}{4}","習慣清單（{0} 個）· {1}":"Habit List ({0}) · {1}","{0} {1} {2} · 累計 {3} 次 · 每週 {4} 次{5}":"{0} {1} {2} · Total {3} · {4}/week{5}","第 {0} 次  {1}":"#{0}  {1}","累計 {0} 次{1}":"Total {0}{1}","{0} · {1} {2} 補打":"{0} · backfilled on {1} {2}","{0} {1}":"{0} {1}","{0} 個習慣":"{0} habits","{0} · {1} / {2}":"{0} · {1} / {2}","{0} 日 · {1}%":"{0} days · {1}%","{0} / {1} 日 · {2}%":"{0} / {1} days · {2}%","{0} · {1} {2} · {3}":"{0} · {1} {2} · {3}","{0} 個 · {1}":"{0} habits · {1}","累計 {0} 次{1}{2}":"Total {0}{1}{2}","每週 {0} 次 · {1} · 🔥 {2} 日{3}":"{0}/week · {1} · 🔥 {2} days{3}"," · 循環第 {0} 輪 {1}/{2}":" · Cycle {0}: {1}/{2}"," · 最近 {0} {1}":" · Last {0} {1}","循環 {0} 次一輪":"Cycle {0}"," · 循環 {0} 次一輪":" · Cycle {0}"," · {0} 次/輪":" · {0} per cycle"," · 第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":" · Round {0}: {1} / {2} (done: {3})"," · 第 {0} 輪 {1}/{2}":" · Round {0}: {1}/{2}","上輪 {0} 日":"Last round {0} days","🔥 {0} 日":"🔥 {0} d","瀏覽器唔支援直接分享，已存圖，請喺{0}揀相傳送":"Direct sharing is unsupported. Image saved — open {0} and pick the photo","已儲存圖片，請喺{0}揀相簿傳送":"Image saved — open {0} and choose from your photos","介面語言已切換":"Language switched","{0} {1} · 累計 {2} 次 · 每週 {3} 次{4}":"{0} {1} · Total {2} · {3}/week{4}"," 次":" times"," 日":" d"," 輪":" rounds"," 個":" items"," / 週":" / week","加入所選（0）":"Add Selected (0)","變更紀錄 (0)":"History (0)","今日打卡圖片預覽":"Today's Check-in preview","習慣清單圖片預覽":"Habit list preview","新增指標":"Add Metric"},"pt":{"小習慣打卡":"Registo de Hábitos","習慣打卡":"Registo de Hábitos","小習慣清單":"Lista de Hábitos","習慣清單":"Lista de Hábitos","今日打卡":"Registo de Hoje","今日":"Hoje","設定":"Definições","習慣":"Hábitos","指標":"Indicadores","回顧":"Revisão","分享":"Partilhar","使用說明":"Ajuda","介面語言":"Idioma","切換後即時生效":"Aplicação imediata","資料管理":"Ficheiros e Dados","本機儲存":"Armazenamento local","一週開始日":"Início da semana","星期一":"Segunda","星期日":"Domingo","影響「本週次數」同熱力圖排列":"Afeta a contagem semanal e o mapa de calor","單檔網頁":"Página única","資料只存本機":"Os dados ficam neste dispositivo","版本":"Versão","新增":"Adicionar","完成":"Concluir","復原":"Repor","名稱":"Nome","圖示":"Ícone","單位":"Unidade","其他":"Outros","刪除":"Eliminar","編輯習慣":"Editar Hábito","上移":"Subir","下移":"Descer","排序":"Ordem","整理順序":"Reordenar","完成排序":"Concluir Ordenação","分享清單 ↗":"Partilhar Lista ↗","從模板加入":"Adicionar dos Modelos","從模板加入習慣（健康／學習／財富）":"Adicionar dos modelos (Saúde / Estudo / Finanças)","加入所選":"Adicionar Selecionados","改目標":"Meta alterada","記錄數值":"Registar Valor","複製文字摘要":"Copiar Resumo","儲存圖片到裝置":"Guardar Imagem","複製打卡時間清單":"Copiar Horários","匯出備份（JSON 檔）":"Exportar Cópia (JSON)","匯入備份（覆蓋現有資料）":"Importar Cópia (substitui os dados)","清除所有資料":"Limpar Todos os Dados","再按一次確定清除":"Toque novamente para confirmar","打卡紀錄 ⏱":"Histórico ⏱","輪次":"Ciclos","⏱ 紀錄":"⏱ Histórico","紀錄":"Histórico","記錄":"Registar","補打":"Registo Retroativo","扣回":"Retirar Registo","打卡":"Registo","循環":"Ciclo","循環輪次":"Ciclos","不循環":"Sem ciclo","目標":"Meta","達標":"Atingiu a meta","未達標":"Fora da meta","區間":"Intervalo","單一值":"Único","下限":"Limite inferior","上限":"Limite superior","數值":"Valor","數值日期":"Data do valor","指標數值":"Valor do indicador","目標類型":"Tipo de meta","目標：單一值":"Meta: valor único","目標：區間":"Meta: intervalo","新目標":"Nova meta","區間下限":"Limite inferior","區間上限":"Limite superior","變更紀錄":"Histórico","打卡紀錄":"Histórico de Registos","趨勢圖":"Gráfico de tendência","變更":"Alteração","輸入":"Introduzido","修正":"Corrigido","設目標":"Meta definida","記錄於":"Registado em","最新":"Mais recente","距目標":"Distância à meta","低於下限":"Abaixo do limite inferior","高於上限":"Acima do limite superior","區間內":"Dentro do intervalo","未有變更紀錄":"Sem alterações","未有數值，輸入第一筆就見到趨勢":"Ainda sem valores — introduza um para ver a tendência","仲未輸入數值":"Ainda sem valores","仲未設指標 👆":"Sem indicadores 👆","例如體重、睡眠時數、儲蓄金額":"ex.: peso, horas de sono, poupanças","例如體重、睡眠時數、儲蓄金額。":"ex.: peso, horas de sono, poupanças.","指標名稱，例如：體重":"Nome, ex.: Peso","刪除此指標":"Eliminar este indicador","請輸入指標名稱":"Introduza o nome do indicador","請輸入區間下限同上限":"Introduza os limites inferior e superior","請輸入目標":"Introduza uma meta","請輸入新目標":"Introduza a nova meta","請揀日期":"Escolha uma data","請輸入數值":"Introduza um valor","未嚟嘅日子唔可以記錄":"Não é possível registar datas futuras","刪除指標會同時清除佢嘅數值同變更紀錄，確定？":"Eliminar este indicador remove também os valores e o histórico. Continuar?","（已記錄）":"(registado)","（已記錄 ":"(registado ","今日完成":"Hoje","今日完成 0 / 0":"Hoje 0 / 0","先加一個小習慣 🌱":"Adicione o primeiro hábito 🌱","全部完成 🎉":"Tudo feito 🎉","仲差":"faltam","全勤連續":"Sequência","累計打卡":"Total de registos","累計":"Total","最長連續":"Maior sequência","30 日完成率":"Taxa de 30 dias","近 5 週":"Últimas 5 semanas","打卡熱力圖":"Mapa de Calor","顏色愈深，完成愈多；撳一格睇詳情。":"Mais escuro = mais concluído. Toque num quadrado para ver detalhes.","各習慣 · 近 30 日":"Por hábito · últimos 30 dias","未有習慣，暫時冇得統計":"Sem hábitos — nada a apresentar","未有紀錄":"Sem registo","少":"Menos","多":"Mais","本週":"Esta semana","上週":"Semana passada","該週":"Essa semana","回本週":"Voltar a esta semana","上一週":"Semana anterior","下一週":"Semana seguinte","可打卡／補打":"Registar / retroativo","可補打／扣回":"Retroativo / retirar","週前":"semanas atrás","週":"Semana","由今日開始":"Começa hoje","上輪":"Último ciclo","輪":"Ciclo","最近":"Último","仲未打過卡":"Ainda sem registos","未打卡 · 撳一下補打":"Por fazer · toque para registar","已打卡 · 撳一下扣回":"Feito · toque para retirar","未到":"Ainda não","每週期望次數":"Meta semanal","每週期望":"Meta semanal","每週":"Semanal","每輪打卡次數（0＝不循環）":"Registos por ciclo (0 = sem ciclo)","循環次數，0 表示不循環":"Tamanho do ciclo, 0 = sem ciclo","每打滿一輪由 0 重新計，":"Cada ciclo recomeça em 0,","累計次數唔會清零":"O total nunca é reposto","刪除此習慣（同時清除佢嘅打卡紀錄）":"Eliminar este hábito (e o respetivo histórico)","修改習慣名稱":"Editar nome do hábito","長按拖曳調整順序":"Prima longamente para arrastar","刪除習慣":"Eliminar hábito","長按 ☰ 拖曳；完成後撳「✓ 完成排序」。":"Prima longamente ☰ para arrastar; depois toque em Concluir.","仲未有習慣":"Ainda sem hábitos","仲未有小習慣 👆":"Ainda sem hábitos 👆","自己輸入，或從模板加入":"Escreva o seu ou escolha dos modelos","輸入名稱撳「":"Introduza um nome e toque em \"","」，或從模板加入":"\", ou escolha dos modelos","例如：閱讀 10 分鐘":"ex.: Ler 10 min","揀圖示":"Escolher ícone","新增習慣":"Adicionar Hábito","習慣名單":"Os Meus Hábitos","習慣模板":"Modelos de Hábitos","健康":"Saúde","學習":"Estudo","財富":"Finanças","健康／學習／財富":"Saúde / Estudo / Finanças","飲 8 杯水":"Beber 8 copos de água","伸展 5 分鐘":"Alongar 5 min","早瞓（23:00 前）":"Dormir antes das 23:00","行路 20 分鐘":"Andar 20 min","食一份蔬果":"Comer uma porção de fruta/legumes","深呼吸 3 分鐘":"Respirar fundo 3 min","拉筋放鬆":"Alongar e relaxar","閱讀 10 分鐘":"Ler 10 min","背 5 個生字":"Memorizar 5 palavras","聽一段英文 Podcast":"Ouvir um podcast em inglês","寫 3 行反思":"Escrever 3 linhas de reflexão","練字 10 分鐘":"Praticar caligrafia 10 min","整理今日筆記":"Organizar as notas de hoje","溫習 15 分鐘":"Rever 15 min","記低今日使費":"Registar as despesas de hoje","唔飲手搖飲品":"Evitar bebidas com açúcar","睇 5 分鐘理財資訊":"Ler sobre finanças 5 min","每日儲 $10":"Poupar $10 por dia","檢查訂閱／月費":"Rever subscrições","列一份想買清單":"Fazer uma lista de desejos","執好單據收據":"Arrumar recibos","次/輪":"por ciclo","刪除後 5 秒內可復原。":"Pode repor durante 5 segundos após eliminar.","刪除此筆":"Eliminar este registo","仲未打卡，完成第一輪後就有紀錄":"Ainda sem registos — os ciclos aparecem após o primeiro","進行中":"Em curso","✓ 完成":"✓ Concluído","系統分享選單揀微信／WhatsApp；唔支援就直接存圖，亦可長按預覽圖儲存。":"Escolha WeChat / WhatsApp no menu de partilha; caso contrário a imagem é guardada. Também pode premir longamente a pré-visualização.","分享圖片預覽":"Pré-visualização da imagem","圖片預覽":"Pré-visualização","分享失敗，請長按預覽圖儲存":"Falha na partilha — prima longamente para guardar","已儲存圖片":"Imagem guardada","儲存失敗，請長按預覽圖":"Falha ao guardar — prima longamente a imagem","已複製文字":"Texto copiado","複製失敗，請手動選取":"Falha ao copiar — selecione manualmente","複製失敗":"Falha ao copiar","畫圖失敗，請改用「複製文字摘要」":"Falha ao gerar imagem — use Copiar Resumo","圖片準備中，請再撳一次":"Imagem em preparação — toque novamente","瀏覽器唔支援直接分享，已存圖，請喺":"Partilha direta indisponível. Imagem guardada — abra ","揀相傳送":" e escolha a foto","已儲存圖片，請喺":"Imagem guardada — abra ","揀相簿傳送":" e escolha da galeria","分享今日打卡或習慣清單":"Partilhar o registo de hoje ou a lista de hábitos","⚠️ 瀏覽器不允許本機儲存，資料只會保留到關閉頁面。建議用 Chrome 開啟本檔。":"⚠️ O armazenamento local está bloqueado; os dados perdem-se ao fechar. Abra no Chrome.","⚠️ 會清除全部習慣同打卡紀錄。建議先「匯出備份」。":"⚠️ Isto elimina todos os hábitos e registos. Exporte uma cópia primeiro.","目前冇任何資料":"Ainda não há dados","已清除所有資料":"Todos os dados eliminados","已復原":"Reposto","已匯出備份檔":"Cópia exportada","匯出失敗，請改用 Chrome":"Falha ao exportar — tente o Chrome","檔案唔係有效 JSON":"Não é um ficheiro JSON válido","檔案入面冇習慣資料":"Sem dados de hábitos neste ficheiro","讀取檔案失敗":"Falha ao ler o ficheiro","一週開始日已改":"Início da semana alterado","已改名":"Nome alterado","順序已更新":"Ordem atualizada","已刪除一筆打卡時間":"Registo eliminado","已刪除「":"Eliminado \"","已新增「":"Adicionado \"","已加入 3 個習慣":"Adicionados 3 hábitos","請輸入習慣名稱":"Introduza o nome do hábito","呢日仲未到":"Esse dia ainda não chegou"," · 當時未有習慣":" · Sem hábitos nessa data","每日每事一次":"Uma vez por dia por hábito","已打卡，每日每事一次":"Já registado — uma vez por dia","好叻，繼續落去 💪":"Muito bem, continue 💪","又完成一個 ✨":"Mais um concluído ✨","持之以恆就係咁嚟 🌱":"A consistência constrói-se assim 🌱","今日都有做到 👍":"Cumpriu também hoje 👍","慢慢嚟，最緊要持續 🙂":"Devagar, o importante é continuar 🙂","🎉 今日全部完成，好叻！":"🎉 Tudo feito hoje, muito bem!","新嘅一日，開始打卡啦 🌅":"Um novo dia — comece a registar 🌅","筆同日重複打卡（每日每事只計一次）":"registos duplicados do mesmo dia unidos (um por dia)","小習慣打卡 · HABIT CHECK-IN":"REGISTO DE HÁBITOS","仲未有小習慣，由今日開始 🌱":"Ainda sem hábitos — comece hoje 🌱","✓ 已完成":"✓ Feito","○ 未完成":"○ Por fazer","資料只存本機 · 由「小習慣打卡」產生":"Dados locais · criado com Registo de Hábitos","習慣打卡-":"registo-habitos-","小習慣清單-":"lista-habitos-","共 ":"Total "," · 🔥 全勤連續 ":"· 🔥 Sequência "," 日 · 累計打卡 ":" dias · total de registos "," · 循環第 ":"· Ciclo "," · 最近 ":"· Último "," · 未打卡":" · Sem registos"," · 循環 ":"· Ciclo "," 次一輪":" por ciclo"," · 不循環":" · Sem ciclo"," · 上輪 ":"· Último ciclo "," · 累計 ":"· Total "," · 本週 ":"· Esta semana "," · 第 ":"· Ciclo "," · 變更紀錄":" · Histórico"," · 循環輪次":" · Ciclos"," · 記錄於 ":"· Registado em "," · 達標 ":"· Dentro da meta "," 個習慣":" hábitos"," 個指標":" indicadores"," 個同名略過":" duplicados ignorados"," 次打卡":" registos"," 次一輪，累計唔清零":" por ciclo, o total nunca é reposto"," 次/輪":"por ciclo"," 次 ":"vezes "," 日 ":"dias "," 輪 ":"ciclos "," 個 ":"itens "," 週前":" semanas atrás"," 嗰週 · ":"essa semana · "," 完成 ":"concluído "," 一筆 · 累計 ":"registo retirado · total "," 輪完成！累計 ":"ciclos concluídos! Total "," 個）· ":") · ","，去今日頁打卡啦":", vá a Hoje para registar","揀咗嘅習慣都已經喺名單":"Todos os hábitos selecionados já estão na lista","請先揀最少一個習慣":"Selecione pelo menos um hábito","，或從模板加入":", ou adicione dos modelos","今日完成 {0} / {1}":"Hoje {0} / {1} concluídos","{0} · 本週 {1} / {2} 次":"{0} · Esta semana {1} / {2}","先加一個小習慣 🌱 · 本週 {0} / {1} 次":"Adicione um hábito 🌱 · Esta semana {0} / {1}","全部完成 🎉 · 本週 {0} / {1} 次":"Tudo feito 🎉 · Esta semana {0} / {1}","仲差 {0} 個 · 本週 {1} / {2} 次":"Faltam {0} · Esta semana {1} / {2}","{0} 月 {1} 日 · 星期{2}":"{0} 月 {1} 日 · 星期{2}","{0} · 第 {1} 週":"{0} · Semana {1}","{0} 週前 · 第 {1} 週":"Há {0} semanas · Semana {1}","本週 · 第 {0} 週":"Esta semana · Semana {0}","上週 · 第 {0} 週":"Semana passada · Semana {0}","{0} 次 / 週":"{0} vezes / semana","{0} 次":"{0} vezes","{0} 次 / 輪":"{0} por ciclo","每週期望 {0} 次":"Meta semanal: {0}","每 {0} 次一輪":"{0} registos por ciclo","每 {0} 次一輪，累計唔清零":"{0} por ciclo, o total nunca é reposto","改為不循環，只累計":"Sem ciclo — apenas total","第 {0} 輪完成！累計 {1} 次":"🎉 Ciclo {0} concluído! Total {1}","已補打 {0} · 累計 {1} 次":"Registado {0} · Total {1}","+1 次 · 累計 {0} 次":"+1 · Total {0}","已扣回 {0} 一筆 · 累計 {1} 次":"Retirado {0} · Total {1}","「{0}」{1}已打卡，每日每事一次":"\"{0}\" já registado em {1} — uma vez por dia","已跳到 {0} 嗰週 · {1} 完成 {2} / {3}":"Saltou para a semana de {0} · {1}: {2} / {3}","{0} 個習慣 · {1} 個指標 · {2} 次打卡":"{0} hábitos · {1} indicadores · {2} registos","已加入 {0} 個習慣{1}，去今日頁打卡啦":"Adicionados {0} hábitos{1} — vá a Hoje","（{0} 個同名略過）":"({0} duplicados ignorados)","已匯入 {0} 個習慣":"Importados {0} hábitos","匯入會覆蓋現有 {0} 個習慣同所有打卡紀錄，確定？":"A importação substitui os seus {0} hábitos e todos os registos. Continuar?","已合併 {0} 筆同日重複打卡（每日每事只計一次）":"Unidos {0} registos duplicados do mesmo dia (um por dia)","已新增指標「{0}」· 目標 {1}":"Adicionado indicador \"{0}\" · Meta {1}","目標改為 {0} {1}（已記錄 {2}）":"Meta alterada para {0} {1} (registado {2})","{0} {1} · {2} {3}（已記錄）":"{0} {1} · {2} {3} (registado)","已刪除「{0}」":"Eliminado \"{0}\"","刪除「{0}」？佢嘅打卡紀錄都會一齊清除，無法復原。":"Eliminar \"{0}\"? O histórico também será apagado permanentemente.","距目標 <b>{0}</b>":"Distância à meta <b>{0}</b>","低於下限 <b>{0}</b>":"Abaixo do limite em <b>{0}</b>","高於上限 <b>{0}</b>":"Acima do limite em <b>{0}</b>","區間內 <b>✓</b>":"Dentro do intervalo <b>✓</b>","目標 <b>{0}</b> {1}":"Meta <b>{0}</b> {1}","最新 <b>{0}</b> {1} ({2})":"Mais recente <b>{0}</b> {1} ({2})"," · 達標 <b>{0}/{1}</b>（{2}%）":" · Dentro da meta <b>{0}/{1}</b> ({2}%)","循環第 {0} 輪 · {1} / {2} 次":"Ciclo {0} · {1} / {2}","{0} <b>{1}</b> / {2} 次":"{0} <b>{1}</b> / {2}","{0}達標":"Meta {0} atingida","累計 {0} 次":"Total {0}","第 {0} 次":"Nº {0}","第 {0} 輪":"Ciclo {0}","第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":"Ciclo {0}: {1} / {2} (concluídos: {3})"," · 第 {0} 輪 {1} / {2} 次":" · Ciclo {0}: {1} / {2}","用咗 <b>{0}</b> 日 · 完成 <b>{1}</b> / {2} 次":"Levou <b>{0}</b> dias · <b>{1}</b> / {2} feitos","每 <b>{0}</b> 次打卡為一輪 · 累計 <b>{1}</b> 次 · 已完成 <b>{2}</b> 輪":"<b>{0}</b> registos por ciclo · Total <b>{1}</b> · <b>{2}</b> ciclos concluídos","平均每輪用 <b>{0}</b> 日完成 {1} 次":"Média de <b>{0}</b> dias por ciclo ({1} registos)","加入所選（{0}）":"Adicionar Selecionados ({0})","變更紀錄 ({0})":"Histórico ({0})","打卡紀錄 · {0}":"Histórico · {0}","{0} · 變更紀錄":"{0} · Histórico","{0} {1} · 循環輪次":"{0} {1} · Ciclos","累計 <b>{0}</b> 次":"Total <b>{0}</b>","每週期望 {0} 次{1}":"Meta semanal {0}{1}","{0} · {1}":"{0} · {1}","共 {0} 個 · {1}":"{0} hábitos · {1}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日 · 累計打卡 {3} 次":"Hoje {0}/{1} · 🔥 Sequência {2} dias · {3} registos","小習慣打卡 · {0}":"Registo de Hábitos · {0}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日":"Hoje {0} / {1} · 🔥 Sequência {2} dias","{0} {1} {2} · 累計 {3} 次{4}":"{0} {1} {2} · Total {3}{4}","習慣清單（{0} 個）· {1}":"Lista de Hábitos ({0}) · {1}","{0} {1} {2} · 累計 {3} 次 · 每週 {4} 次{5}":"{0} {1} {2} · Total {3} · {4}/semana{5}","第 {0} 次  {1}":"Nº {0}  {1}","累計 {0} 次{1}":"Total {0}{1}","{0} · {1} {2} 補打":"{0} · retroativo em {1} {2}","{0} {1}":"{0} {1}","{0} 個習慣":"{0} hábitos","{0} · {1} / {2}":"{0} · {1} / {2}","{0} 日 · {1}%":"{0} dias · {1}%","{0} / {1} 日 · {2}%":"{0} / {1} dias · {2}%","{0} · {1} {2} · {3}":"{0} · {1} {2} · {3}","{0} 個 · {1}":"{0} hábitos · {1}","累計 {0} 次{1}{2}":"Total {0}{1}{2}","每週 {0} 次 · {1} · 🔥 {2} 日{3}":"{0}/semana · {1} · 🔥 {2} dias{3}"," · 循環第 {0} 輪 {1}/{2}":" · Ciclo {0}: {1}/{2}"," · 最近 {0} {1}":" · Último {0} {1}","循環 {0} 次一輪":"Ciclo {0}"," · 循環 {0} 次一輪":" · Ciclo {0}"," · {0} 次/輪":" · {0} por ciclo"," · 第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":" · Ciclo {0}: {1} / {2} (concluídos: {3})"," · 第 {0} 輪 {1}/{2}":" · Ciclo {0}: {1}/{2}","上輪 {0} 日":"Último ciclo {0} dias","🔥 {0} 日":"🔥 {0} d","瀏覽器唔支援直接分享，已存圖，請喺{0}揀相傳送":"Partilha direta indisponível. Imagem guardada — abra {0} e escolha a foto","已儲存圖片，請喺{0}揀相簿傳送":"Imagem guardada — abra {0} e escolha da galeria","介面語言已切換":"Idioma alterado","{0} {1} · 累計 {2} 次 · 每週 {3} 次{4}":"{0} {1} · Total {2} · {3}/semana{4}"," 次":" vezes"," 日":" d"," 輪":" ciclos"," 個":" itens"," / 週":" / semana","加入所選（0）":"Adicionar Selecionados (0)","變更紀錄 (0)":"Histórico (0)","今日打卡圖片預覽":"Pré-visualização do registo de hoje","習慣清單圖片預覽":"Pré-visualização da lista","新增指標":"Adicionar Indicador"}};
+var DICT={"en":{"小習慣打卡":"Habit Check-in","習慣打卡":"Habit Check-in","小習慣清單":"My Habit List","習慣清單":"Habit List","今日打卡":"Today's Check-in","今日":"Today","設定":"Settings","習慣":"Habits","指標":"Metrics","回顧":"Review","分享":"Share","使用說明":"Help","介面語言":"Language","切換後即時生效":"Applies immediately","資料管理":"Data","本機儲存":"Local storage","一週開始日":"Week starts on","星期一":"Monday","星期日":"Sunday","影響「本週次數」同熱力圖排列":"Affects weekly counts and the heatmap","單檔網頁":"Single-file page","資料只存本機":"Data stays on this device","版本":"Version","新增":"Add","完成":"Done","復原":"Undo","名稱":"Name","圖示":"Icon","單位":"Unit","其他":"Other","刪除":"Delete","編輯習慣":"Edit Habit","上移":"Move up","下移":"Move down","排序":"Order","整理順序":"Reorder","完成排序":"Done Sorting","分享清單 ↗":"Share List ↗","從模板加入":"Add from Templates","從模板加入習慣（健康／學習／財富）":"Add from templates (Health / Study / Money)","加入所選":"Add Selected","改目標":"Target changed","記錄數值":"Log Value","複製文字摘要":"Copy Text Summary","儲存圖片到裝置":"Save Image","複製打卡時間清單":"Copy Check-in Times","匯出備份（JSON 檔）":"Export Backup (JSON)","匯入備份（覆蓋現有資料）":"Import Backup (overwrites data)","清除所有資料":"Clear All Data","再按一次確定清除":"Tap again to confirm","打卡紀錄 ⏱":"Check-in Log ⏱","輪次":"Rounds","⏱ 紀錄":"⏱ Log","紀錄":"Log","記錄":"Record","補打":"Backfill","扣回":"Undo check-in","打卡":"Check-in","循環":"Cycle","循環輪次":"Cycle Rounds","不循環":"No cycle","目標":"Target","達標":"Met meta","未達標":"Off target","區間":"Range","單一值":"Single","下限":"Lower bound","上限":"Upper bound","數值":"Value","數值日期":"Value date","指標數值":"Metric value","目標類型":"Target type","目標：單一值":"Target: single value","目標：區間":"Target: range","新目標":"New target","區間下限":"Range lower bound","區間上限":"Range upper bound","變更紀錄":"History","打卡紀錄":"Check-in Log","趨勢圖":"Trend chart","變更":"Change","輸入":"Entry","修正":"Edited","設目標":"Target set","記錄於":"Logged at","最新":"Latest","距目標":"To target","低於下限":"Below lower bound","高於上限":"Above upper bound","區間內":"In range","未有變更紀錄":"No changes yet","未有數值，輸入第一筆就見到趨勢":"No values yet — add one to see the trend","仲未輸入數值":"No value logged yet","仲未設指標 👆":"No metrics yet 👆","例如體重、睡眠時數、儲蓄金額":"e.g. weight, sleep hours, savings","例如體重、睡眠時數、儲蓄金額。":"e.g. weight, sleep hours, savings.","指標名稱，例如：體重":"Metric name, e.g. Weight","刪除此指標":"Delete this metric","請輸入指標名稱":"Enter a metric name","請輸入區間下限同上限":"Enter lower and upper bounds","請輸入目標":"Enter a target","請輸入新目標":"Enter a new target","請揀日期":"Pick a date","請輸入數值":"Enter a value","未嚟嘅日子唔可以記錄":"Cannot log a future date","刪除指標會同時清除佢嘅數值同變更紀錄，確定？":"Deleting this metric also removes its values and history. Continue?","（已記錄）":"(saved)","（已記錄 ":"(saved ","今日完成":"Today","今日完成 0 / 0":"Today 0 / 0","先加一個小習慣 🌱":"Add your first habit 🌱","全部完成 🎉":"All done 🎉","仲差":"Still","全勤連續":"Streak","累計打卡":"Total check-ins","累計":"Total","最長連續":"Best streak","30 日完成率":"30-day rate","近 5 週":"Last 5 weeks","打卡熱力圖":"Check-in Heatmap","顏色愈深，完成愈多；撳一格睇詳情。":"Darker = more done. Tap a square for details.","各習慣 · 近 30 日":"By habit · last 30 days","未有習慣，暫時冇得統計":"No habits yet — nothing to show","未有紀錄":"No record","少":"Less","多":"More","本週":"This week","上週":"Last week","該週":"That week","回本週":"Back to this week","上一週":"Previous week","下一週":"Next week","可打卡／補打":"Check in / backfill","可補打／扣回":"Backfill / undo","週前":"weeks ago","週":"Week","由今日開始":"Start today","上輪":"Last round","輪":"Round","最近":"Last","仲未打過卡":"No check-ins yet","未打卡 · 撳一下補打":"Not done · tap to backfill","已打卡 · 撳一下扣回":"Done · tap to undo","未到":"Not yet","每週期望次數":"Weekly target","每週期望":"Weekly target","每週":"Weekly","每輪打卡次數（0＝不循環）":"Check-ins per cycle (0 = no cycle)","循環次數，0 表示不循環":"Cycle length, 0 = no cycle","每打滿一輪由 0 重新計，":"Each cycle restarts from 0,","累計次數唔會清零":"The total never resets","刪除此習慣（同時清除佢嘅打卡紀錄）":"Delete this habit (and its check-in log)","修改習慣名稱":"Edit habit name","長按拖曳調整順序":"Long-press to drag","刪除習慣":"Delete habit","長按 ☰ 拖曳；完成後撳「✓ 完成排序」。":"Long-press ☰ to drag, then tap Done Sorting.","仲未有習慣":"No habits yet","仲未有小習慣 👆":"No habits yet 👆","自己輸入，或從模板加入":"Type your own or pick from templates","輸入名稱撳「":"Enter a name and tap \"","」，或從模板加入":"\", or pick from templates","例如：閱讀 10 分鐘":"e.g. Read for 10 min","揀圖示":"Pick an icon","新增習慣":"Add Habit","習慣名單":"My Habits","習慣模板":"Habit Templates","健康":"Health","學習":"Study","財富":"Money","健康／學習／財富":"Health / Study / Money","飲 8 杯水":"Drink 8 glasses of water","伸展 5 分鐘":"Stretch for 5 min","早瞓（23:00 前）":"Sleep before 23:00","行路 20 分鐘":"Walk for 20 min","食一份蔬果":"Eat a serving of fruit/veg","深呼吸 3 分鐘":"Breathe deeply for 3 min","拉筋放鬆":"Stretch & relax","閱讀 10 分鐘":"Read for 10 min","背 5 個生字":"Memorise 5 new words","聽一段英文 Podcast":"Listen to an English podcast","寫 3 行反思":"Write 3 lines of reflection","練字 10 分鐘":"Practise handwriting 10 min","整理今日筆記":"Tidy up today's notes","溫習 15 分鐘":"Revise for 15 min","記低今日使費":"Log today's spending","唔飲手搖飲品":"Skip bubble tea","睇 5 分鐘理財資訊":"Read money news for 5 min","每日儲 $10":"Save $10 a day","檢查訂閱／月費":"Review subscriptions","列一份想買清單":"Make a wish list","執好單據收據":"File receipts","次/輪":"per cycle","刪除後 5 秒內可復原。":"Undo is available for 5 seconds after deleting.","刪除此筆":"Delete this entry","仲未打卡，完成第一輪後就有紀錄":"No check-ins yet — rounds appear after the first cycle","進行中":"In progress","✓ 完成":"✓ Done","系統分享選單揀微信／WhatsApp；唔支援就直接存圖，亦可長按預覽圖儲存。":"Choose WeChat / WhatsApp in the share menu; otherwise the image is saved. Long-press the preview to save too.","分享圖片預覽":"Share image preview","圖片預覽":"Image preview","分享失敗，請長按預覽圖儲存":"Share failed — long-press the preview to save","已儲存圖片":"Image saved","儲存失敗，請長按預覽圖":"Save failed — long-press the preview","已複製文字":"Text copied","複製失敗，請手動選取":"Copy failed — select the text manually","複製失敗":"Copy failed","畫圖失敗，請改用「複製文字摘要」":"Image failed — use Copy Text Summary instead","圖片準備中，請再撳一次":"Image is preparing — tap again","瀏覽器唔支援直接分享，已存圖，請喺":"Direct sharing is unsupported. Image saved — open ","揀相傳送":" and pick the photo","已儲存圖片，請喺":"Image saved — open ","揀相簿傳送":" and choose from your photos","分享今日打卡或習慣清單":"Share today's check-in or habit list","⚠️ 瀏覽器不允許本機儲存，資料只會保留到關閉頁面。建議用 Chrome 開啟本檔。":"⚠️ Local storage is blocked; data will be lost when this page closes. Open it in Chrome.","⚠️ 會清除全部習慣同打卡紀錄。建議先「匯出備份」。":"⚠️ This clears all habits and check-ins. Export a backup first.","目前冇任何資料":"Nothing to clear yet","已清除所有資料":"All data cleared","已復原":"Restored","已匯出備份檔":"Backup exported","匯出失敗，請改用 Chrome":"Export failed — try Chrome","檔案唔係有效 JSON":"Not a valid JSON file","檔案入面冇習慣資料":"No habit data in this file","讀取檔案失敗":"Could not read the file","一週開始日已改":"Week start updated","已改名":"Renamed","順序已更新":"Order updated","已刪除一筆打卡時間":"Check-in entry deleted","已刪除「":"Deleted \"","已新增「":"Added \"","已加入 3 個習慣":"Added 3 habits","請輸入習慣名稱":"Enter a habit name","呢日仲未到":"That day hasn't come yet"," · 當時未有習慣":" · No habits then","每日每事一次":"Once a day per habit","已打卡，每日每事一次":"Already checked in — once a day","好叻，繼續落去 💪":"Great work, keep going 💪","又完成一個 ✨":"Another one done ✨","持之以恆就係咁嚟 🌱":"Consistency is built like this 🌱","今日都有做到 👍":"You showed up today 👍","慢慢嚟，最緊要持續 🙂":"Go slow — consistency matters 🙂","🎉 今日全部完成，好叻！":"🎉 All done today, well done!","新嘅一日，開始打卡啦 🌅":"A new day — start checking in 🌅","筆同日重複打卡（每日每事只計一次）":"duplicate same-day check-ins merged (one per day)","小習慣打卡 · HABIT CHECK-IN":"HABIT CHECK-IN","仲未有小習慣，由今日開始 🌱":"No habits yet — start today 🌱","✓ 已完成":"✓ Done","○ 未完成":"○ Not done","資料只存本機 · 由「小習慣打卡」產生":"Data stays local · made with Habit Check-in","習慣打卡-":"habit-checkin-","小習慣清單-":"habit-list-","共 ":"Total "," · 🔥 全勤連續 ":" · 🔥 Full-day streak "," 日 · 累計打卡 ":" days · total check-ins "," · 循環第 ":" · Cycle "," · 最近 ":" · Last "," · 未打卡":" · No check-ins"," · 循環 ":" · Cycle "," 次一輪":" per cycle"," · 不循環":" · No cycle"," · 上輪 ":" · Last round "," · 累計 ":" · Total "," · 本週 ":" · This week "," · 第 ":" · Round "," · 變更紀錄":" · History"," · 循環輪次":" · Cycle Rounds"," · 記錄於 ":" · Logged at "," · 達標 ":" · On target "," 個習慣":" habits"," 個指標":" metrics"," 個同名略過":" duplicates skipped"," 次打卡":" check-ins"," 次一輪，累計唔清零":" per cycle, total never resets"," 次/輪":"per cycle"," 次 ":" times "," 日 ":" days "," 輪 ":" rounds "," 個 ":" items "," 週前":" weeks ago"," 嗰週 · ":" that week · "," 完成 ":" done "," 一筆 · 累計 ":" entry removed · total "," 輪完成！累計 ":" rounds done! Total "," 個）· ":") · ","，去今日頁打卡啦":", head to Today to check in","揀咗嘅習慣都已經喺名單":"All selected habits are already on your list","請先揀最少一個習慣":"Select at least one habit","，或從模板加入":", or add from templates","今日完成 {0} / {1}":"Today {0} / {1} done","{0} · 本週 {1} / {2} 次":"{0} · This week {1} / {2}","先加一個小習慣 🌱 · 本週 {0} / {1} 次":"Add a habit 🌱 · This week {0} / {1}","全部完成 🎉 · 本週 {0} / {1} 次":"All done 🎉 · This week {0} / {1}","仲差 {0} 個 · 本週 {1} / {2} 次":"{0} to go · This week {1} / {2}","{0} 月 {1} 日 · 星期{2}":"{0} 月 {1} 日 · 星期{2}","{0} · 第 {1} 週":"{0} · Week {1}","{0} 週前 · 第 {1} 週":"{0} weeks ago · Week {1}","本週 · 第 {0} 週":"This week · Week {0}","上週 · 第 {0} 週":"Last week · Week {0}","{0} 次 / 週":"{0} times / week","{0} 次":"{0} times","{0} 次 / 輪":"{0} per cycle","每週期望 {0} 次":"Weekly target: {0}","每 {0} 次一輪":"{0} check-ins per cycle","每 {0} 次一輪，累計唔清零":"{0} per cycle, total never resets","改為不循環，只累計":"No cycle — total only","第 {0} 輪完成！累計 {1} 次":"🎉 Round {0} done! Total {1}","已補打 {0} · 累計 {1} 次":"Backfilled {0} · Total {1}","+1 次 · 累計 {0} 次":"+1 · Total {0}","已扣回 {0} 一筆 · 累計 {1} 次":"Undid {0} · Total {1}","「{0}」{1}已打卡，每日每事一次":"\"{0}\" already checked in on {1} — once a day","已跳到 {0} 嗰週 · {1} 完成 {2} / {3}":"Jumped to week of {0} · {1}: {2} / {3} done","{0} 個習慣 · {1} 個指標 · {2} 次打卡":"{0} habits · {1} metrics · {2} check-ins","已加入 {0} 個習慣{1}，去今日頁打卡啦":"Added {0} habits{1} — head to Today","（{0} 個同名略過）":"({0} duplicates skipped)","已匯入 {0} 個習慣":"Imported {0} habits","匯入會覆蓋現有 {0} 個習慣同所有打卡紀錄，確定？":"Importing overwrites your {0} habits and all check-ins. Continue?","已合併 {0} 筆同日重複打卡（每日每事只計一次）":"Merged {0} duplicate same-day check-ins (one per day)","已新增指標「{0}」· 目標 {1}":"Added metric \"{0}\" · Target {1}","目標改為 {0} {1}（已記錄 {2}）":"Target changed to {0} {1} (logged {2})","{0} {1} · {2} {3}（已記錄）":"{0} {1} · {2} {3} (saved)","已刪除「{0}」":"Deleted \"{0}\"","刪除「{0}」？佢嘅打卡紀錄都會一齊清除，無法復原。":"Delete \"{0}\"? Its check-in history will also be erased permanently.","距目標 <b>{0}</b>":"To target <b>{0}</b>","低於下限 <b>{0}</b>":"Below lower bound by <b>{0}</b>","高於上限 <b>{0}</b>":"Above upper bound by <b>{0}</b>","區間內 <b>✓</b>":"In range <b>✓</b>","目標 <b>{0}</b> {1}":"Target <b>{0}</b> {1}","最新 <b>{0}</b> {1} ({2})":"Latest <b>{0}</b> {1} ({2})"," · 達標 <b>{0}/{1}</b>（{2}%）":" · On target <b>{0}/{1}</b> ({2}%)","循環第 {0} 輪 · {1} / {2} 次":"Cycle {0} · {1} / {2}","{0} <b>{1}</b> / {2} 次":"{0} <b>{1}</b> / {2}","{0}達標":"{0} target met","累計 {0} 次":"Total {0}","第 {0} 次":"#{0}","第 {0} 輪":"Round {0}","第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":"Round {0}: {1} / {2} (done: {3})"," · 第 {0} 輪 {1} / {2} 次":" · Round {0}: {1} / {2}","用咗 <b>{0}</b> 日 · 完成 <b>{1}</b> / {2} 次":"Took <b>{0}</b> days · <b>{1}</b> / {2} done","每 <b>{0}</b> 次打卡為一輪 · 累計 <b>{1}</b> 次 · 已完成 <b>{2}</b> 輪":"<b>{0}</b> check-ins per cycle · Total <b>{1}</b> · <b>{2}</b> cycles done","平均每輪用 <b>{0}</b> 日完成 {1} 次":"Average <b>{0}</b> days per cycle ({1} check-ins)","加入所選（{0}）":"Add Selected ({0})","變更紀錄 ({0})":"History ({0})","打卡紀錄 · {0}":"Check-in Log · {0}","{0} · 變更紀錄":"{0} · History","{0} {1} · 循環輪次":"{0} {1} · Cycle Rounds","累計 <b>{0}</b> 次":"Total <b>{0}</b>","每週期望 {0} 次{1}":"Weekly {0}{1}","{0} · {1}":"{0} · {1}","共 {0} 個 · {1}":"{0} habits · {1}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日 · 累計打卡 {3} 次":"Today {0}/{1} · 🔥 Streak {2} days · {3} total check-ins","小習慣打卡 · {0}":"Habit Check-in · {0}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日":"Today {0} / {1} · 🔥 Full-day streak {2} days","{0} {1} {2} · 累計 {3} 次{4}":"{0} {1} {2} · Total {3}{4}","習慣清單（{0} 個）· {1}":"Habit List ({0}) · {1}","{0} {1} {2} · 累計 {3} 次 · 每週 {4} 次{5}":"{0} {1} {2} · Total {3} · {4}/week{5}","第 {0} 次  {1}":"#{0}  {1}","累計 {0} 次{1}":"Total {0}{1}","{0} · {1} {2} 補打":"{0} · backfilled on {1} {2}","{0} {1}":"{0} {1}","{0} 個習慣":"{0} habits","{0} · {1} / {2}":"{0} · {1} / {2}","{0} 日 · {1}%":"{0} days · {1}%","{0} / {1} 日 · {2}%":"{0} / {1} days · {2}%","{0} · {1} {2} · {3}":"{0} · {1} {2} · {3}","{0} 個 · {1}":"{0} habits · {1}","累計 {0} 次{1}{2}":"Total {0}{1}{2}","每週 {0} 次 · {1} · 🔥 {2} 日{3}":"{0}/week · {1} · 🔥 {2} days{3}"," · 循環第 {0} 輪 {1}/{2}":" · Cycle {0}: {1}/{2}"," · 最近 {0} {1}":" · Last {0} {1}","循環 {0} 次一輪":"Cycle {0}"," · 循環 {0} 次一輪":" · Cycle {0}"," · {0} 次/輪":" · {0} per cycle"," · 第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":" · Round {0}: {1} / {2} (done: {3})"," · 第 {0} 輪 {1}/{2}":" · Round {0}: {1}/{2}","上輪 {0} 日":"Last round {0} days","🔥 {0} 日":"🔥 {0} d","瀏覽器唔支援直接分享，已存圖，請喺{0}揀相傳送":"Direct sharing is unsupported. Image saved — open {0} and pick the photo","已儲存圖片，請喺{0}揀相簿傳送":"Image saved — open {0} and choose from your photos","介面語言已切換":"Language switched","{0} {1} · 累計 {2} 次 · 每週 {3} 次{4}":"{0} {1} · Total {2} · {3}/week{4}"," 次":" times"," 日":" d"," 輪":" rounds"," 個":" items"," / 週":" / week","加入所選（0）":"Add Selected (0)","變更紀錄 (0)":"History (0)","今日打卡圖片預覽":"Today's Check-in preview","習慣清單圖片預覽":"Habit list preview","新增指標":"Add Metric","字型大小":"Font size","全部文字一齊放大或縮小":"Scales all text","該日打卡":"That day","撳一下補打，再撳一下扣回":"Tap to backfill, tap again to undo","已打卡":"Checked in","未打卡":"Not checked in","仲未有小習慣":"No habits yet","小":"Small","中":"Medium","大":"Large"},"pt":{"小習慣打卡":"Registo de Hábitos","習慣打卡":"Registo de Hábitos","小習慣清單":"Lista de Hábitos","習慣清單":"Lista de Hábitos","今日打卡":"Registo de Hoje","今日":"Hoje","設定":"Definições","習慣":"Hábitos","指標":"Indicadores","回顧":"Revisão","分享":"Partilhar","使用說明":"Ajuda","介面語言":"Idioma","切換後即時生效":"Aplicação imediata","資料管理":"Ficheiros e Dados","本機儲存":"Armazenamento local","一週開始日":"Início da semana","星期一":"Segunda","星期日":"Domingo","影響「本週次數」同熱力圖排列":"Afeta a contagem semanal e o mapa de calor","單檔網頁":"Página única","資料只存本機":"Os dados ficam neste dispositivo","版本":"Versão","新增":"Adicionar","完成":"Concluir","復原":"Repor","名稱":"Nome","圖示":"Ícone","單位":"Unidade","其他":"Outros","刪除":"Eliminar","編輯習慣":"Editar Hábito","上移":"Subir","下移":"Descer","排序":"Ordem","整理順序":"Reordenar","完成排序":"Concluir Ordenação","分享清單 ↗":"Partilhar Lista ↗","從模板加入":"Adicionar dos Modelos","從模板加入習慣（健康／學習／財富）":"Adicionar dos modelos (Saúde / Estudo / Finanças)","加入所選":"Adicionar Selecionados","改目標":"Meta alterada","記錄數值":"Registar Valor","複製文字摘要":"Copiar Resumo","儲存圖片到裝置":"Guardar Imagem","複製打卡時間清單":"Copiar Horários","匯出備份（JSON 檔）":"Exportar Cópia (JSON)","匯入備份（覆蓋現有資料）":"Importar Cópia (substitui os dados)","清除所有資料":"Limpar Todos os Dados","再按一次確定清除":"Toque novamente para confirmar","打卡紀錄 ⏱":"Histórico ⏱","輪次":"Ciclos","⏱ 紀錄":"⏱ Histórico","紀錄":"Histórico","記錄":"Registar","補打":"Registo Retroativo","扣回":"Retirar Registo","打卡":"Registo","循環":"Ciclo","循環輪次":"Ciclos","不循環":"Sem ciclo","目標":"Meta","達標":"Atingiu a meta","未達標":"Fora da meta","區間":"Intervalo","單一值":"Único","下限":"Limite inferior","上限":"Limite superior","數值":"Valor","數值日期":"Data do valor","指標數值":"Valor do indicador","目標類型":"Tipo de meta","目標：單一值":"Meta: valor único","目標：區間":"Meta: intervalo","新目標":"Nova meta","區間下限":"Limite inferior","區間上限":"Limite superior","變更紀錄":"Histórico","打卡紀錄":"Histórico de Registos","趨勢圖":"Gráfico de tendência","變更":"Alteração","輸入":"Introduzido","修正":"Corrigido","設目標":"Meta definida","記錄於":"Registado em","最新":"Mais recente","距目標":"Distância à meta","低於下限":"Abaixo do limite inferior","高於上限":"Acima do limite superior","區間內":"Dentro do intervalo","未有變更紀錄":"Sem alterações","未有數值，輸入第一筆就見到趨勢":"Ainda sem valores — introduza um para ver a tendência","仲未輸入數值":"Ainda sem valores","仲未設指標 👆":"Sem indicadores 👆","例如體重、睡眠時數、儲蓄金額":"ex.: peso, horas de sono, poupanças","例如體重、睡眠時數、儲蓄金額。":"ex.: peso, horas de sono, poupanças.","指標名稱，例如：體重":"Nome, ex.: Peso","刪除此指標":"Eliminar este indicador","請輸入指標名稱":"Introduza o nome do indicador","請輸入區間下限同上限":"Introduza os limites inferior e superior","請輸入目標":"Introduza uma meta","請輸入新目標":"Introduza a nova meta","請揀日期":"Escolha uma data","請輸入數值":"Introduza um valor","未嚟嘅日子唔可以記錄":"Não é possível registar datas futuras","刪除指標會同時清除佢嘅數值同變更紀錄，確定？":"Eliminar este indicador remove também os valores e o histórico. Continuar?","（已記錄）":"(registado)","（已記錄 ":"(registado ","今日完成":"Hoje","今日完成 0 / 0":"Hoje 0 / 0","先加一個小習慣 🌱":"Adicione o primeiro hábito 🌱","全部完成 🎉":"Tudo feito 🎉","仲差":"faltam","全勤連續":"Sequência","累計打卡":"Total de registos","累計":"Total","最長連續":"Maior sequência","30 日完成率":"Taxa de 30 dias","近 5 週":"Últimas 5 semanas","打卡熱力圖":"Mapa de Calor","顏色愈深，完成愈多；撳一格睇詳情。":"Mais escuro = mais concluído. Toque num quadrado para ver detalhes.","各習慣 · 近 30 日":"Por hábito · últimos 30 dias","未有習慣，暫時冇得統計":"Sem hábitos — nada a apresentar","未有紀錄":"Sem registo","少":"Menos","多":"Mais","本週":"Esta semana","上週":"Semana passada","該週":"Essa semana","回本週":"Voltar a esta semana","上一週":"Semana anterior","下一週":"Semana seguinte","可打卡／補打":"Registar / retroativo","可補打／扣回":"Retroativo / retirar","週前":"semanas atrás","週":"Semana","由今日開始":"Começa hoje","上輪":"Último ciclo","輪":"Ciclo","最近":"Último","仲未打過卡":"Ainda sem registos","未打卡 · 撳一下補打":"Por fazer · toque para registar","已打卡 · 撳一下扣回":"Feito · toque para retirar","未到":"Ainda não","每週期望次數":"Meta semanal","每週期望":"Meta semanal","每週":"Semanal","每輪打卡次數（0＝不循環）":"Registos por ciclo (0 = sem ciclo)","循環次數，0 表示不循環":"Tamanho do ciclo, 0 = sem ciclo","每打滿一輪由 0 重新計，":"Cada ciclo recomeça em 0,","累計次數唔會清零":"O total nunca é reposto","刪除此習慣（同時清除佢嘅打卡紀錄）":"Eliminar este hábito (e o respetivo histórico)","修改習慣名稱":"Editar nome do hábito","長按拖曳調整順序":"Prima longamente para arrastar","刪除習慣":"Eliminar hábito","長按 ☰ 拖曳；完成後撳「✓ 完成排序」。":"Prima longamente ☰ para arrastar; depois toque em Concluir.","仲未有習慣":"Ainda sem hábitos","仲未有小習慣 👆":"Ainda sem hábitos 👆","自己輸入，或從模板加入":"Escreva o seu ou escolha dos modelos","輸入名稱撳「":"Introduza um nome e toque em \"","」，或從模板加入":"\", ou escolha dos modelos","例如：閱讀 10 分鐘":"ex.: Ler 10 min","揀圖示":"Escolher ícone","新增習慣":"Adicionar Hábito","習慣名單":"Os Meus Hábitos","習慣模板":"Modelos de Hábitos","健康":"Saúde","學習":"Estudo","財富":"Finanças","健康／學習／財富":"Saúde / Estudo / Finanças","飲 8 杯水":"Beber 8 copos de água","伸展 5 分鐘":"Alongar 5 min","早瞓（23:00 前）":"Dormir antes das 23:00","行路 20 分鐘":"Andar 20 min","食一份蔬果":"Comer uma porção de fruta/legumes","深呼吸 3 分鐘":"Respirar fundo 3 min","拉筋放鬆":"Alongar e relaxar","閱讀 10 分鐘":"Ler 10 min","背 5 個生字":"Memorizar 5 palavras","聽一段英文 Podcast":"Ouvir um podcast em inglês","寫 3 行反思":"Escrever 3 linhas de reflexão","練字 10 分鐘":"Praticar caligrafia 10 min","整理今日筆記":"Organizar as notas de hoje","溫習 15 分鐘":"Rever 15 min","記低今日使費":"Registar as despesas de hoje","唔飲手搖飲品":"Evitar bebidas com açúcar","睇 5 分鐘理財資訊":"Ler sobre finanças 5 min","每日儲 $10":"Poupar $10 por dia","檢查訂閱／月費":"Rever subscrições","列一份想買清單":"Fazer uma lista de desejos","執好單據收據":"Arrumar recibos","次/輪":"por ciclo","刪除後 5 秒內可復原。":"Pode repor durante 5 segundos após eliminar.","刪除此筆":"Eliminar este registo","仲未打卡，完成第一輪後就有紀錄":"Ainda sem registos — os ciclos aparecem após o primeiro","進行中":"Em curso","✓ 完成":"✓ Concluído","系統分享選單揀微信／WhatsApp；唔支援就直接存圖，亦可長按預覽圖儲存。":"Escolha WeChat / WhatsApp no menu de partilha; caso contrário a imagem é guardada. Também pode premir longamente a pré-visualização.","分享圖片預覽":"Pré-visualização da imagem","圖片預覽":"Pré-visualização","分享失敗，請長按預覽圖儲存":"Falha na partilha — prima longamente para guardar","已儲存圖片":"Imagem guardada","儲存失敗，請長按預覽圖":"Falha ao guardar — prima longamente a imagem","已複製文字":"Texto copiado","複製失敗，請手動選取":"Falha ao copiar — selecione manualmente","複製失敗":"Falha ao copiar","畫圖失敗，請改用「複製文字摘要」":"Falha ao gerar imagem — use Copiar Resumo","圖片準備中，請再撳一次":"Imagem em preparação — toque novamente","瀏覽器唔支援直接分享，已存圖，請喺":"Partilha direta indisponível. Imagem guardada — abra ","揀相傳送":" e escolha a foto","已儲存圖片，請喺":"Imagem guardada — abra ","揀相簿傳送":" e escolha da galeria","分享今日打卡或習慣清單":"Partilhar o registo de hoje ou a lista de hábitos","⚠️ 瀏覽器不允許本機儲存，資料只會保留到關閉頁面。建議用 Chrome 開啟本檔。":"⚠️ O armazenamento local está bloqueado; os dados perdem-se ao fechar. Abra no Chrome.","⚠️ 會清除全部習慣同打卡紀錄。建議先「匯出備份」。":"⚠️ Isto elimina todos os hábitos e registos. Exporte uma cópia primeiro.","目前冇任何資料":"Ainda não há dados","已清除所有資料":"Todos os dados eliminados","已復原":"Reposto","已匯出備份檔":"Cópia exportada","匯出失敗，請改用 Chrome":"Falha ao exportar — tente o Chrome","檔案唔係有效 JSON":"Não é um ficheiro JSON válido","檔案入面冇習慣資料":"Sem dados de hábitos neste ficheiro","讀取檔案失敗":"Falha ao ler o ficheiro","一週開始日已改":"Início da semana alterado","已改名":"Nome alterado","順序已更新":"Ordem atualizada","已刪除一筆打卡時間":"Registo eliminado","已刪除「":"Eliminado \"","已新增「":"Adicionado \"","已加入 3 個習慣":"Adicionados 3 hábitos","請輸入習慣名稱":"Introduza o nome do hábito","呢日仲未到":"Esse dia ainda não chegou"," · 當時未有習慣":" · Sem hábitos nessa data","每日每事一次":"Uma vez por dia por hábito","已打卡，每日每事一次":"Já registado — uma vez por dia","好叻，繼續落去 💪":"Muito bem, continue 💪","又完成一個 ✨":"Mais um concluído ✨","持之以恆就係咁嚟 🌱":"A consistência constrói-se assim 🌱","今日都有做到 👍":"Cumpriu também hoje 👍","慢慢嚟，最緊要持續 🙂":"Devagar, o importante é continuar 🙂","🎉 今日全部完成，好叻！":"🎉 Tudo feito hoje, muito bem!","新嘅一日，開始打卡啦 🌅":"Um novo dia — comece a registar 🌅","筆同日重複打卡（每日每事只計一次）":"registos duplicados do mesmo dia unidos (um por dia)","小習慣打卡 · HABIT CHECK-IN":"REGISTO DE HÁBITOS","仲未有小習慣，由今日開始 🌱":"Ainda sem hábitos — comece hoje 🌱","✓ 已完成":"✓ Feito","○ 未完成":"○ Por fazer","資料只存本機 · 由「小習慣打卡」產生":"Dados locais · criado com Registo de Hábitos","習慣打卡-":"registo-habitos-","小習慣清單-":"lista-habitos-","共 ":"Total "," · 🔥 全勤連續 ":"· 🔥 Sequência "," 日 · 累計打卡 ":" dias · total de registos "," · 循環第 ":"· Ciclo "," · 最近 ":"· Último "," · 未打卡":" · Sem registos"," · 循環 ":"· Ciclo "," 次一輪":" por ciclo"," · 不循環":" · Sem ciclo"," · 上輪 ":"· Último ciclo "," · 累計 ":"· Total "," · 本週 ":"· Esta semana "," · 第 ":"· Ciclo "," · 變更紀錄":" · Histórico"," · 循環輪次":" · Ciclos"," · 記錄於 ":"· Registado em "," · 達標 ":"· Dentro da meta "," 個習慣":" hábitos"," 個指標":" indicadores"," 個同名略過":" duplicados ignorados"," 次打卡":" registos"," 次一輪，累計唔清零":" por ciclo, o total nunca é reposto"," 次/輪":"por ciclo"," 次 ":"vezes "," 日 ":"dias "," 輪 ":"ciclos "," 個 ":"itens "," 週前":" semanas atrás"," 嗰週 · ":"essa semana · "," 完成 ":"concluído "," 一筆 · 累計 ":"registo retirado · total "," 輪完成！累計 ":"ciclos concluídos! Total "," 個）· ":") · ","，去今日頁打卡啦":", vá a Hoje para registar","揀咗嘅習慣都已經喺名單":"Todos os hábitos selecionados já estão na lista","請先揀最少一個習慣":"Selecione pelo menos um hábito","，或從模板加入":", ou adicione dos modelos","今日完成 {0} / {1}":"Hoje {0} / {1} concluídos","{0} · 本週 {1} / {2} 次":"{0} · Esta semana {1} / {2}","先加一個小習慣 🌱 · 本週 {0} / {1} 次":"Adicione um hábito 🌱 · Esta semana {0} / {1}","全部完成 🎉 · 本週 {0} / {1} 次":"Tudo feito 🎉 · Esta semana {0} / {1}","仲差 {0} 個 · 本週 {1} / {2} 次":"Faltam {0} · Esta semana {1} / {2}","{0} 月 {1} 日 · 星期{2}":"{0} 月 {1} 日 · 星期{2}","{0} · 第 {1} 週":"{0} · Semana {1}","{0} 週前 · 第 {1} 週":"Há {0} semanas · Semana {1}","本週 · 第 {0} 週":"Esta semana · Semana {0}","上週 · 第 {0} 週":"Semana passada · Semana {0}","{0} 次 / 週":"{0} vezes / semana","{0} 次":"{0} vezes","{0} 次 / 輪":"{0} por ciclo","每週期望 {0} 次":"Meta semanal: {0}","每 {0} 次一輪":"{0} registos por ciclo","每 {0} 次一輪，累計唔清零":"{0} por ciclo, o total nunca é reposto","改為不循環，只累計":"Sem ciclo — apenas total","第 {0} 輪完成！累計 {1} 次":"🎉 Ciclo {0} concluído! Total {1}","已補打 {0} · 累計 {1} 次":"Registado {0} · Total {1}","+1 次 · 累計 {0} 次":"+1 · Total {0}","已扣回 {0} 一筆 · 累計 {1} 次":"Retirado {0} · Total {1}","「{0}」{1}已打卡，每日每事一次":"\"{0}\" já registado em {1} — uma vez por dia","已跳到 {0} 嗰週 · {1} 完成 {2} / {3}":"Saltou para a semana de {0} · {1}: {2} / {3}","{0} 個習慣 · {1} 個指標 · {2} 次打卡":"{0} hábitos · {1} indicadores · {2} registos","已加入 {0} 個習慣{1}，去今日頁打卡啦":"Adicionados {0} hábitos{1} — vá a Hoje","（{0} 個同名略過）":"({0} duplicados ignorados)","已匯入 {0} 個習慣":"Importados {0} hábitos","匯入會覆蓋現有 {0} 個習慣同所有打卡紀錄，確定？":"A importação substitui os seus {0} hábitos e todos os registos. Continuar?","已合併 {0} 筆同日重複打卡（每日每事只計一次）":"Unidos {0} registos duplicados do mesmo dia (um por dia)","已新增指標「{0}」· 目標 {1}":"Adicionado indicador \"{0}\" · Meta {1}","目標改為 {0} {1}（已記錄 {2}）":"Meta alterada para {0} {1} (registado {2})","{0} {1} · {2} {3}（已記錄）":"{0} {1} · {2} {3} (registado)","已刪除「{0}」":"Eliminado \"{0}\"","刪除「{0}」？佢嘅打卡紀錄都會一齊清除，無法復原。":"Eliminar \"{0}\"? O histórico também será apagado permanentemente.","距目標 <b>{0}</b>":"Distância à meta <b>{0}</b>","低於下限 <b>{0}</b>":"Abaixo do limite em <b>{0}</b>","高於上限 <b>{0}</b>":"Acima do limite em <b>{0}</b>","區間內 <b>✓</b>":"Dentro do intervalo <b>✓</b>","目標 <b>{0}</b> {1}":"Meta <b>{0}</b> {1}","最新 <b>{0}</b> {1} ({2})":"Mais recente <b>{0}</b> {1} ({2})"," · 達標 <b>{0}/{1}</b>（{2}%）":" · Dentro da meta <b>{0}/{1}</b> ({2}%)","循環第 {0} 輪 · {1} / {2} 次":"Ciclo {0} · {1} / {2}","{0} <b>{1}</b> / {2} 次":"{0} <b>{1}</b> / {2}","{0}達標":"Meta {0} atingida","累計 {0} 次":"Total {0}","第 {0} 次":"Nº {0}","第 {0} 輪":"Ciclo {0}","第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":"Ciclo {0}: {1} / {2} (concluídos: {3})"," · 第 {0} 輪 {1} / {2} 次":" · Ciclo {0}: {1} / {2}","用咗 <b>{0}</b> 日 · 完成 <b>{1}</b> / {2} 次":"Levou <b>{0}</b> dias · <b>{1}</b> / {2} feitos","每 <b>{0}</b> 次打卡為一輪 · 累計 <b>{1}</b> 次 · 已完成 <b>{2}</b> 輪":"<b>{0}</b> registos por ciclo · Total <b>{1}</b> · <b>{2}</b> ciclos concluídos","平均每輪用 <b>{0}</b> 日完成 {1} 次":"Média de <b>{0}</b> dias por ciclo ({1} registos)","加入所選（{0}）":"Adicionar Selecionados ({0})","變更紀錄 ({0})":"Histórico ({0})","打卡紀錄 · {0}":"Histórico · {0}","{0} · 變更紀錄":"{0} · Histórico","{0} {1} · 循環輪次":"{0} {1} · Ciclos","累計 <b>{0}</b> 次":"Total <b>{0}</b>","每週期望 {0} 次{1}":"Meta semanal {0}{1}","{0} · {1}":"{0} · {1}","共 {0} 個 · {1}":"{0} hábitos · {1}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日 · 累計打卡 {3} 次":"Hoje {0}/{1} · 🔥 Sequência {2} dias · {3} registos","小習慣打卡 · {0}":"Registo de Hábitos · {0}","今日完成 {0} / {1} · 🔥 全勤連續 {2} 日":"Hoje {0} / {1} · 🔥 Sequência {2} dias","{0} {1} {2} · 累計 {3} 次{4}":"{0} {1} {2} · Total {3}{4}","習慣清單（{0} 個）· {1}":"Lista de Hábitos ({0}) · {1}","{0} {1} {2} · 累計 {3} 次 · 每週 {4} 次{5}":"{0} {1} {2} · Total {3} · {4}/semana{5}","第 {0} 次  {1}":"Nº {0}  {1}","累計 {0} 次{1}":"Total {0}{1}","{0} · {1} {2} 補打":"{0} · retroativo em {1} {2}","{0} {1}":"{0} {1}","{0} 個習慣":"{0} hábitos","{0} · {1} / {2}":"{0} · {1} / {2}","{0} 日 · {1}%":"{0} dias · {1}%","{0} / {1} 日 · {2}%":"{0} / {1} dias · {2}%","{0} · {1} {2} · {3}":"{0} · {1} {2} · {3}","{0} 個 · {1}":"{0} hábitos · {1}","累計 {0} 次{1}{2}":"Total {0}{1}{2}","每週 {0} 次 · {1} · 🔥 {2} 日{3}":"{0}/semana · {1} · 🔥 {2} dias{3}"," · 循環第 {0} 輪 {1}/{2}":" · Ciclo {0}: {1}/{2}"," · 最近 {0} {1}":" · Último {0} {1}","循環 {0} 次一輪":"Ciclo {0}"," · 循環 {0} 次一輪":" · Ciclo {0}"," · {0} 次/輪":" · {0} por ciclo"," · 第 {0} 輪 {1} / {2} 次（完成 {3} 輪）":" · Ciclo {0}: {1} / {2} (concluídos: {3})"," · 第 {0} 輪 {1}/{2}":" · Ciclo {0}: {1}/{2}","上輪 {0} 日":"Último ciclo {0} dias","🔥 {0} 日":"🔥 {0} d","瀏覽器唔支援直接分享，已存圖，請喺{0}揀相傳送":"Partilha direta indisponível. Imagem guardada — abra {0} e escolha a foto","已儲存圖片，請喺{0}揀相簿傳送":"Imagem guardada — abra {0} e escolha da galeria","介面語言已切換":"Idioma alterado","{0} {1} · 累計 {2} 次 · 每週 {3} 次{4}":"{0} {1} · Total {2} · {3}/semana{4}"," 次":" vezes"," 日":" d"," 輪":" ciclos"," 個":" itens"," / 週":" / semana","加入所選（0）":"Adicionar Selecionados (0)","變更紀錄 (0)":"Histórico (0)","今日打卡圖片預覽":"Pré-visualização do registo de hoje","習慣清單圖片預覽":"Pré-visualização da lista","新增指標":"Adicionar Indicador","字型大小":"Tamanho do texto","全部文字一齊放大或縮小":"Aumenta ou reduz todo o texto","該日打卡":"Registos do dia","撳一下補打，再撳一下扣回":"Toque para registar, toque de novo para retirar","已打卡":"Registado","未打卡":"Sem registo","仲未有小習慣":"Ainda sem hábitos","小":"Pequeno","中":"Médio","大":"Grande"}};
 var LNG={"zh-Hant":{"dw":["日","一","二","三","四","五","六"],"wd":["日","一","二","三","四","五","六"],"cheers":["好叻，繼續落去 💪","又完成一個 ✨","持之以恆就係咁嚟 🌱","今日都有做到 👍","慢慢嚟，最緊要持續 🙂"],"dateFmt":"{0} 月 {1} 日 · 星期{2}"},"zh-Hans":{"dw":["日","一","二","三","四","五","六"],"wd":["日","一","二","三","四","五","六"],"cheers":["真棒，继续下去 💪","又完成一个 ✨","持之以恒就是这样来的 🌱","今天也做到了 👍","慢慢来，最重要是坚持 🙂"],"dateFmt":"{0} 月 {1} 日 · 星期{2}"},"en":{"dw":["S","M","T","W","T","F","S"],"wd":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"cheers":["Great work, keep going 💪","Another one done ✨","Consistency is built like this 🌱","You showed up today 👍","Go slow — consistency matters 🙂"],"dateFmt":"{2}, {0}/{1}"},"pt":{"dw":["D","S","T","Q","Q","S","S"],"wd":["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"],"cheers":["Muito bem, continue 💪","Mais um concluído ✨","A consistência constrói-se assim 🌱","Cumpriu também hoje 👍","Devagar, o importante é continuar 🙂"],"dateFmt":"{2}, {1}/{0}"}};
-var HELP={"zh-Hant":["1. <b>習慣</b>：自己輸入名稱，或由<b>健康／學習／財富</b>模板多選加入；設<b>每週期望次數</b>同<b>循環</b>（每幾次打卡為一輪，累計次數唔清零）。","2. <b>今日</b>：撳圓鈕打卡，<b>每日每事一次</b>，再撳一次扣回。七格可補打或扣回舊日（未到嘅日子除外）；<b>‹ ›</b> 切週，最少睇返前三週。","3. <b>打卡紀錄</b>：卡上「⏱ 紀錄」睇每筆打卡時間；「輪次」睇每輪用咗幾多日、完成幾多次。所有改動 5 秒內可<b>復原</b>。","4. <b>回顧</b>：累計打卡、最長連續、30 日完成率、近 5 週熱力圖；撳熱力圖一格跳去嗰週補打。","5. <b>指標</b>：目標可設<b>單一值</b>或<b>區間</b>（數值喺區間內算達標）；每次記錄數值或改目標都記錄日期，趨勢圖對照評估，另有<b>變更紀錄</b>。","6. <b>分享</b>：右下角浮動掣畫出「今日打卡」或「習慣清單」圖，經系統分享選單揀微信／WhatsApp；唔支援就直接存圖。","7. <b>設定</b>：改一週開始日、介面語言、匯出／匯入 JSON 備份；清除所有資料要按兩次，之後仍可復原。","8. <b>滑動</b>：左右滑頁面依底部選單切分頁；喺七格／週數列左右滑切週；分享面板內滑動切換兩張圖。","9. <b>排序</b>：習慣名單撳「⇅ 整理順序」後，長按 ☰ 先可拖曳；平時打卡唔會郁到順序。","10. 資料只存<b>本機</b>，永不上傳；分享圖片係本機畫出，只有你撳分享先會傳出去。底部選單左至右：<b>設定 → 習慣 → 指標 → 回顧 → 今日</b>。"],"zh-Hans":["1. <b>习惯</b>：自己输入名称，或由<b>健康／学习／财富</b>模板多选加入；设<b>每周期望次数</b>和<b>循环</b>（每几次打卡为一轮，累计次数不清零）。","2. <b>今日</b>：点圆钮打卡，<b>每日每事一次</b>，再点一次扣回。七格可补打或扣回旧日（未到的日子除外）；<b>‹ ›</b> 切周，最少回看前三周。","3. <b>打卡记录</b>：卡上「⏱ 记录」看每笔打卡时间；「轮次」看每轮用了多少天、完成多少次。所有改动 5 秒内可<b>恢复</b>。","4. <b>回顾</b>：累计打卡、最长连续、30 日完成率、近 5 周热力图；点热力图一格跳到那周补打。","5. <b>指标</b>：目标可设<b>单一值</b>或<b>区间</b>（数值在区间内算达标）；每次记录数值或改目标都记录日期，趋势图对照评估，另有<b>变更记录</b>。","6. <b>分享</b>：右下角浮动按钮画出「今日打卡」或「习惯清单」图，经系统分享菜单选微信／WhatsApp；不支持就直接存图。","7. <b>设置</b>：改一周开始日、界面语言、导出／导入 JSON 备份；清除所有数据要按两次，之后仍可恢复。","8. <b>滑动</b>：左右滑页面依底部菜单切分页；在七格／周数列左右滑切周；分享面板内滑动切换两张图。","9. <b>排序</b>：习惯名单点「⇅ 整理顺序」后，长按 ☰ 才能拖动；平时打卡不会动到顺序。","10. 数据只存<b>本机</b>，永不上传；分享图片在本机画出，只有你点分享才会传出去。底部菜单左至右：<b>设置 → 习惯 → 指标 → 回顾 → 今日</b>。"],"en":["1. <b>Habits</b>: type a name or add several from the <b>Health / Study / Money</b> templates. Set a <b>weekly target</b> and a <b>cycle</b> (check-ins per round; the total never resets).","2. <b>Today</b>: tap the circle to check in — <b>once a day per habit</b>; tap again to undo. The 7 cells let you backfill or undo past days (not future ones). Use <b>‹ ›</b> to change weeks, up to 3 weeks back.","3. <b>Check-in Log</b>: \"⏱ Log\" shows every check-in time; \"Rounds\" shows days used and check-ins per cycle. Every change can be <b>undone within 5 seconds</b>.","4. <b>Review</b>: total check-ins, best streak, 30-day rate, 5-week heatmap. Tap a heatmap cell to jump to that week.","5. <b>Metrics</b>: targets can be a <b>single value</b> or a <b>range</b> (values inside the range count as met). Every value and target change is dated and shown in the trend chart and <b>History</b>.","6. <b>Share</b>: the floating button draws a \"Today\" or \"Habit List\" image. Pick WeChat / WhatsApp from the system share sheet, or the image is saved instead.","7. <b>Settings</b>: week start, interface language, JSON export / import. Clearing all data takes two taps and can still be undone.","8. <b>Swipe</b>: swipe horizontally to change tabs; swipe on the 7 cells / week bar to change weeks; swipe inside the share sheet to switch images.","9. <b>Reorder</b>: tap \"⇅ Reorder\" on the habit list, then long-press ☰ to drag. Normal check-ins never move anything.","10. Data stays <b>on this device</b> and is never uploaded; share images are drawn locally and leave only when you choose to share. Tabs: <b>Settings → Habits → Metrics → Review → Today</b>."],"pt":["1. <b>Hábitos</b>: escreva um nome ou adicione vários dos modelos <b>Saúde / Estudo / Finanças</b>. Defina a <b>meta semanal</b> e o <b>ciclo</b> (registos por ciclo; o total nunca é reposto).","2. <b>Hoje</b>: toque no círculo para registar — <b>uma vez por dia por hábito</b>; toque novamente para retirar. As 7 células permitem registos retroativos (não em datas futuras). Use <b>‹ ›</b> para mudar de semana, até 3 semanas atrás.","3. <b>Histórico</b>: \"⏱ Histórico\" mostra cada hora de registo; \"Ciclos\" mostra os dias usados e os registos por ciclo. Cada alteração pode ser <b>reposta durante 5 segundos</b>.","4. <b>Revisão</b>: total de registos, maior sequência, taxa de 30 dias, mapa de calor de 5 semanas. Toque num quadrado para saltar para essa semana.","5. <b>Indicadores</b>: a meta pode ser um <b>valor único</b> ou um <b>intervalo</b> (valores dentro do intervalo contam como atingidos). Cada valor e alteração de meta tem data e aparece no gráfico e no <b>Histórico</b>.","6. <b>Partilhar</b>: o botão flutuante desenha a imagem \"Hoje\" ou \"Lista de Hábitos\". Escolha WeChat / WhatsApp no menu de partilha; caso contrário a imagem é guardada.","7. <b>Definições</b>: início da semana, idioma, exportação / importação JSON. Limpar os dados exige dois toques e ainda pode ser reposto.","8. <b>Deslizar</b>: deslize na horizontal para mudar de separador; nas 7 células ou barra de semanas para mudar de semana; dentro da partilha para trocar de imagem.","9. <b>Reordenar</b>: toque em \"⇅ Reordenar\" na lista e prima longamente ☰ para arrastar. Os registos normais nunca alteram a ordem.","10. Os dados ficam <b>neste dispositivo</b> e nunca são enviados; as imagens são criadas localmente e só saem quando escolhe partilhar. Separadores: <b>Definições → Hábitos → Indicadores → Revisão → Hoje</b>."]};
+var HELP={"zh-Hant":["1. <b>習慣</b>：自己輸入名稱，或由<b>健康／學習／財富</b>模板多選加入；設<b>每週期望次數</b>同<b>循環</b>（每幾次打卡為一輪，累計次數唔清零）。","2. <b>今日</b>：撳圓鈕打卡，<b>每日每事一次</b>，再撳一次扣回。本週七格可撳入去補打或扣回舊日（未到嘅日子除外）；<b>‹ ›</b> 切週，最少睇返前三週；撳習慣卡（除咗打卡掣）睇佢嘅打卡熱力圖。","3. <b>打卡紀錄</b>：撳習慣卡睇佢嘅打卡熱力圖；「⋯」或長按卡開編輯，入面有「打卡紀錄」睇每筆時間；「輪次」睇每輪用咗幾多日、完成幾多次。所有改動 5 秒內可<b>復原</b>。","4. <b>回顧</b>：累計打卡、最長連續、30 日完成率，同各習慣近 30 日完成率。","5. <b>指標</b>：目標可設<b>單一值</b>或<b>區間</b>（數值喺區間內算達標）；每次記錄數值或改目標都記錄日期，趨勢圖對照評估，另有<b>變更紀錄</b>。","6. <b>分享</b>：右下角浮動掣畫出「今日打卡」或「習慣清單」圖，經系統分享選單揀微信／WhatsApp；唔支援就直接存圖。","7. <b>設定</b>：改一週開始日、介面語言、字型大小、匯出／匯入 JSON 備份；清除所有資料要按兩次，之後仍可復原。","8. <b>滑動</b>：左右滑頁面依底部選單切分頁；喺七格／週數列左右滑切週；分享面板內滑動切換兩張圖。","9. <b>排序</b>：習慣名單撳「⇅ 整理順序」後，長按 ☰ 先可拖曳；平時打卡唔會郁到順序。","10. 資料只存<b>本機</b>，永不上傳；分享圖片係本機畫出，只有你撳分享先會傳出去。底部選單左至右：<b>設定 → 習慣 → 指標 → 回顧 → 今日</b>。"],"zh-Hans":["1. <b>习惯</b>：自己输入名称，或由<b>健康／学习／财富</b>模板多选加入；设<b>每周期望次数</b>和<b>循环</b>（每几次打卡为一轮，累计次数不清零）。","2. <b>今日</b>：点圆钮打卡，<b>每日每事一次</b>，再点一次扣回。本周七格可点进去补打或扣回旧日（未到的日子除外）；<b>‹ ›</b> 切周，最少回看前三周；点习惯卡（除了打卡按钮）看它的打卡热力图。","3. <b>打卡记录</b>：点习惯卡看它的打卡热力图；「⋯」或长按卡开编辑，里面有「打卡记录」看每笔时间；「轮次」看每轮用了多少天、完成多少次。所有改动 5 秒内可<b>恢复</b>。","4. <b>回顾</b>：累计打卡、最长连续、30 日完成率，和各习惯近 30 日完成率。","5. <b>指标</b>：目标可设<b>单一值</b>或<b>区间</b>（数值在区间内算达标）；每次记录数值或改目标都记录日期，趋势图对照评估，另有<b>变更记录</b>。","6. <b>分享</b>：右下角浮动按钮画出「今日打卡」或「习惯清单」图，经系统分享菜单选微信／WhatsApp；不支持就直接存图。","7. <b>设置</b>：改一周开始日、界面语言、字体大小、导出／导入 JSON 备份；清除所有数据要按两次，之后仍可恢复。","8. <b>滑动</b>：左右滑页面依底部菜单切分页；在七格／周数列左右滑切周；分享面板内滑动切换两张图。","9. <b>排序</b>：习惯名单点「⇅ 整理顺序」后，长按 ☰ 才能拖动；平时打卡不会动到顺序。","10. 数据只存<b>本机</b>，永不上传；分享图片在本机画出，只有你点分享才会传出去。底部菜单左至右：<b>设置 → 习惯 → 指标 → 回顾 → 今日</b>。"],"en":["1. <b>Habits</b>: type a name or add several from the <b>Health / Study / Money</b> templates. Set a <b>weekly target</b> and a <b>cycle</b> (check-ins per round; the total never resets).","2. <b>Today</b>: tap the circle to check in — <b>once a day per habit</b>; tap again to undo. Tap a day in the week strip to backfill or undo past days (not future ones). Use <b>‹ ›</b> to change weeks, up to 3 weeks back. Tap a habit card (not its check-in button) to see its heatmap.","3. <b>Check-in Log</b>: tap a habit card to see its heatmap; tap \"⋯\" or long-press the card to edit, where \"⏱ Log\" shows each time; \"Rounds\" shows days and check-ins per cycle. Every change can be <b>undone within 5 seconds</b>.","4. <b>Review</b>: total check-ins, best streak, 30-day rate, and each habit’s 30-day rate.","5. <b>Metrics</b>: targets can be a <b>single value</b> or a <b>range</b> (values inside the range count as met). Every value and target change is dated and shown in the trend chart and <b>History</b>.","6. <b>Share</b>: the floating button draws a \"Today\" or \"Habit List\" image. Pick WeChat / WhatsApp from the system share sheet, or the image is saved instead.","7. <b>Settings</b>: week start, interface language, font size, JSON export / import. Clearing all data takes two taps and can still be undone.","8. <b>Swipe</b>: swipe horizontally to change tabs; swipe on the 7 cells / week bar to change weeks; swipe inside the share sheet to switch images.","9. <b>Reorder</b>: tap \"⇅ Reorder\" on the habit list, then long-press ☰ to drag. Normal check-ins never move anything.","10. Data stays <b>on this device</b> and is never uploaded; share images are drawn locally and leave only when you choose to share. Tabs: <b>Settings → Habits → Metrics → Review → Today</b>."],"pt":["1. <b>Hábitos</b>: escreva um nome ou adicione vários dos modelos <b>Saúde / Estudo / Finanças</b>. Defina a <b>meta semanal</b> e o <b>ciclo</b> (registos por ciclo; o total nunca é reposto).","2. <b>Hoje</b>: toque no círculo para registar — <b>uma vez por dia por hábito</b>; toque novamente para retirar. Toque num dia da faixa semanal para registos retroativos (não em datas futuras). Use <b>‹ ›</b> para mudar de semana, até 3 semanas atrás. Toque no cartão do hábito (exceto o botão) para ver o seu mapa de calor.","3. <b>Histórico</b>: toque no cartão do hábito para ver o mapa de calor; toque em \"⋯\" ou prima longamente o cartão para editar, onde \"⏱ Histórico\" mostra cada hora; \"Ciclos\" mostra dias e registos por ciclo. Cada alteração pode ser <b>reposta durante 5 segundos</b>.","4. <b>Revisão</b>: total de registos, maior sequência, taxa de 30 dias e a taxa de cada hábito nesses 30 dias.","5. <b>Indicadores</b>: a meta pode ser um <b>valor único</b> ou um <b>intervalo</b> (valores dentro do intervalo contam como atingidos). Cada valor e alteração de meta tem data e aparece no gráfico e no <b>Histórico</b>.","6. <b>Partilhar</b>: o botão flutuante desenha a imagem \"Hoje\" ou \"Lista de Hábitos\". Escolha WeChat / WhatsApp no menu de partilha; caso contrário a imagem é guardada.","7. <b>Definições</b>: início da semana, idioma, tamanho do texto, exportação / importação JSON. Limpar os dados exige dois toques e ainda pode ser reposto.","8. <b>Deslizar</b>: deslize na horizontal para mudar de separador; nas 7 células ou barra de semanas para mudar de semana; dentro da partilha para trocar de imagem.","9. <b>Reordenar</b>: toque em \"⇅ Reordenar\" na lista e prima longamente ☰ para arrastar. Os registos normais nunca alteram a ordem.","10. Os dados ficam <b>neste dispositivo</b> e nunca são enviados; as imagens são criadas localmente e só saem quando escolhe partilhar. Separadores: <b>Definições → Hábitos → Indicadores → Revisão → Hoje</b>."]};
 var META={"zh-Hant":"每日打卡、循環輪次、補打舊週、指標趨勢 · 資料只存本機","zh-Hans":"每日打卡、循环轮次、补打旧周、指标趋势 · 数据只存本机","en":"Daily check-ins, cycles, backfilling, metric trends · data stays local","pt":"Registos diários, ciclos, registos retroativos, indicadores · dados locais"};
-var SW=[["每次記錄數值或改目標都記錄日期","每次记录数值或改目标都记录日期"],["影響「本週次數」同熱力圖排列","影响「本周次数」和热力图排列"],["只有你撳分享先會傳出去","只有你点分享才会传出去"],["七格可補打或扣回舊日","七格可补打或扣回旧日"],["數值喺區間內算達標","数值在区间内算达标"],["分享圖片係本機畫出","分享图片在本机画出"],["同健康／學習／財富","和健康／学习／财富"],["經系統分享選單揀","经系统分享菜单选"],["撳熱力圖一格跳去","点热力图一格跳到"],["睇每輪用咗幾多日","看每轮用了多少天"],["趨勢圖對照評估","趋势图对照评估"],["底部選單左至右","底部菜单左至右"],["睇每筆打卡時間","看每笔打卡时间"],["累計次數唔清零","累计次数不清零"],["未到嘅日子除外","未到的日子除外"],["同所有打卡紀錄","和所有打卡记录"],["區間下限同上限","区间下限和上限"],["數值同變更紀錄","数值和变更记录"],["唔會郁到順序","不会动到顺序"],["自己輸入名稱","自己输入名称"],["模板多選加入","模板多选加入"],["每日每事一次","每日每事一次"],["再撳一次扣回","再点一次扣回"],["由今日開始","从今天开始"],["呢日仲未到","这天还没到"],["揀最少一個","至少选一个"],["未嚟嘅日子","未来的日子"],["唔可以記錄","不能记录"],["就直接存圖","就直接存图"],["完成幾多次","完成多少次"],["同變更紀錄","和变更记录"],["手搖飲品","奶茶"],["再撳一次","再点一次"],["去今日頁","去今日页"],["全勤連續","全勤连续"],["最長連續","最长连续"],["使用說明","使用说明"],["永不上傳","永不上传"],["介面語言","界面语言"],["持之以恆","持之以恒"],["就係咁嚟","就是这样来的"],["都有做到","也做到了"],["新嘅一日","新的一天"],["同名略過","同名略过"],["未有習慣","没有习惯"],["暫時冇得","暂时没法"],["顏色愈深","颜色越深"],["完成愈多","完成越多"],["先可拖曳","才能拖动"],["唔會郁到","不会动到"],["最少睇返","最少回看"],["所有改動","所有改动"],["要按兩次","要按两次"],["之後仍可","之后仍可"],["嗰週補打","那周补打"],["唔可以","不可以"],["唔支援","不支持"],["唔清零","不清零"],["冇任何","没有任何"],["冇習慣","没有习惯"],["睇詳情","看详情"],["撳一下","点一下"],["撳圓鈕","点圆钮"],["揀相簿","选相册"],["喺名單","在名单"],["熱力圖","热力图"],["趨勢圖","趋势图"],["撳一格","点一格"],["浮動掣","浮动按钮"],["單一值","单一值"],["回本週","返回本周"],["完成率","完成率"],["最緊要","最重要"],["慢慢嚟","慢慢来"],["都已經","已经"],["完成後","完成后"],["左右滑","左右滑"],["切分頁","切分页"],["前三週","前三周"],["秒內可","秒内可"],["右下角","右下角"],["同循環","和循环"],["同佢嘅","和它的"],["同上限","和上限"],["唔使","不用"],["唔會","不会"],["唔係","不是"],["唔好","别"],["唔飲","不喝"],["冇得","没法"],["未有","没有"],["仲未","还没有"],["仲差","还差"],["而家","现在"],["幾多","多少"],["點解","为什么"],["同埋","和"],["即時","即时"],["行路","走路"],["早瞓","早睡"],["使費","花费"],["單據","单据"],["收據","收据"],["記低","记下"],["溫習","复习"],["生字","生词"],["練字","练字"],["執好","整理"],["執屋","收拾"],["睇返","回看"],["揀相","选图片"],["揀咗","选了"],["儲存","保存"],["匯出","导出"],["匯入","导入"],["檔案","文件"],["讀取","读取"],["覆蓋","覆盖"],["確定","确定"],["復原","恢复"],["刪除","删除"],["改為","改为"],["輸入","输入"],["輸出","输出"],["設定","设置"],["紀錄","记录"],["指標","指标"],["習慣","习惯"],["循環","循环"],["顏色","颜色"],["補打","补打"],["扣回","扣回"],["暫時","暂时"],["統計","统计"],["分鐘","分钟"],["選單","菜单"],["長按","长按"],["拖曳","拖动"],["順序","顺序"],["評估","评估"],["情況","情况"],["區間","区间"],["下限","下限"],["上限","上限"],["目標","目标"],["達標","达标"],["數值","数值"],["單位","单位"],["名稱","名称"],["圖示","图标"],["變更","变更"],["排序","排序"],["本週","本周"],["上週","上周"],["該週","该周"],["累計","累计"],["本機","本机"],["資料","数据"],["管理","管理"],["影響","影响"],["排列","排列"],["嗰週","那周"],["用咗","用了"],["就係","就是"],["好叻","真棒"],["繼續","继续"],["落去","下去"],["全勤","全勤"],["當時","当时"],["詳情","详情"],["平時","平时"],["切週","切周"],["另有","另有"],["畫出","画出"],["撳「","点「"],["」後","」后"],["卡上","卡上"],["咗","了"],["嘅","的"],["喺","在"],["唔","不"],["佢","它"],["啲","些"],["仲","还"],["幾","几"],["睇","看"],["揀","选"],["返","回"],["冇","没"],["啱","对"],["嗰","那"],["嚟","来"],["畀","给"],["郁","动"],["哋","们"],["諗","想"],["攞","拿"],["瞓","睡"],["撳","按"],["食","吃"],["輪","轮"],["週","周"],["愈","越"],["個","个"],["頁","页"],["請","请"],["設","设"]];
-var SC={"習":"习","慣":"惯","紀":"纪","錄":"录","標":"标","週":"周","環":"环","複":"复","檢":"检","驗":"验","測":"测","評":"评","趨":"趋","勢":"势","圖":"图","顏":"颜","熱":"热","點":"点","詳":"详","檔":"档","儲":"储","匯":"汇","導":"导","輸":"输","讀":"读","確":"确","刪":"删","復":"复","變":"变","動":"动","選":"选","擇":"择","單":"单","區":"区","間":"间","數":"数","準":"准","誌":"志","記":"记","設":"设","題":"题","說":"说","幫":"帮","響":"响","應":"应","該":"该","範":"范","圍":"围","內":"内","達":"达","續":"续","連":"连","溫":"温","練":"练","寫":"写","線":"线","筆":"笔","帳":"账","費":"费","訂":"订","閱":"阅","執":"执","據":"据","買":"买","鬆":"松","靜":"静","縮":"缩","進":"进","暫":"暂","統":"统","轉":"转","換":"换","長":"长","順":"顺","鬱":"郁","擊":"击","項":"项","頁":"页","樣":"样","顯":"显","視":"视","觸":"触","歲":"岁","歷":"历","農":"农","豐":"丰","幾":"几","餘":"余","絡":"络","傳":"传","麗":"丽","尋":"寻","開":"开","關":"关","際":"际","語":"语","減":"减","還":"还","讓":"让","謝":"谢","認":"认","護":"护","證":"证","見":"见","觀":"观","覺":"觉","學":"学","課":"课","處":"处","實":"实","將":"将","專":"专","業":"业","務":"务","報":"报","雜":"杂","經":"经","濟":"济","營":"营","養":"养","衛":"卫","藥":"药","醫":"医","為":"为","無":"无","與":"与","從":"从","會":"会","來":"来","對":"对","時":"时","過":"过","這":"这","個":"个","們":"们","裡":"里","後":"后","麵":"面","發":"发","現":"现","價":"价","種":"种","車":"车","書":"书","畫":"画","當":"当","舊":"旧","親":"亲","於":"于","並":"并","較":"较","眾":"众","啟":"启","備":"备","螢":"萤","橫":"横","豎":"竖","嚟":"来","啲":"些","揀":"选","喺":"在","唔":"不","咗":"了","嘅":"的","佢":"它","啱":"对","嗰":"那","畀":"给","郁":"动","哋":"们","諗":"想","攞":"拿","瞓":"睡","撳":"按","睇":"看","仲":"还","冇":"没","返":"回","針":"针","協":"协","錶":"表","癒":"愈","癡":"痴","剷":"铲","颱":"台","颳":"刮","曬":"晒","囉":"啰","資":"资","機":"机","遠":"远","結":"结","鐘":"钟","輪":"轮","補":"补","稱":"称","計":"计","編":"编","輯":"辑","顧":"顾","體":"体","難":"难","離":"离","問":"问","聞":"闻","門":"门","悶":"闷","閃":"闪","閉":"闭","闊":"阔","電":"电","腦":"脑","話":"话","詞":"词","試":"试","詩":"诗","請":"请","淨":"净","爭":"争","錯":"错","願":"愿","頭":"头","類":"类","煩":"烦","樂":"乐","歡":"欢","慶":"庆","態":"态","總":"总","別":"别","層":"层","廣":"广","東":"东","華":"华","灣":"湾","臺":"台","國":"国","網":"网","蓋":"盖","壓":"压","圓":"圆","鈕":"钮","淺":"浅","敗":"败","預":"预","覽":"览","製":"制","併":"并","籤":"签","適":"适","則":"则","歸":"归","盡":"尽","隨":"随","繫":"系","譯":"译","裝":"装","萬":"万","億":"亿","卻":"却","腳":"脚","鬧":"闹","鬢":"鬓","齒":"齿","穩":"稳"};
+var SW=[["每次記錄數值或改目標都記錄日期","每次记录数值或改目标都记录日期"],["影響「本週次數」同熱力圖排列","影响「本周次数」和热力图排列"],["只有你撳分享先會傳出去","只有你点分享才会传出去"],["七格可補打或扣回舊日","七格可补打或扣回旧日"],["數值喺區間內算達標","数值在区间内算达标"],["分享圖片係本機畫出","分享图片在本机画出"],["同健康／學習／財富","和健康／学习／财富"],["經系統分享選單揀","经系统分享菜单选"],["撳熱力圖一格跳去","点热力图一格跳到"],["睇每輪用咗幾多日","看每轮用了多少天"],["趨勢圖對照評估","趋势图对照评估"],["底部選單左至右","底部菜单左至右"],["睇每筆打卡時間","看每笔打卡时间"],["累計次數唔清零","累计次数不清零"],["未到嘅日子除外","未到的日子除外"],["同所有打卡紀錄","和所有打卡记录"],["區間下限同上限","区间下限和上限"],["數值同變更紀錄","数值和变更记录"],["唔會郁到順序","不会动到顺序"],["自己輸入名稱","自己输入名称"],["模板多選加入","模板多选加入"],["每日每事一次","每日每事一次"],["再撳一次扣回","再点一次扣回"],["由今日開始","从今天开始"],["呢日仲未到","这天还没到"],["揀最少一個","至少选一个"],["未嚟嘅日子","未来的日子"],["唔可以記錄","不能记录"],["就直接存圖","就直接存图"],["完成幾多次","完成多少次"],["同變更紀錄","和变更记录"],["手搖飲品","奶茶"],["再撳一次","再点一次"],["去今日頁","去今日页"],["全勤連續","全勤连续"],["最長連續","最长连续"],["使用說明","使用说明"],["永不上傳","永不上传"],["介面語言","界面语言"],["持之以恆","持之以恒"],["就係咁嚟","就是这样来的"],["都有做到","也做到了"],["新嘅一日","新的一天"],["同名略過","同名略过"],["未有習慣","没有习惯"],["暫時冇得","暂时没法"],["顏色愈深","颜色越深"],["完成愈多","完成越多"],["先可拖曳","才能拖动"],["唔會郁到","不会动到"],["最少睇返","最少回看"],["所有改動","所有改动"],["要按兩次","要按两次"],["之後仍可","之后仍可"],["嗰週補打","那周补打"],["字型大小","字体大小"],["唔可以","不可以"],["唔支援","不支持"],["唔清零","不清零"],["冇任何","没有任何"],["冇習慣","没有习惯"],["睇詳情","看详情"],["撳一下","点一下"],["撳圓鈕","点圆钮"],["揀相簿","选相册"],["喺名單","在名单"],["熱力圖","热力图"],["趨勢圖","趋势图"],["撳一格","点一格"],["浮動掣","浮动按钮"],["單一值","单一值"],["回本週","返回本周"],["完成率","完成率"],["最緊要","最重要"],["慢慢嚟","慢慢来"],["都已經","已经"],["完成後","完成后"],["左右滑","左右滑"],["切分頁","切分页"],["前三週","前三周"],["秒內可","秒内可"],["右下角","右下角"],["同循環","和循环"],["同佢嘅","和它的"],["同上限","和上限"],["唔使","不用"],["唔會","不会"],["唔係","不是"],["唔好","别"],["唔飲","不喝"],["冇得","没法"],["未有","没有"],["仲未","还没有"],["仲差","还差"],["而家","现在"],["幾多","多少"],["點解","为什么"],["同埋","和"],["即時","即时"],["行路","走路"],["早瞓","早睡"],["使費","花费"],["單據","单据"],["收據","收据"],["記低","记下"],["溫習","复习"],["生字","生词"],["練字","练字"],["執好","整理"],["執屋","收拾"],["睇返","回看"],["揀相","选图片"],["揀咗","选了"],["儲存","保存"],["匯出","导出"],["匯入","导入"],["檔案","文件"],["讀取","读取"],["覆蓋","覆盖"],["確定","确定"],["復原","恢复"],["刪除","删除"],["改為","改为"],["輸入","输入"],["輸出","输出"],["設定","设置"],["紀錄","记录"],["指標","指标"],["習慣","习惯"],["循環","循环"],["顏色","颜色"],["補打","补打"],["扣回","扣回"],["暫時","暂时"],["統計","统计"],["分鐘","分钟"],["選單","菜单"],["長按","长按"],["拖曳","拖动"],["順序","顺序"],["評估","评估"],["情況","情况"],["區間","区间"],["下限","下限"],["上限","上限"],["目標","目标"],["達標","达标"],["數值","数值"],["單位","单位"],["名稱","名称"],["圖示","图标"],["變更","变更"],["排序","排序"],["本週","本周"],["上週","上周"],["該週","该周"],["累計","累计"],["本機","本机"],["資料","数据"],["管理","管理"],["影響","影响"],["排列","排列"],["嗰週","那周"],["用咗","用了"],["就係","就是"],["好叻","真棒"],["繼續","继续"],["落去","下去"],["全勤","全勤"],["當時","当时"],["詳情","详情"],["平時","平时"],["切週","切周"],["另有","另有"],["畫出","画出"],["撳「","点「"],["」後","」后"],["卡上","卡上"],["字型","字体"],["咗","了"],["嘅","的"],["喺","在"],["唔","不"],["佢","它"],["啲","些"],["仲","还"],["幾","几"],["睇","看"],["揀","选"],["返","回"],["冇","没"],["啱","对"],["嗰","那"],["嚟","来"],["畀","给"],["郁","动"],["哋","们"],["諗","想"],["攞","拿"],["瞓","睡"],["撳","按"],["食","吃"],["輪","轮"],["週","周"],["愈","越"],["個","个"],["頁","页"],["請","请"],["設","设"]];
+var SC={"習":"习","慣":"惯","紀":"纪","錄":"录","標":"标","週":"周","環":"环","複":"复","檢":"检","驗":"验","測":"测","評":"评","趨":"趋","勢":"势","圖":"图","顏":"颜","熱":"热","點":"点","詳":"详","檔":"档","儲":"储","匯":"汇","導":"导","輸":"输","讀":"读","確":"确","刪":"删","復":"复","變":"变","動":"动","選":"选","擇":"择","單":"单","區":"区","間":"间","數":"数","準":"准","誌":"志","記":"记","設":"设","題":"题","說":"说","幫":"帮","響":"响","應":"应","該":"该","範":"范","圍":"围","內":"内","達":"达","續":"续","連":"连","溫":"温","練":"练","寫":"写","線":"线","筆":"笔","帳":"账","費":"费","訂":"订","閱":"阅","執":"执","據":"据","買":"买","鬆":"松","靜":"静","縮":"缩","進":"进","暫":"暂","統":"统","轉":"转","換":"换","長":"长","順":"顺","鬱":"郁","擊":"击","項":"项","頁":"页","樣":"样","顯":"显","視":"视","觸":"触","歲":"岁","歷":"历","農":"农","豐":"丰","幾":"几","餘":"余","絡":"络","傳":"传","麗":"丽","尋":"寻","開":"开","關":"关","際":"际","語":"语","減":"减","還":"还","讓":"让","謝":"谢","認":"认","護":"护","證":"证","見":"见","觀":"观","覺":"觉","學":"学","課":"课","處":"处","實":"实","將":"将","專":"专","業":"业","務":"务","報":"报","雜":"杂","經":"经","濟":"济","營":"营","養":"养","衛":"卫","藥":"药","醫":"医","為":"为","無":"无","與":"与","從":"从","會":"会","來":"来","對":"对","時":"时","過":"过","這":"这","個":"个","們":"们","裡":"里","後":"后","麵":"面","發":"发","現":"现","價":"价","種":"种","車":"车","書":"书","畫":"画","當":"当","舊":"旧","親":"亲","於":"于","並":"并","較":"较","眾":"众","啟":"启","備":"备","螢":"萤","橫":"横","豎":"竖","嚟":"来","啲":"些","揀":"选","喺":"在","唔":"不","咗":"了","嘅":"的","佢":"它","啱":"对","嗰":"那","畀":"给","郁":"动","哋":"们","諗":"想","攞":"拿","瞓":"睡","撳":"按","睇":"看","仲":"还","冇":"没","返":"回","針":"针","協":"协","錶":"表","癒":"愈","癡":"痴","剷":"铲","颱":"台","颳":"刮","曬":"晒","囉":"啰","資":"资","機":"机","遠":"远","結":"结","鐘":"钟","輪":"轮","補":"补","稱":"称","計":"计","編":"编","輯":"辑","顧":"顾","體":"体","難":"难","離":"离","問":"问","聞":"闻","門":"门","悶":"闷","閃":"闪","閉":"闭","闊":"阔","電":"电","腦":"脑","話":"话","詞":"词","試":"试","詩":"诗","請":"请","淨":"净","爭":"争","錯":"错","願":"愿","頭":"头","類":"类","煩":"烦","樂":"乐","歡":"欢","慶":"庆","態":"态","總":"总","別":"别","層":"层","廣":"广","東":"东","華":"华","灣":"湾","臺":"台","國":"国","網":"网","蓋":"盖","壓":"压","圓":"圆","鈕":"钮","淺":"浅","敗":"败","預":"预","覽":"览","製":"制","併":"并","籤":"签","適":"适","則":"则","歸":"归","盡":"尽","隨":"随","繫":"系","譯":"译","裝":"装","萬":"万","億":"亿","卻":"却","腳":"脚","鬧":"闹","鬢":"鬓","齒":"齿","穩":"稳","緊":"紧","齊":"齐","僅":"仅"};
 var PKEYS={};
 LANGS.forEach(function(l){if(!DICT[l])return;PKEYS[l]=Object.keys(DICT[l]).filter(function(k){return k.length>=2&&k.indexOf('{')<0;}).sort(function(a,b){return b.length-a.length;});});
 function F(fmt){
@@ -719,6 +768,16 @@ function applyLang(){
     });
   });
 }
+function applyFs(v){
+  fsize=FSIZES.indexOf(v)>=0?v:'m';
+  document.documentElement.setAttribute('data-fs',fsize);
+  if($('fsSel'))$('fsSel').value=fsize;
+}
+function setFs(v){
+  applyFs(v);lsSet(FS_KEY,fsize);
+  var lb=$('fsSel')&&$('fsSel').selectedIndex>=0?$('fsSel').options[$('fsSel').selectedIndex].text:'';
+  toast(F('字型大小：{0}',tx(lb)));
+}
 function setLang(v){
   if(LANGS.indexOf(v)<0)v='zh-Hant';
   lang=v;lsSet(LANG_KEY,v);
@@ -730,7 +789,7 @@ function setLang(v){
 var EMOJIS=['💧','📖','🏃','🧘','🌅','🥗','✍️','🛌','🎧','🚶','🧹','💊','☕','🌱','🦷','📵','🎨','🧠','🚭','🍎','🙏','🪴','🏋️','⏰'];
 var DW=['日','一','二','三','四','五','六'];
 var CHEERS=['好叻，繼續落去 💪','又完成一個 ✨','持之以恆就係咁嚟 🌱','今日都有做到 👍','慢慢嚟，最緊要持續 🙂'];
-var SHEETS=['editSheet','settingsSheet','helpSheet','logSheet','shareSheet','tplSheet','roundSheet','mHistSheet'];
+var SHEETS=['editSheet','settingsSheet','helpSheet','logSheet','shareSheet','tplSheet','roundSheet','mHistSheet','daySheet','habitHeatSheet'];
 /* habits : {id,name,emoji,goal(每週期望次數),cycle(每輪幾多次),created}
    logs   : { 'YYYY-MM-DD': [{k,id,t,back?}] } ← 每日每習慣最多一筆
    metrics: {id,name,unit,better,created,points[],targets[],log[]} */
@@ -746,9 +805,11 @@ var TEMPLATES=[
    ['每日儲 $10','🪙',5,10],['檢查訂閱／月費','🧾',1,0],['列一份想買清單','🛒',2,0],['執好單據收據','📁',3,0]]}
 ];
 var state={habits:[],logs:{},metrics:[],settings:{weekStart:1}};
-var curTab='today', storageOK=true, editId=null, logId=null, newEmo='💧', toastTimer=null, undoFn=null;
+var curTab='today', storageOK=true, editId=null, logId=null, newEmo='💧', toastTimer=null, undoFn=null, heatId=null;
 var shareKind='today', shareBlob=null, shareUrl=null, shareName='';
 var clearArmed=false, clearTimer=null, lastToday=today();
+var FS_KEY='habit_ui_fs_v1', FSIZES=['s','m','l'], fsize='m';   /* 字型大小，獨立儲存 */
+var dayIso=null;   /* 該日補打面板 */
 var weekOffset=0;   /* 0＝本週，-1＝上週… 用嚟切去舊週補打 */
 var migrationMerged=0, tplTab='health', tplSel={}, roundId=null, mHistId=null;
 var sortMode=false, dragState=null;   /* 排序模式：要手動開＋長按手柄先拖得，避免誤郁順序 */
@@ -920,6 +981,7 @@ function cycleInfo(h){
   return {total:n,cycle:c,round:done+1,inRound:n%c,done:done,p:(n%c)/c};
 }
 function lastEntry(id){var a=entriesOf(id);return a.length?a[a.length-1]:null;}
+function entryOn(id,iso){var a=state.logs[iso]||[];for(var i=0;i<a.length;i++){if(a[i].id===id)return {t:a[i].t,back:!!a[i].back};}return null;}
 function fmtClock(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 /* 補打：顯示「補打日 · 實際補打時間」，唔會扮成當日現場打卡 */
 function fmtStamp(e){
@@ -1008,7 +1070,7 @@ function clampWeek(){weekOffset=Math.max(Math.min(weekOffset,0),minWeekOffset())
 function renderWeekBar(){
   var s=weekStartShown(),en=addDays(s,6),o=weekOffset;
   $('weekLabel').textContent=(o===0?F('本週 · 第 {0} 週',weekNo(s)):(o===-1?F('上週 · 第 {0} 週',weekNo(s)):F('{0} 週前 · 第 {1} 週',Math.abs(o),weekNo(s))));
-  $('weekSub').textContent=fmtMD(s)+' – '+fmtMD(en)+' · '+tx(o===0?'可打卡／補打':'可補打／扣回');
+  $('weekSub').textContent=fmtMD(s)+' – '+fmtMD(en);
   $('weekPrev').disabled=(o<=minWeekOffset());
   $('weekNext').disabled=(o>=0);
   $('weekBack').style.display=o<0?'':'none';
@@ -1044,15 +1106,18 @@ function emoGrid(el,cur,onPick){
 
 /* ============ 渲染：今日 ============ */
 function renderHero(){
-  var t=today(),hs=habitsOn(t),tot=hs.length,done=doneOn(t),p=tot?done/tot:0;
+  var t=today(),hs=habitsOn(t),tot=hs.length,done=doneOn(t);
+  // 本週完成度（取代今日完成度）：各習慣本週已打卡次數（封頂目標）÷ 本週總目標次數
+  var wk=0,wt=0;
+  state.habits.forEach(function(h){wk+=Math.min(weekCount(h),h.goal);wt+=h.goal;});
+  var p=wt?wk/wt:0;
   $('heroDate').textContent=fmtDate(t);
   $('ringFill').setAttribute('stroke-dashoffset',String(201.06*(1-p)));
   $('ringPct').textContent=Math.round(p*100)+'%';
-  $('heroTitle').textContent=F('今日完成 {0} / {1}',done,tot);
-  var wk=0,wt=0;
-  state.habits.forEach(function(h){wk+=Math.min(weekCount(h),h.goal);wt+=h.goal;});
-  $('heroSub').textContent=!tot?F('先加一個小習慣 🌱 · 本週 {0} / {1} 次',wk,wt)
-    :(done===tot?F('全部完成 🎉 · 本週 {0} / {1} 次',wk,wt):F('仲差 {0} 個 · 本週 {1} / {2} 次',tot-done,wk,wt));
+  $('heroTitle').textContent=F('本週完成 {0} / {1} 次',wk,wt);
+  $('heroSub').textContent=!wt?F('先加一個小習慣 🌱')
+    :(wk>=wt?F('🎉 本週目標全部達標'):F('仲差 {0} 次達標',wt-wk));
+  $('heroBar').style.width=Math.round(p*100)+'%';
   $('sToday').textContent=done+'/'+tot;
   $('sStreak').textContent=allDoneStreak();
 }
@@ -1067,18 +1132,7 @@ function renderToday(){
   var h='',wkStart=weekStartShown(),wkLabel=(weekOffset<0?'該週':'本週');
   hs.forEach(function(x){
     var id=esc(x.id),on=has(x.id,t),st=streak(x),wc=weekCountAt(x,wkStart),ok=wc>=x.goal;
-    var ci=cycleInfo(x),le=lastEntry(x.id);
-    var days='';
-    for(var i=0;i<7;i++){
-      var iso=addDays(wkStart,i),n=countOn(x.id,iso);
-      var future=diffDays(iso,t)>0,na=future;   /* 除咗未到嘅日子，其餘（包括建立日前）都可以補打 */
-      var tip=tx(future?' 未到':(n?' 已打卡 · 撳一下扣回':' 未打卡 · 撳一下補打'));
-      days+='<button type="button" data-day="'+iso+'" data-hid="'+id+'"'
-        +' class="'+(n?'on ':'')+(iso===t?'today ':'')+(na?'na':'')+'"'
-        +(na?' disabled':'')+' title="'+fmtMD(iso)+tip+'">'
-        +'<span class="dw">'+DW[dow(iso)]+'</span><span class="dm">'+(+iso.slice(8,10))+'</span>'
-        +'<span class="dt">'+(n>1?'×'+n:(n?'✓':'·'))+'</span></button>';
-    }
+    var ci=cycleInfo(x);
     var rs=ci.cycle?roundsOf(x):[],lastDone=rs.filter(function(r){return r.complete;}).slice(-1)[0];
     var cyc=ci.cycle
       ? '<div class="cyc"><span>'+F('循環第 {0} 輪 · {1} / {2} 次',ci.round,ci.inRound,ci.cycle)
@@ -1093,11 +1147,8 @@ function renderToday(){
         +'<div class="hrow1"><span class="hemo">'+esc(x.emoji)+'</span><span class="hname" data-noi18n>'+esc(x.name)+'</span>'
           +'<span class="hbadge'+(st?'':' zero')+'">'+(st?F('🔥 {0} 日',st):tx('由今日開始'))+'</span></div>'
         +'<div class="hrow2">'+F('{0} <b>{1}</b> / {2} 次',tx(wkLabel),wc,x.goal)+(ok?' <span class="ok">'+F('{0}達標',tx(wkLabel))+'</span>':'')
-          +'<span class="cnt">'+F('累計 {0} 次',ci.total)+'</span>'
-          +'<button class="hlog" data-log="'+id+'" type="button">'+tx('⏱ 紀錄')+'</button></div>'
+          +'<span class="cnt">'+F('累計 {0} 次',ci.total)+'</span></div>'
         +cyc
-        +'<div class="htime">'+(le?tx('最近 ')+fmtStamp(le):tx('仲未打過卡'))+'</div>'
-        +'<div class="d7">'+days+'</div>'
       +'</div>'
       +'<button class="hmore" data-edit="'+id+'" type="button" aria-label="'+tx('編輯習慣')+'">⋯</button>'
     +'</div>';
@@ -1105,14 +1156,49 @@ function renderToday(){
   $('todayList').innerHTML=h;
 }
 
-/* ============ 渲染：回顧 ============ */
-function heatColor(r){
-  if(r===null||r<=0)return '#f6f2ec';
-  if(r<0.34)return '#f8d7e5';
-  if(r<0.67)return '#eda9c4';
-  if(r<1)return '#d76a9a';
-  return '#c23b6a';
+/* v3.4：本週七日共用一條；撳一格開「該日補打」 */
+function renderWeekDays(){
+  var s0=weekStartShown(),t=today(),dw=LNG[lang].dw,h='';
+  for(var i=0;i<7;i++){
+    var iso=addDays(s0,i),hs=habitsOn(iso),n=hs.length,d=0;
+    for(var j=0;j<hs.length;j++){if(has(hs[j].id,iso))d++;}
+    var fut=diffDays(iso,t)>0;
+    var cls=fut?'na':(n&&d===n?'full':(d?'some':''));
+    h+='<button type="button" data-wday="'+iso+'" class="'+cls+(iso===t?' today':'')+'"'
+      +(fut?' disabled':'')+' aria-label="'+fmtMD(iso)+'">'
+      +'<span class="dw">'+dw[dow(iso)]+'</span>'
+      +'<span class="dm">'+(+iso.slice(8,10))+'</span>'
+      +'<span class="dd">'+(fut?'·':(n?d+'/'+n:'–'))+'</span></button>';
+  }
+  $('weekDays').innerHTML=h;
 }
+function openDay(iso){
+  if(diffDays(iso,today())>0){toast('呢日仲未到');return;}
+  dayIso=iso;renderDay();openSheet('daySheet');
+}
+function renderDay(){
+  if(!dayIso)return;
+  var iso=dayIso,d=0,on=[];
+  state.habits.forEach(function(h){if(has(h.id,iso)){d++;on.push(h.id);}});
+  $('dayTitle').textContent=fmtDate(iso);
+  $('daySum').textContent=F('完成 {0} / {1}',d,state.habits.length)+' · '+tx('撳一下補打，再撳一下扣回');
+  if(!state.habits.length){
+    $('dayList').innerHTML='<div class="empty" style="padding:18px">'+tx('仲未有小習慣')+'</div>';
+    applyLang();return;
+  }
+  $('dayList').innerHTML=state.habits.map(function(h){
+    var isOn=has(h.id,iso),le=isOn?entryOn(h.id,iso):null,ci=cycleInfo(h);
+    return '<div class="day-row'+(isOn?' on':'')+'">'
+      +'<span class="de">'+esc(h.emoji)+'</span>'
+      +'<div class="dmid"><div class="dn" data-noi18n>'+esc(h.name)+'</div>'
+      +'<div class="dst">'+(isOn?F('已打卡 {0} · 累計 {1} 次',fmtClock(le?le.t:0),ci.total):F('未打卡 · 累計 {0} 次',ci.total))+'</div></div>'
+      +'<button class="day-toggle" type="button" data-daytoggle="'+esc(h.id)+'" aria-label="'+tx(isOn?'扣回':'補打')+'">'+(isOn?'✓':'＋')+'</button>'
+      +'</div>';
+  }).join('');
+  applyLang();
+}
+
+/* ============ 渲染：回顧 ============ */
 function renderReview(){
   var t=today(),best=0;
   state.habits.forEach(function(h){var b=bestStreak(h);if(b>best)best=b;});
@@ -1122,17 +1208,6 @@ function renderReview(){
   for(var i=29;i>=0;i--){var iso=addDays(t,-i),hs=habitsOn(iso);if(!hs.length)continue;num+=doneOn(iso);den+=hs.length;}
   var rate=den?Math.round(num/den*100):0;
   $('stRate').innerHTML=rate+'<small>%</small>';
-
-  var ws=state.settings.weekStart;
-  var dwa=LNG[lang].dw,labels=ws===1?[dwa[1],dwa[2],dwa[3],dwa[4],dwa[5],dwa[6],dwa[0]]:dwa;
-  $('heatLab').innerHTML=labels.map(function(x){return '<span>'+x+'</span>';}).join('');
-  var start=addDays(weekFirst(t),-28),cells='';
-  for(var j=0;j<35;j++){
-    var k=addDays(start,j),hs2=habitsOn(k),d=doneOn(k);
-    var r=(diffDays(k,t)>0||!hs2.length)?null:d/hs2.length;
-    cells+='<i data-heat="'+k+'" style="background:'+heatColor(r)+'" class="'+(diffDays(k,t)>0?'future':'')+'" title="'+fmtMD(k)+' · '+(r===null?tx('未有紀錄'):(d+' / '+hs2.length))+'"></i>';
-  }
-  $('heatGrid').innerHTML=cells;
 
   if(!state.habits.length){$('rateList').innerHTML='<div class="empty" style="padding:16px">未有習慣，暫時冇得統計</div>';return;}
   $('rateList').innerHTML=state.habits.map(function(h){
@@ -1144,6 +1219,30 @@ function renderReview(){
       +'<div class="rbar"><i style="width:'+p+'%"></i></div></div>';
   }).join('');
 }
+
+/* v3.5：今日撳習慣 → 該習慣熱力圖（近 5 週，每日打卡與否） */
+function renderHabitHeat(id){
+  var h=state.habits.filter(function(x){return x.id===id;})[0];
+  if(!h)return;
+  $('hHeatTitle').textContent=h.emoji+' '+h.name;
+  var t=today(),dwa=LNG[lang].dw;
+  var labels=state.settings.weekStart===1?[dwa[1],dwa[2],dwa[3],dwa[4],dwa[5],dwa[6],dwa[0]]:dwa;
+  $('hHeatLab').innerHTML=labels.map(function(x){return '<span>'+x+'</span>';}).join('');
+  var start=addDays(weekFirst(t),-28),cells='';
+  for(var j=0;j<35;j++){
+    var k=addDays(start,j),on=has(id,k),fut=diffDays(k,t)>0;
+    cells+='<i class="'+(on?'on ':'')+(fut?'future':'')+'" title="'+fmtMD(k)+(on?' · '+tx('已打卡'):'')+'"></i>';
+  }
+  $('hHeatGrid').innerHTML=cells;
+  var ci=cycleInfo(h),c=0,base=0;
+  for(var i=29;i>=0;i--){var k=addDays(t,-i);if(diffDays(k,h.created)<0&&!has(id,k))continue;base++;if(has(id,k))c++;}
+  var p=base?Math.round(c/base*100):0;
+  $('hHeatStats').innerHTML='<div class="hh-stat"><b>'+ci.total+'</b><span>'+tx('累計打卡')+'</span></div>'
+    +'<div class="hh-stat"><b>'+bestStreak(h)+'</b><span>'+tx('最長連續')+'</span></div>'
+    +'<div class="hh-stat"><b>'+p+'%</b><span>'+tx('30 日完成率')+'</span></div>';
+}
+function openHabitHeat(id){heatId=id;renderHabitHeat(id);openSheet('habitHeatSheet');}
+$('hHeatLog').addEventListener('click',function(){if(heatId)openLog(heatId);});
 
 /* ============ 渲染：習慣名單 ============ */
 function renderHabits(){
@@ -1491,11 +1590,12 @@ function addTemplateHabits(){
 
 function blurActive(){try{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();}catch(e){}}
 function renderAll(){
-  clampWeek();renderWeekBar();renderHero();renderToday();renderReview();
+  clampWeek();renderWeekBar();renderWeekDays();renderHero();renderToday();renderReview();
   var ae=document.activeElement;
   if(!(ae&&ae.closest&&ae.closest('#habitList')))renderHabits();
   if(!(ae&&ae.closest&&ae.closest('#metricList')))renderMetrics();
   if(logId&&$('logSheet').classList.contains('on'))renderLog();
+  if(dayIso&&$('daySheet').classList.contains('on'))renderDay();
   $('storeInfo').textContent=(storageOK?'localStorage':tx('記憶體（本機儲存被封鎖）'))+' · '+F('{0} 個習慣 · {1} 個指標 · {2} 次打卡',state.habits.length,state.metrics.length,totalChecks());
   applyLang();
 }
@@ -1843,36 +1943,53 @@ $('tabbar').addEventListener('click',function(e){
 });
 $('todayList').addEventListener('click',function(e){
   var b,id,iso;
+  if(Date.now()-lpFiredAt<800){lpFiredAt=0;return;}
   if((b=e.target.closest('[data-check]'))){
     id=b.getAttribute('data-check');
     if(has(id,today()))unpunch(id,today());else punch(id,today(),false);
     return;
   }
-  if((b=e.target.closest('[data-day]'))){
-    id=b.getAttribute('data-hid');iso=b.getAttribute('data-day');
-    if(countOn(id,iso)>0)unpunch(id,iso);else punch(id,iso,iso!==today());
-    return;
-  }
-  if((b=e.target.closest('[data-log]'))){openLog(b.getAttribute('data-log'));return;}
   if((b=e.target.closest('[data-edit]'))){openEdit(b.getAttribute('data-edit'));return;}
   if((b=e.target.closest('#starterBtn'))){openTpl();return;}
   if((b=e.target.closest('[data-rounds]'))){openRounds(b.getAttribute('data-rounds'));return;}
+  if((b=e.target.closest('.hcard'))){openHabitHeat(b.getAttribute('data-card'));return;}
 });
+/* v3.6：長按習慣卡開編輯（短撳開熱力圖；長撳開編輯，減少點擊） */
+var lpTimer=null, lpFiredAt=0, lpId=null, lpX=0, lpY=0;
+$('todayList').addEventListener('pointerdown',function(e){
+  var card=e.target.closest('.hcard');
+  if(!card||e.target.closest('button'))return;
+  lpId=card.getAttribute('data-card');lpX=e.clientX;lpY=e.clientY;
+  clearTimeout(lpTimer);
+  lpTimer=setTimeout(function(){lpFiredAt=Date.now();clearTimeout(lpTimer);lpTimer=null;openEdit(lpId);},450);
+});
+function lpCancel(){if(lpTimer!=null){clearTimeout(lpTimer);lpTimer=null;}}
+document.addEventListener('pointermove',function(e){
+  if(lpTimer!=null&&(Math.abs(e.clientX-lpX)>10||Math.abs(e.clientY-lpY)>10))lpCancel();
+});
+document.addEventListener('pointerup',lpCancel);
+document.addEventListener('pointercancel',lpCancel);
+/* 長撳開咗編輯後，喺短時間內吞掉隨後嗰下 click（避免又開熱力圖／關 sheet）；過咗時限自動失效 */
+document.addEventListener('click',function(e){
+  if(Date.now()-lpFiredAt<800){lpFiredAt=0;e.stopPropagation();e.preventDefault();}
+},true);
 /* 今日頁與習慣頁嘅分享入口 */
 document.addEventListener('click',function(e){
   var b=e.target.closest('[data-share]');
   if(b){openSharePanel(b.getAttribute('data-share'));}
 });
-$('heatGrid').addEventListener('click',function(e){
-  var c=e.target.closest('[data-heat]');if(!c)return;
-  var k=c.getAttribute('data-heat'),hs=habitsOn(k);
-  if(diffDays(k,today())>0){toast('呢日仲未到');return;}
-  if(!hs.length){toast(fmtMD(k)+' · 當時未有習慣');return;}
-  var done=doneOn(k),n=hs.length;
-  gotoWeekOf(k);setTab('today');renderAll();
-  
-  toast(F('已跳到 {0} 嗰週 · {1} 完成 {2} / {3}',fmtMD(weekStartShown()),fmtMD(k),done,n));
+/* v3.4：七日條 → 該日補打面板 */
+$('weekDays').addEventListener('click',function(e){
+  var b=e.target.closest('[data-wday]');if(!b)return;
+  openDay(b.getAttribute('data-wday'));
 });
+$('dayList').addEventListener('click',function(e){
+  var b=e.target.closest('[data-daytoggle]');if(!b||!dayIso)return;
+  var id=b.getAttribute('data-daytoggle');
+  if(countOn(id,dayIso)>0)unpunch(id,dayIso);else punch(id,dayIso,dayIso!==today());
+  renderDay();
+});
+
 /* 週數切換按鈕 */
 $('weekPrev').addEventListener('click',function(){shiftWeek(-1);});
 $('weekNext').addEventListener('click',function(){shiftWeek(1);});
@@ -2004,6 +2121,7 @@ $('weekStart').addEventListener('change',function(){
   state.settings.weekStart=parseInt(this.value,10)===0?0:1;save();clampWeek();renderAll();toast(tx('一週開始日已改'));
 });
 $('langSel').addEventListener('change',function(){setLang(this.value);});
+$('fsSel').addEventListener('change',function(){setFs(this.value);});
 $('exportBtn').addEventListener('click',exportData);
 $('importBtn').addEventListener('click',function(){$('importFile').click();});
 $('importFile').addEventListener('change',function(e){if(e.target.files&&e.target.files[0])importData(e.target.files[0]);e.target.value='';});
@@ -2051,7 +2169,7 @@ document.addEventListener('pointerdown',function(e){
   if(e.pointerType==='mouse'&&e.button!==0)return;
   if(e.target.closest&&e.target.closest('input,select,textarea,.log-list,.drag-h'))return;
   swipe={x:e.clientX,y:e.clientY,t:Date.now(),
-    onWeek:!!(e.target.closest&&e.target.closest('.d7,.weekbar'))};
+    onWeek:!!(e.target.closest&&e.target.closest('.wkd,.weekbar'))};
 },{passive:true});
 document.addEventListener('pointerup',function(e){
   if(!swipe)return;
@@ -2090,6 +2208,7 @@ setInterval(function(){
 /* ============ init ============ */
 load();
 var savedLang=lsGet(LANG_KEY);lang=LANGS.indexOf(savedLang)>=0?savedLang:'zh-Hant';
+applyFs(lsGet(FS_KEY));
 if($('langSel'))$('langSel').value=lang;
 setTab('today');renderAll();applyLang();
 if(migrationMerged)setTimeout(function(){
