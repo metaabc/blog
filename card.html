@@ -451,7 +451,9 @@ td.c-op{white-space:nowrap;width:110px}
         <button class="btn" id="btnQuiz">📝 測驗</button>
         <button class="btn" id="btnXlsx">⬇ 匯出 Excel</button>
         <button class="btn warm" id="btnPdf">🖨 匯出 PDF</button>
+        <button class="btn" id="btnExportHtml">🌐 匯出 HTML</button>
         <button class="btn" id="btnSharePdf">↗ 分享 PDF</button>
+        <button class="btn" id="btnShareExcel">↗ 分享 Excel</button>
         <button class="btn" id="btnAddCard">＋ 新增卡片</button>
         <div class="menu-wrap">
           <button class="btn icon" id="btnMore">⋯</button>
@@ -461,6 +463,7 @@ td.c-op{white-space:nowrap;width:110px}
             <button data-m="paste">📋 批量貼上卡片</button>
             <hr>
             <button data-m="sharepdf">↗ 分享 PDF（用上次設定）</button>
+            <button data-m="shareexcel">↗ 分享 Excel</button>
             <button data-m="csv">⬇ 匯出 CSV</button>
             <button data-m="json">⬇ 匯出此清單 JSON</button>
             <hr>
@@ -951,6 +954,7 @@ function renderCards(){
       '<button class="btn" data-fc="play">▶ 播放這張</button>'+
       '<button class="btn" data-fc="next">下一張 →</button></div></div>'+
       '<div class="fswipe">← → 滑動切換卡片　·　點一下顯示答案</div>';
+    autoAlign(area.querySelector('.focus-v .q')); autoAlign(area.querySelector('.focus-v .a'));
   }
 }
 
@@ -1027,6 +1031,8 @@ $$('.lang-seg').forEach(seg=>seg.addEventListener('click',e=>{
   const b=e.target.closest('button[data-v]'); if(!b)return; setListLang(b.dataset.v);
 }));
 $('#btnSharePdf').onclick=()=>sharePdf(false);
+$('#btnShareExcel').onclick=()=>shareExcel();
+$('#btnExportHtml').onclick=()=>exportHtml();
 $('#listNav').addEventListener('click',e=>{
   const it=e.target.closest('[data-list]'); if(!it)return;
   S.active=it.dataset.list; revealed.clear(); focusIdx=0; focusShow=false; save(); render(); closeSide();
@@ -1045,6 +1051,7 @@ $('#moreMenu').addEventListener('click',e=>{
     c.cards.forEach(x=>x.id=uid()); S.lists.push(c); S.active=c.id; save(); render(); toast('已複製清單'); gaTrack('list_duplicate',{card_count:bucket(c.cards.length)}); }
   if(m==='paste'){ openImport('paste'); }
   if(m==='sharepdf'){ sharePdf(false); }
+  if(m==='shareexcel'){ shareExcel(); }
   if(m==='csv'){ exportCsv(); }
   if(m==='json'){ dlText(JSON.stringify({name:l.name,cards:l.cards.map(c=>({front:c.front,back:c.back,star:c.star,done:c.done}))},null,2),safeName(l.name)+'_'+stamp()+'.json','application/json'); toast('已匯出此清單 JSON'); gaTrack('export_list_json',{card_count:bucket(l.cards.length)}); }
   if(m==='clear'){ if(l.cards.length&&confirm('確定清空「'+l.name+'」的 '+l.cards.length+' 張卡片？此動作無法復原。')){ l.cards=[]; touch(); render(); toast('已清空'); } }
@@ -1203,6 +1210,42 @@ function exportCsv(){
   const txt='\uFEFF'+[['正面','反面']].concat(l.cards.map(c=>[c.front||'',c.back||''])).map(r=>r.map(csvCell).join(',')).join('\r\n');
   dlText(txt,safeName(l.name)+'_'+stamp()+'.csv','text/csv;charset=utf-8'); toast('已匯出 CSV（Excel 可直接開啟）');
   gaTrack('export_csv',{card_count:bucket(l.cards.length)});
+}
+function buildCardsHtml(l){
+  const cards=l.cards.map((c,i)=>{
+    const front=esc(c.front||'（空白）'), back=esc(c.back||'');
+    return '<div class="card'+(c.star?' star':'')+(c.done?' done':'')+'">'+
+      '<span class="no">'+(i+1)+'</span>'+
+      '<div class="front">'+front+'</div>'+
+      (back?'<div class="back">'+back+'</div>':'')+'</div>';
+  }).join('\n');
+  return '<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">'+
+    '<meta name="viewport" content="width=device-width,initial-scale=1">'+
+    '<title>'+esc(l.name)+' · 記憶卡</title><style>'+
+    '*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;'+
+    'background:#f3f1ea;color:#2c2a26;padding:20px}'+
+    'header{text-align:center;margin-bottom:18px}header h1{font-size:22px;margin:0 0 4px}'+
+    'header p{margin:0;font-size:12px;color:#8c867c}'+
+    'main{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-width:1100px;margin:0 auto}'+
+    '.card{background:#fff;border:1px solid #e3ddd0;border-radius:14px;box-shadow:0 6px 18px rgba(30,25,18,.08);'+
+    'padding:16px 16px 14px;position:relative;break-inside:avoid}'+
+    '.card .no{position:absolute;top:10px;right:12px;font-size:10px;font-weight:800;color:#b3ab9c;background:#f3f1ea;border-radius:6px;padding:2px 6px}'+
+    '.card .front{font-size:16px;font-weight:800;line-height:1.5;white-space:pre-wrap;word-break:break-word;margin-bottom:8px;padding-right:30px}'+
+    '.card .back{font-size:13.5px;color:#5c574e;line-height:1.6;white-space:pre-wrap;word-break:break-word;border-top:1px dashed #e3ddd0;padding-top:8px}'+
+    '.card.star{border-color:#c9a23e}.card.star .no{color:#c9a23e}'+
+    '.card.done{background:linear-gradient(180deg,#fdfffd,#f4fff4)}'+
+    'footer{text-align:center;font-size:11px;color:#a59e92;margin-top:22px}'+
+    '@media print{body{background:#fff;padding:0}main{gap:8px}.card{box-shadow:none;border:1px solid #ccc}}}</style></head><body>'+
+    '<header><h1>'+esc(l.name)+'</h1><p>'+l.cards.length+' 張卡 · 由「記憶卡清單」匯出</p></header>'+
+    '<main>'+cards+'</main>'+
+    '<footer>由「記憶卡清單」工具產生</footer></body></html>';
+}
+function exportHtml(){
+  const l=cur();
+  if(!l.cards.length){ toast('這份清單沒有卡片可匯出'); return; }
+  dl(new Blob([buildCardsHtml(l)],{type:'text/html;charset=utf-8'}),safeName(l.name)+'_記憶卡_'+stamp()+'.html');
+  toast('已匯出 HTML（'+l.cards.length+' 張卡，可另存或列印）');
+  gaTrack('export_html',{card_count:bucket(l.cards.length)});
 }
 async function readZip(ab){
   const u=new Uint8Array(ab), v=new DataView(ab); let eo=-1;
@@ -1795,6 +1838,7 @@ function renderPlay(){
   $('#playBar').style.width=((P.idx+1)/P.ids.length*100)+'%';
   const b=$('#plPause'); b.textContent=P.paused?'▶ 繼續':'⏸ 暫停';
   b.classList.toggle('pri',!P.paused);
+  autoAlign($('#playFront')); autoAlign($('#playBack'));
 }
 function runStep(){
   clearTimeout(P.timer);
@@ -2001,6 +2045,7 @@ function renderQuiz(){
   $('#quizCounter').textContent=(Q.idx+1)+' / '+Q.items.length;
   $('#qPromptTag').textContent=Q.dir==='front'?'正面 FRONT':'反面 BACK';
   $('#qPrompt').textContent=it.prompt;
+  autoAlign($('#qPrompt'));
   const ans=$('#qAns'); ans.innerHTML=''; const fb=$('#qFeedback'); fb.className='qfeedback'; fb.innerHTML='';
   const rec=Q.answered[Q.idx];
   if(Q.mode==='input'){
