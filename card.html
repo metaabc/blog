@@ -236,6 +236,11 @@ select.sel{padding:8px 9px;border:1px solid var(--line2);border-radius:9px;backg
 .fc-back .peek button{background:var(--card);border:1px solid var(--line2);border-radius:99px;padding:5px 12px;font-size:11px;font-weight:800;color:var(--acc);box-shadow:var(--sh)}
 .fc-ops{display:flex;align-items:center;gap:4px;padding:7px 9px;border-top:1px solid var(--line);background:#fff;position:relative;z-index:3;flex-wrap:wrap}
 .fc-ops .sp{flex:1}
+/* 正反面「複製內容」小鈕 */
+.cp{position:absolute;top:5px;right:6px;z-index:4;width:26px;height:26px;border:none;border-radius:8px;background:rgba(255,255,255,.92);box-shadow:0 1px 4px rgba(0,0,0,.16);color:var(--acc);font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.82;padding:0}
+.cp:hover{opacity:1;background:#fff}
+.fc-front,.fc-back,.li .a,.li .b,.tbl-w .c-a,.tbl-w .c-b,.focus-v .q,.focus-v .a{position:relative}
+.fc-front,.li .a,.tbl-w .c-a,.focus-v .q{padding-right:30px}
 .op{width:27px;height:27px;border-radius:8px;border:1px solid transparent;display:grid;place-items:center;font-size:13px;color:var(--muted);background:transparent}
 .op:hover{background:var(--bg2);border-color:var(--line);color:var(--acc)}
 .op.on{color:var(--gold)}
@@ -312,6 +317,12 @@ td.c-op{white-space:nowrap;width:110px}
 .as-opt .lb{font-weight:600}
 .as-opt .ds{font-size:11.5px;color:var(--muted);margin-left:auto;padding-left:8px}
 .as-cancel{margin-top:2px;padding:13px;border-radius:13px;font-size:15px;color:var(--muted)}
+.as-sep{border:none;border-top:1px solid var(--line);margin:2px 4px}
+.as-opt.active{border-color:var(--acc);background:var(--acc-soft)}
+.as-opt .nm{font-weight:700;display:flex;flex-direction:column;gap:2px}
+.as-opt .nm .meta{font-size:11.5px;font-weight:500;color:var(--muted)}
+.as-opt .ds{font-size:11.5px;color:var(--muted);margin-left:auto;padding-left:8px}
+.as-opt .chk{margin-left:auto;color:var(--acc);font-weight:800;font-size:16px}
 .mhead{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex:0 0 auto}
 .mhead b{font-size:15px;font-weight:800;flex:1}
 .mhead .sub{font-size:10.5px;color:var(--muted);font-weight:600}
@@ -546,8 +557,6 @@ td.c-op{white-space:nowrap;width:110px}
     <button class="btn icon hamb" id="btnHamb" aria-label="清單選單" title="清單選單">☰</button>
     <button class="btn" id="btnNewList">＋ 新增清單</button>
     <button class="btn" id="btnImportTop">⬆ 匯入 Excel</button>
-    <button class="btn" id="btnBackup">⬇ 備份</button>
-    <button class="btn" id="btnRestore">還原</button>
     <button class="btn icon" id="btnHelp" title="使用說明">?</button>
   </div>
 </header>
@@ -561,7 +570,7 @@ td.c-op{white-space:nowrap;width:110px}
       <button class="arc-h" id="arcHead" type="button"><span class="arc-ico">📦</span><span class="arc-t">已歸檔</span><span id="arcCount" class="arc-badge">0</span><span class="arc-chev">▸</span></button>
       <div id="arcList" class="lnav arc-list"></div>
     </div>
-    <div class="side-foot">資料只存於本機瀏覽器（localStorage）<br>建議定期按「備份」下載 JSON 保存</div>
+    <div class="side-foot">資料只存於本機瀏覽器（localStorage）<br>備份／還原請到右上「⋯」→「⚙ 設定」</div>
   </aside>
 
   <!-- 清單項目浮動選單 -->
@@ -598,6 +607,8 @@ td.c-op{white-space:nowrap;width:110px}
         <div class="menu-wrap">
           <button class="btn icon" id="btnMore">⋯</button>
           <div class="menu" id="moreMenu">
+            <button data-m="settings">⚙ 設定</button>
+            <hr>
             <button data-m="pin">📌 設為置頂</button>
             <button data-m="archive">📦 歸檔此清單</button>
             <hr>
@@ -885,7 +896,8 @@ td.c-op{white-space:nowrap;width:110px}
     <p><b style="color:var(--ink)">⑥ 直接分享</b><br>按「↗ 分享」選 PDF 或 Excel 後，會用目前設定即時產生檔案並叫起系統分享選單（手機／平板可直接傳到通訊軟體、電郵或雲端）；PDF 對話框內的「↗ 直接分享」則用對話框裏的設定。桌面瀏覽器若不支援檔案分享，會依序降級為：複製檔案到剪貼簿 → 開新分頁預覽 → 下載檔案，並以提示說明。</p>
     <p><b style="color:var(--ink)">⑦ 清單管理</b><br>左側可有多份清單，並支援：<b>🔍 搜尋清單</b>（側欄頂部輸入名稱過濾）；<b>📌 置頂</b>（點清單上的 📌 或「⋯」選單，置頂的清單恆排最前）；<b>⠿ 拖動排序</b>（按住清單左側的 ⠿ 把手上下拖移調整順序）；<b>📦 歸檔</b>（收進「已歸檔」區，預設收起，點一下「📦 已歸檔」才展開選取；歸檔清單不會干擾日常，需要時再點開）。每份清單也可複製、重新命名、刪除。</p>
     <p><b style="color:var(--ink)">⑧ 自測／測驗與成績</b><br>按「📝 測驗」可自測：先選「看正面答反面」或「看反面答正面」；作答方式可選「輸入答案」（自動忽略空白與標點比對），或「選擇題」（從同清單其他卡的答案中隨機混入干擾項，選出正確）。可設定出題範圍與題目順序。完成後會列出每題的✓／✗ 與正確答案，可<b>「重測全部」</b>或<b>「只重測錯題」</b>；並能立即<b>「↗ 分享成績」</b>或<b>「↗ 分享錯題」</b>（叫起系統分享，或降級為複製文字／下載 .txt）。每次測驗成績會自動保存，按設定面板的<b>「📊 歷史成績」</b>可回看歷次分數、查看明細、再次分享。</p>
-    <p><b style="color:var(--ink)">資料保存</b><br>資料存於本機瀏覽器。換電腦或清除瀏覽器資料前，請按「⬇ 備份」下載 JSON，再到新環境按「還原」。清單的語音設定一併保存在備份內。</p>
+    <p><b style="color:var(--ink)">資料保存</b><br>資料存於本機瀏覽器。換電腦或清除瀏覽器資料前，請到「⚙ 設定 → 💾 備份」下載 JSON，再到新環境「⚙ 設定 → ↩ 還原」。清單的語音設定一併保存在備份內。</p>
+    <p><b style="color:var(--ink)">⑩ 複製卡片內容</b><br>在網格／列表／表格／聚焦任一檢視，每張卡的正面與反面右上角都有一個 📋 小鈕，點一下即可把該面的<b>純文字</b>（不含圖片標記）複製到剪貼簿，方便貼到聊天、筆記或其他工具。file:// 離線環境會自動改用內建複製方式。</p>
     <p><b style="color:var(--ink)">⑨ 錯題標記與手機操作</b><br>測驗中答錯（含未作答）的卡片會自動標上 🔴 錯題 記號（數字為答錯次數），並可在篩選選單選「錯題」只看重點復習；「⋯ → 清除錯題標記」或設定裡的「清除錯題標記」可一併重置。手機版底部會出現導覽列：📚 清單、▶ 播放、↗ 分享、⚙ 設定，方便單手切換；清單管理（☰ 或側欄）負責切換／新增清單。</p>
     <p style="margin-bottom:0"><b style="color:var(--ink)">匿名使用統計</b><br>以網頁方式（http／https）開啟時，會透過 Google Analytics（G-G7H3M2VW8T）記錄<b>匿名的功能使用次數</b>，例如匯出、分享、播放，用來改善工具。<b>卡片內容、清單名稱及任何個人資料都不會上傳</b>。直接以本機檔案（file://）開啟、沒有網路、瀏覽器啟用「不追蹤」或在下方關閉時，都不會連線。<br><label class="chk" style="margin-top:6px"><input type="checkbox" id="gaOptOut"> 關閉匿名使用統計</label></p>
   </div>
@@ -929,6 +941,9 @@ td.c-op{white-space:nowrap;width:110px}
       <button class="as-opt" data-s="s_clearweak"><span class="ic">🧹</span><span class="lb">清除錯題標記</span></button>
       <button class="as-opt" data-s="s_hist"><span class="ic">📊</span><span class="lb">歷史成績</span></button>
       <button class="as-opt" data-s="s_help"><span class="ic">❓</span><span class="lb">使用說明</span></button>
+      <hr class="as-sep">
+      <button class="as-opt" data-s="s_backup"><span class="ic">💾</span><span class="lb">備份全部清單（JSON）</span></button>
+      <button class="as-opt" data-s="s_restore"><span class="ic">↩</span><span class="lb">還原備份（JSON）</span></button>
     </div>
     <button class="btn as-cancel" data-close="settingsSheet">關閉</button>
   </div>
@@ -941,6 +956,15 @@ td.c-op{white-space:nowrap;width:110px}
   <button data-bn="share"><span class="ic">↗</span>分享</button>
   <button data-bn="settings"><span class="ic">⚙</span>設定</button>
 </nav>
+
+<!-- ===== 清單選擇（手機底部，切換當前清單） ===== -->
+<div class="mask sheet" id="listPickSheet">
+  <div class="actsheet">
+    <div class="as-head"><b>切換清單</b><span class="sub">點選要練習的記憶卡清單</span></div>
+    <div class="as-list" id="listPickList"></div>
+    <button class="btn as-cancel" data-close="listPickSheet">取消</button>
+  </div>
+</div>
 
 <div id="toast"></div>
 <input type="file" id="restoreInput" accept=".json" style="display:none">
@@ -1371,6 +1395,8 @@ function opsHTML(c,compact){
     '<button class="op'+(c.done?' done-on':'')+'" data-act="done" data-id="'+c.id+'" title="已熟練">'+(c.done?'✔':'○')+'</button>'+
     '<button class="op" data-act="edit" data-id="'+c.id+'" title="編輯">✎</button>';
 }
+/* 正反面「複製內容」小鈕：點擊複製該面純文字（去圖標記）到剪貼簿 */
+function cpHTML(side,id){ const lab=side==='back'?'反面':'正面'; return '<button type="button" class="cp" data-copy="'+side+'" data-id="'+id+'" title="複製'+lab+'內容">📋</button>'; }
 /* 錯題標記：測驗答錯（含未作答）累計次數 c.weak */
 function weakBadge(c){
   if(!c.weak)return '';
@@ -1395,32 +1421,32 @@ function renderCards(){
       const masked=S.ui.hideBack && !revealed.has(c.id);
       const back=String(c.back||'').trim();
       const backHTML = back
-        ? '<div class="fc-back">'+(masked?'<span class="peek"><button data-act="peek" data-id="'+c.id+'">👁 顯示答案</button></span>':'')+'<span class="lb">反面 BACK</span><span class="txt">'+cardHTML(c.back, c.imgs)+'</span></div>'
+        ? '<div class="fc-back">'+(masked?'<span class="peek"><button data-act="peek" data-id="'+c.id+'">👁 顯示答案</button></span>':'')+'<span class="lb">反面 BACK</span><span class="txt">'+cardHTML(c.back, c.imgs)+'</span>'+cpHTML('back',c.id)+'</div>'
         : '';
       return '<div class="fc'+(c.star?' starred':'')+(c.done?' done':'')+(masked&&back?' masked':'')+(c.weak?' weak':'')+'" data-card="'+c.id+'">'+
         '<span class="cdrag" title="按住拖動調整順序（「原順序」且無篩選時）">⠿</span>'+weakBadge(c)+
         '<div class="fc-hit" data-act="play" data-id="'+c.id+'" title="點一下播放這張"></div>'+
-        '<div class="fc-top"><span class="fc-no">'+(i+1)+'</span><div class="fc-front">'+cardHTML(c.front||'（空白）', c.imgs)+'</div></div>'+
+        '<div class="fc-top"><span class="fc-no">'+(i+1)+'</span><div class="fc-front">'+cpHTML('front',c.id)+cardHTML(c.front||'（空白）', c.imgs)+'</div></div>'+
         backHTML+
         '<div class="fc-ops">'+opsHTML(c)+'<span class="sp"></span><button class="op" data-act="density" title="切換卡片大小">⤢</button></div>'+
       '</div>';
     }).join('')+'</div>';
   } else if(layout==='list'){
     area.innerHTML='<div class="list-v">'+a.map((c,i)=>
-      '<div class="li" data-card="'+c.id+'"><span class="cdrag" title="按住拖動排序">⠿</span><span class="no">'+(i+1)+'</span>'+weakInline(c)+'<div class="a">'+cardHTML(c.front||'（空白）', c.imgs)+'</div>'+
-      '<div class="b">'+cardHTML(c.back||'—', c.imgs)+'</div><div class="ops">'+opsHTML(c,true)+'</div></div>'
+      '<div class="li" data-card="'+c.id+'"><span class="cdrag" title="按住拖動排序">⠿</span><span class="no">'+(i+1)+'</span>'+weakInline(c)+'<div class="a">'+cpHTML('front',c.id)+cardHTML(c.front||'（空白）', c.imgs)+'</div>'+
+      '<div class="b">'+cpHTML('back',c.id)+cardHTML(c.back||'—', c.imgs)+'</div><div class="ops">'+opsHTML(c,true)+'</div></div>'
     ).join('')+'</div>';
   } else if(layout==='table'){
     area.innerHTML='<div class="tbl-w"><table><thead><tr><th>#</th><th>正面</th><th>反面</th><th>狀態</th><th>操作</th></tr></thead><tbody>'+
-      a.map((c,i)=>'<tr><td class="c-no">'+(i+1)+'</td><td class="c-a">'+cardHTML(c.front||'（空白）', c.imgs)+'</td><td class="c-b">'+cardHTML(c.back||'—', c.imgs)+'</td>'+
+      a.map((c,i)=>'<tr><td class="c-no">'+(i+1)+'</td><td class="c-a">'+cpHTML('front',c.id)+cardHTML(c.front||'（空白）', c.imgs)+'</td><td class="c-b">'+cpHTML('back',c.id)+cardHTML(c.back||'—', c.imgs)+'</td>'+
         '<td>'+(c.star?'⭐ ':'')+(c.done?'✔ 熟練':'')+(c.weak?' · 🔴錯題'+(c.weak>1?c.weak:''):'')+'</td><td class="c-op">'+opsHTML(c,true)+'</td></tr>').join('')+
       '</tbody></table></div>';
   } else {
     if(focusIdx>=a.length)focusIdx=0;
     const c=a[focusIdx];
     area.innerHTML='<div class="focus-v"><div class="big"><span class="pill">第 '+(focusIdx+1)+' / '+a.length+' 張 · '+(c.star?'⭐ 重點':'')+(c.weak?' · 🔴錯題':'')+'</span>'+
-      '<div class="q">'+cardHTML(c.front||'（空白）', c.imgs)+'</div>'+
-      '<div class="a'+(focusShow?'':' hide')+'">'+cardHTML(c.back||'', c.imgs)+'</div>'+
+      '<div class="q">'+cpHTML('front',c.id)+cardHTML(c.front||'（空白）', c.imgs)+'</div>'+
+      '<div class="a'+(focusShow?'':' hide')+'">'+cpHTML('back',c.id)+cardHTML(c.back||'', c.imgs)+'</div>'+
       '<div class="hint">按「顯示答案」自我檢檢測，或直接播放朗讀</div></div>'+
       '<div class="nav"><button class="btn" data-fc="prev">← 上一張</button>'+
       '<button class="btn pri" data-fc="show">'+(focusShow?'隱藏答案':'顯示答案')+'</button>'+
@@ -1564,8 +1590,7 @@ document.addEventListener('click',e=>{
 });
 $('#btnNewList').onclick=newList;
 $('#btnImportTop').onclick=()=>openImport();
-$('#btnBackup').onclick=()=>{ dlText(JSON.stringify(S,null,2),'記憶卡備份_'+stamp()+'.json','application/json'); toast('已下載全部清單備份'); gaTrack('backup',{list_count:bucket(S.lists.length)}); };
-$('#btnRestore').onclick=()=>$('#restoreInput').click();
+function doBackup(){ dlText(JSON.stringify(S,null,2),'記憶卡備份_'+stamp()+'.json','application/json'); toast('已下載全部清單備份'); gaTrack('backup',{list_count:bucket(S.lists.length)}); }
 $('#restoreInput').onchange=e=>{
   const f=e.target.files[0]; if(!f)return;
   const r=new FileReader(); r.onload=()=>{
@@ -1610,6 +1635,7 @@ $('#btnMore').onclick=e=>{ e.stopPropagation(); $('#moreMenu').classList.toggle(
 $('#moreMenu').addEventListener('click',e=>{
   const b=e.target.closest('[data-m]'); if(!b)return; closeMenus();
   const l=cur(), m=b.dataset.m;
+  if(m==='settings'){ maskOpen('#settingsSheet'); return; }
   if(m==='pin'){ togglePin(l.id); return; }
   if(m==='archive'){ toggleArchive(l.id); return; }
   if(m==='rename'){ const v=prompt('清單名稱：',l.name); if(v!==null){ l.name=v.trim()||l.name; touch(); render(); } }
@@ -1647,6 +1673,8 @@ $('#cardsArea').addEventListener('click',e=>{
     if(k==='play'){ startPlay(a[focusIdx].id); return; }
     renderCards(); return;
   }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){ const cid=cp.dataset.id, c=cardById(cid); if(c){ copyText(plainText(cp.dataset.copy==='back'?c.back:c.front), cp.dataset.copy==='back'?'反面':'正面'); } return; }
   const b=e.target.closest('[data-act]'); if(!b)return;
   const id=b.dataset.id, act=b.dataset.act, c=cardById(id);
   if(act==='density'){ S.ui.density=S.ui.density==='md'?'sm':S.ui.density==='sm'?'lg':'md'; save(); renderCards(); return; }
@@ -1883,11 +1911,19 @@ async function readZip(ab){
 const kids=(n,name)=>{ const a=[]; for(let i=0;i<n.childNodes.length;i++){ const c=n.childNodes[i]; if(c.nodeType===1&&c.localName===name)a.push(c); } return a; };
 const kid1=(n,name)=>kids(n,name)[0]||null;
 function colIdx(ref){ const m=/^([A-Z]+)/i.exec(ref||''); if(!m)return 0; let n=0; for(const ch of m[1].toUpperCase())n=n*26+(ch.charCodeAt(0)-64); return n-1; }
-function parseXlsx(xml){
+function parseShared(xml){
+  if(!xml)return [];
+  try{ const doc=new DOMParser().parseFromString(xml,'application/xml');
+    const root=doc.documentElement;
+    /* sharedStrings.xml 的根節點本身就是 <sst>，其 <si> 才是字串表；否則再往下一層找 */
+    const ss = (root && root.localName==='sst') ? root : kid1(root,'sst');
+    return ss?kids(ss,'si').map(si=>si.textContent||''):[];
+  }catch(e){ return []; }
+}
+function parseXlsx(xml, sharedIn){
   const doc=new DOMParser().parseFromString(xml,'application/xml');
-  let shared=[];
-  const ss=kid1(doc.documentElement,'sst');
-  if(ss) shared=kids(ss,'si').map(si=>si.textContent||'');
+  let shared = Array.isArray(sharedIn) ? sharedIn : [];
+  if(!shared.length){ const ss=kid1(doc.documentElement,'sst'); if(ss) shared=kids(ss,'si').map(si=>si.textContent||''); }
   const sheetData=kid1(doc.documentElement,'sheetData');
   if(!sheetData)return [];
   const out=[];
@@ -1976,10 +2012,15 @@ async function handleFile(f){
   try{
     if(ext==='xlsx'){
       const ab=await f.arrayBuffer(); const z=await readZip(ab);
-      const sheetName=z.names.find(n=>/^xl\/worksheets\/sheet\d+\.xml$/.test(n));
+      const sheets=z.names.filter(n=>/^xl\/worksheets\/sheet\d+\.xml$/.test(n))
+        .sort((a,b)=>(+(a.match(/sheet(\d+)/)||[])[1]||0)-(+(b.match(/sheet(\d+)/)||[])[1]||0));
+      const sheetName=sheets[0]||z.names.find(n=>/worksheets\/[^/]+\.xml$/.test(n));
       if(!sheetName)throw new Error('找不到工作表');
+      const ssName=z.names.find(n=>/sharedStrings\.xml$/i.test(n));
+      let shared=[];
+      if(ssName){ try{ shared=parseShared(await z.text(ssName)); }catch(e){} }
       const xml=await z.text(sheetName);
-      showImpPreview(parseXlsx(xml),f.name);
+      showImpPreview(parseXlsx(xml, shared),f.name);
     } else {
       const txt=await f.text(); showImpPreview(parseDelimited(txt),f.name);
     }
@@ -2324,6 +2365,19 @@ async function shareText(title, text){
     const blob=new Blob([text],{type:'text/plain;charset=utf-8'});
     dl(blob,(title||'分享')+'.txt'); toast('已下載文字檔，可從下載資料夾傳送',3000);
   }
+}
+/* 複製文字到剪貼簿：優先 navigator.clipboard，file:// 非安全環境自動降級到 textarea+execCommand */
+async function copyText(text, label){
+  if(text==null)text='';
+  let ok=false;
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ await navigator.clipboard.writeText(text); ok=true; } }catch(e){}
+  if(!ok){
+    try{ const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; ta.style.top='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      ok=document.execCommand&&document.execCommand('copy'); document.body.removeChild(ta);
+    }catch(e){ ok=false; }
+  }
+  toast(ok?('已複製'+(label?('「'+label+'」'):'')+'內容到剪貼簿，可直接貼上'):'複製失敗，請改用手動選取文字',3200);
 }
 async function sharePdf(fromDialog){
   const busy=$('#pdfBusy');
@@ -2856,12 +2910,38 @@ $('#roSelNone').onclick=()=>{ roSel.clear(); renderReorder(); };
 $('#roUp').onclick=()=>batchMove(-1);
 $('#roDown').onclick=()=>batchMove(1);
 
+/* ---------------- 清單選擇（手機底部：切換當前清單） ---------------- */
+function renderListPick(){
+  const wrap=$('#listPickList'); if(!wrap)return;
+  const q=(S.ui.listQ||'').trim().toLowerCase();
+  const match=l=>(!q)||(l.name||'').toLowerCase().includes(q);
+  const active=S.lists.filter(l=>!l.archived && match(l)).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
+  const arch=S.lists.filter(l=>l.archived && match(l));
+  const item=l=>{
+    const on=l.id===S.active;
+    const weak=l.cards.filter(c=>c.weak>0).length;
+    const meta=l.cards.length+' 張卡'+(l.pinned?' · 置頂':'')+(weak?' · '+weak+' 張錯題':'');
+    return '<button class="as-opt'+(on?' active':'')+'" data-pick="'+l.id+'">'+
+      '<span class="ic">'+(on?'📂':(l.archived?'📦':'📚'))+'</span>'+
+      '<span class="nm">'+esc(l.name||'未命名')+'<span class="meta">'+meta+'</span></span>'+
+      (on?'<span class="chk">✓</span>':'')+'</button>';
+  };
+  let html=active.map(item).join('');
+  if(arch.length) html+='<hr class="as-sep">'+arch.map(item).join('');
+  wrap.innerHTML=html || '<div class="empty">沒有清單</div>';
+}
+$('#listPickList').addEventListener('click',e=>{
+  const b=e.target.closest('[data-pick]'); if(!b)return;
+  const id=b.dataset.pick;
+  if(id!==S.active){ S.active=id; save(); render(); toast('已切換到「'+(S.lists.find(x=>x.id===id).name||'')+'」'); }
+  maskClose('#listPickSheet'); window.scrollTo({top:0,behavior:'smooth'});
+});
 /* ---------------- 手機底部導覽 ---------------- */
 $('#botNav').addEventListener('click',e=>{
   const b=e.target.closest('[data-bn]'); if(!b)return;
   const act=b.dataset.bn;
   $$('#botNav button').forEach(x=>x.classList.toggle('on',x===b));
-  if(act==='list'){ closeSide(); window.scrollTo({top:0,behavior:'smooth'}); }
+  if(act==='list'){ renderListPick(); maskOpen('#listPickSheet'); }
   else if(act==='play'){ startPlay(null); }
   else if(act==='share'){ showChooser('share'); }
   else if(act==='settings'){ maskOpen('#settingsSheet'); }
@@ -2881,6 +2961,8 @@ $('#settingsSheet').addEventListener('click',e=>{
   else if(act==='s_clearweak') clearWeak();
   else if(act==='s_hist'){ renderHistory(); $('#histDetail').style.display='none'; $('#histList').style.display=''; maskOpen('#historyMask'); }
   else if(act==='s_help') maskOpen('#helpMask');
+  else if(act==='s_backup') doBackup();
+  else if(act==='s_restore') $('#restoreInput').click();
 });
 
 /* ---------------- boot ---------------- */
