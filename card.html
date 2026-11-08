@@ -711,10 +711,17 @@ td.c-op{white-space:nowrap;width:110px}
 
 <!-- ===== PDF ===== -->
 <div class="mask" id="pdfMask"><div class="modal wide" style="position:relative">
-  <div class="mhead"><b>匯出 PDF · 雙面記憶卡</b><span class="sub">正面頁與背面頁交錯，雙面列印後對齊裁切</span><button class="x" data-close="pdfMask">×</button></div>
+  <div class="mhead"><b>匯出 PDF · 記憶卡</b><span class="sub">可選單面（正＋背同格）或雙面（正／背分兩面，適合背誦）</span><button class="x" data-close="pdfMask">×</button></div>
   <div class="mbody" style="padding:14px 16px">
     <div class="pdf-grid">
       <div class="pdf-opts">
+        <div class="group"><h4>輸出方式</h4>
+          <div class="frow"><span>版式</span><select id="pfMode">
+            <option value="single">單面（每格正面＋背面）</option>
+            <option value="double">雙面（正／背分兩面列印）</option>
+          </select></div>
+          <div class="note" id="pfModeHint" style="font-size:10.5px;color:var(--muted);line-height:1.55"></div>
+        </div>
         <div class="group"><h4>紙張與格數</h4>
           <div class="frow"><span>紙張</span><select id="pfPaper"><option value="a4p">A4 直向</option><option value="a4l">A4 橫向</option><option value="lp">Letter 直向</option><option value="ll">Letter 橫向</option></select></div>
           <div class="frow" style="display:block"><span style="display:block;margin-bottom:6px">每張卡數（欄 × 列）</span>
@@ -728,7 +735,7 @@ td.c-op{white-space:nowrap;width:110px}
           <div class="frow"><span>卡間距 mm</span><input type="number" id="pfGutter" min="0" max="12" value="2"></div>
           <div class="frow" id="cardSizeRow"><span>完成尺寸</span><b id="pfSize">—</b></div>
         </div>
-        <div class="group"><h4>雙面對齊</h4>
+        <div class="group" id="pfDupGroup"><h4>雙面對齊</h4>
           <div class="frow"><span>產生背面頁</span><select id="pfDuplex"><option value="yes">是（正面／背面交錯）</option><option value="no">否，只印正面</option></select></div>
           <div class="frow"><span>翻面方式</span><select id="pfFlip">
             <option value="long">長邊 · 左右翻</option><option value="short">短邊 · 上下翻</option>
@@ -756,9 +763,9 @@ td.c-op{white-space:nowrap;width:110px}
         </div>
       </div>
       <div class="pdf-prev">
-        <div class="prev-head"><b>預覽</b><span id="pfInfo">—</span><span class="sp"></span><span style="font-size:10px;color:var(--muted)">奇數頁＝正面，偶數頁＝背面</span></div>
+        <div class="prev-head"><b>預覽</b><span id="pfInfo">—</span><span class="sp"></span><span id="pfPrevHint" style="font-size:10px;color:var(--muted)">奇數頁＝正面，偶數頁＝背面</span></div>
         <div class="pages" id="pdfPages"></div>
-        <div class="note" style="margin-top:9px;font-size:10.5px">列印後沿虛線裁開：<b>第 1 頁正面</b> 與 <b>第 2 頁背面</b> 是同一張紙的兩面。若正反對不齊，先勾選校準頁印一張，對照編號後改用其他「翻面方式」或微調 mm。</div>
+        <div class="note" id="pfNote" style="margin-top:9px;font-size:10.5px">列印後沿虛線裁開：<b>第 1 頁正面</b> 與 <b>第 2 頁背面</b> 是同一張紙的兩面。若正反對不齊，先勾選校準頁印一張，對照編號後改用其他「翻面方式」或微調 mm。</div>
       </div>
     </div>
   </div>
@@ -782,7 +789,7 @@ td.c-op{white-space:nowrap;width:110px}
     <button class="btn" id="plNext" title="下一張 (→)">⏭</button>
     <button class="btn" id="plContinue" style="display:none">▶ 續播整份</button>
   </div>
-  <div class="pswipe">← 左右滑動切換卡片　·　點一下翻面 →</div>
+  <div class="pswipe">← 左右滑動切換卡片　·　點一下顯示底面／下一張 →</div>
   <div class="pset">
     <div class="lang-seg" id="playLangSeg" title="只影響目前這份清單，切換後立即以此語音重讀">
       <span class="lb-label">🔊 中文</span>
@@ -790,15 +797,16 @@ td.c-op{white-space:nowrap;width:110px}
       <button data-v="cantonese">粵語</button>
     </div>
     <label class="chk"><input type="checkbox" id="plTts" checked> 語音朗讀</label>
-    <label class="chk"><input type="checkbox" id="plAuto" checked> 自動翻面</label>
+    <label class="chk" title="開啟＝自動連續播放（每張先後兩面都會讀完才前進）；關閉＝讀完一面停一停，點一下／→ 繼續"><input type="checkbox" id="plAuto" checked> 自動連續</label>
     <label class="chk"><input type="checkbox" id="plLoop"> 循環</label>
     <label class="chk"><input type="checkbox" id="plShuffle"> 隨機</label>
     <span class="sp"></span>
     <span class="si"><span>正面</span><select id="plLangF"><option value="auto">自動（跟清單）</option><option value="list">中文・跟清單</option><option value="en-US">English (US)</option><option value="en-GB">English (UK)</option><option value="zh-CN">普通話（強制）</option><option value="zh-TW">國語・台（強制）</option><option value="zh-HK">粵語（強制）</option></select></span>
     <span class="si"><span>反面</span><select id="plLangB"><option value="auto">自動（跟清單）</option><option value="list">中文・跟清單</option><option value="zh-CN">普通話（強制）</option><option value="zh-TW">國語・台（強制）</option><option value="zh-HK">粵語（強制）</option><option value="en-US">English (US)</option></select></span>
+    <span class="si"><span>順序</span><select id="plDir"><option value="fb">正 → 反</option><option value="bf">反 → 正</option></select></span>
     <span class="si"><span>語速</span><select id="plRate"><option value="0.7">0.7×</option><option value="0.85">0.85×</option><option value="1" selected>1×</option><option value="1.2">1.2×</option><option value="1.5">1.5×</option></select></span>
     <span class="si"><span>間隔</span><select id="plGap"><option value="0.3">0.3s</option><option value="0.8" selected>0.8s</option><option value="1.5">1.5s</option><option value="2.5">2.5s</option></select></span>
-    <div class="tip"><span id="voiceHint">中文語音：偵測中…</span><br>中英混合內容會自動分段，中文用上方語音、英文用英語語音。<b>手機：左右滑動切換卡片、點一下翻面</b>；電腦：空白鍵＝暫停／繼續（自動模式）或翻面，← →＝上／下一張，F＝翻面，Esc＝結束。</div>
+    <div class="tip"><span id="voiceHint">中文語音：偵測中…</span><br>中英混合內容會自動分段，中文用上方語音、英文用英語語音。「順序」可選正→反或反→正。<b>手機：左右滑動切換卡片、點一下先顯示底面再前往下一張</b>；電腦：← →＝上一張／下一張（有底面會先顯示才前進），↑ ↓ 或 F＝翻面，空白鍵＝暫停／繼續，Esc＝結束。</div>
   </div>
 </div></div>
 
@@ -890,8 +898,8 @@ td.c-op{white-space:nowrap;width:110px}
     <p style="margin-top:0"><b style="color:var(--ink)">① 建立清單與卡片</b><br>左側可新增多個清單（例如不同課次、不同單元）。每張卡只有兩個欄位：<b>正面</b>、<b>反面</b>。可標星、標記已熟練、上移下移調整順序（順序即列印順序）。<br><b>正面／反面都支援內嵌圖片</b>：編輯卡片時按「🖼 插入圖片」選本機圖片，或直接把圖片<b>貼上</b>到文字框；圖會自動縮圖並隨卡一起顯示、列印與匯出 HTML。</p>
     <p><b style="color:var(--ink)">② Excel 匯入／匯出</b><br>每個清單都可獨立匯出 .xlsx（欄位：正面、反面）或 CSV；匯入可選「附加／取代／建立新清單」，也能直接從 Excel 複製兩欄貼上。全程離線，不需外掛程式。<br><b>圖片不會進 Excel／CSV</b>（這兩者是純文字）；要保留含圖片的卡片，請用「📤 匯出 → JSON」備份，還原時圖片會一併回來。</p>
     <p><b style="color:var(--ink)">③ 四種檢視佈局與排序</b><br>網格、列表、表格、聚焦。可搜尋、排序（原順序／正面 A→Z／最近新增／未熟練優先）、篩選（未熟練／已加星／有底面／缺底面／<b>錯題</b>）。在「原順序」且無搜尋／篩選時，可用卡片左上角的 ⠿ 把手<b>拖動排序</b>；亦可按工具列的「⇅ 整理順序」勾選多張<b>批量上移／下移</b>、全選或單張上下移。勾「遮蔽反面」可自測，點一下才揭示答案。</p>
-    <p><b style="color:var(--ink)">④ 播放與中文語音</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張自動朗讀：先讀正面 → 自動翻面 → 讀反面 → 下一張。可調語速、間隔、循環、隨機；單張播放後可「續播整份」。<br><b>每份清單各自記住「普通話／粵語」</b>：清單標題下或播放面板的切換鈕一按即換，切換時會立即用新語音重讀。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。語音來自系統／瀏覽器內建，若沒有粵語語音包，播放面板會提示（可到系統語言設定新增）。</p>
-    <p><b style="color:var(--ink)">⑤ PDF 雙面對齊</b><br>PDF 頁次為「第1張正面、第1張背面、第2張正面、第2張背面…」，背面卡的位置依翻面方式鏡射對調，因此印表機選「雙面・長邊裝訂」後，正反內容會落在同一張小卡的兩面。沿裁切線剪開即可。<br><b>首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。</p>
+    <p><b style="color:var(--ink)">④ 播放與中文語音</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張朗讀，可調<b>語速、間隔、循環、隨機</b>；單張播放後可「續播整份」。<b>「順序」可選正→反或反→正</b>（反→正時先顯示並讀反面，有正面才翻）。<br><b>底面一定會先顯示才前進</b>：無論自動或手動，只要該卡有底面，都會先顯示／朗讀底面才去下一張，不會跳過。<b>「自動連續」</b>開啟＝全自動連續播放；關閉＝每讀完一面停一停，點一下（或按 →）繼續。<br><b>鍵盤</b>：← 上一張、→ 下一張（有底面會先顯示）、↑ ↓ 或 F 翻面、空白鍵（自動＝暫停／繼續，手動＝繼續下一面）、Esc 結束。<b>手機</b>：左右滑動切換、點一下先顯示底面再前往下一張。<br><b>每份清單各自記住「普通話／粵語」</b>：清單標題下或播放面板的切換鈕一按即換，切換時會立即用新語音重讀。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。語音來自系統／瀏覽器內建，若沒有粵語語音包，播放面板會提示（可到系統語言設定新增）。</p>
+    <p><b style="color:var(--ink)">⑤ PDF：單面／雙面</b><br>匯出 PDF 可選兩種版式（對話框頂部「輸出方式」）：<br>· <b>單面（每格正面＋背面）</b>：每張小卡上半印正面、下半印背面（細虛線分隔），單面列印即可對照背誦，適合自製學習卡／溫習紙。<br>· <b>雙面（正／背分兩面）</b>：PDF 頁次為「第1張正面、第1張背面、第2張正面…」，背面卡的位置依翻面方式鏡射對調；印表機選「雙面・長邊裝訂」後，正反內容落在同一張小卡的兩面，沿裁切線剪開即成可翻面的背誦記憶卡。<br><b>雙面首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。</p>
     <div class="note">列印設定：縮放 <b>100%</b>／實際大小，<b>不要</b>勾「配合頁面大小」，關閉頁首頁尾與自動置中，紙張尺寸與此處選擇一致。</div>
     <p><b style="color:var(--ink)">⑥ 直接分享</b><br>按「↗ 分享」選 PDF 或 Excel 後，會用目前設定即時產生檔案並叫起系統分享選單（手機／平板可直接傳到通訊軟體、電郵或雲端）；PDF 對話框內的「↗ 直接分享」則用對話框裏的設定。桌面瀏覽器若不支援檔案分享，會依序降級為：複製檔案到剪貼簿 → 開新分頁預覽 → 下載檔案，並以提示說明。</p>
     <p><b style="color:var(--ink)">⑦ 清單管理</b><br>左側可有多份清單，並支援：<b>🔍 搜尋清單</b>（側欄頂部輸入名稱過濾）；<b>📌 置頂</b>（點清單上的 📌 或「⋯」選單，置頂的清單恆排最前）；<b>⠿ 拖動排序</b>（按住清單左側的 ⠿ 把手上下拖移調整順序）；<b>📦 歸檔</b>（收進「已歸檔」區，預設收起，點一下「📦 已歸檔」才展開選取；歸檔清單不會干擾日常，需要時再點開）。每份清單也可複製、重新命名、刪除。</p>
@@ -1100,8 +1108,8 @@ function defaults(){
     lists:[l], active:l.id,
     quizHistory:[],
     ui:{layout:'grid',density:'md',sort:'seq',filter:'all',q:'',hideBack:false,listQ:''},
-    tts:{on:true,auto:true,loop:false,shuffle:false,langF:'auto',langB:'auto',rate:1,gap:.8},
-    pdf:{paper:'a4p',cols:3,rows:4,margin:8,gutter:2,duplex:'yes',flip:'long',offX:0,offY:0,
+    tts:{on:true,auto:true,loop:false,shuffle:false,dir:'fb',langF:'auto',langB:'auto',rate:1,gap:.8},
+    pdf:{mode:'double',paper:'a4p',cols:3,rows:4,margin:8,gutter:2,duplex:'yes',flip:'long',offX:0,offY:0,
          calib:false,font:0,scope:'all',cut:true,border:true,no:true,side:true}
   };
 }
@@ -1704,7 +1712,8 @@ document.addEventListener('keydown',e=>{
   if($('#playMask').classList.contains('on')){
     if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
     if(e.key==='ArrowLeft'){ e.preventDefault(); plStep(-1); }
-    if(e.key==='ArrowRight'){ e.preventDefault(); plStep(1); }
+    if(e.key==='ArrowRight'){ e.preventDefault(); plNextSmart(); }
+    if(e.key==='ArrowUp'||e.key==='ArrowDown'){ e.preventDefault(); plFlip(); }
     if(e.key===' '){ e.preventDefault(); plSpace(); }
     if(e.key.toLowerCase()==='f'){ e.preventDefault(); plFlip(); }
   } else if(e.key==='n' && !e.ctrlKey && !e.metaKey && e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA' && !$$('.mask.on').length){
@@ -2082,10 +2091,11 @@ function drawPrintPage(cv,page,o,listName){
   const headerH=15, footerH=9;
   const gx=mx, gy=my+headerH, gw=W-2*mx, gh=H-2*my-headerH-footerH;
   const cols=o.cols, rows=o.rows, cw=gw/cols, ch=gh/rows;
+  const sideLabel = page.side==='single' ? '單面·正＋背' : (page.side==='front'?'正面':'背面');
 
   /* header */
   c.fillStyle='#8c867c'; c.font='600 8.2px '+FONT; c.textAlign='left';
-  c.fillText(String(listName||'記憶卡')+'　·　'+(page.calib?'校準頁':'第 '+(page.sheet+1)+' 張')+'　·　'+(page.side==='front'?'正面':'背面'),gx,my+6);
+  c.fillText(String(listName||'記憶卡')+'　·　'+(page.calib?'校準頁':'第 '+(page.sheet+1)+' 張')+'　·　'+sideLabel,gx,my+6);
   c.textAlign='right'; c.fillText(page.calib?'校準頁':'沿虛線裁切',gx+gw,my+6);
 
   /* grid cut lines */
@@ -2113,6 +2123,19 @@ function drawPrintPage(cv,page,o,listName){
     c.fillRect(x,y,w,h);
     if(o.border){ c.strokeStyle=page.side==='back'?'#dcd3bd':'#ddd7cb'; c.lineWidth=.6; c.strokeRect(x,y,w,h); }
     const card=page.cells[idx]; if(!card)continue;
+    if(page.side==='single'){
+      const bk=String(card.back||'').trim();
+      if(bk){
+        const gap=Math.max(2*MM,Math.min(4.5*MM,h*.06)), half=(h-gap)/2;
+        drawCardText(c,card.front,x,y,w,half,o,{side:'front'},card.no,card.imgs);
+        c.strokeStyle='#d8d0bf'; c.lineWidth=.5; c.setLineDash([2,2]);
+        c.beginPath(); c.moveTo(x+4,y+half+gap/2); c.lineTo(x+w-4,y+half+gap/2); c.stroke(); c.setLineDash([]);
+        drawCardText(c,card.back,x,y+half+gap,w,half,Object.assign({},o,{no:false}),{side:'back'},card.no,card.imgs);
+      } else {
+        drawCardText(c,card.front,x,y,w,h,o,{side:'front'},card.no,card.imgs);
+      }
+      continue;
+    }
     const dx=page.side==='back'?o.offX*MM:0, dy=page.side==='back'?o.offY*MM:0;
     c.save();
     if(page.rot){ c.translate(x+w/2,y+h/2); c.rotate(Math.PI); c.translate(-(x+w/2),-(y+h/2)); }
@@ -2121,7 +2144,7 @@ function drawPrintPage(cv,page,o,listName){
   }
   /* footer */
   c.fillStyle='#b4aea3'; c.font='500 7px '+FONT; c.textAlign='center';
-  c.fillText('記憶卡清單 · '+(page.side==='front'?'正面':'背面')+' · 雙面列印時請選 100% 實際大小',W/2,H-my-1);
+  c.fillText('記憶卡清單 · '+sideLabel+' · '+(page.side==='single'?'單面列印（縮放 100%）':'雙面列印時請選 100% 實際大小'),W/2,H-my-1);
 }
 function drawCardText(c,text,x,y,w,h,o,page,no,imgs){
   imgs=imgs||{};
@@ -2189,7 +2212,8 @@ function makeSpec(){
   if(o.scope==='hasback')cards=cards.filter(c=>String(c.back||'').trim());
   if(!cards.length)return {o,pages:[],cardCount:0,hasBack:false};
   const hasBack=cards.some(c=>String(c.back||'').trim());
-  const wantBack=o.duplex==='yes' && hasBack;
+  const single=(o.mode==='single');
+  const wantBack=!single && o.duplex==='yes' && hasBack;
   const per=o.cols*o.rows, sheets=[];
   for(let i=0;i<cards.length;i+=per){
     const front=cards.slice(i,i+per).map((c,k)=>Object.assign({},c,{no:i+k+1}));
@@ -2199,6 +2223,7 @@ function makeSpec(){
   const addSheet=(sh,si,calib)=>{
     const cellsF=new Array(per).fill(null);
     sh.front.forEach((c,k)=>cellsF[k]=c);
+    if(single){ pages.push({side:'single',sheet:si,cells:cellsF,calib:false,rot:false}); return; }
     pages.push({side:'front',sheet:si,cells:cellsF,calib:calib,rot:false});
     if(!wantBack)return;
     const cellsB=new Array(per).fill(null);
@@ -2255,8 +2280,22 @@ function buildPDF(pages){
   chunks.forEach(b=>{ out.set(b,p); p+=b.length; });
   return new Blob([out],{type:'application/pdf'});
 }
+function updatePdfModeUI(mode){
+  const single=mode==='single';
+  const g=$('#pfDupGroup'); if(g)g.style.display=single?'none':'';
+  const hint=$('#pfModeHint');
+  if(hint)hint.innerHTML=single
+    ? '每格同時印出<b>正面＋背面</b>，單面列印即可對照背誦（自製學習卡）。'
+    : '正面印一面、背面印另一面，雙面列印後沿裁切線裁開即成可翻面的記憶卡。';
+  const ph=$('#pfPrevHint'); if(ph)ph.textContent=single?'每頁＝一批卡片（正＋背同格）':'奇數頁＝正面，偶數頁＝背面';
+  const note=$('#pfNote');
+  if(note)note.innerHTML=single
+    ? '單面模式：每格上半為<b>正面</b>、下半為<b>背面</b>（細虛線分隔），沿外框裁開即成小卡，單面列印即可對照背誦。'
+    : '列印後沿虛線裁開：<b>第 1 頁正面</b> 與 <b>第 2 頁背面</b> 是同一張紙的兩面。若正反對不齊，先勾選校準頁印一張，對照編號後改用其他「翻面方式」或微調 mm。';
+}
 function syncPdfOpts(){
   const p=S.pdf;
+  p.mode=($('#pfMode').value==='single'?'single':'double');
   p.paper=$('#pfPaper').value; p.cols=Math.max(1,Math.min(8,+$('#pfCols').value||3)); p.rows=Math.max(1,Math.min(10,+$('#pfRows').value||4));
   p.margin=Math.max(0,Math.min(30,+$('#pfMargin').value)); p.gutter=Math.max(0,Math.min(12,+$('#pfGutter').value));
   p.duplex=$('#pfDuplex').value; p.flip=$('#pfFlip').value;
@@ -2265,10 +2304,12 @@ function syncPdfOpts(){
   p.cut=$('#pfCut').checked; p.border=$('#pfBorder').checked; p.no=$('#pfNo').checked; p.side=$('#pfSide').checked;
   $('#pfCols').value=p.cols; $('#pfRows').value=p.rows;
   $$('#pfPreset button').forEach(b=>b.classList.toggle('on',+b.dataset.c===p.cols&&+b.dataset.r===p.rows));
+  updatePdfModeUI(p.mode);
   return p;
 }
 function openPdf(){
   const p=S.pdf;
+  $('#pfMode').value=p.mode||'double';
   $('#pfPaper').value=p.paper; $('#pfCols').value=p.cols; $('#pfRows').value=p.rows;
   $('#pfMargin').value=p.margin; $('#pfGutter').value=p.gutter;
   $('#pfDuplex').value=p.duplex; $('#pfFlip').value=p.flip;
@@ -2285,9 +2326,10 @@ function previewPdf(){
     pdfSpec=makeSpec();
     const {o,pages,cardCount,hasBack}=pdfSpec;
     $('#pfSize').textContent=o.cardWmm.toFixed(1)+' × '+o.cardHmm.toFixed(1)+' mm';
-    const calibN=(o.calib&&hasBack&&o.duplex==='yes')?1:0;
+    const single=(o.mode==='single');
+    const calibN=(!single&&o.calib&&hasBack&&o.duplex==='yes')?1:0;
     const sheets=Math.ceil(cardCount/(o.cols*o.rows))+calibN;
-    const tail=(o.duplex==='yes'&&hasBack)?'（含背面）':(o.duplex==='yes'?'（沒有底面內容，只印正面）':'（只正面）');
+    const tail=single?'（單面·正＋背同格）':(o.duplex==='yes'&&hasBack)?'（含背面）':(o.duplex==='yes'?'（沒有底面內容，只印正面）':'（只正面）');
     $('#pfInfo').textContent=cardCount+' 張卡 · '+sheets+' 張紙 · '+pages.length+' 頁'+tail;
     const box=$('#pdfPages'); box.innerHTML='';
     if(!pages.length){ box.innerHTML='<div style="padding:20px;font-size:12px;color:#a49d94">沒有符合條件的卡片</div>'; return; }
@@ -2297,7 +2339,7 @@ function previewPdf(){
       drawPrintPage(cv,pg,o,cur().name);
       const url=cv.toDataURL('image/jpeg',.72);
       const d=document.createElement('div'); d.className='pg'+(pg.side==='back'?' back':'');
-      d.innerHTML='<img src="'+url+'" alt="第 '+(i+1)+' 頁"><div class="cap">第 '+(i+1)+' 頁 · '+(pg.calib?'校準頁':'第 '+(pg.sheet+1)+' 張')+' · '+(pg.side==='front'?'正面':'背面')+'</div>';
+      d.innerHTML='<img src="'+url+'" alt="第 '+(i+1)+' 頁"><div class="cap">第 '+(i+1)+' 頁 · '+(pg.calib?'校準頁':'第 '+(pg.sheet+1)+' 張')+' · '+(pg.side==='single'?'單面':pg.side==='front'?'正面':'背面')+'</div>';
       box.appendChild(d);
     });
     if(pages.length>24){ const d=document.createElement('div'); d.style.cssText='padding:14px;font-size:11px;color:#a49d94'; d.textContent='（尚有 '+(pages.length-24)+' 頁，下載時會全部產生）'; box.appendChild(d); }
@@ -2499,16 +2541,30 @@ function speak(text,done){
   };
   next();
 }
+/* 依「順序」決定每張卡先顯示哪一面，以及是否有第二面：
+   fb=正→反（先正面，有底面才翻）；bf=反→正（先反面，有正面才翻；若無底面則直接顯示正面） */
+function playSides(c){
+  const back=String(c&&c.back||'').trim(), front=String(c&&c.front||'').trim();
+  if((P.dir||'fb')==='bf'){
+    if(back) return {firstIsBack:true, secondExists:!!front};
+    return {firstIsBack:false, secondExists:false};
+  }
+  return {firstIsBack:false, secondExists:!!back};
+}
+function setFirstSide(c){ P.flipped = playSides(c).firstIsBack; }
 function startPlay(id){
   const a=viewCards();
   if(!a.length){ toast('沒有可播放的卡片'); return; }
   const t=S.tts;
+  P.dir=(t.dir==='bf'?'bf':'fb');
   $('#plTts').checked=t.on; $('#plAuto').checked=t.auto; $('#plLoop').checked=t.loop; $('#plShuffle').checked=t.shuffle;
+  $('#plDir').value=P.dir;
   $('#plLangF').value=t.langF; $('#plLangB').value=t.langB; $('#plRate').value=t.rate; $('#plGap').value=t.gap;
   let ids;
   if(id){ P.single=true; ids=[id]; }
   else { P.single=false; ids=a.map(c=>c.id); if(t.shuffle)ids=shuffle(ids); }
-  P.active=true; P.ids=ids; P.idx=0; P.flipped=false; P.paused=false; P.token++;
+  P.active=true; P.ids=ids; P.idx=0; P.paused=false; P.token++;
+  setFirstSide(cardById(ids[0]));
   $('#plContinue').style.display=id?'':'none';
   $('#playTitle').textContent=id?'單張播放':'播放清單 · '+esc(cur().name);
   maskOpen('#playMask');
@@ -2522,6 +2578,7 @@ function stopPlay(){
   try{ if(window.speechSynthesis)speechSynthesis.cancel(); }catch(e){}
   const t=S.tts;
   t.on=$('#plTts').checked; t.auto=$('#plAuto').checked; t.loop=$('#plLoop').checked; t.shuffle=$('#plShuffle').checked;
+  t.dir=($('#plDir').value==='bf'?'bf':'fb');
   t.langF=$('#plLangF').value; t.langB=$('#plLangB').value; t.rate=+$('#plRate').value; t.gap=+$('#plGap').value;
   save();
 }
@@ -2542,18 +2599,19 @@ function runStep(){
   if(!P.active||P.paused)return;
   const c=cardById(P.ids[P.idx]); if(!c){ stopPlay(); return; }
   renderPlay();
+  const sides=playSides(c);
+  const onFirst=(P.flipped===sides.firstIsBack);
   const text=plainText(P.flipped?c.back:c.front);
   speak(text,()=>{
     if(!P.active||P.paused)return;
+    /* 手動模式（自動連續關閉）：讀完目前這一面就停下，等用戶點一下／→ 才繼續；底面一定先顯示 */
+    if(!$('#plAuto').checked){ P.paused=true; renderPlay(); return; }
     P.timer=setTimeout(()=>{
       if(!P.active||P.paused)return;
-      if(!P.flipped && String(c.back||'').trim() && $('#plAuto').checked){
-        P.flipped=true; renderPlay(); runStep(); return;
-      }
-      P.flipped=false;
+      if(onFirst && sides.secondExists){ P.flipped=!P.flipped; renderPlay(); runStep(); return; }
       const last=P.idx+1>=P.ids.length;
       if(last){
-        if($('#plLoop').checked){ P.idx=0; renderPlay(); runStep(); }
+        if($('#plLoop').checked){ P.idx=0; setFirstSide(cardById(P.ids[0])); renderPlay(); runStep(); }
         else { P.paused=true; renderPlay(); toast('播放完畢'); }
       } else { plStep(1); }
     },(+$('#plGap').value||.8)*1000);
@@ -2567,21 +2625,39 @@ function plStep(d){
     let ni=P.idx+d;
     if(ni>=n){
       if($('#plLoop').checked)ni=0;
-      else { P.idx=n-1; P.flipped=false; P.paused=true; renderPlay(); toast('已到最後一張'); return; }
+      else { P.idx=n-1; setFirstSide(cardById(P.ids[P.idx])); P.paused=true; renderPlay(); toast('已到最後一張'); return; }
     }
     if(ni<0)ni=$('#plLoop').checked?n-1:0;
     P.idx=ni;
   }
-  P.flipped=false; P.paused=false; renderPlay(); runStep();
+  P.paused=false; setFirstSide(cardById(P.ids[P.idx])); renderPlay(); runStep();
+}
+/* 下一張（智能）：若第二面尚未顯示，先顯示並朗讀；已顯示或沒有第二面才真正前進到下一張 */
+function plNextSmart(){
+  if(!P.active)return;
+  const c=cardById(P.ids[P.idx]); if(!c){ plStep(1); return; }
+  const sides=playSides(c);
+  const onFirst=(P.flipped===sides.firstIsBack);
+  if(onFirst && sides.secondExists){
+    clearTimeout(P.timer); stopSpeech();
+    P.flipped=!P.flipped; P.paused=false; renderPlay(); runStep();
+    return;
+  }
+  plStep(1);
 }
 function plSpace(){
-  if($('#plAuto').checked && !P.paused){ plPauseToggle(); }
-  else plFlip();
+  /* 自動連續：空白鍵＝暫停／繼續；手動模式：空白鍵＝顯示底面／下一張 */
+  if($('#plAuto').checked){ plPauseToggle(); }
+  else { plNextSmart(); }
 }
 function plPauseToggle(){
-  P.paused=!P.paused;
-  if(P.paused){ clearTimeout(P.timer); stopSpeech(); try{speechSynthesis.cancel();}catch(e){} renderPlay(); }
-  else { renderPlay(); runStep(); }
+  if(!P.paused){
+    P.paused=true; clearTimeout(P.timer); stopSpeech(); try{speechSynthesis.cancel();}catch(e){} renderPlay();
+    return;
+  }
+  P.paused=false; renderPlay();
+  if(!$('#plAuto').checked){ plNextSmart(); }
+  else { runStep(); }
 }
 function plFlip(){
   clearTimeout(P.timer); stopSpeech();
@@ -2624,10 +2700,10 @@ attachSwipe($('#side'), { left: closeSide, threshold: 50 });
   });
   document.addEventListener('pointerup', e=>{ if(!eok)return; eok=false; if(e.clientX-esx>60)openSide(); });
 })();
-// 播放：左右滑動切換卡片，點一下翻面
+// 播放：左右滑動切換卡片，點一下先顯示底面再前往下一張
 const _playCard=$('#playCard');
 attachSwipe(_playCard, {
-  left: ()=>plStep(1), right: ()=>plStep(-1), tap: plFlip, threshold: 46,
+  left: plNextSmart, right: ()=>plStep(-1), tap: plNextSmart, threshold: 46,
   drag:(dx)=>{ if(dx===0){ _playCard.style.transition='transform .25s'; _playCard.style.transform=''; } else { _playCard.style.transition='none'; _playCard.style.transform='translateX('+(dx*0.4)+'px)'; } }
 });
 // 聚焦自學：左右滑動切換，點一下顯示／隱藏答案
@@ -2646,14 +2722,14 @@ attachSwipe($('#quizBody'), {
   right: ()=>{ if(Q.active && Q.idx>0){ Q.idx--; renderQuiz(); } }
 });
 $('#plPrev').onclick=()=>plStep(-1);
-$('#plNext').onclick=()=>plStep(1);
+$('#plNext').onclick=()=>plNextSmart();
 $('#plPause').onclick=plPauseToggle;
 $('#plFlip').onclick=plFlip;
 $('#plReplay').onclick=()=>{ clearTimeout(P.timer); stopSpeech(); runStep(); };
 $('#plContinue').onclick=()=>{
   const id=P.ids[P.idx], a=viewCards();
   P.ids=a.map(c=>c.id); if($('#plShuffle').checked)P.ids=shuffle(P.ids);
-  P.idx=Math.max(0,P.ids.indexOf(id)); P.single=false; P.flipped=false; P.paused=false;
+  P.idx=Math.max(0,P.ids.indexOf(id)); P.single=false; P.paused=false; setFirstSide(cardById(P.ids[P.idx]));
   $('#plContinue').style.display='none'; $('#playTitle').textContent='播放清單 · '+esc(cur().name);
   renderPlay(); runStep(); toast('已接續播放整份清單');
 };
@@ -2661,9 +2737,15 @@ $$('#playMask input,#playMask select').forEach(el=>{
   el.addEventListener('change',()=>{
     const t=S.tts;
     t.on=$('#plTts').checked; t.auto=$('#plAuto').checked; t.loop=$('#plLoop').checked; t.shuffle=$('#plShuffle').checked;
+    t.dir=($('#plDir').value==='bf'?'bf':'fb');
     t.langF=$('#plLangF').value; t.langB=$('#plLangB').value; t.rate=+$('#plRate').value; t.gap=+$('#plGap').value;
     save();
-    if(el.id==='plTts'||el.id==='plRate'||el.id==='plLangF'||el.id==='plLangB'){
+    if(el.id==='plDir'){
+      P.dir=t.dir;
+      if(P.active&&P.ids.length){ setFirstSide(cardById(P.ids[P.idx])); clearTimeout(P.timer); stopSpeech(); renderPlay(); if(!P.paused)runStep(); }
+      return;
+    }
+    if(el.id==='plTts'||el.id==='plRate'||el.id==='plLangF'||el.id==='plLangB'||el.id==='plAuto'){
       if(P.active&&!P.paused){ clearTimeout(P.timer); stopSpeech(); runStep(); }
     }
   });
