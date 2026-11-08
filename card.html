@@ -59,7 +59,8 @@
 *,*::before,*::after{box-sizing:border-box}
 :root{
   --bg:#f7f5f0; --bg2:#f1eee7; --panel:#fffdf9; --card:#ffffff;
-  --ink:#2c2a26; --sub:#777169; --muted:#a49d94;
+  --ink:#1d1a15; --sub:#6a6357; --muted:#8f887d;
+  --content:#332e25; /* 卡片內文：較深，方便閱讀與列印 */
   --line:#e7e1d6; --line2:#d8d0c2;
   --acc:#0f766e; --acc-d:#0b5c56; --acc-soft:#e2f1ee; --acc-line:#b8ddd6;
   --gold:#c07a21; --gold-soft:#fbf0dc; --gold-line:#ecd6ae;
@@ -226,8 +227,8 @@ select.sel{padding:8px 9px;border:1px solid var(--line2);border-radius:9px;backg
 .fc-hit{position:absolute;inset:0;z-index:1;cursor:pointer}
 .fc-top{padding:12px 13px 9px;display:flex;align-items:flex-start;gap:8px}
 .fc-no{font-size:10px;font-weight:800;color:var(--muted);background:var(--bg2);border-radius:6px;padding:3px 6px;flex:0 0 auto}
-.fc-front{font-size:15px;font-weight:800;line-height:1.5;word-break:break-word;white-space:pre-wrap;flex:1;min-width:0}
-.fc-back{background:linear-gradient(180deg,#fbfaf6,#f8f5ee);border-top:1px dashed var(--line2);padding:10px 13px;font-size:12.5px;color:var(--sub);line-height:1.6;word-break:break-word;white-space:pre-wrap;flex:1;position:relative}
+.fc-front{font-size:15px;font-weight:800;line-height:1.5;word-break:break-word;white-space:pre-wrap;flex:1;min-width:0;color:var(--ink)}
+.fc-back{background:linear-gradient(180deg,#fbfaf6,#f8f5ee);border-top:1px dashed var(--line2);padding:10px 13px;font-size:12.5px;color:var(--content);line-height:1.6;word-break:break-word;white-space:pre-wrap;flex:1;position:relative}
 .fc-back .lb{display:block;font-size:9.5px;font-weight:800;color:var(--gold);letter-spacing:.6px;margin-bottom:3px}
 .fc-back.none{color:var(--muted);font-style:italic}
 .fc.masked .fc-back .txt{filter:blur(5px);user-select:none;opacity:.55}
@@ -269,8 +270,8 @@ select.sel{padding:8px 9px;border:1px solid var(--line2);border-radius:9px;backg
 .li{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line2);border-radius:var(--r2);padding:10px 12px;box-shadow:var(--sh)}
 .li:hover{border-color:var(--acc-line)}
 .li .no{font-size:10px;font-weight:800;color:var(--muted);width:26px;flex:0 0 auto}
-.li .a{font-weight:800;font-size:13.5px;flex:1;min-width:0;word-break:break-word;white-space:pre-wrap}
-.li .b{color:var(--sub);font-size:12.5px;flex:1.4;min-width:0;word-break:break-word;white-space:pre-wrap;border-left:1px dashed var(--line2);padding-left:10px}
+.li .a{font-weight:800;font-size:13.5px;flex:1;min-width:0;word-break:break-word;white-space:pre-wrap;color:var(--ink)}
+.li .b{color:var(--content);font-size:12.5px;flex:1.4;min-width:0;word-break:break-word;white-space:pre-wrap;border-left:1px dashed var(--line2);padding-left:10px}
 .li .ops{display:flex;gap:2px;flex:0 0 auto}
 
 /* table view */
@@ -281,14 +282,14 @@ td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-
 tr:last-child td{border-bottom:none}
 tbody tr:hover{background:#fcfbf7}
 td.c-no{color:var(--muted);font-size:10.5px;width:38px}
-td.c-a{font-weight:800;width:34%}
-td.c-b{color:var(--sub);width:44%}
+td.c-a{font-weight:800;width:34%;color:var(--ink)}
+td.c-b{color:var(--content);width:44%}
 td.c-op{white-space:nowrap;width:110px}
 
 /* focus view */
 .focus-v{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:22px;text-align:center}
 .focus-v .big{min-height:230px;display:flex;flex-direction:column;justify-content:center;gap:14px}
-.focus-v .q{font-size:clamp(22px,4vw,34px);font-weight:800;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.focus-v .q{font-size:clamp(22px,4vw,34px);font-weight:800;line-height:1.5;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
 .focus-v .a{font-size:clamp(16px,2.6vw,22px);color:var(--acc-d);background:var(--acc-soft);border-radius:12px;padding:14px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
 .focus-v .a.hide{display:none}
 .focus-v .hint{font-size:11px;color:var(--muted)}
@@ -403,6 +404,10 @@ td.c-op{white-space:nowrap;width:110px}
 .pset .sp{flex:1;min-width:0}
 .pset .si{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .pset .tip{font-size:10px;color:var(--muted);font-weight:600;width:100%;line-height:1.6}
+.pset .ttsrow{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:7px 9px}
+.pset .ttsrow #ttsState{font-size:10.5px;font-weight:700;color:var(--sub);line-height:1.5;flex:1;min-width:120px}
+.pset .ttsrow #ttsState.bad{color:#b4442f}
+.pset .ttsrow #ttsState.ok{color:#0b5c56}
 
 /* quiz */
 .quiz-wrap{background:linear-gradient(160deg,#f7f5f0,#eef1f6);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:18px;overflow:auto}
@@ -796,7 +801,7 @@ td.c-op{white-space:nowrap;width:110px}
       <button data-v="putonghua" class="on">普通話</button>
       <button data-v="cantonese">粵語</button>
     </div>
-    <label class="chk"><input type="checkbox" id="plTts" checked> 語音朗讀</label>
+    <label class="chk"><input type="checkbox" id="plTts" checked> 朗讀</label>
     <label class="chk" title="開啟＝自動連續播放（每張先後兩面都會讀完才前進）；關閉＝讀完一面停一停，點一下／→ 繼續"><input type="checkbox" id="plAuto" checked> 自動連續</label>
     <label class="chk"><input type="checkbox" id="plLoop"> 循環</label>
     <label class="chk"><input type="checkbox" id="plShuffle"> 隨機</label>
@@ -806,6 +811,7 @@ td.c-op{white-space:nowrap;width:110px}
     <span class="si"><span>順序</span><select id="plDir"><option value="fb">正 → 反</option><option value="bf">反 → 正</option></select></span>
     <span class="si"><span>語速</span><select id="plRate"><option value="0.7">0.7×</option><option value="0.85">0.85×</option><option value="1" selected>1×</option><option value="1.2">1.2×</option><option value="1.5">1.5×</option></select></span>
     <span class="si"><span>間隔</span><select id="plGap"><option value="0.3">0.3s</option><option value="0.8" selected>0.8s</option><option value="1.5">1.5s</option><option value="2.5">2.5s</option></select></span>
+    <div class="ttsrow"><button class="btn sm" id="plTest" type="button">🔊 測試朗讀</button><span id="ttsState">偵測中…</span></div>
     <div class="tip"><span id="voiceHint">中文語音：偵測中…</span><br>中英混合內容會自動分段，中文用上方語音、英文用英語語音。「順序」可選正→反或反→正。<b>手機：左右滑動切換卡片、點一下先顯示底面再前往下一張</b>；電腦：← →＝上一張／下一張（有底面會先顯示才前進），↑ ↓ 或 F＝翻面，空白鍵＝暫停／繼續，Esc＝結束。</div>
   </div>
 </div></div>
@@ -898,7 +904,7 @@ td.c-op{white-space:nowrap;width:110px}
     <p style="margin-top:0"><b style="color:var(--ink)">① 建立清單與卡片</b><br>左側可新增多個清單（例如不同課次、不同單元）。每張卡只有兩個欄位：<b>正面</b>、<b>反面</b>。可標星、標記已熟練、上移下移調整順序（順序即列印順序）。<br><b>正面／反面都支援內嵌圖片</b>：編輯卡片時按「🖼 插入圖片」選本機圖片，或直接把圖片<b>貼上</b>到文字框；圖會自動縮圖並隨卡一起顯示、列印與匯出 HTML。</p>
     <p><b style="color:var(--ink)">② Excel 匯入／匯出</b><br>每個清單都可獨立匯出 .xlsx（欄位：正面、反面）或 CSV；匯入可選「附加／取代／建立新清單」，也能直接從 Excel 複製兩欄貼上。全程離線，不需外掛程式。<br><b>圖片不會進 Excel／CSV</b>（這兩者是純文字）；要保留含圖片的卡片，請用「📤 匯出 → JSON」備份，還原時圖片會一併回來。</p>
     <p><b style="color:var(--ink)">③ 四種檢視佈局與排序</b><br>網格、列表、表格、聚焦。可搜尋、排序（原順序／正面 A→Z／最近新增／未熟練優先）、篩選（未熟練／已加星／有底面／缺底面／<b>錯題</b>）。在「原順序」且無搜尋／篩選時，可用卡片左上角的 ⠿ 把手<b>拖動排序</b>；亦可按工具列的「⇅ 整理順序」勾選多張<b>批量上移／下移</b>、全選或單張上下移。勾「遮蔽反面」可自測，點一下才揭示答案。</p>
-    <p><b style="color:var(--ink)">④ 播放與中文語音</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張朗讀，可調<b>語速、間隔、循環、隨機</b>；單張播放後可「續播整份」。<b>「順序」可選正→反或反→正</b>（反→正時先顯示並讀反面，有正面才翻）。<br><b>底面一定會先顯示才前進</b>：無論自動或手動，只要該卡有底面，都會先顯示／朗讀底面才去下一張，不會跳過。<b>「自動連續」</b>開啟＝全自動連續播放；關閉＝每讀完一面停一停，點一下（或按 →）繼續。<br><b>鍵盤</b>：← 上一張、→ 下一張（有底面會先顯示）、↑ ↓ 或 F 翻面、空白鍵（自動＝暫停／繼續，手動＝繼續下一面）、Esc 結束。<b>手機</b>：左右滑動切換、點一下先顯示底面再前往下一張。<br><b>每份清單各自記住「普通話／粵語」</b>：清單標題下或播放面板的切換鈕一按即換，切換時會立即用新語音重讀。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。語音來自系統／瀏覽器內建，若沒有粵語語音包，播放面板會提示（可到系統語言設定新增）。</p>
+    <p><b style="color:var(--ink)">④ 播放與朗讀</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張朗讀，可調<b>語速、間隔、循環、隨機</b>；單張播放後可「續播整份」。<b>「順序」可選正→反或反→正</b>（反→正時先顯示並讀反面，有正面才翻）。<br><b>底面一定會先顯示才前進</b>：無論自動或手動，只要該卡有底面，都會先顯示／朗讀底面才去下一張，不會跳過。<b>「自動連續」</b>開啟＝全自動連續播放；關閉＝每讀完一面停一停，點一下（或按 →）繼續。<br><b>鍵盤</b>：← 上一張、→ 下一張（有底面會先顯示）、↑ ↓ 或 F 翻面、空白鍵（自動＝暫停／繼續，手動＝繼續下一面）、Esc 結束。<b>手機</b>：左右滑動切換、點一下先顯示底面再前往下一張。<br><b>每份清單各自記住「普通話／粵語」</b>：清單標題下或播放面板的切換鈕一按即換，切換時會立即用新語音重讀。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。<br><b>電腦與手機都可朗讀</b>：使用瀏覽器內建的 Web Speech（Chrome、Edge、Safari、Android 版 Chrome 均支援）。面板上有 <b>🔊 測試朗讀</b> 按鈕可即時確認這部機能否發聲；狀態列會顯示目前使用的語音。若顯示「未安裝語音」，請到系統的「文字轉語音／朗讀內容」下載中文語音（Windows：時間與語言 → 語音；Android：語言與輸入 → 文字轉語音；iPhone：輔助使用 → 朗讀內容 → 聲音）。若系統完全沒有語音引擎，工具會自動改用無聲計時，翻卡流程照常運作。</p>
     <p><b style="color:var(--ink)">⑤ PDF：單面／雙面</b><br>匯出 PDF 可選兩種版式（對話框頂部「輸出方式」）：<br>· <b>單面（每格正面＋背面）</b>：每張小卡上半印正面、下半印背面（細虛線分隔），單面列印即可對照背誦，適合自製學習卡／溫習紙。<br>· <b>雙面（正／背分兩面）</b>：PDF 頁次為「第1張正面、第1張背面、第2張正面…」，背面卡的位置依翻面方式鏡射對調；印表機選「雙面・長邊裝訂」後，正反內容落在同一張小卡的兩面，沿裁切線剪開即成可翻面的背誦記憶卡。<br><b>雙面首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。</p>
     <div class="note">列印設定：縮放 <b>100%</b>／實際大小，<b>不要</b>勾「配合頁面大小」，關閉頁首頁尾與自動置中，紙張尺寸與此處選擇一致。</div>
     <p><b style="color:var(--ink)">⑥ 直接分享</b><br>按「↗ 分享」選 PDF 或 Excel 後，會用目前設定即時產生檔案並叫起系統分享選單（手機／平板可直接傳到通訊軟體、電郵或雲端）；PDF 對話框內的「↗ 直接分享」則用對話框裏的設定。桌面瀏覽器若不支援檔案分享，會依序降級為：複製檔案到剪貼簿 → 開新分頁預覽 → 下載檔案，並以提示說明。</p>
@@ -1831,15 +1837,15 @@ function buildCardsHtml(l){
     '<meta name="viewport" content="width=device-width,initial-scale=1">'+
     '<title>'+esc(l.name)+' · 記憶卡</title><style>'+
     '*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;'+
-    'background:#f3f1ea;color:#2c2a26;padding:20px}'+
+    'background:#f3f1ea;color:#1c1913;padding:20px}'+
     'header{text-align:center;margin-bottom:18px}header h1{font-size:22px;margin:0 0 4px}'+
-    'header p{margin:0;font-size:12px;color:#8c867c}'+
+    'header p{margin:0;font-size:12px;color:#6b6459}'+
     'main{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-width:1100px;margin:0 auto}'+
     '.card{background:#fff;border:1px solid #e3ddd0;border-radius:14px;box-shadow:0 6px 18px rgba(30,25,18,.08);'+
     'padding:16px 16px 14px;position:relative;break-inside:avoid}'+
-    '.card .no{position:absolute;top:10px;right:12px;font-size:10px;font-weight:800;color:#b3ab9c;background:#f3f1ea;border-radius:6px;padding:2px 6px}'+
-    '.card .front{font-size:16px;font-weight:800;line-height:1.5;white-space:pre-wrap;word-break:break-word;margin-bottom:8px;padding-right:30px}'+
-    '.card .back{font-size:13.5px;color:#5c574e;line-height:1.6;white-space:pre-wrap;word-break:break-word;border-top:1px dashed #e3ddd0;padding-top:8px}'+
+    '.card .no{position:absolute;top:10px;right:12px;font-size:10px;font-weight:800;color:#8f887d;background:#f3f1ea;border-radius:6px;padding:2px 6px}'+
+    '.card .front{font-size:16px;font-weight:800;line-height:1.5;white-space:pre-wrap;word-break:break-word;margin-bottom:8px;padding-right:30px;color:#1c1913}'+
+    '.card .back{font-size:13.5px;color:#332e25;line-height:1.6;white-space:pre-wrap;word-break:break-word;border-top:1px dashed #e3ddd0;padding-top:8px}'+
     '.card img{max-width:100%;height:auto;display:block;margin:8px auto 2px;border-radius:8px;border:1px solid #e3ddd0}'+
     '.card.star{border-color:#c9a23e}.card.star .no{color:#c9a23e}'+
     '.card.done{background:linear-gradient(180deg,#fdfffd,#f4fff4)}'+
@@ -2094,7 +2100,7 @@ function drawPrintPage(cv,page,o,listName){
   const sideLabel = page.side==='single' ? '單面·正＋背' : (page.side==='front'?'正面':'背面');
 
   /* header */
-  c.fillStyle='#8c867c'; c.font='600 8.2px '+FONT; c.textAlign='left';
+  c.fillStyle='#6b6459'; c.font='600 8.2px '+FONT; c.textAlign='left';
   c.fillText(String(listName||'記憶卡')+'　·　'+(page.calib?'校準頁':'第 '+(page.sheet+1)+' 張')+'　·　'+sideLabel,gx,my+6);
   c.textAlign='right'; c.fillText(page.calib?'校準頁':'沿虛線裁切',gx+gw,my+6);
 
@@ -2143,7 +2149,7 @@ function drawPrintPage(cv,page,o,listName){
     c.restore();
   }
   /* footer */
-  c.fillStyle='#b4aea3'; c.font='500 7px '+FONT; c.textAlign='center';
+  c.fillStyle='#a8a196'; c.font='500 7px '+FONT; c.textAlign='center';
   c.fillText('記憶卡清單 · '+sideLabel+' · '+(page.side==='single'?'單面列印（縮放 100%）':'雙面列印時請選 100% 實際大小'),W/2,H-my-1);
 }
 function drawCardText(c,text,x,y,w,h,o,page,no,imgs){
@@ -2178,7 +2184,7 @@ function drawCardText(c,text,x,y,w,h,o,page,no,imgs){
     lines=lines.slice(0,keep);
     lines[keep-1]=(lines[keep-1]||'').slice(0,Math.max(1,(lines[keep-1]||'').length-1))+'…';
   }
-  c.fillStyle=page.side==='back'?'#14564f':'#2c2a26';
+  c.fillStyle=page.side==='back'?'#0b4a44':'#1c1913';
   c.textAlign='center'; c.textBaseline='middle';
   const textH=lines.length*lh;
   const totalH=textH+imgTotalH+(imgBlocks.length?txtImgGap*imgBlocks.length:0);
@@ -2194,8 +2200,8 @@ function drawCardText(c,text,x,y,w,h,o,page,no,imgs){
       cy+=txtImgGap; c.drawImage(b.im,x+(w-b.w)/2,cy,b.w,b.h); cy+=b.h+imgGap;
     }
   });
-  if(!lines.length && !imgBlocks.length){ c.fillStyle='#b4aea3'; c.font='500 10px '+FONT; c.fillText('（空白）',x+w/2,y+h/2); }
-  c.font='500 7px '+FONT; c.fillStyle='#aca69b';
+  if(!lines.length && !imgBlocks.length){ c.fillStyle='#a8a196'; c.font='500 10px '+FONT; c.fillText('（空白）',x+w/2,y+h/2); }
+  c.font='500 7px '+FONT; c.fillStyle='#7b7468';
   if(o.side){ c.textAlign='left'; c.textBaseline='top'; c.fillText(page.side==='front'?'正面':'背面',x+pad,y+pad*.6); }
   if(o.no){ c.textAlign='right'; c.textBaseline='bottom'; c.fillText('#'+no,x+w-pad*.7,y+h-pad*.5); }
   c.textBaseline='middle';
@@ -2465,21 +2471,52 @@ $('#btnPdfDown').onclick=async()=>{
    播放（Web Speech API）
    ===================================================================== */
 let VOICES=[];
+let TTS_BLOCKED=false;   /* 引擎完全無回應（例如 Android 未裝 TTS 引擎）→ 改用無聲計時 */
+let TTS_WARNED=false;    /* 提示只彈一次，避免每次播放都打擾 */
+let ttsPrimed=false;     /* iOS／Android 需要在使用者手勢中「解鎖」語音 */
+let voiceTries=0;
+const hasTTS=!!(window.speechSynthesis && window.SpeechSynthesisUtterance);
 const vLang=v=>String(v.lang||'').toLowerCase().replace('_','-');
-function refreshVoices(){ try{ VOICES=window.speechSynthesis?window.speechSynthesis.getVoices()||[]:[]; }catch(e){ VOICES=[]; } }
-if(window.speechSynthesis){
-  refreshVoices();
-  if(window.speechSynthesis.addEventListener)window.speechSynthesis.addEventListener('voiceschanged',()=>{
-    refreshVoices(); if($('#playMask').classList.contains('on'))updateVoiceHint();
-  });
+
+/* 有些瀏覽器（Chrome／Android）第一次取語音清單是空的，需重試直到 voiceschanged 或成功 */
+function refreshVoices(){
+  try{ VOICES=(window.speechSynthesis&&window.speechSynthesis.getVoices())||[]; }catch(e){ VOICES=[]; }
+  if(!VOICES.length && voiceTries<30){
+    voiceTries++;
+    setTimeout(()=>{ refreshVoices(); if($('#playMask').classList.contains('on'))updateVoiceHint(); },400);
+  }
+  return VOICES;
 }
+if(hasTTS){
+  refreshVoices();
+  try{
+    if(window.speechSynthesis.addEventListener)
+      window.speechSynthesis.addEventListener('voiceschanged',()=>{ voiceTries=0; refreshVoices(); if($('#playMask').classList.contains('on'))updateVoiceHint(); });
+    else window.speechSynthesis.onvoiceschanged=()=>{ voiceTries=0; refreshVoices(); if($('#playMask').classList.contains('on'))updateVoiceHint(); };
+  }catch(e){}
+}
+/* 第一次觸碰／按鍵時，用靜音短句解鎖語音（iOS Safari、部分 Android 必須） */
+function primeTTS(){
+  if(ttsPrimed||!hasTTS)return;
+  ttsPrimed=true;
+  try{
+    refreshVoices();
+    const u=new SpeechSynthesisUtterance(' ');
+    u.volume=0; u.rate=2; u.lang=chineseLang(cur().ttsLang||'putonghua');
+    speechSynthesis.speak(u);
+    if(speechSynthesis.paused)speechSynthesis.resume();
+  }catch(e){}
+}
+document.addEventListener('pointerdown',primeTTS,{once:true,passive:true});
+document.addEventListener('keydown',primeTTS,{once:true});
 /* 中文語音：普通話偏好 zh-CN / zh-TW，粵語偏好 zh-HK / yue */
 function chineseLang(mode){ return mode==='cantonese'?'zh-HK':'zh-CN'; }
 function zhVoice(mode){
   const all=VOICES.filter(v=>/^(zh|yue)/.test(vLang(v)));
   const cant=all.filter(v=>/hk|yue/.test(vLang(v)));
   const mand=all.filter(v=>cant.indexOf(v)<0);
-  return mode==='cantonese'?(cant[0]||mand[0]||null):(mand[0]||cant[0]||null);
+  const pick=arr=>(arr.find(v=>v.localService===true)||arr[0]||null); /* 優先離線語音，無網絡也能讀 */
+  return mode==='cantonese'?(pick(cant)||pick(mand)):(pick(mand)||pick(cant));
 }
 function pickVoice(lang,mode,exact){
   /* exact＝使用者在該面強制指定了語系，此時不再套用清單的普通話／粵語偏好 */
@@ -2489,12 +2526,32 @@ function pickVoice(lang,mode,exact){
   const pre=lang.split('-')[0].toLowerCase();
   return VOICES.find(v=>vLang(v).startsWith(pre))||null;
 }
+/* 各平台「點樣裝語音」的具體指引 */
+function ttsPlatformTip(){
+  const ua=navigator.userAgent||'';
+  if(/Android/i.test(ua))return 'Android：設定 → 語言與輸入 → 文字轉語音，選用已安裝的 TTS 引擎（如 Google 語音服務／小米語音），再下載「中文（普通話）」語音資料。';
+  if(/iPhone|iPad|iPod/i.test(ua))return 'iPhone／iPad：設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文（中國／香港），下載語音後重開此頁。';
+  if(/Windows/i.test(ua))return 'Windows：設定 → 時間與語言 → 語言與地區，新增「中文（中國）」或「中文（香港）」並安裝其語音包。';
+  if(/Mac OS X|Macintosh/i.test(ua))return 'macOS：系統設定 → 輔助使用 → 朗讀內容 → 系統聲音 → 管理聲音，下載「國語（中國）」或「粵語（香港）」。';
+  return '請在系統設定中安裝中文語音包。';
+}
 function updateVoiceHint(){
+  const hint=$('#voiceHint'), st=$('#ttsState'); if(!hint)return;
   const mode=cur().ttsLang||'putonghua', label=mode==='cantonese'?'粵語':'普通話';
-  const v=zhVoice(mode);
-  $('#voiceHint').textContent=v
-    ? '目前中文語音：'+v.name+'（'+v.lang+'）· '+label
-    : '找不到「'+label+'」語音，瀏覽器會用預設語音；可到系統語言設定新增語音包。';
+  if(!hasTTS){
+    hint.textContent='此瀏覽器不支援網頁朗讀（Web Speech）。請改用 Chrome、Edge、Safari 或 Android 版 Chrome。';
+  }else{
+    const v=zhVoice(mode);
+    hint.textContent=v
+      ? '朗讀語音：'+v.name+'（'+v.lang+'）· '+label+(v.localService===false?' · 線上語音（需連網）':'')
+      : '未找到「'+label+'」語音，暫用系統預設。'+ttsPlatformTip();
+  }
+  if(st){
+    if(!hasTTS){ st.className='bad'; st.textContent='✕ 不支援朗讀'; }
+    else if(TTS_BLOCKED){ st.className='bad'; st.textContent='⚠ 語音沒有回應，已改用無聲計時；請檢查系統文字轉語音設定'; }
+    else if(zhVoice(mode)){ st.className='ok'; st.textContent='✓ 可朗讀（'+label+'）'; }
+    else { st.className='bad'; st.textContent='⚠ 未安裝'+label+'語音，會用系統預設聲音'; }
+  }
 }
 /* 中英混合句子切成片段，各自用合適語音 */
 function splitByLang(t){
@@ -2515,10 +2572,20 @@ function splitByLang(t){
 const P={active:false,ids:[],idx:0,flipped:false,paused:false,single:false,timer:null,token:0};
 function stopSpeech(){ P.token++; try{ if(window.speechSynthesis)speechSynthesis.cancel(); }catch(e){} }
 function silentMs(t){ return Math.min(6500,Math.max(1200,900+String(t||'').length*55/($('#plRate')?+$('#plRate').value:1))); }
+/* Chrome／部分 Android 會在長句中途自動 pause（尤其切到背景再回來），定期 resume 可救回 */
+let keepTimer=null;
+function startKeepAlive(){
+  stopKeepAlive();
+  keepTimer=setInterval(()=>{ try{ if(window.speechSynthesis&&speechSynthesis.speaking&&speechSynthesis.paused)speechSynthesis.resume(); }catch(e){} },2500);
+}
+function stopKeepAlive(){ if(keepTimer){ clearInterval(keepTimer); keepTimer=null; } }
 function speak(text,done){
   const tk=++P.token, t=String(text||'').trim();
   const on=$('#plTts').checked;
-  if(!on||!t||!window.speechSynthesis){ P.timer=setTimeout(()=>{ if(tk===P.token&&P.active&&!P.paused)done(); },silentMs(t)); return; }
+  const goSilent=()=>{ P.timer=setTimeout(()=>{ if(tk===P.token&&P.active&&!P.paused)done(); },silentMs(t)); };
+  if(!on||!t){ goSilent(); return; }
+  if(!hasTTS){ if(!TTS_WARNED){ TTS_WARNED=true; toast('此瀏覽器不支援朗讀，已改用無聲計時',4000); } goSilent(); return; }
+  if(TTS_BLOCKED){ goSilent(); return; }
   const sel=P.flipped?$('#plLangB').value:$('#plLangF').value;
   const mode=cur().ttsLang||'putonghua', rate=+$('#plRate').value||1;
   let queue;
@@ -2533,11 +2600,24 @@ function speak(text,done){
     const u=new SpeechSynthesisUtterance(seg.text);
     u.lang=seg.lang; u.rate=rate; u.pitch=1; u.volume=1;
     const v=pickVoice(seg.lang,mode,exact); if(v)u.voice=v;
-    let fin=false, wd=null;
-    const finish=()=>{ if(fin)return; fin=true; clearTimeout(wd); next(); };
+    let fin=false, started=false, wd=null, st=null;
+    const finish=()=>{ if(fin)return; fin=true; clearTimeout(wd); clearTimeout(st); next(); };
+    u.onstart=()=>{ started=true; clearTimeout(st); };
     u.onend=finish; u.onerror=finish;
-    wd=setTimeout(finish,Math.max(1800,seg.text.length*190/rate+900));
-    try{ speechSynthesis.speak(u); }catch(e){ finish(); }
+    /* 引擎 2.2 秒內完全沒開始（例如 Android 未安裝 TTS 引擎）→ 標記失效並改用無聲計時 */
+    st=setTimeout(()=>{
+      if(fin||started)return;
+      TTS_BLOCKED=true;
+      try{ speechSynthesis.cancel(); }catch(e){}
+      if(!TTS_WARNED){ TTS_WARNED=true; toast('系統朗讀沒有回應，已改用無聲計時。請檢查裝置的「文字轉語音」設定',5000); }
+      updateVoiceHint(); finish();
+    },2200);
+    /* 保險：即使 onend 遺失（Android 常見）也會前進，但時間足夠讀完 */
+    wd=setTimeout(finish,Math.max(2200,seg.text.length*210/rate+1200));
+    try{
+      if(speechSynthesis.paused)speechSynthesis.resume();
+      speechSynthesis.speak(u);
+    }catch(e){ finish(); }
   };
   next();
 }
@@ -2568,13 +2648,14 @@ function startPlay(id){
   $('#plContinue').style.display=id?'':'none';
   $('#playTitle').textContent=id?'單張播放':'播放清單 · '+esc(cur().name);
   maskOpen('#playMask');
-  refreshVoices(); renderLangSeg(); updateVoiceHint();
+  TTS_BLOCKED=false; /* 每次開始播放重新試一次語音引擎 */
+  refreshVoices(); renderLangSeg(); updateVoiceHint(); startKeepAlive();
   renderPlay(); runStep();
   gaTrack('play_start',{scope:id?'single':'list',card_count:bucket(ids.length),voice:cur().ttsLang||'putonghua'});
 }
 function shuffle(a){ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=b[i];b[i]=b[j];b[j]=t; } return b; }
 function stopPlay(){
-  P.active=false; clearTimeout(P.timer); stopSpeech();
+  P.active=false; clearTimeout(P.timer); stopSpeech(); stopKeepAlive();
   try{ if(window.speechSynthesis)speechSynthesis.cancel(); }catch(e){}
   const t=S.tts;
   t.on=$('#plTts').checked; t.auto=$('#plAuto').checked; t.loop=$('#plLoop').checked; t.shuffle=$('#plShuffle').checked;
@@ -2726,6 +2807,30 @@ $('#plNext').onclick=()=>plNextSmart();
 $('#plPause').onclick=plPauseToggle;
 $('#plFlip').onclick=plFlip;
 $('#plReplay').onclick=()=>{ clearTimeout(P.timer); stopSpeech(); runStep(); };
+/* 測試朗讀：即時在用戶手勢中發聲，直接告訴用家這部機是否能讀 */
+$('#plTest').onclick=()=>{
+  if(!hasTTS){ toast('此瀏覽器不支援朗讀（Web Speech），請改用 Chrome／Edge／Safari',5000); return; }
+  /* 測試時先暫停播放，避免兩段語音互相打斷 */
+  if(P.active&&!P.paused){ P.paused=true; clearTimeout(P.timer); stopSpeech(); renderPlay(); }
+  TTS_BLOCKED=false; refreshVoices();
+  const mode=cur().ttsLang||'putonghua', label=mode==='cantonese'?'粵語':'普通話';
+  const v=zhVoice(mode);
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const u=new SpeechSynthesisUtterance(mode==='cantonese'?'測試朗讀，一二三':'测试朗读，一二三');
+  u.lang=chineseLang(mode); u.rate=+$('#plRate').value||1; u.volume=1; if(v)u.voice=v;
+  let ok=false, failed=false;
+  u.onstart=()=>{ ok=true; updateVoiceHint(); toast('朗讀正常 ✓'+(v?'（'+v.name+'）':''),2500); };
+  u.onerror=(e)=>{
+    if(e.error==='interrupted'||e.error==='canceled')return;
+    failed=true; toast('朗讀失敗：'+(e.error||'未知')+'。'+ttsPlatformTip(),6000);
+  };
+  try{ speechSynthesis.speak(u); }catch(e){ failed=true; toast('朗讀失敗：'+e.message,5000); }
+  setTimeout(()=>{
+    if(ok||failed)return;
+    updateVoiceHint();
+    toast('沒有聲音？'+(v?'':'這部機未安裝「'+label+'」語音。')+ttsPlatformTip(),7000);
+  },2400);
+};
 $('#plContinue').onclick=()=>{
   const id=P.ids[P.idx], a=viewCards();
   P.ids=a.map(c=>c.id); if($('#plShuffle').checked)P.ids=shuffle(P.ids);
