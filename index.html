@@ -164,6 +164,23 @@ main{max-width:1240px;margin:0 auto;padding:clamp(12px,2.2vw,22px)}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2430;color:#fff;padding:10px 20px;border-radius:8px;font-size:calc(14px * var(--fs-scale,1));opacity:0;transition:.3s;z-index:200;pointer-events:none;max-width:90vw}
 #toast.show{opacity:1}
 .hint{font-size:calc(12px * var(--fs-scale,1));color:var(--sub);margin-top:8px;line-height:1.6}
+/* ===== 匯入書籤：分支選擇 ===== */
+.bm-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 10px}
+.bm-toolbar .bm-opt{margin:0;display:inline-flex;align-items:center;gap:7px;font-size:calc(13px * var(--fs-scale,1));color:var(--txt);cursor:pointer;user-select:none}
+.bm-toolbar .bm-opt input{width:16px;height:16px;accent-color:var(--pri);flex:0 0 auto;cursor:pointer}
+.bm-tree{max-height:46vh;overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fbf6f0}
+.bm-tree ul{list-style:none;margin:0;padding-left:16px}
+.bm-tree > ul{padding-left:2px}
+.bm-tree .bm-folder{display:flex;align-items:center;gap:8px;padding:5px 2px;font-size:calc(14px * var(--fs-scale,1));border-radius:6px;margin:0}
+.bm-tree .bm-folder:hover{background:rgba(194,59,106,.05)}
+.bm-tree .bm-folder input{width:16px;height:16px;accent-color:var(--pri);flex:0 0 auto;cursor:pointer}
+.bm-tree .bm-folder .nm{display:flex;align-items:center;gap:6px;flex:1;min-width:0;cursor:pointer}
+.bm-tree .bm-folder .nm .ic{opacity:.7;flex:0 0 auto}
+.bm-tree .bm-folder .nm .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bm-count{font-size:calc(11.5px * var(--fs-scale,1));color:var(--sub);background:var(--line);border-radius:99px;padding:1px 8px;flex:0 0 auto;min-width:20px;text-align:center}
+.bm-loose{display:flex;align-items:center;gap:8px;padding:10px 2px 4px;margin-top:6px;border-top:1px dashed var(--line);font-size:calc(14px * var(--fs-scale,1))}
+.bm-loose input{width:16px;height:16px;accent-color:var(--pri);cursor:pointer;flex:0 0 auto}
+.bm-loose .nm{display:flex;align-items:center;gap:6px;flex:1;min-width:0;cursor:pointer}
 /* ===== 外觀設定 ===== */
 .sec-title{display:flex;align-items:center;gap:8px;font-size:calc(13.5px * var(--fs-scale,1));font-weight:600;margin:20px 0 6px;color:var(--txt)}
 .sec-title .ln{flex:1;height:1px;background:var(--line)}
@@ -346,8 +363,8 @@ body.selmode .card,body.selmode .row{cursor:pointer;touch-action:none}
   </div>
   <button class="btn" id="btnSettings" title="設定標籤清單">⚙️ 設定</button>
   <button class="btn" id="btnExport" title="匯出 Excel">📤 匯出</button>
-  <label class="btn" id="btnImport" for="fileInput" title="匯入 Excel（亦可直接拖放檔案到頁面）">📥 匯入</label>
-  <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" class="sr-file" aria-label="匯入 Excel 檔案">
+  <label class="btn" id="btnImport" for="fileInput" title="匯入 Excel / CSV 或 Chrome、Edge 匯出的書籤 HTML（亦可直接拖放檔案到頁面）">📥 匯入</label>
+  <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,.html,.htm" class="sr-file" aria-label="匯入 Excel / CSV 或瀏覽器書籤 HTML 檔案">
 </header>
 
 <nav class="catnav">
@@ -399,7 +416,7 @@ body.selmode .card,body.selmode .row{cursor:pointer;touch-action:none}
 </nav>
 <div class="sheet-mask" id="sheetMask"><div class="sheet" id="sheetBody"></div></div>
 
-<div id="dropOverlay"><div class="drop-box">📥 放開以匯入 Excel</div></div>
+<div id="dropOverlay"><div class="drop-box">📥 放開以匯入檔案（Excel / CSV / 書籤 HTML）</div></div>
 
 <!-- 新增/編輯書籤 -->
 <div class="modal-mask" id="mBookmark">
@@ -493,6 +510,24 @@ body.selmode .card,body.selmode .row{cursor:pointer;touch-action:none}
     <div class="modal-actions">
       <button class="btn" id="batchCancel">取消</button>
       <button class="btn pri" id="batchApply">套用</button>
+    </div>
+  </div>
+</div>
+
+<!-- 匯入瀏覽器書籤（分支選擇） -->
+<div class="modal-mask" id="mImportBm">
+  <div class="modal">
+    <h2>📥 匯入瀏覽器書籤</h2>
+    <div class="hint">已讀取 <b id="bmTotal">0</b> 個書籤。勾選要匯入的分支（資料夾）——勾選的資料夾會連同所有子資料夾與書籤一起匯入；取消勾選則整段略過。</div>
+    <div class="bm-toolbar">
+      <button class="btn" id="bmSelAll" type="button">全選</button>
+      <button class="btn" id="bmSelNone" type="button">全不選</button>
+      <label class="bm-opt"><input type="checkbox" id="bmUseCat" checked> 將所選資料夾名稱作為分類</label>
+    </div>
+    <div class="bm-tree" id="bmTree"></div>
+    <div class="modal-actions">
+      <button class="btn" id="bmImportCancel" type="button">取消</button>
+      <button class="btn pri" id="bmImportGo" type="button">匯入選取</button>
     </div>
   </div>
 </div>
@@ -1386,8 +1421,16 @@ document.getElementById('btnExport').onclick = ()=>{
 };
 function importFile(file){
   if(!file) return;
-  if(!/xlsx?|csv|sheet/i.test(file.name.split('.').pop()||'')){
-    toast('請選擇 .xlsx / .xls / .csv 檔案', 3500); return;
+  const ext = (file.name.split('.').pop()||'').toLowerCase();
+  /* 瀏覽器書籤 HTML（Chrome / Edge / Firefox 匯出的 Netscape 格式） */
+  if(ext==='html' || ext==='htm'){
+    const hr = new FileReader();
+    hr.onload = ev=>{ try{ prepareHtmlImport(String(ev.target.result)); }catch(err){ toast('解析書籤檔失敗：' + err.message, 4000); } };
+    hr.readAsText(file);
+    return;
+  }
+  if(!/xlsx?|csv|sheet/i.test(ext)){
+    toast('請選擇 .xlsx / .xls / .csv 或 .html / .htm（瀏覽器書籤）檔案', 3500); return;
   }
   const reader = new FileReader();
   reader.onload = ev=>{
@@ -1424,6 +1467,166 @@ function importFile(file){
   };
   reader.readAsArrayBuffer(file);
 }
+
+/* ============ 瀏覽器書籤（HTML）匯入：解析 + 分支選擇 ============ */
+let pendingImport = null;
+const bmPathKey = p => '\u0000' + p.join('\u0000');
+
+function parseChromeBookmarks(text){
+  const doc = new DOMParser().parseFromString(text, 'text/html');
+  const rootDL = doc.querySelector('dl');
+  const folderById = {}, folderByPath = {};
+  let fid = 0;
+  function walk(dl, parentPath, parent){
+    const res = { folders:[], bookmarks:[] };
+    const dts = [...dl.children].filter(c=>c.tagName==='DT');
+    for(const dt of dts){
+      const h3 = dt.querySelector(':scope > H3');
+      const a  = dt.querySelector(':scope > A');
+      if(h3){
+        const name = (h3.textContent||'').trim() || '未命名資料夾';
+        const path = parentPath.concat(name);
+        let nxt = h3.parentElement.nextElementSibling;
+        while(nxt && nxt.tagName!=='DL') nxt = nxt.nextElementSibling;
+        if(!nxt) nxt = dt.querySelector(':scope > DL');
+        const node = { id:fid++, name:path[path.length-1], path:path.slice(), state:'on', children:[], parent:parent||null, count:0 };
+        folderById[node.id] = node;
+        folderByPath[bmPathKey(path)] = node;
+        const sub = nxt ? walk(nxt, path, node) : { folders:[], bookmarks:[] };
+        node.children = sub.folders;
+        node.count = sub.bookmarks.length;
+        res.bookmarks.push(...sub.bookmarks);
+        res.folders.push(node);
+      } else if(a){
+        const href = (a.getAttribute('href')||'').trim();
+        if(href && !/^(javascript:|mailto:|data:|place:|about:|edge:|chrome:)/i.test(href)){
+          const title = (a.textContent||'').trim();
+          res.bookmarks.push({ title: title || hostOf(href), url: href, path: parentPath.slice() });
+        }
+      }
+    }
+    return res;
+  }
+  const top = rootDL ? walk(rootDL, [], null) : { folders:[], bookmarks:[] };
+  return { folders: top.folders, bookmarks: top.bookmarks, folderById, folderByPath };
+}
+
+function prepareHtmlImport(text){
+  const p = parseChromeBookmarks(text);
+  if(!p.bookmarks.length){ toast('此檔案中找不到可匯入的書籤', 3500); return; }
+  pendingImport = p;
+  document.getElementById('bmTotal').textContent = p.bookmarks.length;
+  document.getElementById('bmUseCat').checked = true;
+  renderBmTree();
+  document.getElementById('mImportBm').classList.add('show');
+}
+
+function bmNodeHTML(node){
+  let h = `<li><label class="bm-folder"><input type="checkbox" data-fid="${node.id}" checked><span class="nm"><span class="ic">📂</span><span class="txt">${esc(node.name)}</span></span><span class="bm-count">${node.count}</span></label>`;
+  if(node.children.length) h += '<ul>' + node.children.map(bmNodeHTML).join('') + '</ul>';
+  return h + '</li>';
+}
+
+function renderBmTree(){
+  const tree = document.getElementById('bmTree');
+  let html = '<ul>' + pendingImport.folders.map(bmNodeHTML).join('') + '</ul>';
+  const loose = pendingImport.bookmarks.filter(b=>b.path.length===0).length;
+  if(loose){
+    html += `<div class="bm-loose"><input type="checkbox" data-fid="loose" checked><label class="nm"><span class="ic">📄</span><span class="txt">不屬任何資料夾的書籤（置頂層）</span></label><span class="bm-count">${loose}</span></div>`;
+  }
+  tree.innerHTML = html;
+  syncTreeChecks();
+}
+
+function syncTreeChecks(){
+  document.querySelectorAll('#bmTree input[data-fid]').forEach(cb=>{
+    const id = cb.dataset.fid;
+    if(id==='loose') return;
+    const node = pendingImport.folderById[id];
+    if(!node) return;
+    cb.checked = node.state !== 'off';
+    cb.indeterminate = node.state === 'mixed';
+  });
+}
+
+function setSubtree(node, st){
+  node.state = st;
+  node.children.forEach(c=>setSubtree(c, st));
+}
+
+function refreshAncestors(node){
+  let p = node.parent;
+  while(p){
+    /* 父層狀態：所有子層都 on → on；否則為 mixed（不會自動變 off，off 僅由使用者明確取消） */
+    p.state = p.children.every(c=>c.state==='on') ? 'on' : 'mixed';
+    p = p.parent;
+  }
+}
+
+function bmSelectAll(val){
+  pendingImport.folders.forEach(f=>setSubtree(f, val));
+  const lc = document.querySelector('#bmTree input[data-fid="loose"]');
+  if(lc) lc.checked = (val==='on');
+  syncTreeChecks();
+}
+
+document.getElementById('bmTree').addEventListener('change', e=>{
+  const cb = e.target.closest('input[data-fid]');
+  if(!cb || !pendingImport) return;
+  const id = cb.dataset.fid;
+  if(id==='loose') return;
+  const node = pendingImport.folderById[id];
+  if(!node) return;
+  setSubtree(node, node.state==='on' ? 'off' : 'on');
+  refreshAncestors(node);
+  syncTreeChecks();
+});
+
+document.getElementById('bmSelAll').onclick = ()=>bmSelectAll('on');
+document.getElementById('bmSelNone').onclick = ()=>bmSelectAll('off');
+document.getElementById('bmImportCancel').onclick = closeModals;
+
+document.getElementById('bmImportGo').onclick = ()=>{
+  if(!pendingImport) return;
+  const useCat = document.getElementById('bmUseCat').checked;
+  const looseCb = document.querySelector('#bmTree input[data-fid="loose"]');
+  const looseSel = looseCb ? looseCb.checked : false;
+  const cand = [];
+  const seen = new Set();
+  let skipped = 0, dup = 0;
+  pendingImport.bookmarks.forEach(b=>{
+    let want;
+    if(b.path.length===0){ want = looseSel; }
+    else { const node = pendingImport.folderByPath[bmPathKey(b.path)]; want = !!node && node.state!=='off'; }
+    if(!want) return;
+    const url = normalizeUrl(b.url);
+    if(!url){ skipped++; return; }
+    if(db.bookmarks.some(x=>x.url===url) || seen.has(url)){ dup++; return; }
+    seen.add(url);
+    cand.push({ b, url });
+  });
+  const N = cand.length;
+  const base = nextSeqTop(false);
+  let added = 0;
+  cand.forEach((c, i)=>{
+    const parentCat = (useCat && c.b.path.length) ? c.b.path[c.b.path.length-1] : '';
+    const cats = parentCat ? [parentCat] : [];
+    if(parentCat && !db.categories.includes(parentCat)) db.categories.push(parentCat);
+    db.bookmarks.push({
+      id: uid(), url: c.url, title: c.b.title || hostOf(c.url),
+      tags: [], cats, desc: '', img: '', pinned: false,
+      seq: base - (N - 1 - i), added: Date.now()
+    });
+    added++;
+  });
+  save(); closeModals(); render();
+  const extra = [];
+  if(dup) extra.push(`略過 ${dup} 筆重複`);
+  if(skipped) extra.push(`略過 ${skipped} 筆無效`);
+  toast(`匯入完成：新增 ${added} 筆${extra.length?'（'+extra.join('，')+'）':''}`, 3800);
+  pendingImport = null;
+};
+
 document.getElementById('fileInput').addEventListener('change', e=>{
   importFile(e.target.files[0]);
   e.target.value = '';
@@ -1493,7 +1696,7 @@ document.getElementById('bnLayout').onclick = ()=> openSheet('選擇佈局', [
 document.getElementById('bnSettings').onclick = ()=> document.getElementById('btnSettings').click();
 document.getElementById('bnMore').onclick = ()=> openSheet('更多', [
   {label:'匯出 Excel', icon:'📤', onClick:()=>document.getElementById('btnExport').click()},
-  {label:'匯入 Excel', icon:'📥', onClick:()=>document.getElementById('fileInput').click()},
+  {label:'匯入檔案（Excel / 書籤）', icon:'📥', onClick:()=>document.getElementById('fileInput').click()},
   {label:'選取模式', icon:'📋', onClick:()=>document.getElementById('btnSelect').click()},
   {label:'清空全部書籤', icon:'🗑️', danger:true, onClick:()=>document.getElementById('btnClearAll').click()}
 ]);
