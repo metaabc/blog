@@ -306,7 +306,7 @@
   }
   @media print{
     body{background:#fff;padding:0}
-    .srcbar,.mbar,.toast,.sheet-wrap,.fab,.signfilter{display:none}
+    .srcbar,.mbar,.toast,.sheet-wrap,.fab,.signfilter,.lightbox,.tk-wrap{display:none}
     .day,.subj-group{break-inside:avoid;box-shadow:none;page-break-inside:avoid}
   }
 
@@ -336,6 +336,175 @@
   .sheet .tip{font-size:calc(12.5px * var(--fz))}
   .sheet-hd h3{font-size:calc(16px * var(--fz))}
   .share-btn{font-size:calc(12.5px * var(--fz))}
+
+  /* ---------- 任務：底部按鈕徽章 ---------- */
+  .tb-btn{position:relative}
+  .tk-badge{position:absolute;top:-3px;right:-2px;min-width:17px;height:17px;padding:0 4px;
+    border-radius:999px;background:#a8244a;color:#fff;font-size:10px;font-weight:800;
+    line-height:17px;text-align:center;display:none}
+  .tk-badge.show{display:block}
+
+  /* ---------- 任務：作業/測驗項目「加入任務」小鈕 ---------- */
+  .add-task{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;
+    margin-left:7px;width:22px;height:22px;border-radius:7px;border:1px solid #d9e4ef;
+    background:color-mix(in srgb,var(--accent) 9%,#fff);color:var(--accent);
+    font-family:inherit;font-size:14px;font-weight:800;line-height:1;cursor:pointer;
+    transition:background .14s,transform .1s}
+  .add-task:hover{background:color-mix(in srgb,var(--accent) 20%,#fff)}
+  .add-task:active{transform:scale(.9)}
+  .add-task.added{background:#eaf3e9;border-color:#cfe3cd;color:#3f7a45}
+
+  /* ---------- 任務：全螢幕面板 ---------- */
+  .tk-wrap{position:fixed;inset:0;z-index:62;display:none;background:var(--bg)}
+  .tk-wrap.on{display:block}
+  .tk-panel{position:absolute;inset:0;max-width:760px;margin:0 auto;display:flex;flex-direction:column;
+    background:var(--bg)}
+  .tk-hd{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;
+    background:rgba(255,253,249,.96);border-bottom:1px solid var(--line)}
+  .tk-hd h3{margin:0;font-size:calc(17px * var(--fz));font-weight:800}
+  .tk-hd .tk-sp{flex:1}
+  .tk-count{font-size:calc(12px * var(--fz));font-weight:700;color:var(--muted)}
+  .tk-icon{width:34px;height:34px;flex:0 0 auto;border:1px solid var(--line);background:#fff;
+    color:#5d564c;border-radius:10px;font-family:inherit;font-size:16px;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center}
+  .tk-icon:active{transform:scale(.94)}
+  .tk-tools{flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:7px;
+    padding:9px 14px;background:rgba(255,253,249,.72);border-bottom:1px solid var(--line)}
+  .tk-tools .sp{flex:1 1 auto}
+  .tk-tool{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;
+    color:#5d564c;font-family:inherit;font-size:calc(12.5px * var(--fz));font-weight:700;
+    border-radius:999px;padding:6px 12px;cursor:pointer;white-space:nowrap;transition:background .14s,transform .1s}
+  .tk-tool:hover{background:#f5f0e7}
+  .tk-tool:active{transform:scale(.96)}
+  .tk-tool.pri{background:var(--accent);color:#fff;border-color:transparent}
+  .tk-tool select{border:0;background:transparent;font-family:inherit;font-weight:700;
+    font-size:calc(12.5px * var(--fz));color:inherit;cursor:pointer;outline:none}
+  .tk-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:12px 14px calc(34px + env(safe-area-inset-bottom))}
+  .tk-sec-h{display:flex;align-items:center;gap:8px;font-size:calc(12.5px * var(--fz));
+    font-weight:800;color:var(--muted);letter-spacing:.04em;margin:2px 2px 9px}
+  .tk-sec-h b{color:var(--accent)}
+  .tk-rows{display:flex;flex-direction:column;gap:8px}
+  .tk-row-outer{position:relative;border-radius:13px;overflow:hidden;touch-action:pan-y}
+  .tk-del{position:absolute;left:0;top:0;bottom:0;width:88px;border:0;background:#a8244a;color:#fff;
+    font-family:inherit;font-size:calc(13px * var(--fz));font-weight:800;cursor:pointer}
+  .tk-row{position:relative;display:flex;align-items:center;gap:7px;min-height:56px;
+    padding:9px 11px;background:var(--card);border:1px solid var(--line);border-radius:13px;
+    box-shadow:var(--shadow);will-change:transform}
+  .tk-row.snap{transition:transform .18s ease}
+  .tk-row-outer.dragging{opacity:.6;pointer-events:none}
+  .tk-drag{flex:0 0 auto;width:20px;height:34px;border:0;background:transparent;color:var(--faint);
+    font-size:15px;cursor:grab;touch-action:none;padding:0;line-height:1}
+  .tk-drag.hide{display:none}
+  .tk-check{flex:0 0 auto;width:23px;height:23px;border-radius:50%;border:1.8px solid #cfc6b6;
+    background:#fff;color:#fff;font-family:inherit;font-size:12px;line-height:1;cursor:pointer;padding:0}
+  .tk-check.done{background:#3f7a45;border-color:#3f7a45}
+  .tk-main{flex:1 1 auto;min-width:0;text-align:left;border:0;background:transparent;cursor:pointer;
+    font-family:inherit;padding:0;display:flex;flex-direction:column;gap:2px}
+  .tk-due{font-size:calc(11.5px * var(--fz));font-weight:800;color:var(--accent);white-space:nowrap}
+  .tk-due.none{color:var(--faint)}
+  .tk-due.late{color:#a8244a}
+  .tk-subj{font-size:calc(15px * var(--fz));font-weight:600;color:var(--ink);line-height:1.45;
+    word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .tk-pin{flex:0 0 auto;width:26px;height:30px;border:0;background:transparent;color:#cfc6b6;
+    font-size:15px;cursor:pointer;padding:0}
+  .tk-pin.on{color:#b4692b}
+  .tk-row.is-done .tk-subj{text-decoration:line-through;color:var(--muted)}
+  .tk-row.is-done{opacity:.8}
+  .tk-done{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  .tk-done>summary{cursor:pointer;list-style:none;padding:11px 14px;font-size:calc(13px * var(--fz));
+    font-weight:700;color:var(--muted)}
+  .tk-done>summary::-webkit-details-marker{display:none}
+  .tk-done>summary::before{content:"▸ ";display:inline-block}
+  .tk-done[open]>summary::before{content:"▾ "}
+  .tk-done[open]>summary{border-bottom:1px dashed var(--line)}
+  .tk-done .tk-rows{padding:10px}
+  .tk-empty{text-align:center;color:var(--faint);font-size:calc(14px * var(--fz));padding:46px 18px;
+    border:1px dashed #ddd3c2;border-radius:16px;background:rgba(255,253,249,.6);line-height:1.9}
+
+  /* 任務詳情 */
+  .tk-detail{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);padding:16px 16px 20px}
+  .tk-detail .big-due{display:inline-block;font-size:calc(12.5px * var(--fz));font-weight:800;
+    color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,#fff);
+    border-radius:8px;padding:3px 10px}
+  .tk-detail h4{margin:12px 0 14px;font-size:calc(19px * var(--fz));font-weight:800;line-height:1.5;word-break:break-word}
+  .tk-meta{font-size:calc(12.5px * var(--fz));color:var(--muted);margin-bottom:14px}
+  .tk-sec{border-top:1px dashed var(--line);padding-top:12px;margin-top:12px}
+  .tk-lab{font-size:calc(11.5px * var(--fz));font-weight:800;color:var(--muted);letter-spacing:.05em;margin-bottom:7px}
+  .tk-content{font-size:calc(15px * var(--fz));line-height:1.8;white-space:pre-line;word-break:break-word;color:#332d26}
+  .tk-none{color:var(--faint);font-size:calc(13px * var(--fz))}
+  .tk-atts{display:flex;flex-wrap:wrap;gap:9px}
+  .tk-att-img{width:96px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:4px;cursor:pointer}
+  .tk-att-img img{width:100%;height:78px;object-fit:cover;border-radius:7px;display:block}
+  .tk-att-img span{display:block;font-size:10px;color:var(--muted);margin-top:3px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tk-att-file{display:inline-flex;align-items:center;gap:6px;text-decoration:none;max-width:100%;
+    font-size:calc(12.5px * var(--fz));font-weight:600;color:var(--accent);background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;word-break:break-all}
+  .tk-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+
+  /* 子面板（新增 / 編輯 / 分享 / 匯入） */
+  .tk-sub{position:absolute;inset:0;z-index:3;display:none;flex-direction:column;
+    background:rgba(40,32,22,.38)}
+  .tk-sub.on{display:flex}
+  .tk-sub-card{margin:auto;width:min(560px,calc(100% - 24px));max-height:88vh;display:flex;flex-direction:column;
+    background:#fffdf9;border-radius:16px;box-shadow:0 14px 44px -16px rgba(0,0,0,.5);
+    animation:up .2s ease;overflow:hidden}
+  .tk-sub-hd{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .tk-sub-hd h3{margin:0;font-size:calc(16px * var(--fz));font-weight:800}
+  .tk-sub-bd{overflow-y:auto;padding:14px}
+  .tk-tabs{display:flex;gap:6px;margin-bottom:14px}
+  .tk-tabs button{flex:1;border:1px solid var(--line);background:#fff;color:#6d6459;font-family:inherit;
+    font-size:calc(13px * var(--fz));font-weight:700;border-radius:10px;padding:8px;cursor:pointer}
+  .tk-tabs button.on{background:var(--accent);color:#fff;border-color:transparent}
+  .tk-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+  .tk-field>label{font-size:calc(12px * var(--fz));font-weight:800;color:var(--muted)}
+  .tk-field input[type=text],.tk-field input[type=date],.tk-field select,.tk-field textarea{
+    width:100%;font-family:inherit;font-size:calc(15px * var(--fz));color:var(--ink);background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:9px 11px;line-height:1.6}
+  .tk-field textarea{resize:vertical;min-height:86px}
+  .tk-field .hint{font-size:calc(11.5px * var(--fz));color:var(--faint)}
+  .tk-field .hint b{color:var(--accent)}
+  .tk-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .tk-pv{position:relative;width:74px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:4px}
+  .tk-pv img{width:100%;height:58px;object-fit:cover;border-radius:6px;display:block}
+  .tk-pv span{display:block;font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+  .tk-pv .rm{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
+    border:1px solid var(--line);background:#fff;color:#a8244a;font-size:11px;cursor:pointer;padding:0;line-height:1}
+  /* 一頁內批量編輯未完成任務 */
+  .tk-bulk-row{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:9px}
+  .tk-bulk-row .bh{font-size:calc(11px * var(--fz));font-weight:800;color:var(--faint);margin-bottom:7px}
+  .tk-bulk-row .bf{display:flex;flex-direction:column;gap:6px}
+  .tk-bulk-row input[type=text],.tk-bulk-row input[type=date],.tk-bulk-row textarea{
+    width:100%;font-family:inherit;font-size:calc(14px * var(--fz));color:var(--ink);
+    background:#fffdf9;border:1px solid var(--line);border-radius:8px;padding:7px 9px;line-height:1.5}
+  .tk-bulk-row .brow2{display:flex;gap:7px;align-items:flex-start}
+  .tk-bulk-row .brow2 input[type=date]{flex:0 0 148px}
+  .tk-bulk-row textarea{flex:1 1 auto;min-width:0;min-height:52px;resize:vertical}
+  .tk-pick{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+  .tk-pick label{display:flex;align-items:center;gap:7px;flex:1 1 100%;background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:9px 11px;cursor:pointer;
+    font-size:calc(14px * var(--fz));color:var(--ink)}
+  .tk-pick label input{width:17px;height:17px;accent-color:var(--accent);flex:0 0 auto}
+  .tk-pick label .d{font-size:calc(11.5px * var(--fz));color:var(--muted);font-weight:700}
+  .tk-sub-foot{display:flex;gap:8px;justify-content:flex-end;padding:12px 14px;
+    border-top:1px solid var(--line);background:rgba(255,253,249,.9)}
+
+  /* 圖片放大查看 */
+  .lb{position:fixed;inset:0;z-index:90;display:none;background:rgba(24,20,16,.93);
+    align-items:center;justify-content:center;flex-direction:column;padding:18px}
+  .lb.on{display:flex}
+  .lb img{max-width:96vw;max-height:80vh;object-fit:contain;border-radius:8px}
+  .lb .cap{color:#fff;font-size:13px;opacity:.85;margin-top:10px;max-width:92vw;text-align:center;word-break:break-all}
+  .lb .x{position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;
+    width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.18);
+    color:#fff;font-size:19px;cursor:pointer}
+  @media (max-width:560px){
+    .tk-hd{padding-left:10px;padding-right:10px}
+    .tk-tools{padding:8px 10px;gap:6px}
+    .tk-body{padding:10px 10px calc(30px + env(safe-area-inset-bottom))}
+  }
 </style>
 </head>
 <body>
@@ -368,6 +537,17 @@
       </span>
       <span class="lbl">設定</span>
       </button>
+      <button class="tb-btn" id="openTasks" aria-label="任務">
+      <span class="ico">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6h11M9 12h11M9 18h11"></path>
+          <path d="M4 6.2l1 1 1.7-1.9M4 12.2l1 1 1.7-1.9M4 18.2l1 1 1.7-1.9"></path>
+        </svg>
+      </span>
+      <span class="lbl">任務</span>
+      <span class="tk-badge" id="tkBadge"></span>
+      </button>
       <div class="cstrip" id="classStrip" role="tablist" aria-label="已設定的班級"></div>
     </div>
   </div>
@@ -384,10 +564,34 @@
       <h3 id="sheetTitle">選擇班級</h3>
       <button class="done" data-close>完成</button>
     </div>
-    <p class="tip">可選多個班級，選好的會排在下方班級條；在內容上<b>單指左右滑</b>切換「作業／測驗／科目」呈現，<b>雙指左右滑</b>切換班級。選擇會記住，抓取時自動換上對應的 classcode。</p>
+    <p class="tip">可選多個班級，選好的會排在下方班級條；內容上<b>單指左右滑</b>切換「作業／測驗／科目」呈現，點班級條切換班級。功課項目按「＋」可加入<b>任務</b>；底部「任務」可自建待辦、排序、分享與匯出。選擇會記住，抓取時自動換上對應的 classcode。</p>
     <div id="classGroups"></div>
     <div class="foot" id="sheetFoot"></div>
   </div>
+</div>
+
+<!-- 任務：全螢幕面板（清單 → 詳情；新增/編輯/分享/匯入 用子面板） -->
+<div class="tk-wrap" id="taskWrap" aria-hidden="true">
+  <div class="tk-panel" role="dialog" aria-modal="true" aria-labelledby="tkTitle">
+    <header class="tk-hd">
+      <button class="tk-icon" id="tkBack" type="button" aria-label="返回清單" hidden>←</button>
+      <h3 id="tkTitle">任務</h3>
+      <span class="tk-count" id="tkCount"></span>
+      <span class="tk-sp"></span>
+      <button class="tk-icon" type="button" data-tk-close aria-label="關閉">✕</button>
+    </header>
+    <div class="tk-tools" id="tkTools"></div>
+    <div class="tk-body" id="tkBody"></div>
+  </div>
+  <div class="tk-sub" id="tkSub" aria-hidden="true"></div>
+  <input type="file" id="tkImportFile" accept=".json,application/json" hidden>
+</div>
+
+<!-- 附件圖片放大查看 -->
+<div class="lb" id="lightbox" aria-hidden="true">
+  <button class="x" type="button" id="lbClose" aria-label="關閉">✕</button>
+  <img id="lbImg" src="" alt="附件預覽">
+  <div class="cap" id="lbCap"></div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -946,8 +1150,9 @@ function renderList(){
     return;
   }
 
-  function itemsHtml(items){
+  function itemsHtml(items, day){
     let signN = 0, testN = 0, examN = 0;
+    const dueForAdd = (day && day.due && /^\d{4}-\d{2}-\d{2}$/.test(day.due)) ? day.due : (day ? day.date : "");
     const rows = items.map(it => {
       if (it.img) return `<li class="note"><a class="img" href="${esc(it.img)}" target="_blank" rel="noopener">📎 附圖</a></li>`;
       const r = markup(it.text);
@@ -955,10 +1160,11 @@ function renderList(){
       if (r.flags.test) testN++;
       if (r.flags.exam) examN++;
       const body = markupText(it);
-      if (!it.subject) return `<li class="note">${body}</li>`;
+      const addBtn = `<button class="add-task" type="button" data-text="${esc(it.text)}" data-due="${esc(dueForAdd)}" aria-label="加入任務" title="加入任務">＋</button>`;
+      if (!it.subject) return `<li class="note">${body}${addBtn}</li>`;
       const col = subjColor(it.subject);
       return `<li><span class="subj" style="color:${col};border-color:${col}55;background:${col}12">${esc(it.subject)}</span>` +
-             `<span class="txt">${body}</span></li>`;
+             `<span class="txt">${body}${addBtn}</span></li>`;
     }).join("");
     return { rows, signN, testN, examN };
   }
@@ -989,7 +1195,8 @@ function renderList(){
         if (mr.flags.test) tN++;
         if (mr.flags.exam) eN++;
         const body = markupText(it);
-        return `<li><span class="dtag">${mmdd(it.date)}</span><span class="txt">${body}</span></li>`;
+        const addBtn = `<button class="add-task" type="button" data-text="${esc(it.text)}" data-due="${esc(it.date)}" aria-label="加入任務" title="加入任務">＋</button>`;
+        return `<li><span class="dtag">${mmdd(it.date)}</span><span class="txt">${body}${addBtn}</span></li>`;
       }).join("");
       const col = key === "（說明）" ? "#8b8274" : subjColor(key);
       html += `<section class="subj-group" style="animation-delay:${Math.min(gi * 18, 220)}ms">
@@ -1013,7 +1220,7 @@ function renderList(){
     days.forEach((d, idx) => {
       const dt = parseD(d.date);
       const due = idx === 0 ? dueInfo(d.due) : null;    // 交期只在最近一日顯示
-      const r = itemsHtml(d.shown);
+      const r = itemsHtml(d.shown, d);
       const isToday = dt.getTime() === t0.getTime();
       const dateLabel = `${dt.getMonth() + 1} 月 ${dt.getDate()} 日 · 週${WEEK[dt.getDay()]}`;
 
@@ -1114,8 +1321,9 @@ function renderTests(){
     const subj = it.subject ? `<b class="cl-subj">${esc(it.subject)}</b> ` : "";
     const rm = it.passed
       ? `<button class="cal-rm" type="button" aria-label="隱藏這個已過的測驗" data-key="${esc(testKey(it))}">✕</button>` : "";
+    const addBtn = `<button class="add-task" type="button" data-text="${esc(it.text)}" data-due="${esc(it.due ? ymd(it.due) : it.srcDate)}" aria-label="加入任務" title="加入任務">＋</button>`;
     return `<div class="cal-li cal-tap${it.passed ? " past" : ""}" data-date="${esc(it.srcDate)}" title="點擊查看當日功課">
-        <span class="cl-d">${md}</span><span class="cl-c ${it.kind}">${subj}${esc(it.text)}</span>${rm}</div>`;
+        <span class="cl-d">${md}</span><span class="cl-c ${it.kind}">${subj}${esc(it.text)}</span>${addBtn}${rm}</div>`;
   }).join("");
 
   const restore = hidden
@@ -1576,14 +1784,816 @@ function closeSheet(){
 }
 
 /* =========================================================
-   手勢：單指左右滑＝切「作業/測驗/科目」呈現；雙指左右滑＝切班級
+   任務模組
+   - 欄位：主題 / 狀態 / 到期日 / 內容 / 附件（圖片可預覽放大）
+   - 第一層清單：只顯示「到期日 + 主題」，只列未完成，已完成收起
+   - 第二層詳情：再點進去才看內容與附件
+   - 新增：單筆表單 或 批量貼上多行；主題含日期自動解析為到期日
+   - 排序：手動（拖動）/ 到期日 / 主題；可置頂；向右拉露出刪除
+   - 分享：勾選一筆或全部（只含未完成），輸出文字或圖片
+   - 匯出 / 匯入 JSON；作業、科目、測驗清單項目可「＋」直接加入
+   ========================================================= */
+const LS_TASKS = "hw_tasks_v1";
+const LS_TASK_SORT = "hw_task_sort_v1";
+
+let TASKS = loadTasks();
+let TASK_SORT = loadTaskSort();
+let TASK_VIEW = { mode:"list", id:null };
+let TASK_EDIT = null;          // 單筆表單暫存（含附件）
+let TASK_SUB = null;           // 子面板種類
+
+function uid(){ return "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+function normTask(o){
+  if (!o || typeof o !== "object") return null;
+  const subj = String(o.subject != null ? o.subject : (o.text != null ? o.text : "")).trim();
+  if (!subj) return null;
+  const atts = Array.isArray(o.atts) ? o.atts
+    .filter(a => a && /^data:/.test(String(a.data || "")))
+    .map(a => ({ name:String(a.name || "附件"), type:String(a.type || ""),
+                 data:String(a.data), img:!!a.img })) : [];
+  return {
+    id: String(o.id || uid()),
+    subject: subj,
+    status: o.status === "done" ? "done" : "todo",
+    due: /^\d{4}-\d{2}-\d{2}$/.test(o.due || "") ? o.due : "",
+    content: String(o.content || ""),
+    atts,
+    pinned: !!o.pinned,
+    order: Number.isFinite(+o.order) ? +o.order : 0,
+    created: Number(o.created) || Date.now()
+  };
+}
+function loadTasks(){
+  try{
+    const a = JSON.parse(localStorage.getItem(LS_TASKS) || "null");
+    if (Array.isArray(a)) return a.map(normTask).filter(Boolean);
+  }catch(e){}
+  return [];
+}
+function saveTasks(){
+  try{ localStorage.setItem(LS_TASKS, JSON.stringify(TASKS)); refreshTaskBadge(); return true; }
+  catch(e){ toast("儲存失敗：附件可能太大，請減少附件", true); return false; }
+}
+function loadTaskSort(){
+  try{ const v = localStorage.getItem(LS_TASK_SORT); if (["manual","due","subject"].indexOf(v) >= 0) return v; }catch(e){}
+  return "manual";
+}
+function saveTaskSort(){ try{ localStorage.setItem(LS_TASK_SORT, TASK_SORT); }catch(e){} }
+function nextOrder(){ return TASKS.reduce((m, t) => Math.max(m, t.order || 0), 0) + 1; }
+function refreshTaskBadge(){
+  const b = document.getElementById("tkBadge");
+  if (!b) return;
+  const n = TASKS.filter(t => t.status !== "done").length;
+  b.textContent = n > 99 ? "99+" : String(n);
+  b.classList.toggle("show", n > 0);
+}
+
+/* 主題內日期自動解析 → YYYY-MM-DD
+   支援 2026-11-10 / 2026年11月10日 / 11月10日 / 11-10 / 11/10 /
+   今天 / 明天 / 後天 / 下週一 / 本週三 / 週五 */
+function parseDueFromText(text){
+  const s = String(text || "");
+  if (!s.trim()) return "";
+  const now = today0(), y = now.getFullYear();
+  const iso = d => ymd(d);
+  const mk = (yy, mm, dd) => {
+    if (mm < 1 || mm > 12 || dd < 1 || dd > 31) return "";
+    const d = new Date(yy, mm - 1, dd);
+    return isNaN(d.getTime()) ? "" : iso(d);
+  };
+  const thisYear = (mm, dd) => {
+    let r = mk(y, mm, dd);
+    if (!r) return "";
+    if (now - parseD(r) > 180 * 86400000) r = mk(y + 1, mm, dd);
+    return r;
+  };
+  let m = s.match(/(20\d{2})\s*[-/.年]\s*(\d{1,2})\s*[-/.月]\s*(\d{1,2})/);
+  if (m) return mk(+m[1], +m[2], +m[3]);
+  m = s.match(/(\d{1,2})\s*月\s*(\d{1,2})\s*[日號号]?/);
+  if (m) return thisYear(+m[1], +m[2]);
+  m = s.match(/(?:^|[^\d])(\d{1,2})\s*[-/]\s*(\d{1,2})(?!\d)/);
+  if (m) return thisYear(+m[1], +m[2]);
+
+  const dayOf = n => iso(new Date(y, now.getMonth(), now.getDate() + n));
+  if (/今天|今日/.test(s)) return dayOf(0);
+  if (/明天|明日/.test(s)) return dayOf(1);
+  if (/後天|后天/.test(s)) return dayOf(2);
+  const CN = { "一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"日":0,"天":0,
+               "1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":0 };
+  const wk = s.match(/(下|本|這|这)?\s*(?:週|周|星期|禮拜|礼拜)\s*([一二三四五六日天1-7])/);
+  if (wk){
+    const target = CN[wk[2]];
+    const cur = now.getDay();
+    const mon = new Date(y, now.getMonth(), now.getDate() - ((cur + 6) % 7));
+    const base = wk[1] === "下"
+      ? new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 7) : mon;
+    const off = target === 0 ? 6 : target - 1;
+    let d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + off);
+    if (!wk[1] && d < now) d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7);
+    return iso(d);
+  }
+  return "";
+}
+
+/* 排序：置頂永遠在最前；其餘依 手動 / 到期日 / 主題 */
+function sortedTasks(list){
+  const arr = list.slice();
+  const pin = arr.filter(t => t.pinned).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const rest = arr.filter(t => !t.pinned);
+  if (TASK_SORT === "due"){
+    rest.sort((a, b) => (a.due || "9999-12-31").localeCompare(b.due || "9999-12-31")
+      || (a.order || 0) - (b.order || 0));
+  }else if (TASK_SORT === "subject"){
+    rest.sort((a, b) => a.subject.localeCompare(b.subject, "zh-Hant")
+      || (a.order || 0) - (b.order || 0));
+  }else{
+    rest.sort((a, b) => (a.order || 0) - (b.order || 0) || (a.created || 0) - (b.created || 0));
+  }
+  return pin.concat(rest);
+}
+function dueLabel(due){
+  if (!due) return { cls:"none", txt:"未設到期日" };
+  const d = parseD(due), t0 = today0();
+  const txt = (d.getMonth() + 1) + "/" + d.getDate() + "（週" + WEEK[d.getDay()] + "）";
+  const diff = Math.round((d - t0) / 86400000);
+  if (diff < 0) return { cls:"late", txt:txt + " · 逾期 " + (-diff) + " 天" };
+  if (diff === 0) return { cls:"late", txt:txt + " · 今天到期" };
+  if (diff <= 2) return { cls:"", txt:txt + " · " + diff + " 天後" };
+  return { cls:"", txt };
+}
+function taskRowHtml(t, done){
+  const dl = dueLabel(t.due);
+  const drag = TASK_SORT === "manual"
+    ? '<button class="tk-drag" type="button" data-act="drag" aria-label="拖動調整順序">⋮⋮</button>' : "";
+  return `<div class="tk-row-outer" data-id="${esc(t.id)}">
+      <button class="tk-del" type="button" data-act="del" aria-label="刪除此任務">刪除</button>
+      <div class="tk-row${done ? " is-done" : ""}">
+        ${drag}
+        <button class="tk-check${done ? " done" : ""}" type="button" data-act="check" aria-label="切換完成狀態">${done ? "✓" : ""}</button>
+        <button class="tk-main" type="button" data-act="open">
+          <span class="tk-due ${dl.cls}">${dl.txt}</span>
+          <span class="tk-subj">${t.pinned ? "📌 " : ""}${esc(t.subject)}</span>
+        </button>
+        <button class="tk-pin${t.pinned ? " on" : ""}" type="button" data-act="pin" aria-label="置頂">📌</button>
+      </div>
+    </div>`;
+}
+function listToolsHtml(n){
+  return `<button class="tk-tool pri" type="button" data-tk-act="add">＋ 新增</button>
+    <button class="tk-tool" type="button" data-tk-act="bulk"${n ? "" : " disabled"}>批量編輯</button>
+    <label class="tk-tool">排序 <select id="tkSort" data-tk-act="sort">
+      <option value="manual"${TASK_SORT === "manual" ? " selected" : ""}>手動</option>
+      <option value="due"${TASK_SORT === "due" ? " selected" : ""}>到期日</option>
+      <option value="subject"${TASK_SORT === "subject" ? " selected" : ""}>主題</option>
+    </select></label>
+    <span class="sp"></span>
+    <button class="tk-tool" type="button" data-tk-act="share"${n ? "" : " disabled"}>分享</button>
+    <button class="tk-tool" type="button" data-tk-act="export">匯出</button>
+    <button class="tk-tool" type="button" data-tk-act="import">匯入</button>`;
+}
+function renderTaskList(){
+  const open = sortedTasks(TASKS.filter(t => t.status !== "done"));
+  const done = sortedTasks(TASKS.filter(t => t.status === "done"));
+  document.getElementById("tkTitle").textContent = "任務";
+  document.getElementById("tkCount").textContent = "未完成 " + open.length;
+  document.getElementById("tkBack").hidden = true;
+  document.getElementById("tkTools").innerHTML = listToolsHtml(open.length);
+  let h = `<div class="tk-sec-h">未完成 <b>${open.length}</b>${
+    TASK_SORT === "manual" ? " · 拖 ⋮⋮ 排序、向右拉可刪除" : ""}</div>`;
+  h += open.length
+    ? `<div class="tk-rows" id="tkOpenRows">${open.map(t => taskRowHtml(t, false)).join("")}</div>`
+    : `<div class="tk-empty">沒有未完成的任務<br>點「＋ 新增」或由作業／測驗項目按「＋」加入</div>`;
+  if (done.length){
+    h += `<details class="tk-done"><summary>已完成 ${done.length} 筆</summary>
+      <div class="tk-rows">${done.map(t => taskRowHtml(t, true)).join("")}</div></details>`;
+  }
+  document.getElementById("tkBody").innerHTML = h;
+}
+function renderTaskDetail(){
+  const t = TASKS.find(x => x.id === TASK_VIEW.id);
+  if (!t){ TASK_VIEW = { mode:"list", id:null }; return renderTaskList(); }
+  const dl = dueLabel(t.due);
+  document.getElementById("tkTitle").textContent = "任務詳情";
+  document.getElementById("tkCount").textContent = t.status === "done" ? "已完成" : "未完成";
+  document.getElementById("tkBack").hidden = false;
+  document.getElementById("tkTools").innerHTML = "";
+  const atts = t.atts.map((a, i) => a.img
+    ? `<button class="tk-att-img" type="button" data-lb="${i}"><img src="${esc(a.data)}" alt="${esc(a.name)}"><span>${esc(a.name)}</span></button>`
+    : `<a class="tk-att-file" href="${esc(a.data)}" download="${esc(a.name)}">📎 ${esc(a.name)}</a>`).join("");
+  document.getElementById("tkBody").innerHTML = `<div class="tk-detail">
+      <span class="big-due">${dl.txt}</span>
+      <h4>${t.pinned ? "📌 " : ""}${esc(t.subject)}</h4>
+      <div class="tk-meta">狀態：${t.status === "done" ? "已完成" : "未完成"} · ${t.due ? "到期 " + t.due : "未設到期日"}</div>
+      <div class="tk-sec"><div class="tk-lab">內容</div>
+        <div class="tk-content">${t.content ? esc(t.content) : '<span class="tk-none">（未填寫）</span>'}</div></div>
+      <div class="tk-sec"><div class="tk-lab">附件 ${t.atts.length ? "（" + t.atts.length + "）" : ""}</div>
+        <div class="tk-atts">${atts || '<span class="tk-none">（無附件，點圖片可放大）</span>'}</div></div>
+      <div class="tk-actions">
+        <button class="tk-tool" type="button" data-tk-act="edit">編輯</button>
+        <button class="tk-tool" type="button" data-tk-act="shareone">分享此筆</button>
+        <button class="tk-tool" type="button" data-tk-act="toggle">${t.status === "done" ? "標為未完成" : "標為完成"}</button>
+        <button class="tk-tool" type="button" data-tk-act="delone" style="color:#a8244a">刪除</button>
+      </div>
+    </div>`;
+}
+function renderTaskPanel(){
+  if (TASK_VIEW.mode === "detail") renderTaskDetail(); else renderTaskList();
+  const b = document.getElementById("tkBody"); if (b) b.scrollTop = 0;
+}
+function openTaskPanel(){
+  closeSheet();
+  closeLightbox();
+  TASK_VIEW = { mode:"list", id:null };
+  const w = document.getElementById("taskWrap");
+  w.classList.add("on"); w.setAttribute("aria-hidden", "false");
+  renderTaskPanel(); refreshTaskBadge();
+}
+function closeTaskPanel(){
+  closeTaskSub();
+  const w = document.getElementById("taskWrap");
+  w.classList.remove("on"); w.setAttribute("aria-hidden", "true");
+}
+function openTaskSub(title, body, foot){
+  const s = document.getElementById("tkSub");
+  s.innerHTML = `<div class="tk-sub-card" role="dialog" aria-modal="true">
+      <div class="tk-sub-hd"><h3>${esc(title)}</h3><span style="flex:1"></span>
+        <button class="tk-icon" type="button" data-sub-close aria-label="關閉">✕</button></div>
+      <div class="tk-sub-bd">${body}</div>
+      ${foot ? `<div class="tk-sub-foot">${foot}</div>` : ""}
+    </div>`;
+  s.classList.add("on"); s.setAttribute("aria-hidden", "false");
+}
+function closeTaskSub(){
+  const s = document.getElementById("tkSub");
+  if (!s) return;
+  s.classList.remove("on"); s.setAttribute("aria-hidden", "true");
+  s.innerHTML = ""; TASK_SUB = null; TASK_EDIT = null;
+}
+function showLightbox(src, cap){
+  const b = document.getElementById("lightbox");
+  document.getElementById("lbImg").src = src;
+  document.getElementById("lbCap").textContent = cap || "";
+  b.classList.add("on"); b.setAttribute("aria-hidden", "false");
+}
+function closeLightbox(){
+  const b = document.getElementById("lightbox");
+  if (!b) return;
+  b.classList.remove("on"); b.setAttribute("aria-hidden", "true");
+  document.getElementById("lbImg").removeAttribute("src");
+}
+
+/* 任務面板的統一點擊委派 */
+function onTaskWrapClick(e){
+  const el = e.target;
+  if (el.id === "tkSub"){ closeTaskSub(); return; }
+  if (el.closest("[data-sub-close]")){ closeTaskSub(); return; }
+  if (el.closest("[data-tk-close]")){ closeTaskPanel(); return; }
+  if (el.closest("#tkBack")){ TASK_VIEW = { mode:"list", id:null }; renderTaskPanel(); return; }
+
+  const lb = el.closest("[data-lb]");
+  if (lb){
+    const t = TASKS.find(x => x.id === TASK_VIEW.id);
+    const a = t && t.atts[+lb.dataset.lb];
+    if (a) showLightbox(a.data, a.name);
+    return;
+  }
+  const act = el.closest("[data-act]");
+  if (act){
+    const out = act.closest(".tk-row-outer");
+    const id = out && out.dataset.id;
+    const k = act.dataset.act;
+    if (k === "del") deleteTask(id, false);
+    else if (k === "check") toggleTaskStatus(id);
+    else if (k === "pin") toggleTaskPin(id);
+    else if (k === "open"){ TASK_VIEW = { mode:"detail", id }; renderTaskPanel(); }
+    return;
+  }
+  const ta = el.closest("[data-tk-act]");
+  if (ta){ handleTaskTool(ta.dataset.tkAct, ta); return; }
+  const sa = el.closest("[data-sub-act]");
+  if (sa){ handleTaskSubAct(sa.dataset.subAct, sa); return; }
+}
+function deleteTask(id, ask){
+  const t = TASKS.find(x => x.id === id);
+  if (!t) return;
+  if (ask && !window.confirm("確定刪除「" + t.subject + "」？")) return;
+  TASKS = TASKS.filter(x => x.id !== id);
+  saveTasks();
+  if (TASK_VIEW.mode === "detail" && TASK_VIEW.id === id) TASK_VIEW = { mode:"list", id:null };
+  renderTaskPanel(); toast("已刪除任務");
+}
+function toggleTaskStatus(id){
+  const t = TASKS.find(x => x.id === id); if (!t) return;
+  t.status = t.status === "done" ? "todo" : "done";
+  saveTasks(); renderTaskPanel();
+}
+function toggleTaskPin(id){
+  const t = TASKS.find(x => x.id === id); if (!t) return;
+  t.pinned = !t.pinned; saveTasks(); renderTaskPanel();
+}
+
+/* ---------- 工具列 / 詳情動作 ---------- */
+function handleTaskTool(k){
+  if (k === "add") openTaskForm(null);
+  else if (k === "bulk") openBulkPanel();
+  else if (k === "edit") openTaskForm(TASK_VIEW.id);
+  else if (k === "share") openSharePanel(null);
+  else if (k === "shareone") openSharePanel(TASK_VIEW.id);
+  else if (k === "toggle") toggleTaskStatus(TASK_VIEW.id);
+  else if (k === "delone") deleteTask(TASK_VIEW.id, true);
+  else if (k === "export") exportTasks();
+  else if (k === "import") document.getElementById("tkImportFile").click();
+}
+
+/* ---------- 新增 / 編輯表單（單筆 ＋ 批量貼上） ---------- */
+function openTaskForm(id){
+  const t = id ? TASKS.find(x => x.id === id) : null;
+  TASK_EDIT = t ? JSON.parse(JSON.stringify(t)) : {
+    id:null, subject:"", status:"todo", due:"", content:"", atts:[], pinned:false, order:0, created:0
+  };
+  TASK_SUB = "form";
+  const tabs = t ? "" : `<div class="tk-tabs">
+      <button type="button" data-sub-act="tab-single" class="on">單筆新增</button>
+      <button type="button" data-sub-act="tab-batch">批量貼上</button></div>`;
+  const single = `<div id="tkFormSingle">
+      <div class="tk-field"><label>主題</label>
+        <input type="text" id="tkFSubject" placeholder="例：11/10 交閱讀報告" value="${esc(TASK_EDIT.subject)}">
+        <span class="hint" id="tkFHint"></span></div>
+      <div class="tk-field"><label>狀態</label>
+        <select id="tkFStatus">
+          <option value="todo"${TASK_EDIT.status !== "done" ? " selected" : ""}>未完成</option>
+          <option value="done"${TASK_EDIT.status === "done" ? " selected" : ""}>已完成</option>
+        </select></div>
+      <div class="tk-field"><label>到期日</label>
+        <input type="date" id="tkFDue" value="${esc(TASK_EDIT.due)}" data-auto="${TASK_EDIT.due ? "0" : "1"}">
+        <span class="hint">主題含日期（11/10、11月10日、明天、下週一…）會<b>自動帶入</b></span></div>
+      <div class="tk-field"><label>內容</label>
+        <textarea id="tkFContent" placeholder="補充說明（選填）">${esc(TASK_EDIT.content)}</textarea></div>
+      <div class="tk-field"><label>附件（圖片可預覽、點擊放大）</label>
+        <input type="file" id="tkFFiles" multiple>
+        <div class="tk-preview" id="tkFPreview"></div></div>
+    </div>`;
+  const batch = t ? "" : `<div id="tkFormBatch" hidden>
+      <div class="tk-field"><label>每行一筆（可直接貼上多行）</label>
+        <textarea id="tkFBatch" rows="8" placeholder="11/10 交閱讀報告&#10;明天 帶字典&#10;11月12日 中文作文"></textarea>
+        <span class="hint">每行成為一筆任務；主題內含日期會<b>自動填入到期日</b>；空行略過。</span></div>
+      <div class="tk-field"><label>狀態</label>
+        <select id="tkFBatchStatus"><option value="todo">未完成</option><option value="done">已完成</option></select></div>
+    </div>`;
+  const foot = `<button class="tk-tool" type="button" data-sub-close>取消</button>
+    <button class="tk-tool pri" type="button" data-sub-act="save">${t ? "儲存變更" : "新增"}</button>`;
+  openTaskSub(t ? "編輯任務" : "新增任務", tabs + single + batch, foot);
+  renderFormPreview(); syncFormHint();
+}
+function syncFormHint(){
+  const si = document.getElementById("tkFSubject");
+  const di = document.getElementById("tkFDue");
+  const hi = document.getElementById("tkFHint");
+  if (!si || !di || !hi) return;
+  const d = parseDueFromText(si.value);
+  hi.innerHTML = d ? "辨識到到期日 <b>" + d + "</b>，已自動填入" : "未在主題中找到日期";
+  if (d && (!di.value || di.dataset.auto === "1")){ di.value = d; di.dataset.auto = "1"; }
+}
+function renderFormPreview(){
+  const box = document.getElementById("tkFPreview");
+  if (!box || !TASK_EDIT) return;
+  box.innerHTML = TASK_EDIT.atts.map((a, i) => `<div class="tk-pv">
+      <button class="rm" type="button" data-sub-act="rmatt" data-i="${i}" aria-label="移除">✕</button>
+      ${a.img ? `<img src="${esc(a.data)}" alt="${esc(a.name)}" data-lb-edit="${i}">`
+              : '<div style="font-size:22px;text-align:center;line-height:58px">📎</div>'}
+      <span>${esc(a.name)}</span></div>`).join("");
+}
+function fileToDataURL(f){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result));
+    r.onerror = rej;
+    r.readAsDataURL(f);
+  });
+}
+function shrinkImage(src, name){
+  return new Promise(res => {
+    const im = new Image();
+    im.onload = () => {
+      const max = 1024;
+      let w = im.naturalWidth || im.width, h = im.naturalHeight || im.height;
+      const k = Math.min(1, max / Math.max(w, h));
+      w = Math.max(1, Math.round(w * k)); h = Math.max(1, Math.round(h * k));
+      const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+      const cx = cv.getContext("2d");
+      cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h); cx.drawImage(im, 0, 0, w, h);
+      let data = src;
+      try{ data = cv.toDataURL("image/jpeg", .72); }catch(e){}
+      res({ name: /\.jpe?g$/i.test(name) ? name : name.replace(/\.[^.]+$/, "") + ".jpg", data });
+    };
+    im.onerror = () => res({ name, data:src });
+    im.src = src;
+  });
+}
+async function readAttachments(fileList){
+  const out = [];
+  for (const f of Array.from(fileList || [])){
+    const isImg = /^image\//.test(f.type) && !/svg/i.test(f.type);
+    if (!isImg && f.size > 400 * 1024){ toast("「" + f.name + "」超過 400KB，已略過", true); continue; }
+    try{
+      const raw = await fileToDataURL(f);
+      if (isImg){
+        const s = await shrinkImage(raw, f.name);
+        out.push({ name:s.name, type:"image/jpeg", data:s.data, img:true });
+      }else{
+        out.push({ name:f.name, type:f.type || "application/octet-stream", data:raw, img:false });
+      }
+    }catch(e){ toast("讀取附件失敗：" + f.name, true); }
+  }
+  return out;
+}
+function saveTaskForm(){
+  if (!TASK_EDIT) return;
+  const bb = document.getElementById("tkFormBatch");
+  const isBatch = bb && !bb.hidden && !TASK_EDIT.id;
+  if (isBatch){
+    const lines = String(document.getElementById("tkFBatch").value || "")
+      .split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    if (!lines.length){ toast("請貼上至少一行", true); return; }
+    const st = document.getElementById("tkFBatchStatus").value === "done" ? "done" : "todo";
+    let n = nextOrder();
+    lines.forEach(line => TASKS.push({ id:uid(), subject:line, status:st,
+      due:parseDueFromText(line), content:"", atts:[], pinned:false, order:n++, created:Date.now() }));
+    if (!saveTasks()) return;
+    closeTaskSub(); TASK_VIEW = { mode:"list", id:null }; renderTaskPanel();
+    toast("已新增 " + lines.length + " 筆任務"); return;
+  }
+  const subject = String(document.getElementById("tkFSubject").value || "").trim();
+  if (!subject){ toast("請填寫主題", true); return; }
+  const dueRaw = document.getElementById("tkFDue").value;
+  const due = /^\d{4}-\d{2}-\d{2}$/.test(dueRaw) ? dueRaw : parseDueFromText(subject);
+  const status = document.getElementById("tkFStatus").value === "done" ? "done" : "todo";
+  const content = String(document.getElementById("tkFContent").value || "");
+  const atts = TASK_EDIT.atts.slice();
+  const wasEdit = !!TASK_EDIT.id;
+  if (wasEdit){
+    const t = TASKS.find(x => x.id === TASK_EDIT.id);
+    if (t){ t.subject = subject; t.status = status; t.due = due; t.content = content; t.atts = atts; }
+  }else{
+    TASKS.push({ id:uid(), subject, status, due, content, atts,
+      pinned:false, order:nextOrder(), created:Date.now() });
+  }
+  if (!saveTasks()) return;
+  closeTaskSub(); renderTaskPanel(); toast(wasEdit ? "已儲存變更" : "已新增任務");
+}
+
+/* ---------- 一頁內批量編輯未完成任務（主題 / 到期日 / 內容） ---------- */
+function openBulkPanel(){
+  const open = sortedTasks(TASKS.filter(t => t.status !== "done"));
+  if (!open.length){ toast("沒有未完成的任務可編輯", true); return; }
+  TASK_SUB = "bulk";
+  const rows = open.map((t, i) => `<div class="tk-bulk-row" data-id="${esc(t.id)}">
+      <div class="bh">${i + 1}. ${t.pinned ? "📌 " : ""}${esc(t.subject)}</div>
+      <div class="bf">
+        <input type="text" data-f="subject" value="${esc(t.subject)}" placeholder="主題" aria-label="主題">
+        <div class="brow2">
+          <input type="date" data-f="due" value="${esc(t.due)}" aria-label="到期日">
+          <textarea data-f="content" rows="2" placeholder="內容（選填）" aria-label="內容">${esc(t.content)}</textarea>
+        </div>
+      </div>
+    </div>`).join("");
+  openTaskSub("批量編輯未完成（" + open.length + " 筆）",
+    `<p class="hint" style="margin:0 0 10px">同一頁一次修改全部未完成任務的<b>主題、到期日、內容</b>；到期日留空時會再嘗試從主題自動辨識日期。狀態與附件不變。</p>
+     <div id="tkBulkList">${rows}</div>`,
+    `<button class="tk-tool" type="button" data-sub-close>取消</button>
+     <button class="tk-tool pri" type="button" data-sub-act="bulk-save">儲存全部</button>`);
+}
+function saveBulkForm(){
+  const box = document.getElementById("tkBulkList");
+  if (!box) return;
+  let changed = 0, skipped = 0, auto = 0;
+  Array.from(box.querySelectorAll(".tk-bulk-row")).forEach(row => {
+    const t = TASKS.find(x => x.id === row.dataset.id && x.status !== "done");
+    if (!t) return;
+    const s = row.querySelector('[data-f="subject"]');
+    const d = row.querySelector('[data-f="due"]');
+    const c = row.querySelector('[data-f="content"]');
+    const subject = String(s ? s.value : "").trim();
+    if (!subject){ skipped++; return; }
+    let due = d && /^\d{4}-\d{2}-\d{2}$/.test(d.value) ? d.value : "";
+    if (!due){ const p = parseDueFromText(subject); if (p){ due = p; auto++; } }
+    const content = String(c ? c.value : "");
+    if (subject !== t.subject || due !== t.due || content !== t.content) changed++;
+    t.subject = subject; t.due = due; t.content = content;
+  });
+  if (!saveTasks()) return;
+  closeTaskSub(); renderTaskPanel();
+  toast("已儲存 " + changed + " 筆變更" +
+    (auto ? "，自動帶入 " + auto + " 個到期日" : "") +
+    (skipped ? "（" + skipped + " 筆主題空白略過）" : ""));
+}
+
+/* ---------- 分享：一筆或全部（只含未完成），文字 / 圖片 ---------- */
+function openSharePanel(onlyId){
+  const open = sortedTasks(TASKS.filter(t => t.status !== "done"));
+  if (!open.length){ toast("沒有未完成的任務可分享", true); return; }
+  TASK_SUB = "share";
+  const opts = open.map(t => `<label>
+      <input type="checkbox" value="${esc(t.id)}"${onlyId ? (t.id === onlyId ? " checked" : "") : " checked"}>
+      <span>${esc(t.subject)}</span><span class="d">${esc(t.due || "無日期")}</span></label>`).join("");
+  openTaskSub("分享任務",
+    `<p class="hint" style="margin:0 0 10px">只列出<b>未完成</b>任務；可勾選一筆或全部。</p>
+     <div class="tk-pick" id="tkPickList">${opts}</div>`,
+    `<button class="tk-tool" type="button" data-sub-act="pick-none">清空</button>
+     <button class="tk-tool" type="button" data-sub-act="pick-all">全選</button>
+     <button class="tk-tool" type="button" data-sub-act="share-text">分享文字</button>
+     <button class="tk-tool pri" type="button" data-sub-act="share-image">分享圖片</button>`);
+}
+function pickedTasks(){
+  const ids = Array.from(document.querySelectorAll("#tkPickList input:checked")).map(c => c.value);
+  return sortedTasks(TASKS.filter(t => ids.indexOf(t.id) >= 0 && t.status !== "done"));
+}
+function tasksAsText(list){
+  const head = "任務清單（未完成）";
+  const body = list.map(t => {
+    const d = t.due ? t.due + "（週" + WEEK[parseD(t.due).getDay()] + "）" : "未設到期日";
+    let s = "• " + d + "  " + t.subject;
+    if (t.content) s += "\n   " + t.content.replace(/\n/g, "\n   ");
+    if (t.atts.length) s += "\n   📎 " + t.atts.map(a => a.name).join("、");
+    return s;
+  }).join("\n");
+  return head + "\n" + body + "\n";
+}
+async function shareTasksText(list){
+  if (!list.length){ toast("請先勾選至少一筆", true); return; }
+  const text = tasksAsText(list);
+  if (navigator.share){
+    try{ await navigator.share({ title:"任務清單", text }); return; }
+    catch(e){ if (e && e.name === "AbortError") return; }
+  }
+  try{
+    await navigator.clipboard.writeText(text);
+    closeTaskSub(); toast("已複製文字，可貼到 WeChat / WhatsApp"); return;
+  }catch(e){}
+  openTaskSub("分享文字（請手動複製）",
+    `<div class="tk-field"><textarea rows="10" id="tkShareText">${esc(text)}</textarea></div>`,
+    `<button class="tk-tool pri" type="button" data-sub-act="copy-text">複製</button>`);
+}
+async function shareTasksImage(list){
+  if (!list.length){ toast("請先勾選至少一筆", true); return; }
+  const W = 720, pad = 28, cW = W - pad * 2;
+  const cv = document.createElement("canvas"), ctx = cv.getContext("2d");
+  ctx.font = `18px ${SHARE_FONT}`;
+  const rows = list.map(t => {
+    const due = t.due ? t.due + "（週" + WEEK[parseD(t.due).getDay()] + "）" : "未設到期日";
+    const ls = wrapLines(ctx, t.subject, cW - 10);
+    return { due, ls, h:30 + ls.length * 26 + 12 };
+  });
+  const H = Math.max(220, pad + 64 + rows.reduce((s, r) => s + r.h, 0) + 40);
+  cv.width = W; cv.height = H;
+  ctx.fillStyle = "#fffdf9"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#2c2620"; ctx.font = `800 24px ${SHARE_FONT}`;
+  ctx.fillText("任務清單（未完成）", pad, pad + 26);
+  ctx.fillStyle = "#8b8274"; ctx.font = `600 13px ${SHARE_FONT}`;
+  ctx.fillText(stamp(), pad, pad + 48);
+  let yy = pad + 64;
+  for (const r of rows){
+    ctx.strokeStyle = "#e9e1d4"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, yy - 6); ctx.lineTo(W - pad, yy - 6); ctx.stroke();
+    ctx.fillStyle = "#2f6fb0"; ctx.font = `700 15px ${SHARE_FONT}`;
+    ctx.fillText(r.due, pad, yy + 14);
+    ctx.fillStyle = "#332d26"; ctx.font = `18px ${SHARE_FONT}`;
+    r.ls.forEach((ln, i) => ctx.fillText(ln, pad, yy + 40 + i * 26));
+    yy += r.h;
+  }
+  ctx.fillStyle = "#a99f8f"; ctx.font = `600 12px ${SHARE_FONT}`;
+  ctx.fillText("僅供參考", W - pad - 62, H - 14);
+  let blob = null;
+  try{ blob = await new Promise(res => cv.toBlob(res, "image/png")); }catch(e){}
+  if (!blob){ toast("圖片產生失敗", true); return; }
+  const fname = "tasks_" + ymd(new Date()) + ".png";
+  const file = new File([blob], fname, { type:"image/png" });
+  if (navigator.share && (!navigator.canShare || navigator.canShare({ files:[file] }))){
+    try{
+      await navigator.share({ files:[file], title:"任務清單", text:"任務清單（未完成）" });
+      closeTaskSub(); return;
+    }catch(e){ if (e && e.name === "AbortError") return; }
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = fname;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => { try{ URL.revokeObjectURL(a.href); }catch(e){} }, 4000);
+  closeTaskSub(); toast("已下載圖片，可傳到 WeChat / WhatsApp");
+}
+
+/* ---------- 匯出 / 匯入 ---------- */
+function exportTasks(){
+  const data = JSON.stringify({ v:1, exportedAt:new Date().toISOString(), tasks:TASKS }, null, 2);
+  const blob = new Blob([data], { type:"application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "tasks_" + ymd(new Date()) + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => { try{ URL.revokeObjectURL(a.href); }catch(e){} }, 4000);
+  toast("已匯出 " + TASKS.length + " 筆任務");
+}
+async function onTaskImport(e){
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  try{
+    const o = JSON.parse(await f.text());
+    const arr = Array.isArray(o) ? o : (o && Array.isArray(o.tasks) ? o.tasks : null);
+    if (!arr) throw new Error("格式不符");
+    const got = arr.map(normTask).filter(Boolean);
+    if (!got.length) throw new Error("沒有可用任務");
+    const replace = window.confirm(
+      "匯入 " + got.length + " 筆任務。\n按「確定」＝取代目前全部任務；按「取消」＝合併（保留現有）。");
+    if (replace) TASKS = got;
+    else{
+      const ids = TASKS.map(t => t.id);
+      got.forEach(t => { if (ids.indexOf(t.id) >= 0) t.id = uid(); TASKS.push(t); });
+      TASKS.forEach((t, i) => { if (!t.order) t.order = i + 1; });
+    }
+    if (!saveTasks()) return;
+    closeTaskSub(); TASK_VIEW = { mode:"list", id:null }; renderTaskPanel();
+    toast((replace ? "已取代為 " : "已合併 ") + got.length + " 筆任務");
+  }catch(err){ toast("匯入失敗：" + err.message, true); }
+  e.target.value = "";
+}
+
+/* ---------- 子面板動作 ---------- */
+function handleTaskSubAct(k, el){
+  if (k === "tab-single" || k === "tab-batch"){
+    const single = k === "tab-single";
+    document.querySelectorAll(".tk-tabs button").forEach(b =>
+      b.classList.toggle("on", b.dataset.subAct === k));
+    const a = document.getElementById("tkFormSingle"), b = document.getElementById("tkFormBatch");
+    if (a) a.hidden = !single;
+    if (b) b.hidden = single;
+    const sv = document.querySelector('[data-sub-act="save"]');
+    if (sv) sv.textContent = single ? "新增" : "批量新增";
+    return;
+  }
+  if (k === "rmatt"){
+    if (!TASK_EDIT) return;
+    TASK_EDIT.atts.splice(+el.dataset.i, 1); renderFormPreview(); return;
+  }
+  if (k === "save"){ saveTaskForm(); return; }
+  if (k === "bulk-save"){ saveBulkForm(); return; }
+  if (k === "pick-all"){ document.querySelectorAll("#tkPickList input").forEach(c => c.checked = true); return; }
+  if (k === "pick-none"){ document.querySelectorAll("#tkPickList input").forEach(c => c.checked = false); return; }
+  if (k === "share-text"){ shareTasksText(pickedTasks()); return; }
+  if (k === "share-image"){ shareTasksImage(pickedTasks()); return; }
+  if (k === "copy-text"){
+    const ta = document.getElementById("tkShareText");
+    if (ta){ ta.select(); try{ document.execCommand("copy"); toast("已複製"); }catch(e){ toast("請長按選取複製"); } }
+  }
+}
+function bindTaskSubEvents(){
+  const sub = document.getElementById("tkSub");
+  sub.addEventListener("input", e => { if (e.target.id === "tkFSubject") syncFormHint(); });
+  sub.addEventListener("change", async e => {
+    if (e.target.id === "tkFDue"){ e.target.dataset.auto = "0"; return; }
+    if (e.target.id === "tkFFiles"){
+      const got = await readAttachments(e.target.files);
+      if (!TASK_EDIT) return;
+      TASK_EDIT.atts = TASK_EDIT.atts.concat(got);
+      e.target.value = "";
+      renderFormPreview();
+    }
+  });
+  sub.addEventListener("click", e => {
+    const im = e.target.closest("[data-lb-edit]");
+    if (im){
+      e.stopPropagation();
+      const a = TASK_EDIT && TASK_EDIT.atts[+im.dataset.lbEdit];
+      if (a) showLightbox(a.data, a.name);
+    }
+  });
+}
+
+/* ---------- 手勢：向右拉露出刪除 ⋮⋮ 拖動排序 ---------- */
+let TK_G = null;
+function bindTaskGestures(){
+  const body = document.getElementById("tkBody");
+  body.addEventListener("pointerdown", e => {
+    const out = e.target.closest(".tk-row-outer");
+    if (!out) return;
+    if (e.target.closest(".tk-drag")){ startTaskDrag(e, out); return; }
+    if (e.target.closest("button:not(.tk-main)")) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const opened = out.classList.contains("opened");
+    TK_G = { mode:"swipe", out, row:out.querySelector(".tk-row"),
+      x:e.clientX, y:e.clientY, base:opened ? 88 : 0, tx:opened ? 88 : 0, moved:false, suppress:false };
+  });
+  document.addEventListener("pointermove", onTaskPointerMove, { passive:false });
+  document.addEventListener("pointerup", onTaskPointerUp);
+  document.addEventListener("pointercancel", onTaskPointerUp);
+  body.addEventListener("click", e => {
+    if (TK_G && TK_G.suppress){
+      e.preventDefault(); e.stopPropagation(); TK_G.suppress = false; TK_G = null;
+    }
+  }, true);
+}
+function startTaskDrag(e, out){
+  e.preventDefault();
+  TK_G = { mode:"drag", out, moved:false, suppress:true };
+  out.classList.add("dragging");
+  try{ e.target.closest(".tk-drag").setPointerCapture(e.pointerId); }catch(err){}
+}
+function onTaskPointerMove(e){
+  const g = TK_G; if (!g) return;
+  if (g.mode === "swipe"){
+    const dx = e.clientX - g.x, dy = e.clientY - g.y;
+    if (!g.moved){
+      if (Math.abs(dy) > Math.abs(dx) * 1.15 && Math.abs(dy) > 6){ TK_G = null; return; }
+      if (Math.abs(dx) < 6) return;
+    }
+    g.moved = true;
+    if (e.cancelable) e.preventDefault();
+    g.tx = Math.max(0, Math.min(88, g.base + dx));
+    g.row.classList.remove("snap");
+    g.row.style.transform = "translateX(" + g.tx + "px)";
+  }else if (g.mode === "drag"){
+    if (e.cancelable) e.preventDefault();
+    g.moved = true;
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const under = el && el.closest ? el.closest(".tk-row-outer") : null;
+    const rows = document.getElementById("tkOpenRows");
+    if (!under || !rows || under === g.out || under.parentNode !== rows) return;
+    const r = under.getBoundingClientRect();
+    rows.insertBefore(g.out, e.clientY < r.top + r.height / 2 ? under : under.nextSibling);
+  }
+}
+function onTaskPointerUp(){
+  const g = TK_G; if (!g) return;
+  if (g.mode === "swipe"){
+    const open = g.tx > 44;
+    g.row.classList.add("snap");
+    g.row.style.transform = "translateX(" + (open ? 88 : 0) + "px)";
+    g.out.classList.toggle("opened", open);
+    g.suppress = g.moved;
+    TK_G = g.moved ? g : null;
+    if (g.moved) setTimeout(() => { if (TK_G && TK_G.suppress) TK_G = null; }, 380);
+  }else{
+    g.out.classList.remove("dragging");
+    if (g.moved) persistDragOrder();
+    TK_G = g;
+    setTimeout(() => { if (TK_G && TK_G.suppress) TK_G = null; }, 380);
+  }
+}
+function persistDragOrder(){
+  const rows = document.getElementById("tkOpenRows");
+  if (!rows) return;
+  const ids = Array.from(rows.querySelectorAll(".tk-row-outer")).map(o => o.dataset.id);
+  let n = 1;
+  ids.forEach(id => { const t = TASKS.find(x => x.id === id); if (t) t.order = n++; });
+  TASKS.filter(t => ids.indexOf(t.id) < 0).forEach(t => { t.order = n++; });
+  saveTasks(); toast("順序已更新");
+}
+
+/* ---------- 作業 / 科目 / 測驗清單項目 → 加入任務 ---------- */
+function addTaskFromItem(text, due, btn){
+  const subj = String(text || "").trim();
+  if (!subj) return;
+  if (TASKS.some(t => t.status !== "done" && t.subject === subj)){
+    if (btn){ btn.classList.add("added"); btn.textContent = "✓"; }
+    toast("這筆已在任務中"); return;
+  }
+  const d = parseDueFromText(subj) || (/^\d{4}-\d{2}-\d{2}$/.test(due || "") ? due : "");
+  TASKS.push({ id:uid(), subject:subj, status:"todo", due:d, content:"", atts:[],
+    pinned:false, order:nextOrder(), created:Date.now() });
+  saveTasks();
+  if (btn){ btn.classList.add("added"); btn.textContent = "✓"; }
+  toast("已加入任務" + (d ? "（到期 " + d + "）" : ""));
+}
+
+/* ---------- 綁定 ---------- */
+(function bindTasks(){
+  const wrap = document.getElementById("taskWrap");
+  if (!wrap) return;
+  document.getElementById("openTasks").addEventListener("click", openTaskPanel);
+  wrap.addEventListener("click", onTaskWrapClick);
+  wrap.addEventListener("change", e => {
+    if (e.target.id === "tkSort"){
+      TASK_SORT = e.target.value; saveTaskSort(); renderTaskList();
+    }
+  });
+  document.getElementById("tkImportFile").addEventListener("change", onTaskImport);
+  bindTaskSubEvents();
+  bindTaskGestures();
+  const lb = document.getElementById("lightbox");
+  lb.addEventListener("click", e => {
+    if (e.target === lb || e.target.closest("#lbClose")) closeLightbox();
+  });
+  refreshTaskBadge();
+})();
+
+/* =========================================================
+   手勢：單指左右滑＝切「作業/測驗/科目」呈現（班級用底部班級條點選）
    ========================================================= */
 const SWIPE_MIN = 54;
 let sw = null;     // 單指（作業/測驗/科目 呈現）
 
 function bindSwipe(){
   const area = document.querySelector("main.wrap");
-  const sheetOpen = () => document.querySelector(".sheet-wrap.on");
+  const sheetOpen = () => document.querySelector(".sheet-wrap.on") || document.querySelector("#taskWrap.on");
 
   const reset = anim => {
     area.style.transition = anim ? "transform .2s ease" : "";
@@ -1659,7 +2669,12 @@ function cycleLayout(dir){
   document.getElementById("openMenu").onclick = openSheet;
   document.querySelectorAll("[data-close]").forEach(el => el.onclick = closeSheet);
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape"){ closeSheet(); return; }
+    if (e.key === "Escape"){
+      if (document.getElementById("lightbox").classList.contains("on")){ closeLightbox(); return; }
+      if (document.getElementById("tkSub").classList.contains("on")){ closeTaskSub(); return; }
+      if (document.getElementById("taskWrap").classList.contains("on")){ closeTaskPanel(); return; }
+      closeSheet(); return;
+    }
     if (e.key === "ArrowRight" || e.key === "ArrowLeft"){
       const tag = (e.target.tagName || "").toLowerCase();
       if (tag === "input" || tag === "select" || tag === "textarea") return;
@@ -1678,6 +2693,8 @@ function cycleLayout(dir){
   // 測驗清單點項目 → 跳到對應日期功課；分享為圖片：卡片、科目群組右下角的分享鈕
   const listEl = document.getElementById("list");
   if (listEl) listEl.addEventListener("click", (e) => {
+    const add = e.target.closest(".add-task");
+    if (add){ addTaskFromItem(add.dataset.text, add.dataset.due, add); return; }
     const rm = e.target.closest(".cal-rm");
     if (rm){ dismissTest(currentCode(), rm.dataset.key); return; }   // 隱藏已過的測驗
     const rest = e.target.closest(".cal-restore-btn");
@@ -1724,7 +2741,7 @@ function cycleLayout(dir){
   try{
     if (state.sel.length > 1 && !localStorage.getItem("hw_hint_v1")){
       localStorage.setItem("hw_hint_v1", "1");
-      setTimeout(() => toast("單指左右滑切換呈現；雙指左右滑切換班級"), 1500);
+      setTimeout(() => toast("單指左右滑切換呈現；點班級條切換班級；功課按＋可加入任務"), 1500);
     }
   }catch(e){}
 })();
