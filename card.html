@@ -742,7 +742,7 @@ td.c-op{white-space:nowrap;width:110px}
             </div>
           </div>
           <div class="frow"><span>欄 / 列</span><span><input type="number" id="pfCols" min="1" max="8" value="3"> × <input type="number" id="pfRows" min="1" max="10" value="4"></span></div>
-          <div class="frow"><span>頁邊距 mm</span><input type="number" id="pfMargin" min="0" max="30" value="8"></div>
+          <div class="frow"><span>頁邊距 mm</span><input type="number" id="pfMargin" min="5" max="30" value="8"></div>
           <div class="frow"><span>卡間距 mm</span><input type="number" id="pfGutter" min="0" max="12" value="2"></div>
           <div class="frow" id="cardSizeRow"><span>完成尺寸</span><b id="pfSize">—</b></div>
         </div>
@@ -911,8 +911,8 @@ td.c-op{white-space:nowrap;width:110px}
     <p style="margin-top:0"><b style="color:var(--ink)">① 建立清單與卡片</b><br>左側可新增多個清單（例如不同課次、不同單元）。每張卡只有兩個欄位：<b>正面</b>、<b>反面</b>。可標星、標記已熟練、上移下移調整順序（順序即列印順序）。<br><b>正面／反面都支援內嵌圖片</b>：編輯卡片時按「🖼 插入圖片」選本機圖片，或直接把圖片<b>貼上</b>到文字框；圖會自動縮圖並隨卡一起顯示、列印與匯出 HTML。</p>
     <p><b style="color:var(--ink)">② Excel 匯入／匯出</b><br>每個清單都可獨立匯出 .xlsx（欄位：正面、反面）或 CSV；匯入可選「附加／取代／建立新清單」，也能直接從 Excel 複製兩欄貼上。全程離線，不需外掛程式。<br><b>圖片不會進 Excel／CSV</b>（這兩者是純文字）；要保留含圖片的卡片，請用「📤 匯出 → JSON」備份，還原時圖片會一併回來。</p>
     <p><b style="color:var(--ink)">③ 四種檢視佈局與排序</b><br>網格、列表、表格、聚焦。可搜尋、排序（原順序／正面 A→Z／最近新增／未熟練優先）、篩選（未熟練／已加星／有底面／缺底面／<b>錯題</b>）。在「原順序」且無搜尋／篩選時，可用卡片左上角的 ⠿ 把手<b>拖動排序</b>；亦可按工具列的「⇅ 整理順序」勾選多張<b>批量上移／下移</b>、全選或單張上下移。勾「遮蔽反面」可自測，點一下才揭示答案。</p>
-    <p><b style="color:var(--ink)">④ 播放與朗讀</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張朗讀，可調<b>語速、間隔、循環、隨機</b>；單張播放後可「續播整份」。<br><b>「顯示」有兩種模式</b>：<br>· <b>分面</b>：先顯示正面，讀完後自動（或點一下／按 →）才顯示反面。<br>· <b>正反同時顯示</b>：正面與反面同時列在同一張卡上，<b>不用翻面</b>；先讀第一面、稍停再讀第二面，然後直接下一張，適合純聽讀。<br>換卡與換面都是直接換字，<b>沒有翻轉／縮放動畫</b>，不會閃，長時間看較舒服。<b>「順序」</b>可選正→反或反→正（反→正時先讀反面）。<br><b>底面一定會先顯示才前進</b>（分面模式）：只要該卡有底面，都會先顯示／朗讀底面才去下一張，不會跳過。<b>「自動連續」</b>開啟＝全自動連續播放；關閉＝每讀完一面停一停，點一下（或按 →）繼續。<br><b>鍵盤</b>：← 上一張、→ 下一張、↑ ↓ 或 F 翻面（同時顯示模式下無效）、空白鍵（自動＝暫停／繼續，手動＝繼續下一面）、Esc 結束。<b>手機</b>：左右滑動切換、點一下下一張。<br><b>所有播放設定會自動記住</b>（顯示模式、順序、語速、間隔、循環、隨機、朗讀開關），下次進入沿用上一次的設定。每份清單另外各自記住「普通話／粵語」。<br><b>電腦與手機都可朗讀</b>：使用瀏覽器內建的 Web Speech（Chrome、Edge、Safari、Android 版 Chrome 均支援）。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。面板上有 <b>🔊 測試朗讀</b> 按鈕可即時確認這部機能否發聲；狀態列會顯示目前使用的語音。若顯示「未安裝語音」，請到系統的「文字轉語音／朗讀內容」下載中文語音（Windows：時間與語言 → 語音；Android：語言與輸入 → 文字轉語音；iPhone：輔助使用 → 朗讀內容 → 聲音）。若系統完全沒有語音引擎，工具會自動改用無聲計時，翻卡流程照常運作。</p>
-    <p><b style="color:var(--ink)">⑤ PDF：單面／雙面</b><br>匯出 PDF 可選兩種版式（對話框頂部「輸出方式」）：<br>· <b>單面（每格正面＋背面）</b>：每張小卡上半印正面、下半印背面（細虛線分隔），單面列印即可對照背誦，適合自製學習卡／溫習紙。<br>· <b>雙面（正／背分兩面）</b>：PDF 頁次為「第1張正面、第1張背面、第2張正面…」，背面卡的位置依翻面方式鏡射對調；印表機選「雙面・長邊裝訂」後，正反內容落在同一張小卡的兩面，沿裁切線剪開即成可翻面的背誦記憶卡。<br><b>雙面首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。</p>
+    <p><b style="color:var(--ink)">④ 播放與朗讀</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張朗讀，可調<b>語速、間隔、循環、隨機</b>；單張播放後可「續播整份」。<br><b>「顯示」有兩種模式</b>：<br>· <b>分面</b>：先顯示正面，讀完後自動（或點一下／按 →）才顯示反面。<br>· <b>正反同時顯示</b>：正面與反面同時列在同一張卡上，<b>不用翻面</b>；先讀第一面、稍停再讀第二面，然後直接下一張，適合純聽讀。<br>換卡與換面都是直接換字，<b>沒有翻轉／縮放動畫</b>，不會閃，長時間看較舒服。<b>「順序」</b>可選正→反或反→正（反→正時先讀反面）。<br><b>底面一定會先顯示才前進</b>（分面模式）：只要該卡有底面，都會先顯示／朗讀底面才去下一張，不會跳過。<b>「自動連續」</b>開啟＝全自動連續播放；關閉＝每讀完一面停一停，點一下（或按 →）繼續。<br><b>鍵盤</b>：← 上一張、→ 下一張、↑ ↓ 或 F 翻面（同時顯示模式下無效）、空白鍵（自動＝暫停／繼續，手動＝繼續下一面）、Esc 結束。<b>手機</b>：左右滑動切換、點一下下一張。<br><b>所有播放設定會自動記住</b>（顯示模式、順序、語速、間隔、循環、隨機、朗讀開關），下次進入沿用上一次的設定。每份清單另外各自記住「普通話／粵語」。<br><b>電腦與手機都可朗讀</b>：使用瀏覽器內建的 Web Speech（Chrome、Edge、Safari、Android 版 Chrome 均支援）。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。面板上有 <b>🔊 測試朗讀</b> 按鈕可即時確認這部機能否發聲；狀態列會顯示目前使用的語音。若顯示「未安裝語音」，請到系統的「文字轉語音／朗讀內容」下載中文語音（Windows：時間與語言 → 語音；Android：語言與輸入 → 文字轉語音；iPhone：輔助使用 → 朗讀內容 → 聲音）。若系統完全沒有語音引擎，工具會自動改用無聲計時，翻卡流程照常運作。<br><b>離開播放即停止朗讀</b>：按「✕ 結束」、Esc、點播放面板外，或切換分頁／手機切換 App／關閉視窗，都會立即停止發聲並暫停播放，回來後按「▶ 繼續」才會再讀。</p>
+    <p><b style="color:var(--ink)">⑤ PDF：單面／雙面</b><br>匯出 PDF 可選兩種版式（對話框頂部「輸出方式」）：<br>· <b>單面（每格正面＋背面）</b>：每張小卡上半印正面、下半印背面（細虛線分隔），單面列印即可對照背誦，適合自製學習卡／溫習紙。<br>· <b>雙面（正／背分兩面）</b>：PDF 頁次為「第1張正面、第1張背面、第2張正面…」，背面卡的位置依翻面方式鏡射對調；印表機選「雙面・長邊裝訂」後，正反內容落在同一張小卡的兩面，沿裁切線剪開即成可翻面的背誦記憶卡。<br><b>雙面首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。<br><b>內容不會被裁掉</b>：文字與圖片一律限制在卡框內並預留安全留白，字級會自動縮到完全容納（單面模式的正／背高度亦按內容多寡分配），頁邊距最少 5mm。列印請選「100% 實際大小」、關閉瀏覽器頁首頁尾。</p>
     <div class="note">列印設定：縮放 <b>100%</b>／實際大小，<b>不要</b>勾「配合頁面大小」，關閉頁首頁尾與自動置中，紙張尺寸與此處選擇一致。</div>
     <p><b style="color:var(--ink)">⑥ 直接分享</b><br>按「↗ 分享」選 PDF 或 Excel 後，會用目前設定即時產生檔案並叫起系統分享選單（手機／平板可直接傳到通訊軟體、電郵或雲端）；PDF 對話框內的「↗ 直接分享」則用對話框裏的設定。桌面瀏覽器若不支援檔案分享，會依序降級為：複製檔案到剪貼簿 → 開新分頁預覽 → 下載檔案，並以提示說明。</p>
     <p><b style="color:var(--ink)">⑦ 清單管理</b><br>左側可有多份清單，並支援：<b>🔍 搜尋清單</b>（側欄頂部輸入名稱過濾）；<b>📌 置頂</b>（點清單上的 📌 或「⋯」選單，置頂的清單恆排最前）；<b>⠿ 拖動排序</b>（按住清單左側的 ⠿ 把手上下拖移調整順序）；<b>📦 歸檔</b>（收進「已歸檔」區，預設收起，點一下「📦 已歸檔」才展開選取；歸檔清單不會干擾日常，需要時再點開）。每份清單也可複製、重新命名、刪除。</p>
@@ -1061,6 +1061,7 @@ async function preloadImages(cards){
   })));
 }
 const MM = 72/25.4;
+let PDF_TRUNC=0;   /* 本輪預覽有多少格內容曾被截斷（供提示用） */
 const FONT = '"Microsoft JhengHei","PingFang TC","Noto Sans TC","Segoe UI",sans-serif';
 
 function stamp(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes()); }
@@ -1600,7 +1601,11 @@ function clearWeak(){
 }
 function closeMenus(){ $('#moreMenu').classList.remove('on'); }
 function maskOpen(id){ $(id).classList.add('on'); }
-function maskClose(id){ $(id).classList.remove('on'); if(id==='playMask')stopPlay(); }
+function maskClose(id){
+  $(id).classList.remove('on');
+  /* id 傳入的是選擇器（含 #），先前比對字串少了 #，導致關閉播放時從未停止朗讀 */
+  if(String(id).replace(/^#/,'')==='playMask')stopPlay();
+}
 
 /* ---------------- events ---------------- */
 document.addEventListener('click',e=>{
@@ -2068,6 +2073,7 @@ $('#btnDoImport').onclick=()=>{
 /* =====================================================================
    PDF：Canvas 繪製 → JPEG → 手寫 PDF
    ===================================================================== */
+function safeMargin(v){ const n=+v; return Math.max(5,Math.min(30,isFinite(n)?n:8)); }
 function paperSize(p){
   if(p==='a4l')return [841.89,595.28];
   if(p==='lp')return [612,792];
@@ -2139,82 +2145,108 @@ function drawPrintPage(cv,page,o,listName){
     if(page.side==='single'){
       const bk=String(card.back||'').trim();
       if(bk){
-        const gap=Math.max(2*MM,Math.min(4.5*MM,h*.06)), half=(h-gap)/2;
-        drawCardText(c,card.front,x,y,w,half,o,{side:'front'},card.no,card.imgs);
+        /* 正／背高度依內容多寡分配（35%～65%），內容長的一面拿到較多空間，較不易被截斷 */
+        const cnt=s=>(String(s||'').split('[[img:').length-1);
+        const wF=plainText(card.front).length+cnt(card.front)*80;
+        const wB=plainText(card.back).length+cnt(card.back)*80;
+        const ratio=Math.max(.2,Math.min(.8,wF/(wF+wB)||.5));
+        const gap=Math.max(2*MM,Math.min(4.5*MM,h*.06)), avail=h-gap;
+        const h1=avail*ratio, h2=avail-h1;
+        drawCardText(c,card.front,x,y,w,h1,o,{side:'front'},card.no,card.imgs);
         c.strokeStyle='#d8d0bf'; c.lineWidth=.5; c.setLineDash([2,2]);
-        c.beginPath(); c.moveTo(x+4,y+half+gap/2); c.lineTo(x+w-4,y+half+gap/2); c.stroke(); c.setLineDash([]);
-        drawCardText(c,card.back,x,y+half+gap,w,half,Object.assign({},o,{no:false}),{side:'back'},card.no,card.imgs);
+        c.beginPath(); c.moveTo(x+4,y+h1+gap/2); c.lineTo(x+w-4,y+h1+gap/2); c.stroke(); c.setLineDash([]);
+        drawCardText(c,card.back,x,y+h1+gap,w,h2,Object.assign({},o,{no:false}),{side:'back'},card.no,card.imgs);
       } else {
         drawCardText(c,card.front,x,y,w,h,o,{side:'front'},card.no,card.imgs);
       }
       continue;
     }
+    /* 背面微調只位移「內容」，內容仍會被限制在原本的卡框內，不會印到框外 */
     const dx=page.side==='back'?o.offX*MM:0, dy=page.side==='back'?o.offY*MM:0;
     c.save();
     if(page.rot){ c.translate(x+w/2,y+h/2); c.rotate(Math.PI); c.translate(-(x+w/2),-(y+h/2)); }
-    drawCardText(c,page.side==='front'?card.front:card.back,x+dx,y+dy,w,h,o,page,card.no,card.imgs);
+    drawCardText(c,page.side==='front'?card.front:card.back,x,y,w,h,o,page,card.no,card.imgs,dx,dy);
     c.restore();
   }
   /* footer */
   c.fillStyle='#a8a196'; c.font='500 7px '+FONT; c.textAlign='center';
   c.fillText('記憶卡清單 · '+sideLabel+' · '+(page.side==='single'?'單面列印（縮放 100%）':'雙面列印時請選 100% 實際大小'),W/2,H-my-1);
 }
-function drawCardText(c,text,x,y,w,h,o,page,no,imgs){
-  imgs=imgs||{};
-  const pad=Math.min(4.2*MM,Math.min(w,h)*.13);
-  const labelH=(o.side||o.no)?8:0;
-  const availW=w-2*pad, availH=h-2*pad-labelH-6;
+function drawCardText(c,text,x,y,w,h,o,page,no,imgs,dx,dy){
+  imgs=imgs||{}; dx=+dx||0; dy=+dy||0;
+  /* 安全內框：內容一律留在卡框內，並預留列印安全邊界，避免裁切時缺字 */
+  const pad=Math.max(2.4*MM,Math.min(4.6*MM,Math.min(w,h)*.14));
+  const labelBand=(o.side||o.no)?9:0, noBand=o.no?7:0;
+  const innerW=Math.max(8,w-2*pad);
+  const innerH=Math.max(8,h-2*pad-labelBand-noBand);
+  const innerX=x+pad, innerY=y+pad+labelBand;
+
+  c.save();
+  /* 最後防線：無論如何都不畫到卡框外（背面微調亦同） */
+  c.beginPath(); c.rect(x+.7,y+.7,Math.max(1,w-1.4),Math.max(1,h-1.4)); c.clip();
+  if(dx||dy)c.translate(dx,dy);
+
   const segs=parseSegments(text||'', imgs);
-  const imgGap=4, txtImgGap=4, imgMaxH=availH*0.55;
-  const imgBlocks=segs.filter(s=>s.type==='img').map(s=>{
+  const imgGap=3, txtImgGap=3;
+  const imgBySeg=segs.filter(s=>s.type==='img').map(s=>{
     const im=imgCache[imgs[s.key]]; if(!im)return null;
-    const ar=im.width/im.height; let dw=availW, dh=dw/ar;
-    if(dh>imgMaxH){ dh=imgMaxH; dw=dh*ar; }
-    if(dw>availW){ dw=availW; dh=dw/ar; }
+    const ar=im.width/im.height;
+    let dw=innerW, dh=dw/ar;
+    const maxH=Math.max(6,innerH*.42/Math.max(1,segs.filter(t=>t.type==='img').length));
+    if(dh>maxH){ dh=maxH; dw=dh*ar; }
+    if(dw>innerW){ dw=innerW; dh=dw/ar; }
     return {w:dw,h:dh,im};
-  }).filter(Boolean);
-  const imgTotalH=imgBlocks.reduce((a,b)=>a+b.h,0)+Math.max(0,imgBlocks.length-1)*imgGap;
-  const textAvailH=Math.max(0, availH-imgTotalH-Math.max(0,imgBlocks.length)*txtImgGap);
-  const size0=o.font?o.font:Math.min(30,Math.max(11,Math.min(h*.30,availW/7)));
-  let size=size0;
-  const wrapAll=(sz)=>{ c.font=(o.bold?'700 ':'600 ')+sz+'px '+FONT; const ls=[]; segs.forEach(s=>{ if(s.type==='text') ls.push(...wrapText(c,s.text,availW)); }); return ls; };
-  let lines=[];
-  for(let k=0;k<60;k++){
-    lines=wrapAll(size).filter(t=>t.trim().length);
-    const lh=size*1.34;
-    if(lines.length*lh<=textAvailH || size<=7)break;
-    size-=.65;
+  });
+  const imgBlocks=imgBySeg.filter(Boolean);
+  /* 圖片總高（含間距）保守估計，確保文字一定有位置 */
+  const imgTotalH=imgBlocks.reduce((a,b)=>a+b.h,0)+imgBlocks.length*(txtImgGap+imgGap);
+  const textAvailH=Math.max(0,innerH-imgTotalH);
+
+  /* 建立「繪製計畫」：計算與實際繪製用同一份，不會再發生算好卻畫超出來的情形 */
+  const build=(sz)=>{
+    c.font=(o.bold?'700 ':'600 ')+sz+'px '+FONT;
+    const plan=[]; let ii=0;
+    segs.forEach(s=>{
+      if(s.type==='text'){ wrapText(c,s.text,innerW).forEach(t=>{ if(t.trim())plan.push({type:'line',text:t}); }); }
+      else { const b=imgBySeg[ii++]; if(b)plan.push(Object.assign({type:'img'},b)); }
+    });
+    return plan;
+  };
+  const size0=o.font?o.font:Math.min(28,Math.max(10,Math.min(h*.27,innerW/7)));
+  let size=size0, plan=[], lh=0, textH=0;
+  for(let k=0;k<90;k++){
+    plan=build(size); lh=size*1.30;
+    textH=plan.filter(p=>p.type==='line').length*lh;
+    if(textH<=textAvailH || size<=5)break;
+    size-=.5;
   }
-  const lh=size*1.34;
-  if(lines.length*lh>textAvailH && lines.length){
+  /* 真的塞不下（例如手動指定很大的字級）：只保留可容納的行，末行加省略號，內容不會跑出框外 */
+  if(textH>textAvailH){
+    const lines=plan.filter(p=>p.type==='line');
     const keep=Math.max(1,Math.floor(textAvailH/lh));
-    lines=lines.slice(0,keep);
-    lines[keep-1]=(lines[keep-1]||'').slice(0,Math.max(1,(lines[keep-1]||'').length-1))+'…';
+    if(lines.length>keep)PDF_TRUNC++;
+    lines.slice(keep).forEach(p=>{ const i=plan.indexOf(p); if(i>=0)plan.splice(i,1); });
+    if(lines[keep-1])lines[keep-1].text=(lines[keep-1].text||'').replace(/.$/,'')+'…';
+    textH=keep*lh;
   }
+  const totalH=textH+imgTotalH;
+  let cy=innerY+Math.max(0,(innerH-totalH)/2);
   c.fillStyle=page.side==='back'?'#0b4a44':'#1c1913';
   c.textAlign='center'; c.textBaseline='middle';
-  const textH=lines.length*lh;
-  const totalH=textH+imgTotalH+(imgBlocks.length?txtImgGap*imgBlocks.length:0);
-  let cy=y+(h-totalH)/2+labelH/2;
-  // 依段落順序繪製：文字段與圖片段交錯
-  let li=0;
-  segs.forEach(s=>{
-    if(s.type==='text'){
-      const ls=wrapText(c,s.text,availW).filter(t=>t.trim().length);
-      ls.forEach(t=>{ c.fillText(t,x+w/2,cy+lh/2); cy+=lh; li++; });
-    } else {
-      const b=imgBlocks.shift(); if(!b)return;
-      cy+=txtImgGap; c.drawImage(b.im,x+(w-b.w)/2,cy,b.w,b.h); cy+=b.h+imgGap;
-    }
+  plan.forEach(p=>{
+    if(p.type==='line'){ c.fillText(p.text,innerX+innerW/2,cy+lh/2,innerW); cy+=lh; }
+    else { cy+=txtImgGap; c.drawImage(p.im,innerX+(innerW-p.w)/2,cy,p.w,p.h); cy+=p.h+imgGap; }
   });
-  if(!lines.length && !imgBlocks.length){ c.fillStyle='#a8a196'; c.font='500 10px '+FONT; c.fillText('（空白）',x+w/2,y+h/2); }
+  if(!plan.length){ c.fillStyle='#a8a196'; c.font='500 10px '+FONT; c.fillText('（空白）',innerX+innerW/2,y+h/2,innerW); }
+  /* 正／背標記與編號 */
   c.font='500 7px '+FONT; c.fillStyle='#7b7468';
-  if(o.side){ c.textAlign='left'; c.textBaseline='top'; c.fillText(page.side==='front'?'正面':'背面',x+pad,y+pad*.6); }
-  if(o.no){ c.textAlign='right'; c.textBaseline='bottom'; c.fillText('#'+no,x+w-pad*.7,y+h-pad*.5); }
-  c.textBaseline='middle';
+  if(o.side){ c.textAlign='left'; c.textBaseline='top'; c.fillText(page.side==='front'?'正面':'背面',x+pad,y+pad*.55,innerW*.45); }
+  if(o.no){ c.textAlign='right'; c.textBaseline='bottom'; c.fillText('#'+no,x+w-pad*.7,y+h-pad*.45,innerW*.45); }
+  c.restore();
 }
 function makeSpec(){
   const o=Object.assign({},S.pdf);
+  o.margin=safeMargin(o.margin); /* 列印安全下限：避免邊緣內容被印表機裁掉 */
   const ps=paperSize(o.paper); o.pageW=ps[0]; o.pageH=ps[1];
   o.scale=1.15; o.bold=false; o.pad=4.2;
   const mx=o.margin*MM, gh=o.pageH-2*mx-15-9, gw=o.pageW-2*mx;
@@ -2302,15 +2334,17 @@ function updatePdfModeUI(mode){
     : '正面印一面、背面印另一面，雙面列印後沿裁切線裁開即成可翻面的記憶卡。';
   const ph=$('#pfPrevHint'); if(ph)ph.textContent=single?'每頁＝一批卡片（正＋背同格）':'奇數頁＝正面，偶數頁＝背面';
   const note=$('#pfNote');
-  if(note)note.innerHTML=single
-    ? '單面模式：每格上半為<b>正面</b>、下半為<b>背面</b>（細虛線分隔），沿外框裁開即成小卡，單面列印即可對照背誦。'
-    : '列印後沿虛線裁開：<b>第 1 頁正面</b> 與 <b>第 2 頁背面</b> 是同一張紙的兩面。若正反對不齊，先勾選校準頁印一張，對照編號後改用其他「翻面方式」或微調 mm。';
+  const safe='<br><span style="color:var(--acc-d)">內容會自動縮排並限制在卡框內、字級自動縮到完全容納，頁邊距最少 5mm，列印不會缺字。列印時請選「100% 實際大小」、關閉頁首頁尾。</span>';
+  if(note)note.innerHTML=(single
+    ? '單面模式：每格上半為<b>正面</b>、下半為<b>背面</b>（細虛線分隔），空間依內容多寡分配，沿外框裁開即成小卡，單面列印即可對照背誦。'
+    : '列印後沿虛線裁開：<b>第 1 頁正面</b> 與 <b>第 2 頁背面</b> 是同一張紙的兩面。若正反對不齊，先勾選校準頁印一張，對照編號後改用其他「翻面方式」或微調 mm。')+safe;
 }
 function syncPdfOpts(){
   const p=S.pdf;
   p.mode=($('#pfMode').value==='single'?'single':'double');
   p.paper=$('#pfPaper').value; p.cols=Math.max(1,Math.min(8,+$('#pfCols').value||3)); p.rows=Math.max(1,Math.min(10,+$('#pfRows').value||4));
-  p.margin=Math.max(0,Math.min(30,+$('#pfMargin').value)); p.gutter=Math.max(0,Math.min(12,+$('#pfGutter').value));
+  /* 頁邊距最少 5mm：多數印表機邊緣有無法列印的區域，留白可避免內容被裁掉 */
+  p.margin=safeMargin($('#pfMargin').value); p.gutter=Math.max(0,Math.min(12,+$('#pfGutter').value));
   p.duplex=$('#pfDuplex').value; p.flip=$('#pfFlip').value;
   p.offX=+$('#pfOffX').value||0; p.offY=+$('#pfOffY').value||0;
   p.calib=$('#pfCalib').checked; p.font=+$('#pfFont').value||0; p.scope=$('#pfScope').value;
@@ -2348,6 +2382,7 @@ function previewPdf(){
     if(!pages.length){ box.innerHTML='<div style="padding:20px;font-size:12px;color:#a49d94">沒有符合條件的卡片</div>'; return; }
     await preloadImages(cur().cards);
     const cv=document.createElement('canvas');
+    PDF_TRUNC=0;
     pages.slice(0,24).forEach((pg,i)=>{
       drawPrintPage(cv,pg,o,cur().name);
       const url=cv.toDataURL('image/jpeg',.72);
@@ -2355,6 +2390,10 @@ function previewPdf(){
       d.innerHTML='<img src="'+url+'" alt="第 '+(i+1)+' 頁"><div class="cap">第 '+(i+1)+' 頁 · '+(pg.calib?'校準頁':'第 '+(pg.sheet+1)+' 張')+' · '+(pg.side==='single'?'單面':pg.side==='front'?'正面':'背面')+'</div>';
       box.appendChild(d);
     });
+    if(PDF_TRUNC>0){
+      $('#pfInfo').textContent += ' · ⚠ '+PDF_TRUNC+' 格內容過長已省略結尾，請減少每頁卡數（例如 2×2）或縮短文字';
+      $('#pfInfo').style.color='#b45309';
+    } else $('#pfInfo').style.color='';
     if(pages.length>24){ const d=document.createElement('div'); d.style.cssText='padding:14px;font-size:11px;color:#a49d94'; d.textContent='（尚有 '+(pages.length-24)+' 頁，下載時會全部產生）'; box.appendChild(d); }
   },160);
 }
@@ -2577,7 +2616,26 @@ function splitByLang(t){
   return parts.length?parts:[{text:s,kind:'en'}];
 }
 const P={active:false,ids:[],idx:0,flipped:false,paused:false,single:false,timer:null,token:0};
-function stopSpeech(){ P.token++; try{ if(window.speechSynthesis)speechSynthesis.cancel(); }catch(e){} }
+/* 朗讀中斷：記錄所有保險計時器，離開播放時一併清除，避免殘留的「無回應」提示或延遲回呼 */
+let TTS_TIMERS=[];
+function addTtsTimer(t){ TTS_TIMERS.push(t); return t; }
+function clearTtsTimers(){ TTS_TIMERS.forEach(t=>clearTimeout(t)); TTS_TIMERS=[]; }
+/* 部分瀏覽器（Chrome／Android）在 paused 狀態下 cancel() 無效，先 resume 再 cancel 才真的停 */
+function cancelTTS(){
+  try{
+    const ss=window.speechSynthesis; if(!ss)return;
+    try{ if(ss.paused)ss.resume(); }catch(e){}
+    ss.cancel();
+  }catch(e){}
+}
+function stopSpeech(){ P.token++; clearTtsTimers(); cancelTTS(); }
+/* 離開播放時額外補兩次 cancel：某些手機語音引擎的佇列是延遲清空的；
+   以 P.active 把關，避免使用者很快又開始播放時誤砍新的朗讀 */
+function hardStopTTS(){
+  cancelTTS();
+  const tk=P.token; /* 若其間又開始新播放（token 改變），就不再補刀，避免砍掉新的朗讀 */
+  [120,600].forEach(ms=>setTimeout(()=>{ if(tk===P.token){ try{ cancelTTS(); }catch(e){} } },ms));
+}
 function silentMs(t){ return Math.min(6500,Math.max(1200,900+String(t||'').length*55/($('#plRate')?+$('#plRate').value:1))); }
 /* Chrome／部分 Android 會在長句中途自動 pause（尤其切到背景再回來），定期 resume 可救回 */
 let keepTimer=null;
@@ -2612,15 +2670,15 @@ function speak(text,done){
     u.onstart=()=>{ started=true; clearTimeout(st); };
     u.onend=finish; u.onerror=finish;
     /* 引擎 2.2 秒內完全沒開始（例如 Android 未安裝 TTS 引擎）→ 標記失效並改用無聲計時 */
-    st=setTimeout(()=>{
-      if(fin||started)return;
+    st=addTtsTimer(setTimeout(()=>{
+      if(fin||started||tk!==P.token||!P.active)return; /* 已離開播放就不再判定、不再彈提示 */
       TTS_BLOCKED=true;
-      try{ speechSynthesis.cancel(); }catch(e){}
+      cancelTTS();
       if(!TTS_WARNED){ TTS_WARNED=true; toast('系統朗讀沒有回應，已改用無聲計時。請檢查裝置的「文字轉語音」設定',5000); }
       updateVoiceHint(); finish();
-    },2200);
+    },2200));
     /* 保險：即使 onend 遺失（Android 常見）也會前進，但時間足夠讀完 */
-    wd=setTimeout(finish,Math.max(2200,seg.text.length*210/rate+1200));
+    wd=addTtsTimer(setTimeout(finish,Math.max(2200,seg.text.length*210/rate+1200)));
     try{
       if(speechSynthesis.paused)speechSynthesis.resume();
       speechSynthesis.speak(u);
@@ -2642,6 +2700,7 @@ function setFirstSide(c){ P.flipped = playSides(c).firstIsBack; }
 function startPlay(id){
   const a=viewCards();
   if(!a.length){ toast('沒有可播放的卡片'); return; }
+  stopSpeech(); /* 開始新播放前先清掉任何殘留朗讀（例如上一次未正常結束） */
   const t=S.tts;
   P.dir=(t.dir==='bf'?'bf':'fb');
   $('#plTts').checked=t.on; $('#plAuto').checked=t.auto; $('#plLoop').checked=t.loop; $('#plShuffle').checked=t.shuffle;
@@ -2663,7 +2722,7 @@ function startPlay(id){
 function shuffle(a){ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=b[i];b[i]=b[j];b[j]=t; } return b; }
 function stopPlay(){
   P.active=false; clearTimeout(P.timer); stopSpeech(); stopKeepAlive();
-  try{ if(window.speechSynthesis)speechSynthesis.cancel(); }catch(e){}
+  hardStopTTS(); /* 離開播放：確實停止朗讀，連延遲佇列也清掉 */
   const t=S.tts;
   t.on=$('#plTts').checked; t.auto=$('#plAuto').checked; t.loop=$('#plLoop').checked; t.shuffle=$('#plShuffle').checked;
   t.dir=($('#plDir').value==='bf'?'bf':'fb');
@@ -2781,7 +2840,7 @@ function plPauseToggle(){
     P.paused=true; clearTimeout(P.timer); stopSpeech(); try{speechSynthesis.cancel();}catch(e){} renderPlay();
     return;
   }
-  P.paused=false; renderPlay();
+  P.paused=false; startKeepAlive(); renderPlay();
   if(!$('#plAuto').checked){ plNextSmart(); }
   else { runStep(); }
 }
@@ -3202,6 +3261,14 @@ $('#settingsSheet').addEventListener('click',e=>{
   else if(act==='s_backup') doBackup();
   else if(act==='s_restore') $('#restoreInput').click();
 });
+
+/* 離開播放／離開頁面時停止朗讀：切換分頁、手機切換 App、關閉視窗都算 */
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden || !P.active)return;
+  clearTimeout(P.timer); stopKeepAlive(); stopSpeech(); hardStopTTS();
+  P.paused=true; renderPlay();   /* 回來後停在「▶ 繼續」，不會自己又開始讀 */
+});
+window.addEventListener('pagehide',()=>{ if(P.active)stopPlay(); });
 
 /* ---------------- boot ---------------- */
 load(); render();
