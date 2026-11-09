@@ -379,9 +379,6 @@
     padding:9px 11px;background:var(--card);border:1px solid var(--line);border-radius:13px;
     box-shadow:var(--shadow);will-change:transform}
   .tk-row.snap{transition:transform .18s ease}
-  .tk-drag{flex:0 0 auto;width:20px;height:34px;border:0;background:transparent;color:var(--faint);
-    font-size:15px;cursor:grab;touch-action:none;padding:0;line-height:1}
-  .tk-drag.hide{display:none}
   .tk-check{flex:0 0 auto;width:23px;height:23px;border-radius:50%;border:1.8px solid #cfc6b6;
     background:#fff;color:#fff;font-family:inherit;font-size:12px;line-height:1;cursor:pointer;padding:0}
   .tk-check.done{background:#3f7a45;border-color:#3f7a45}
@@ -1885,12 +1882,9 @@ function dueLabel(due){
 }
 function taskRowHtml(t, done){
   const dl = dueLabel(t.due);
-  const drag = TASK_SORT === "manual"
-    ? '<button class="tk-drag" type="button" data-act="drag" aria-label="拖動調整順序">⋮⋮</button>' : "";
   return `<div class="tk-row-outer" data-id="${esc(t.id)}">
       <button class="tk-del" type="button" data-act="del" aria-label="刪除此任務">刪除</button>
       <div class="tk-row${done ? " is-done" : ""}">
-        ${drag}
         <button class="tk-check${done ? " done" : ""}" type="button" data-act="check" aria-label="切換完成狀態">${done ? "✓" : ""}</button>
         <button class="tk-main" type="button" data-act="open">
           <span class="tk-due ${dl.cls}">${dl.txt}</span>
@@ -2467,7 +2461,7 @@ function bindTaskSubEvents(){
   });
 }
 
-/* ---------- 手勢：長按任務拖動排序 · 向右拉露出刪除 · ⋮⋮ 把手（在 #list 任務呈現內） ---------- */
+/* ---------- 手勢：長按任務拖動排序 · 向右拉露出刪除（在 #list 任務呈現內） ---------- */
 let TK_G = null;
 const TK_HOLD_MS = 320;      // 長按判定時間
 function bindTaskGestures(){
@@ -2475,7 +2469,6 @@ function bindTaskGestures(){
   body.addEventListener("pointerdown", e => {
     const out = e.target.closest(".tk-row-outer");
     if (!out) return;
-    if (e.target.closest(".tk-drag")){ startTaskDrag(e, out); return; }
     if (e.target.closest("button:not(.tk-main)")) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
     const opened = out.classList.contains("opened");
@@ -2509,12 +2502,6 @@ function beginRowDrag(g){
   g.mode = "drag"; g.moved = false; g.suppress = true;
   g.out.classList.add("dragging");
   try{ if (navigator.vibrate) navigator.vibrate(15); }catch(err){}
-}
-function startTaskDrag(e, out){
-  e.preventDefault();
-  TK_G = { mode:"drag", out, moved:false, suppress:true };
-  out.classList.add("dragging");
-  try{ e.target.closest(".tk-drag").setPointerCapture(e.pointerId); }catch(err){}
 }
 function onTaskPointerMove(e){
   const g = TK_G; if (!g) return;
