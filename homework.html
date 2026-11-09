@@ -306,7 +306,7 @@
   }
   @media print{
     body{background:#fff;padding:0}
-    .srcbar,.mbar,.toast,.sheet-wrap,.fab,.signfilter,.lightbox,.tk-wrap{display:none}
+    .srcbar,.mbar,.toast,.sheet-wrap,.fab,.signfilter,.lightbox,.tk-sub{display:none}
     .day,.subj-group{break-inside:avoid;box-shadow:none;page-break-inside:avoid}
   }
 
@@ -354,22 +354,18 @@
   .add-task:active{transform:scale(.9)}
   .add-task.added{background:#eaf3e9;border-color:#cfe3cd;color:#3f7a45}
 
-  /* ---------- 任務：全螢幕面板 ---------- */
-  .tk-wrap{position:fixed;inset:0;z-index:62;display:none;background:var(--bg)}
-  .tk-wrap.on{display:block}
-  .tk-panel{position:absolute;inset:0;max-width:760px;margin:0 auto;display:flex;flex-direction:column;
-    background:var(--bg)}
-  .tk-hd{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;
-    background:rgba(255,253,249,.96);border-bottom:1px solid var(--line)}
-  .tk-hd h3{margin:0;font-size:calc(17px * var(--fz));font-weight:800}
-  .tk-hd .tk-sp{flex:1}
-  .tk-count{font-size:calc(12px * var(--fz));font-weight:700;color:var(--muted)}
+  /* ---------- 任務：內嵌清單（「任務」呈現，隨班級） ---------- */
+  .tk-page-h{display:flex;align-items:center;gap:9px;margin:2px 2px 12px}
+  .tk-page-h .t{font-size:calc(17px * var(--fz));font-weight:800;color:var(--ink)}
+  .tk-page-h .c{font-size:calc(12px * var(--fz));font-weight:700;color:var(--muted)}
+  .tk-page-h .sp{flex:1}
   .tk-icon{width:34px;height:34px;flex:0 0 auto;border:1px solid var(--line);background:#fff;
     color:#5d564c;border-radius:10px;font-family:inherit;font-size:16px;cursor:pointer;
     display:inline-flex;align-items:center;justify-content:center}
   .tk-icon:active{transform:scale(.94)}
-  .tk-tools{flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:7px;
-    padding:9px 14px;background:rgba(255,253,249,.72);border-bottom:1px solid var(--line)}
+  .tk-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;
+    padding:9px 12px;background:var(--card);border:1px solid var(--line);border-radius:13px;
+    box-shadow:var(--shadow);margin-bottom:12px}
   .tk-tools .sp{flex:1 1 auto}
   .tk-tool{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;
     color:#5d564c;font-family:inherit;font-size:calc(12.5px * var(--fz));font-weight:700;
@@ -379,8 +375,6 @@
   .tk-tool.pri{background:var(--accent);color:#fff;border-color:transparent}
   .tk-tool select{border:0;background:transparent;font-family:inherit;font-weight:700;
     font-size:calc(12.5px * var(--fz));color:inherit;cursor:pointer;outline:none}
-  .tk-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
-    padding:12px 14px calc(34px + env(safe-area-inset-bottom))}
   .tk-sec-h{display:flex;align-items:center;gap:8px;font-size:calc(12.5px * var(--fz));
     font-weight:800;color:var(--muted);letter-spacing:.04em;margin:2px 2px 9px}
   .tk-sec-h b{color:var(--accent)}
@@ -444,8 +438,8 @@
     border:1px solid var(--line);border-radius:10px;padding:9px 12px;word-break:break-all}
   .tk-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 
-  /* 子面板（新增 / 編輯 / 分享 / 匯入） */
-  .tk-sub{position:absolute;inset:0;z-index:3;display:none;flex-direction:column;
+  /* 子面板（新增 / 編輯 / 分享 / 批量編輯） */
+  .tk-sub{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;
     background:rgba(40,32,22,.38)}
   .tk-sub.on{display:flex}
   .tk-sub-card{margin:auto;width:min(560px,calc(100% - 24px));max-height:88vh;display:flex;flex-direction:column;
@@ -501,9 +495,7 @@
     width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.18);
     color:#fff;font-size:19px;cursor:pointer}
   @media (max-width:560px){
-    .tk-hd{padding-left:10px;padding-right:10px}
     .tk-tools{padding:8px 10px;gap:6px}
-    .tk-body{padding:10px 10px calc(30px + env(safe-area-inset-bottom))}
   }
 </style>
 </head>
@@ -517,6 +509,7 @@
         <button type="button" data-lay="card" class="on">作業</button>
         <button type="button" data-lay="tests">測驗</button>
         <button type="button" data-lay="subject">科目</button>
+        <button type="button" data-lay="task">任務</button>
       </div>
     </div>
     <span class="law">以<b>原網址</b>為準</span>
@@ -564,28 +557,15 @@
       <h3 id="sheetTitle">選擇班級</h3>
       <button class="done" data-close>完成</button>
     </div>
-    <p class="tip">可選多個班級，選好的會排在下方班級條；內容上<b>單指左右滑</b>切換「作業／測驗／科目」呈現，點班級條切換班級。功課項目按「＋」可加入<b>任務</b>；底部「任務」可自建待辦、排序、分享與匯出。選擇會記住，抓取時自動換上對應的 classcode。</p>
+    <p class="tip">可選多個班級，選好的會排在下方班級條；內容上<b>單指左右滑</b>切換「作業／測驗／科目／任務」呈現，點班級條切換班級。功課項目按「＋」可加入<b>任務</b>（任務清單按班級顯示）；「用戶數據」可把任務與設定<b>備份／恢復</b>。選擇會記住，抓取時自動換上對應的 classcode。</p>
     <div id="classGroups"></div>
     <div class="foot" id="sheetFoot"></div>
   </div>
 </div>
 
-<!-- 任務：全螢幕面板（清單 → 詳情；新增/編輯/分享/匯入 用子面板） -->
-<div class="tk-wrap" id="taskWrap" aria-hidden="true">
-  <div class="tk-panel" role="dialog" aria-modal="true" aria-labelledby="tkTitle">
-    <header class="tk-hd">
-      <button class="tk-icon" id="tkBack" type="button" aria-label="返回清單" hidden>←</button>
-      <h3 id="tkTitle">任務</h3>
-      <span class="tk-count" id="tkCount"></span>
-      <span class="tk-sp"></span>
-      <button class="tk-icon" type="button" data-tk-close aria-label="關閉">✕</button>
-    </header>
-    <div class="tk-tools" id="tkTools"></div>
-    <div class="tk-body" id="tkBody"></div>
-  </div>
-  <div class="tk-sub" id="tkSub" aria-hidden="true"></div>
-  <input type="file" id="tkImportFile" accept=".json,application/json" hidden>
-</div>
+<!-- 任務：清單內嵌在主內容（「任務」呈現）；新增/編輯/分享/批量編輯 用子面板 -->
+<div class="tk-sub" id="tkSub" aria-hidden="true"></div>
+<input type="file" id="tkImportFile" accept=".json,application/json" hidden>
 
 <!-- 附件圖片放大查看 -->
 <div class="lb" id="lightbox" aria-hidden="true">
@@ -621,7 +601,8 @@ const DEFAULT_SEL = ["s3C", "s1A"];
 const LAYOUTS = [
   { k:"card", t:"作業" },
   { k:"tests", t:"測驗" },
-  { k:"subject", t:"科目" }
+  { k:"subject", t:"科目" },
+  { k:"task", t:"任務" }
 ];
 const LS_LAYOUT = "hw_layout_v1";
 const LS_FONT = "hw_font_v1";
@@ -1102,6 +1083,7 @@ function selectClass(i){
   refreshNav();
   renderSources();
   renderList();
+  refreshTaskBadge();
   try{ history.replaceState(null, "", "#" + currentCode()); }catch(e){}
   if (window.scrollY > 4) window.scrollTo({ top:0, behavior:"smooth" });
   centerChip(true);
@@ -1125,6 +1107,12 @@ function renderList(){
   const code = currentCode();
   const list = document.getElementById("list");
   const rec = state.data[code];
+
+  /* 任務呈現：內嵌在主內容、按當前班級過濾，不依賴作業資料 */
+  if (state.layout === "task"){
+    list.innerHTML = renderTaskView();
+    return;
+  }
 
   if (!rec || !rec.days || !rec.days.length){
     if (state.busy[code] || !state.err[code]){
@@ -1398,7 +1386,14 @@ function renderSheet(){
            ${state.font === f.k ? '<span class="tick">✓</span>' : ""}${f.t}</button>`
       ).join("")}</div>
     </div>`;
-  groups.innerHTML = fontGrp + layGrp + LEVELS.map(lv => {
+  const bkGrp = `<div class="grp">
+      <div class="lab">用戶數據（備份 / 恢復）</div>
+      <div class="opts">
+        <button class="opt" data-ud="export">匯出備份（任務＋設定）</button>
+        <button class="opt" data-ud="import">匯入恢復</button>
+      </div>
+    </div>`;
+  groups.innerHTML = fontGrp + layGrp + bkGrp + LEVELS.map(lv => {
     const items = CLASSES.filter(c => c.v.startsWith(lv.k))
       .sort((a, b) => a.v.localeCompare(b.v));
     if (!items.length) return "";
@@ -1423,6 +1418,12 @@ function renderSheet(){
   });
   groups.querySelectorAll(".opt[data-fz]").forEach(b => {
     b.onclick = () => setFont(b.dataset.fz);
+  });
+  groups.querySelectorAll(".opt[data-ud]").forEach(b => {
+    b.onclick = () => {
+      if (b.dataset.ud === "export") exportUserData();
+      else document.getElementById("tkImportFile").click();
+    };
   });
 
   document.getElementById("sheetFoot").textContent =
@@ -1785,13 +1786,14 @@ function closeSheet(){
 
 /* =========================================================
    任務模組
-   - 欄位：主題 / 狀態 / 到期日 / 內容 / 附件（圖片可預覽放大）
+   - 欄位：主題 / 狀態 / 到期日 / 內容 / 附件（圖片可預覽放大）/ 班級(cls)
+   - 清單為第 4 種呈現（layout=task），內嵌主內容、按當前班級過濾（非彈窗）
    - 第一層清單：只顯示「到期日 + 主題」，只列未完成，已完成收起
    - 第二層詳情：再點進去才看內容與附件
-   - 新增：單筆表單 或 批量貼上多行；主題含日期自動解析為到期日
+   - 新增：單筆表單 或 批量貼上多行；主題含日期自動解析為到期日並自主題移除（不重複）
    - 排序：手動（拖動）/ 到期日 / 主題；可置頂；向右拉露出刪除
    - 分享：勾選一筆或全部（只含未完成），輸出文字或圖片
-   - 匯出 / 匯入 JSON；作業、科目、測驗清單項目可「＋」直接加入
+   - 備份／恢復在「設定」面板（用戶數據：任務＋設定）；作業、科目、測驗項目可「＋」直接加入
    ========================================================= */
 const LS_TASKS = "hw_tasks_v1";
 const LS_TASK_SORT = "hw_task_sort_v1";
@@ -1819,6 +1821,7 @@ function normTask(o){
     due: /^\d{4}-\d{2}-\d{2}$/.test(o.due || "") ? o.due : "",
     content: String(o.content || ""),
     atts,
+    cls: CLASSES.some(c => c.v === o.cls) ? String(o.cls) : "",   // 所屬班級（舊資料空＝各班通用）
     pinned: !!o.pinned,
     order: Number.isFinite(+o.order) ? +o.order : 0,
     created: Number(o.created) || Date.now()
@@ -1840,21 +1843,23 @@ function loadTaskSort(){
   return "manual";
 }
 function saveTaskSort(){ try{ localStorage.setItem(LS_TASK_SORT, TASK_SORT); }catch(e){} }
+/* 目前班級的任務（舊資料無 cls → 各班通用） */
+function classTasks(){ const c = currentCode(); return TASKS.filter(t => !t.cls || t.cls === c); }
 function nextOrder(){ return TASKS.reduce((m, t) => Math.max(m, t.order || 0), 0) + 1; }
 function refreshTaskBadge(){
   const b = document.getElementById("tkBadge");
   if (!b) return;
-  const n = TASKS.filter(t => t.status !== "done").length;
+  const n = classTasks().filter(t => t.status !== "done").length;
   b.textContent = n > 99 ? "99+" : String(n);
   b.classList.toggle("show", n > 0);
 }
 
 /* 主題內日期自動解析 → YYYY-MM-DD
    支援 2026-11-10 / 2026年11月10日 / 11月10日 / 11-10 / 11/10 /
-   今天 / 明天 / 後天 / 下週一 / 本週三 / 週五 */
-function parseDueFromText(text){
-  const s = String(text || "");
-  if (!s.trim()) return "";
+   今天 / 明天 / 後天 / 下週一 / 本週三 / 週五
+   matchDueInText 額外回傳「匹配到的字樣」，供 splitDueFromText 把日期從主題移除（避免重複） */
+function matchDueInText(s){
+  if (!s.trim()) return null;
   const now = today0(), y = now.getFullYear();
   const iso = d => ymd(d);
   const mk = (yy, mm, dd) => {
@@ -1868,17 +1873,17 @@ function parseDueFromText(text){
     if (now - parseD(r) > 180 * 86400000) r = mk(y + 1, mm, dd);
     return r;
   };
-  let m = s.match(/(20\d{2})\s*[-/.年]\s*(\d{1,2})\s*[-/.月]\s*(\d{1,2})/);
-  if (m) return mk(+m[1], +m[2], +m[3]);
+  let m = s.match(/(20\d{2})\s*[-/.年]\s*(\d{1,2})\s*[-/.月]\s*(\d{1,2})(\s*[日號号])?/);
+  if (m){ const d = mk(+m[1], +m[2], +m[3]); return d ? { due:d, token:m[0] } : null; }
   m = s.match(/(\d{1,2})\s*月\s*(\d{1,2})\s*[日號号]?/);
-  if (m) return thisYear(+m[1], +m[2]);
+  if (m){ const d = thisYear(+m[1], +m[2]); return d ? { due:d, token:m[0] } : null; }
   m = s.match(/(?:^|[^\d])(\d{1,2})\s*[-/]\s*(\d{1,2})(?!\d)/);
-  if (m) return thisYear(+m[1], +m[2]);
+  if (m){ const d = thisYear(+m[1], +m[2]); return d ? { due:d, token:m[0] } : null; }
 
   const dayOf = n => iso(new Date(y, now.getMonth(), now.getDate() + n));
-  if (/今天|今日/.test(s)) return dayOf(0);
-  if (/明天|明日/.test(s)) return dayOf(1);
-  if (/後天|后天/.test(s)) return dayOf(2);
+  m = s.match(/今天|今日/);        if (m) return { due:dayOf(0), token:m[0] };
+  m = s.match(/明天|明日/);        if (m) return { due:dayOf(1), token:m[0] };
+  m = s.match(/後天|后天/);        if (m) return { due:dayOf(2), token:m[0] };
   const CN = { "一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"日":0,"天":0,
                "1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":0 };
   const wk = s.match(/(下|本|這|这)?\s*(?:週|周|星期|禮拜|礼拜)\s*([一二三四五六日天1-7])/);
@@ -1891,9 +1896,25 @@ function parseDueFromText(text){
     const off = target === 0 ? 6 : target - 1;
     let d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + off);
     if (!wk[1] && d < now) d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7);
-    return iso(d);
+    return { due:iso(d), token:wk[0] };
   }
-  return "";
+  return null;
+}
+function parseDueFromText(text){
+  const r = matchDueInText(String(text || ""));
+  return r ? r.due : "";
+}
+/* 解析主題日期並把日期字樣自主題移除：到期日欄位已展示日期，主題不必重複 */
+function splitDueFromText(text){
+  const s = String(text || "");
+  const r = matchDueInText(s);
+  if (!r) return { due:"", subj:s.trim() };
+  let t = s.replace(r.token, " ");
+  t = t.replace(/\s{2,}/g, " ")
+       .replace(/^[\s\-–—·、，,.。:：(|（]+/, "")
+       .replace(/[\s\-–—·、，,.。:：)|）]+$/, "")
+       .trim();
+  return { due:r.due, subj:t || s.trim() };     // 移除後整句空掉則保留原句
 }
 
 /* 排序：置頂永遠在最前；其餘依 手動 / 到期日 / 主題 */
@@ -1948,40 +1969,44 @@ function listToolsHtml(n){
       <option value="subject"${TASK_SORT === "subject" ? " selected" : ""}>主題</option>
     </select></label>
     <span class="sp"></span>
-    <button class="tk-tool" type="button" data-tk-act="share"${n ? "" : " disabled"}>分享</button>
-    <button class="tk-tool" type="button" data-tk-act="export">匯出</button>
-    <button class="tk-tool" type="button" data-tk-act="import">匯入</button>`;
+    <button class="tk-tool" type="button" data-tk-act="share"${n ? "" : " disabled"}>分享</button>`;
 }
-function renderTaskList(){
-  const open = sortedTasks(TASKS.filter(t => t.status !== "done"));
-  const done = sortedTasks(TASKS.filter(t => t.status === "done"));
-  document.getElementById("tkTitle").textContent = "任務";
-  document.getElementById("tkCount").textContent = "未完成 " + open.length;
-  document.getElementById("tkBack").hidden = true;
-  document.getElementById("tkTools").innerHTML = listToolsHtml(open.length);
-  let h = `<div class="tk-sec-h">未完成 <b>${open.length}</b>${
+/* 任務清單（內嵌在主內容，按當前班級） */
+function taskListHtml(){
+  const open = sortedTasks(classTasks().filter(t => t.status !== "done"));
+  const done = sortedTasks(classTasks().filter(t => t.status === "done"));
+  let h = `<div class="tk-page-h">
+      <span class="t">任務 · ${esc(nameOf(currentCode()))}</span>
+      <span class="c">未完成 ${open.length}</span>
+      <span class="sp"></span>
+      <span class="cal-ref">僅供參考</span>
+    </div>`;
+  h += `<div class="tk-tools">${listToolsHtml(open.length)}</div>`;
+  h += `<div class="tk-sec-h">未完成 <b>${open.length}</b>${
     TASK_SORT === "manual" ? " · 拖 ⋮⋮ 排序、向右拉可刪除" : ""}</div>`;
   h += open.length
     ? `<div class="tk-rows" id="tkOpenRows">${open.map(t => taskRowHtml(t, false)).join("")}</div>`
-    : `<div class="tk-empty">沒有未完成的任務<br>點「＋ 新增」或由作業／測驗項目按「＋」加入</div>`;
+    : `<div class="tk-empty">這個班沒有未完成的任務<br>點「＋ 新增」或由作業／測驗項目按「＋」加入</div>`;
   if (done.length){
     h += `<details class="tk-done"><summary>已完成 ${done.length} 筆</summary>
       <div class="tk-rows">${done.map(t => taskRowHtml(t, true)).join("")}</div></details>`;
   }
-  document.getElementById("tkBody").innerHTML = h;
+  return h;
 }
-function renderTaskDetail(){
+/* 任務詳情（同樣內嵌在主內容） */
+function taskDetailHtml(){
   const t = TASKS.find(x => x.id === TASK_VIEW.id);
-  if (!t){ TASK_VIEW = { mode:"list", id:null }; return renderTaskList(); }
+  if (!t){ TASK_VIEW = { mode:"list", id:null }; return taskListHtml(); }
   const dl = dueLabel(t.due);
-  document.getElementById("tkTitle").textContent = "任務詳情";
-  document.getElementById("tkCount").textContent = t.status === "done" ? "已完成" : "未完成";
-  document.getElementById("tkBack").hidden = false;
-  document.getElementById("tkTools").innerHTML = "";
   const atts = t.atts.map((a, i) => a.img
     ? `<button class="tk-att-img" type="button" data-lb="${i}"><img src="${esc(a.data)}" alt="${esc(a.name)}"><span>${esc(a.name)}</span></button>`
     : `<a class="tk-att-file" href="${esc(a.data)}" download="${esc(a.name)}">📎 ${esc(a.name)}</a>`).join("");
-  document.getElementById("tkBody").innerHTML = `<div class="tk-detail">
+  return `<div class="tk-page-h">
+      <button class="tk-icon" type="button" data-tk-back aria-label="返回任務清單">←</button>
+      <span class="t">任務詳情 · ${esc(nameOf(t.cls || currentCode()))}</span>
+      <span class="c">${t.status === "done" ? "已完成" : "未完成"}</span>
+    </div>
+    <div class="tk-detail">
       <span class="big-due">${dl.txt}</span>
       <h4>${t.pinned ? "📌 " : ""}${esc(t.subject)}</h4>
       <div class="tk-meta">狀態：${t.status === "done" ? "已完成" : "未完成"} · ${t.due ? "到期 " + t.due : "未設到期日"}</div>
@@ -1997,22 +2022,14 @@ function renderTaskDetail(){
       </div>
     </div>`;
 }
-function renderTaskPanel(){
-  if (TASK_VIEW.mode === "detail") renderTaskDetail(); else renderTaskList();
-  const b = document.getElementById("tkBody"); if (b) b.scrollTop = 0;
+/* 「任務」呈現（layout=task）：清單或詳情，渲染在主內容 #list */
+function renderTaskView(){
+  return TASK_VIEW.mode === "detail" ? taskDetailHtml() : taskListHtml();
 }
-function openTaskPanel(){
-  closeSheet();
-  closeLightbox();
-  TASK_VIEW = { mode:"list", id:null };
-  const w = document.getElementById("taskWrap");
-  w.classList.add("on"); w.setAttribute("aria-hidden", "false");
-  renderTaskPanel(); refreshTaskBadge();
-}
-function closeTaskPanel(){
-  closeTaskSub();
-  const w = document.getElementById("taskWrap");
-  w.classList.remove("on"); w.setAttribute("aria-hidden", "true");
+/* 任務資料變動後統一刷新：徽章 + 若正在看任務呈現則重繪清單 */
+function rerenderTasks(){
+  refreshTaskBadge();
+  if (state.layout === "task") renderList();
 }
 function openTaskSub(title, body, foot){
   const s = document.getElementById("tkSub");
@@ -2043,22 +2060,17 @@ function closeLightbox(){
   document.getElementById("lbImg").removeAttribute("src");
 }
 
-/* 任務面板的統一點擊委派 */
-function onTaskWrapClick(e){
-  const el = e.target;
-  if (el.id === "tkSub"){ closeTaskSub(); return; }
-  if (el.closest("[data-sub-close]")){ closeTaskSub(); return; }
-  if (el.closest("[data-tk-close]")){ closeTaskPanel(); return; }
-  if (el.closest("#tkBack")){ TASK_VIEW = { mode:"list", id:null }; renderTaskPanel(); return; }
-
-  const lb = el.closest("[data-lb]");
+/* 任務呈現的點擊委派（#list 內：清單／詳情／工具列） */
+function onTaskAreaClick(e){
+  if (e.target.closest("[data-tk-back]")){ TASK_VIEW = { mode:"list", id:null }; renderList(); return; }
+  const lb = e.target.closest("[data-lb]");
   if (lb){
     const t = TASKS.find(x => x.id === TASK_VIEW.id);
     const a = t && t.atts[+lb.dataset.lb];
     if (a) showLightbox(a.data, a.name);
     return;
   }
-  const act = el.closest("[data-act]");
+  const act = e.target.closest("[data-act]");
   if (act){
     const out = act.closest(".tk-row-outer");
     const id = out && out.dataset.id;
@@ -2066,13 +2078,11 @@ function onTaskWrapClick(e){
     if (k === "del") deleteTask(id, false);
     else if (k === "check") toggleTaskStatus(id);
     else if (k === "pin") toggleTaskPin(id);
-    else if (k === "open"){ TASK_VIEW = { mode:"detail", id }; renderTaskPanel(); }
+    else if (k === "open"){ TASK_VIEW = { mode:"detail", id }; renderList(); window.scrollTo({ top:0 }); }
     return;
   }
-  const ta = el.closest("[data-tk-act]");
-  if (ta){ handleTaskTool(ta.dataset.tkAct, ta); return; }
-  const sa = el.closest("[data-sub-act]");
-  if (sa){ handleTaskSubAct(sa.dataset.subAct, sa); return; }
+  const ta = e.target.closest("[data-tk-act]");
+  if (ta) handleTaskTool(ta.dataset.tkAct, ta);
 }
 function deleteTask(id, ask){
   const t = TASKS.find(x => x.id === id);
@@ -2081,16 +2091,16 @@ function deleteTask(id, ask){
   TASKS = TASKS.filter(x => x.id !== id);
   saveTasks();
   if (TASK_VIEW.mode === "detail" && TASK_VIEW.id === id) TASK_VIEW = { mode:"list", id:null };
-  renderTaskPanel(); toast("已刪除任務");
+  rerenderTasks(); toast("已刪除任務");
 }
 function toggleTaskStatus(id){
   const t = TASKS.find(x => x.id === id); if (!t) return;
   t.status = t.status === "done" ? "todo" : "done";
-  saveTasks(); renderTaskPanel();
+  saveTasks(); rerenderTasks();
 }
 function toggleTaskPin(id){
   const t = TASKS.find(x => x.id === id); if (!t) return;
-  t.pinned = !t.pinned; saveTasks(); renderTaskPanel();
+  t.pinned = !t.pinned; saveTasks(); rerenderTasks();
 }
 
 /* ---------- 工具列 / 詳情動作 ---------- */
@@ -2102,21 +2112,21 @@ function handleTaskTool(k){
   else if (k === "shareone") openSharePanel(TASK_VIEW.id);
   else if (k === "toggle") toggleTaskStatus(TASK_VIEW.id);
   else if (k === "delone") deleteTask(TASK_VIEW.id, true);
-  else if (k === "export") exportTasks();
-  else if (k === "import") document.getElementById("tkImportFile").click();
 }
 
 /* ---------- 新增 / 編輯表單（單筆 ＋ 批量貼上） ---------- */
 function openTaskForm(id){
   const t = id ? TASKS.find(x => x.id === id) : null;
   TASK_EDIT = t ? JSON.parse(JSON.stringify(t)) : {
-    id:null, subject:"", status:"todo", due:"", content:"", atts:[], pinned:false, order:0, created:0
+    id:null, subject:"", status:"todo", due:"", content:"", atts:[],
+    cls:currentCode(), pinned:false, order:0, created:0
   };
   TASK_SUB = "form";
   const tabs = t ? "" : `<div class="tk-tabs">
       <button type="button" data-sub-act="tab-single" class="on">單筆新增</button>
       <button type="button" data-sub-act="tab-batch">批量貼上</button></div>`;
   const single = `<div id="tkFormSingle">
+      <p class="hint" style="margin:0 0 10px">歸屬班級：<b>${esc(nameOf(TASK_EDIT.cls || currentCode()))}</b>（新任務跟隨目前選班；清單按班級顯示）</p>
       <div class="tk-field"><label>主題</label>
         <input type="text" id="tkFSubject" placeholder="例：11/10 交閱讀報告" value="${esc(TASK_EDIT.subject)}">
         <span class="hint" id="tkFHint"></span></div>
@@ -2127,7 +2137,7 @@ function openTaskForm(id){
         </select></div>
       <div class="tk-field"><label>到期日</label>
         <input type="date" id="tkFDue" value="${esc(TASK_EDIT.due)}" data-auto="${TASK_EDIT.due ? "0" : "1"}">
-        <span class="hint">主題含日期（11/10、11月10日、明天、下週一…）會<b>自動帶入</b></span></div>
+        <span class="hint">主題含日期（11/10、11月10日、明天、下週一…）會<b>自動帶入到期日並自主題移除</b>，不會重複</span></div>
       <div class="tk-field"><label>內容</label>
         <textarea id="tkFContent" placeholder="補充說明（選填）">${esc(TASK_EDIT.content)}</textarea></div>
       <div class="tk-field"><label>附件（圖片可預覽、點擊放大）</label>
@@ -2135,9 +2145,10 @@ function openTaskForm(id){
         <div class="tk-preview" id="tkFPreview"></div></div>
     </div>`;
   const batch = t ? "" : `<div id="tkFormBatch" hidden>
+      <p class="hint" style="margin:0 0 10px">歸屬班級：<b>${esc(nameOf(currentCode()))}</b>（跟隨目前選班）</p>
       <div class="tk-field"><label>每行一筆（可直接貼上多行）</label>
         <textarea id="tkFBatch" rows="8" placeholder="11/10 交閱讀報告&#10;明天 帶字典&#10;11月12日 中文作文"></textarea>
-        <span class="hint">每行成為一筆任務；主題內含日期會<b>自動填入到期日</b>；空行略過。</span></div>
+        <span class="hint">每行成為一筆任務；行內日期會<b>自動填入到期日並自主題移除</b>；空行略過。</span></div>
       <div class="tk-field"><label>狀態</label>
         <select id="tkFBatchStatus"><option value="todo">未完成</option><option value="done">已完成</option></select></div>
     </div>`;
@@ -2152,7 +2163,7 @@ function syncFormHint(){
   const hi = document.getElementById("tkFHint");
   if (!si || !di || !hi) return;
   const d = parseDueFromText(si.value);
-  hi.innerHTML = d ? "辨識到到期日 <b>" + d + "</b>，已自動填入" : "未在主題中找到日期";
+  hi.innerHTML = d ? "辨識到到期日 <b>" + d + "</b>，已自動填入（儲存時會自主題移除日期）" : "未在主題中找到日期";
   if (d && (!di.value || di.dataset.auto === "1")){ di.value = d; di.dataset.auto = "1"; }
 }
 function renderFormPreview(){
@@ -2218,35 +2229,40 @@ function saveTaskForm(){
     if (!lines.length){ toast("請貼上至少一行", true); return; }
     const st = document.getElementById("tkFBatchStatus").value === "done" ? "done" : "todo";
     let n = nextOrder();
-    lines.forEach(line => TASKS.push({ id:uid(), subject:line, status:st,
-      due:parseDueFromText(line), content:"", atts:[], pinned:false, order:n++, created:Date.now() }));
+    lines.forEach(line => {
+      const sp = splitDueFromText(line);                     // 日期 → 到期日，主題不再重複
+      TASKS.push({ id:uid(), subject:sp.subj, status:st, due:sp.due, content:"", atts:[],
+        cls:currentCode(), pinned:false, order:n++, created:Date.now() });
+    });
     if (!saveTasks()) return;
-    closeTaskSub(); TASK_VIEW = { mode:"list", id:null }; renderTaskPanel();
+    closeTaskSub(); TASK_VIEW = { mode:"list", id:null }; rerenderTasks();
     toast("已新增 " + lines.length + " 筆任務"); return;
   }
   const subject = String(document.getElementById("tkFSubject").value || "").trim();
   if (!subject){ toast("請填寫主題", true); return; }
   const dueRaw = document.getElementById("tkFDue").value;
-  const due = /^\d{4}-\d{2}-\d{2}$/.test(dueRaw) ? dueRaw : parseDueFromText(subject);
+  const sp = splitDueFromText(subject);                      // 主題含日期 → 解析並自主題移除
+  const due = /^\d{4}-\d{2}-\d{2}$/.test(dueRaw) ? dueRaw : sp.due;
+  const subjClean = (due && sp.due === due) ? sp.subj : subject;   // 只有真的作為到期日才移除
   const status = document.getElementById("tkFStatus").value === "done" ? "done" : "todo";
   const content = String(document.getElementById("tkFContent").value || "");
   const atts = TASK_EDIT.atts.slice();
   const wasEdit = !!TASK_EDIT.id;
   if (wasEdit){
     const t = TASKS.find(x => x.id === TASK_EDIT.id);
-    if (t){ t.subject = subject; t.status = status; t.due = due; t.content = content; t.atts = atts; }
+    if (t){ t.subject = subjClean; t.status = status; t.due = due; t.content = content; t.atts = atts; }
   }else{
-    TASKS.push({ id:uid(), subject, status, due, content, atts,
+    TASKS.push({ id:uid(), subject:subjClean, status, due, content, atts, cls:TASK_EDIT.cls || "",
       pinned:false, order:nextOrder(), created:Date.now() });
   }
   if (!saveTasks()) return;
-  closeTaskSub(); renderTaskPanel(); toast(wasEdit ? "已儲存變更" : "已新增任務");
+  closeTaskSub(); rerenderTasks(); toast(wasEdit ? "已儲存變更" : "已新增任務");
 }
 
 /* ---------- 一頁內批量編輯未完成任務（主題 / 到期日 / 內容） ---------- */
 function openBulkPanel(){
-  const open = sortedTasks(TASKS.filter(t => t.status !== "done"));
-  if (!open.length){ toast("沒有未完成的任務可編輯", true); return; }
+  const open = sortedTasks(classTasks().filter(t => t.status !== "done"));
+  if (!open.length){ toast("這個班沒有未完成的任務可編輯", true); return; }
   TASK_SUB = "bulk";
   const rows = open.map((t, i) => `<div class="tk-bulk-row" data-id="${esc(t.id)}">
       <div class="bh">${i + 1}. ${t.pinned ? "📌 " : ""}${esc(t.subject)}</div>
@@ -2277,13 +2293,16 @@ function saveBulkForm(){
     const subject = String(s ? s.value : "").trim();
     if (!subject){ skipped++; return; }
     let due = d && /^\d{4}-\d{2}-\d{2}$/.test(d.value) ? d.value : "";
-    if (!due){ const p = parseDueFromText(subject); if (p){ due = p; auto++; } }
+    if (!due){
+      const sp = splitDueFromText(subject);
+      if (sp.due){ due = sp.due; subject = sp.subj; auto++; }   // 自動帶入時主題同步去重
+    }
     const content = String(c ? c.value : "");
     if (subject !== t.subject || due !== t.due || content !== t.content) changed++;
     t.subject = subject; t.due = due; t.content = content;
   });
   if (!saveTasks()) return;
-  closeTaskSub(); renderTaskPanel();
+  closeTaskSub(); rerenderTasks();
   toast("已儲存 " + changed + " 筆變更" +
     (auto ? "，自動帶入 " + auto + " 個到期日" : "") +
     (skipped ? "（" + skipped + " 筆主題空白略過）" : ""));
@@ -2291,8 +2310,8 @@ function saveBulkForm(){
 
 /* ---------- 分享：一筆或全部（只含未完成），文字 / 圖片 ---------- */
 function openSharePanel(onlyId){
-  const open = sortedTasks(TASKS.filter(t => t.status !== "done"));
-  if (!open.length){ toast("沒有未完成的任務可分享", true); return; }
+  const open = sortedTasks(classTasks().filter(t => t.status !== "done"));
+  if (!open.length){ toast("這個班沒有未完成的任務可分享", true); return; }
   TASK_SUB = "share";
   const opts = open.map(t => `<label>
       <input type="checkbox" value="${esc(t.id)}"${onlyId ? (t.id === onlyId ? " checked" : "") : " checked"}>
@@ -2307,7 +2326,7 @@ function openSharePanel(onlyId){
 }
 function pickedTasks(){
   const ids = Array.from(document.querySelectorAll("#tkPickList input:checked")).map(c => c.value);
-  return sortedTasks(TASKS.filter(t => ids.indexOf(t.id) >= 0 && t.status !== "done"));
+  return sortedTasks(classTasks().filter(t => ids.indexOf(t.id) >= 0 && t.status !== "done"));
 }
 function tasksAsText(list){
   const head = "任務清單（未完成）";
@@ -2382,18 +2401,43 @@ async function shareTasksImage(list){
   closeTaskSub(); toast("已下載圖片，可傳到 WeChat / WhatsApp");
 }
 
-/* ---------- 匯出 / 匯入 ---------- */
-function exportTasks(){
-  const data = JSON.stringify({ v:1, exportedAt:new Date().toISOString(), tasks:TASKS }, null, 2);
+/* ---------- 用戶數據備份 / 恢復（在「設定」面板內） ----------
+   匯出：任務＋已選班級＋顯示方式/字級/任務排序＋已隱藏測驗紀錄
+   匯入：v2 整份備份 → 恢復（取代）；舊版純任務檔 → 取代或合併 */
+function exportUserData(){
+  const data = JSON.stringify({ v:2, app:"hw_board", exportedAt:new Date().toISOString(),
+    tasks:TASKS,
+    settings:{
+      sel:state.sel, layout:state.layout, font:state.font,
+      taskSort:TASK_SORT, dismiss:DISMISS
+    } }, null, 2);
   const blob = new Blob([data], { type:"application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "tasks_" + ymd(new Date()) + ".json";
+  a.download = "homework_backup_" + ymd(new Date()) + ".json";
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => { try{ URL.revokeObjectURL(a.href); }catch(e){} }, 4000);
-  toast("已匯出 " + TASKS.length + " 筆任務");
+  toast("已匯出備份：" + TASKS.length + " 筆任務 ＋ 設定");
 }
-async function onTaskImport(e){
+function applyBackupSettings(s){
+  if (!s || typeof s !== "object") return;
+  if (Array.isArray(s.sel)){
+    const ok = s.sel.filter(c => CLASSES.some(x => x.v === c));
+    if (ok.length){ state.sel = sortSel(ok.slice(0, MAX_SEL)); state.cls = 0; saveSel(); }
+  }
+  if (LAYOUTS.some(l => l.k === s.layout)){
+    state.layout = s.layout;
+    try{ localStorage.setItem(LS_LAYOUT, s.layout); }catch(e){}
+  }
+  if (FONT_SIZES.some(f => f.k === s.font)){
+    state.font = s.font;
+    try{ localStorage.setItem(LS_FONT, s.font); }catch(e){}
+    applyFont();
+  }
+  if (["manual","due","subject"].indexOf(s.taskSort) >= 0){ TASK_SORT = s.taskSort; saveTaskSort(); }
+  if (s.dismiss && typeof s.dismiss === "object"){ DISMISS = s.dismiss; saveDismiss(); }
+}
+async function onUserImport(e){
   const f = e.target.files && e.target.files[0];
   if (!f) return;
   try{
@@ -2401,18 +2445,30 @@ async function onTaskImport(e){
     const arr = Array.isArray(o) ? o : (o && Array.isArray(o.tasks) ? o.tasks : null);
     if (!arr) throw new Error("格式不符");
     const got = arr.map(normTask).filter(Boolean);
-    if (!got.length) throw new Error("沒有可用任務");
-    const replace = window.confirm(
-      "匯入 " + got.length + " 筆任務。\n按「確定」＝取代目前全部任務；按「取消」＝合併（保留現有）。");
-    if (replace) TASKS = got;
-    else{
-      const ids = TASKS.map(t => t.id);
-      got.forEach(t => { if (ids.indexOf(t.id) >= 0) t.id = uid(); TASKS.push(t); });
-      TASKS.forEach((t, i) => { if (!t.order) t.order = i + 1; });
+    if (!got.length) throw new Error("沒有可用資料");
+    if (o && o.settings){                                     // v2：整份備份 → 恢復
+      if (!window.confirm("恢復備份：任務與設定（班級、顯示方式、字級、已隱藏測驗）都會被取代。\n確定繼續？")) return;
+      applyBackupSettings(o.settings);
+      TASKS = got;
+      if (!saveTasks()) return;
+      closeSheet();
+      TASK_VIEW = { mode:"list", id:null };
+      renderSheet(); renderSources(); refreshNav(); syncLaySwitch(); renderList(); refreshTaskBadge();
+      ensureData(currentCode());
+      toast("已恢復備份：" + got.length + " 筆任務 ＋ 設定");
+    }else{                                                    // 舊版純任務 → 取代或合併
+      const replace = window.confirm(
+        "匯入 " + got.length + " 筆任務。\n按「確定」＝取代目前全部任務；按「取消」＝合併（保留現有）。");
+      if (replace) TASKS = got;
+      else{
+        const ids = TASKS.map(t => t.id);
+        got.forEach(t => { if (ids.indexOf(t.id) >= 0) t.id = uid(); TASKS.push(t); });
+        TASKS.forEach((t, i) => { if (!t.order) t.order = i + 1; });
+      }
+      if (!saveTasks()) return;
+      closeTaskSub(); TASK_VIEW = { mode:"list", id:null }; rerenderTasks();
+      toast((replace ? "已取代為 " : "已合併 ") + got.length + " 筆任務");
     }
-    if (!saveTasks()) return;
-    closeTaskSub(); TASK_VIEW = { mode:"list", id:null }; renderTaskPanel();
-    toast((replace ? "已取代為 " : "已合併 ") + got.length + " 筆任務");
   }catch(err){ toast("匯入失敗：" + err.message, true); }
   e.target.value = "";
 }
@@ -2447,6 +2503,18 @@ function handleTaskSubAct(k, el){
 }
 function bindTaskSubEvents(){
   const sub = document.getElementById("tkSub");
+  sub.addEventListener("click", e => {
+    if (e.target === sub){ closeTaskSub(); return; }          // 點半透明背景＝關閉
+    if (e.target.closest("[data-sub-close]")){ closeTaskSub(); return; }
+    const sa = e.target.closest("[data-sub-act]");
+    if (sa){ handleTaskSubAct(sa.dataset.subAct, sa); return; }
+    const im = e.target.closest("[data-lb-edit]");
+    if (im){
+      e.stopPropagation();
+      const a = TASK_EDIT && TASK_EDIT.atts[+im.dataset.lbEdit];
+      if (a) showLightbox(a.data, a.name);
+    }
+  });
   sub.addEventListener("input", e => { if (e.target.id === "tkFSubject") syncFormHint(); });
   sub.addEventListener("change", async e => {
     if (e.target.id === "tkFDue"){ e.target.dataset.auto = "0"; return; }
@@ -2458,20 +2526,12 @@ function bindTaskSubEvents(){
       renderFormPreview();
     }
   });
-  sub.addEventListener("click", e => {
-    const im = e.target.closest("[data-lb-edit]");
-    if (im){
-      e.stopPropagation();
-      const a = TASK_EDIT && TASK_EDIT.atts[+im.dataset.lbEdit];
-      if (a) showLightbox(a.data, a.name);
-    }
-  });
 }
 
-/* ---------- 手勢：向右拉露出刪除 ⋮⋮ 拖動排序 ---------- */
+/* ---------- 手勢：向右拉露出刪除 ⋮⋮ 拖動排序（在 #list 任務呈現內） ---------- */
 let TK_G = null;
 function bindTaskGestures(){
-  const body = document.getElementById("tkBody");
+  const body = document.getElementById("list");
   body.addEventListener("pointerdown", e => {
     const out = e.target.closest(".tk-row-outer");
     if (!out) return;
@@ -2550,15 +2610,17 @@ function persistDragOrder(){
 
 /* ---------- 作業 / 科目 / 測驗清單項目 → 加入任務 ---------- */
 function addTaskFromItem(text, due, btn){
-  const subj = String(text || "").trim();
-  if (!subj) return;
-  if (TASKS.some(t => t.status !== "done" && t.subject === subj)){
+  const raw = String(text || "").trim();
+  if (!raw) return;
+  const sp = splitDueFromText(raw);                           // 日期 → 到期日，主題不再重複
+  const subj = sp.subj;
+  if (TASKS.some(t => t.status !== "done" && (t.subject === subj || t.subject === raw))){
     if (btn){ btn.classList.add("added"); btn.textContent = "✓"; }
     toast("這筆已在任務中"); return;
   }
-  const d = parseDueFromText(subj) || (/^\d{4}-\d{2}-\d{2}$/.test(due || "") ? due : "");
+  const d = sp.due || (/^\d{4}-\d{2}-\d{2}$/.test(due || "") ? due : "");
   TASKS.push({ id:uid(), subject:subj, status:"todo", due:d, content:"", atts:[],
-    pinned:false, order:nextOrder(), created:Date.now() });
+    cls:currentCode(), pinned:false, order:nextOrder(), created:Date.now() });
   saveTasks();
   if (btn){ btn.classList.add("added"); btn.textContent = "✓"; }
   toast("已加入任務" + (d ? "（到期 " + d + "）" : ""));
@@ -2566,16 +2628,22 @@ function addTaskFromItem(text, due, btn){
 
 /* ---------- 綁定 ---------- */
 (function bindTasks(){
-  const wrap = document.getElementById("taskWrap");
-  if (!wrap) return;
-  document.getElementById("openTasks").addEventListener("click", openTaskPanel);
-  wrap.addEventListener("click", onTaskWrapClick);
-  wrap.addEventListener("change", e => {
+  const list = document.getElementById("list");
+  if (!list) return;
+  // 底部「任務」按鈕 → 切到「任務」呈現（清單內嵌在頁面內，非彈窗）
+  document.getElementById("openTasks").addEventListener("click", () => {
+    closeSheet();
+    if (state.layout !== "task") setLayout("task");
+    else { TASK_VIEW = { mode:"list", id:null }; renderList(); }
+    window.scrollTo({ top:0, behavior:"smooth" });
+  });
+  list.addEventListener("click", onTaskAreaClick);
+  list.addEventListener("change", e => {
     if (e.target.id === "tkSort"){
-      TASK_SORT = e.target.value; saveTaskSort(); renderTaskList();
+      TASK_SORT = e.target.value; saveTaskSort(); renderList();
     }
   });
-  document.getElementById("tkImportFile").addEventListener("change", onTaskImport);
+  document.getElementById("tkImportFile").addEventListener("change", onUserImport);
   bindTaskSubEvents();
   bindTaskGestures();
   const lb = document.getElementById("lightbox");
@@ -2586,14 +2654,14 @@ function addTaskFromItem(text, due, btn){
 })();
 
 /* =========================================================
-   手勢：單指左右滑＝切「作業/測驗/科目」呈現（班級用底部班級條點選）
+   手勢：單指左右滑＝切「作業/測驗/科目/任務」呈現（班級用底部班級條點選）
    ========================================================= */
 const SWIPE_MIN = 54;
 let sw = null;     // 單指（作業/測驗/科目 呈現）
 
 function bindSwipe(){
   const area = document.querySelector("main.wrap");
-  const sheetOpen = () => document.querySelector(".sheet-wrap.on") || document.querySelector("#taskWrap.on");
+  const sheetOpen = () => document.querySelector(".sheet-wrap.on") || document.querySelector("#tkSub.on");
 
   const reset = anim => {
     area.style.transition = anim ? "transform .2s ease" : "";
@@ -2604,6 +2672,8 @@ function bindSwipe(){
 
   area.addEventListener("touchstart", e => {
     if (sheetOpen() || e.touches.length !== 1){ sw = null; return; }
+    // 任務列自帶橫向手勢（右拉刪除、⋮⋮ 拖動），滑動切呈現須避開
+    if (e.target.closest && e.target.closest(".tk-row-outer")){ sw = null; return; }
     const t = e.touches[0];
     sw = { x:t.clientX, y:t.clientY, dx:0, dir:null };
   }, { passive:true });
@@ -2655,7 +2725,7 @@ function bindSwipe(){
   area.addEventListener("touchcancel", end);
 }
 
-/* 向左 / 向右滑動切換「呈現方式」（作業 / 測驗 / 科目），循環切換 */
+/* 向左 / 向右滑動切換「呈現方式」（作業 / 測驗 / 科目 / 任務），循環切換 */
 function cycleLayout(dir){
   const i = LAYOUTS.findIndex(l => l.k === state.layout);
   const n = (i + (dir > 0 ? 1 : -1) + LAYOUTS.length) % LAYOUTS.length;
@@ -2672,7 +2742,6 @@ function cycleLayout(dir){
     if (e.key === "Escape"){
       if (document.getElementById("lightbox").classList.contains("on")){ closeLightbox(); return; }
       if (document.getElementById("tkSub").classList.contains("on")){ closeTaskSub(); return; }
-      if (document.getElementById("taskWrap").classList.contains("on")){ closeTaskPanel(); return; }
       closeSheet(); return;
     }
     if (e.key === "ArrowRight" || e.key === "ArrowLeft"){

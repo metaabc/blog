@@ -41,8 +41,9 @@ header h1{font-size:calc(18px * var(--fs-scale,1));margin-right:8px}
 .btn.pri:hover{filter:brightness(.95)}
 .btn.danger:hover{border-color:var(--warn);color:var(--warn)}
 main{max-width:1240px;margin:0 auto;padding:clamp(12px,2.2vw,22px)}
-.add-bar{display:flex;gap:8px;margin-bottom:18px}
+.add-bar{display:flex;gap:8px;margin-bottom:18px;align-items:center}
 .add-bar input{flex:1;padding:10px 14px;border:1px solid var(--line-2);border-radius:var(--radius);font-size:calc(14px * var(--fs-scale,1));background:var(--card)}
+.add-hint{font-size:calc(12.5px * var(--fs-scale,1));color:var(--sub);margin-left:2px}
 /* ============ 頂層分類導覽 ============ */
 .catnav{background:var(--card);position:sticky;top:var(--hh);z-index:40;box-shadow:var(--sh-bar)}
 .catnav-inner{max-width:1240px;margin:0 auto;padding:8px clamp(12px,2.2vw,22px);display:flex;align-items:center;gap:12px}
@@ -381,8 +382,8 @@ body.selmode .card,body.selmode .row{cursor:pointer;touch-action:none}
   </aside>
   <div class="content">
     <div class="add-bar">
-      <input id="urlInput" type="text" placeholder="貼上網址，例如 https://example.com，按 Enter 自動抓取標題、預覽圖並配對標籤">
-      <button class="btn pri" id="btnAdd">加入書籤</button>
+      <button class="btn pri" id="btnAddBulk">＋ 新增書籤</button>
+      <span class="add-hint">支援一次貼上多個網址，並統一選擇分類與標籤</span>
     </div>
 
     <div class="toolbar">
@@ -396,7 +397,7 @@ body.selmode .card,body.selmode .row{cursor:pointer;touch-action:none}
       </div>
     </div>
     <div class="grid" id="grid"></div>
-    <div class="empty" id="empty" style="display:none"><div class="em">🔍</div><div>沒有符合條件的書籤</div><div class="sub">試試調整搜尋或標籤篩選，或貼上一個網址新增</div></div>
+    <div class="empty" id="empty" style="display:none"><div class="em">🔍</div><div>沒有符合條件的書籤</div><div class="sub">試試調整搜尋或標籤篩選，或點擊「＋ 新增書籤」</div></div>
     <div class="batchbar" id="batchBar">
       <span class="bc" id="batchCount">已選 0 項</span>
       <button class="btn" id="batchAll">全選</button>
@@ -510,6 +511,28 @@ body.selmode .card,body.selmode .row{cursor:pointer;touch-action:none}
     <div class="modal-actions">
       <button class="btn" id="batchCancel">取消</button>
       <button class="btn pri" id="batchApply">套用</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批次新增書籤（多網址 + 統一分類/標籤） -->
+<div class="modal-mask" id="mBulkAdd">
+  <div class="modal">
+    <h2>＋ 新增書籤</h2>
+    <div class="hint">貼上網址，每行一個（亦可用逗號、空格或分號分隔）。會自動抓取標題、預覽圖並配對標籤，再套用下方統一選擇的分類與標籤。</div>
+    <label>網址（一行一個）</label>
+    <textarea id="bulkUrls" rows="5" placeholder="https://example.com&#10;https://news.site/article&#10;https://shop.store/product"></textarea>
+    <label>分類 — 套用至全部新增的書籤（可多選）</label>
+    <div class="suggest-tags" id="bulkCats"></div>
+    <label>標籤 — 套用至全部新增的書籤（並與自動配對合併，新標籤會自動錄入清單）</label>
+    <div class="picked" id="bulkPicked"></div>
+    <input type="text" id="bulkTagInput" list="bulkTagDl" placeholder="輸入標籤，按 Enter 或逗號加入…" autocomplete="off">
+    <datalist id="bulkTagDl"></datalist>
+    <div class="suggest-tags" id="bulkSuggest"></div>
+    <div class="hint" id="bulkStatus"></div>
+    <div class="modal-actions">
+      <button class="btn" id="bulkCancel" type="button">取消</button>
+      <button class="btn pri" id="bulkGo" type="button">加入</button>
     </div>
   </div>
 </div>
@@ -683,33 +706,102 @@ function matchTags(pageData){
 
 /* ================= 書籤 CRUD / 新增流程 ================= */
 let editId = null;
-async function startAdd(rawUrl){
-  const url = normalizeUrl(rawUrl);
-  if(!url){ toast('請先輸入網址'); return; }
-  if(db.bookmarks.some(b=>b.url===url)){ toast('此網址已在書籤中'); return; }
-  openBookmarkModal(null);
-  document.getElementById('fetchStatus').innerHTML = '<span class="spin"></span>正在讀取網頁…';
-  document.getElementById('fUrl').value = url;
-  document.getElementById('fTitle').value = hostOf(url);
-  const html = await fetchPage(url, s=>{ document.getElementById('fetchStatus').innerHTML = '<span class="spin"></span>'+esc(s); });
-  let data;
-  if(html){
-    data = parsePage(html, url);
-    document.getElementById('fetchStatus').innerHTML = '✅ 已成功讀取網頁並自動配對標籤';
-  }else{
-    data = {title: hostOf(url), desc:'', img:'', keywords:url};
-    document.getElementById('fetchStatus').innerHTML = '⚠️ 無法讀取網頁內容（可能被目標網站封鎖），已填入基本資訊，請手動補充。';
-  }
-  document.getElementById('fTitle').value = data.title;
-  document.getElementById('fDesc').value = data.desc;
-  const hits = matchTags(data);
-  pickedTags = [...hits];
-  pickedCats = [];
-  renderTagPicker();
-  renderCatPicker();
-  window._pendingImg = data.img || '';
-  renderImgPrev();
+
+/* ---- 批次新增：多網址 + 統一分類 / 標籤 ---- */
+let bulkTags = [], bulkCats = [];
+function openBulkAdd(presetUrl){
+  bulkTags = []; bulkCats = [];
+  const ta = document.getElementById('bulkUrls');
+  ta.value = (presetUrl||'').trim();
+  document.getElementById('bulkStatus').innerHTML = '';
+  document.getElementById('bulkGo').disabled = false;
+  renderBulkTagPicker();
+  renderBulkCatPicker();
+  document.getElementById('mBulkAdd').classList.add('show');
+  if(!presetUrl) setTimeout(()=>ta.focus(), 50);
 }
+function renderBulkTagPicker(){
+  const box = document.getElementById('bulkPicked');
+  box.innerHTML = '';
+  bulkTags.forEach((t,i)=>{
+    const s = document.createElement('span');
+    s.className = 'ptag';
+    s.innerHTML = `${esc(t)}<span class="rm" title="移除">✕</span>`;
+    s.querySelector('.rm').onclick = ()=>{ bulkTags.splice(i,1); renderBulkTagPicker(); };
+    box.appendChild(s);
+  });
+  const sug = document.getElementById('bulkSuggest');
+  sug.innerHTML = '';
+  db.tags.forEach(t=>{
+    const c = document.createElement('span');
+    c.className = 'tag' + (bulkTags.includes(t.name)?' sel':'');
+    c.textContent = t.name; c.title = '點擊加入/移除';
+    c.onclick = ()=>{ const i=bulkTags.indexOf(t.name); if(i>=0)bulkTags.splice(i,1); else bulkTags.push(t.name); renderBulkTagPicker(); };
+    sug.appendChild(c);
+  });
+  document.getElementById('bulkTagDl').innerHTML = db.tags.map(t=>`<option value="${esc(t.name)}">`).join('');
+}
+function addBulkTagFromInput(){
+  const inp = document.getElementById('bulkTagInput');
+  inp.value.split(/[,，]/).map(s=>s.trim()).filter(Boolean).forEach(t=>{ if(!bulkTags.includes(t)) bulkTags.push(t); });
+  inp.value = ''; renderBulkTagPicker();
+}
+function renderBulkCatPicker(){
+  const sug = document.getElementById('bulkCats');
+  sug.innerHTML = '';
+  if(!db.categories.length){ sug.innerHTML = '<span style="font-size:12px;color:var(--sub)">尚未定義分類，請到 ⚙️ 設定 新增</span>'; return; }
+  db.categories.forEach(c=>{
+    const el = document.createElement('span');
+    el.className = 'tag' + (bulkCats.includes(c)?' sel':'');
+    el.textContent = c; el.title = '點擊加入/移除';
+    el.onclick = ()=>{ const i=bulkCats.indexOf(c); if(i>=0)bulkCats.splice(i,1); else bulkCats.push(c); renderBulkCatPicker(); };
+    sug.appendChild(el);
+  });
+}
+function parseUrls(text){
+  return Array.from(new Set(
+    (text||'').split(/[\s,，;；]+/).map(s=>s.trim()).filter(Boolean).map(p=>normalizeUrl(p))
+  )).filter(u=>/^https?:\/\//i.test(u));
+}
+async function bulkGo(){
+  const urls = parseUrls(document.getElementById('bulkUrls').value);
+  if(!urls.length){ toast('請輸入至少一個網址'); return; }
+  const goBtn = document.getElementById('bulkGo');
+  goBtn.disabled = true;
+  const status = document.getElementById('bulkStatus');
+  const newBms = [], newTags = new Set();
+  let skipped = 0;
+  for(let i=0;i<urls.length;i++){
+    const url = urls[i];
+    status.innerHTML = `<span class="spin"></span>處理中 ${i+1}/${urls.length}…`;
+    if(db.bookmarks.some(b=>b.url===url)){ skipped++; continue; }
+    const html = await fetchPage(url, ()=>{});
+    const data = html ? parsePage(html, url) : {title:hostOf(url), desc:'', img:'', keywords:url};
+    const hits = matchTags(data);
+    const tags = Array.from(new Set([...bulkTags, ...hits])).map(t=>t.trim()).filter(Boolean);
+    tags.forEach(t=>{ if(t && !db.tags.some(x=>x.name===t)) newTags.add(t); });
+    newBms.push({
+      id: uid(), url,
+      title: data.title || hostOf(url),
+      desc: data.desc || '',
+      img: data.img || '',
+      tags, cats: bulkCats.map(t=>t.trim()).filter(Boolean),
+      pinned: false, added: Date.now()
+    });
+  }
+  newTags.forEach(t=> db.tags.push({name:t, keys:''}));
+  const base = nextSeqTop(false);
+  newBms.forEach((b,i)=> b.seq = base - newBms.length + 1 + i);
+  db.bookmarks = newBms.concat(db.bookmarks);
+  goBtn.disabled = false;
+  save(); closeModals(); render();
+  toast(`已新增 ${newBms.length} 個書籤${skipped?`（略過 ${skipped} 個重複）`:''}`);
+}
+document.getElementById('btnAddBulk').onclick = ()=> openBulkAdd();
+document.getElementById('bulkCancel').onclick = ()=> document.getElementById('mBulkAdd').classList.remove('show');
+document.getElementById('bulkGo').onclick = ()=> bulkGo();
+document.getElementById('bulkTagInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addBulkTagFromInput(); } });
+document.getElementById('bulkTagInput').addEventListener('change', addBulkTagFromInput);
 /* ---- 標籤錄入 / 選取 ---- */
 let pickedTags = [];
 function renderTagPicker(){
@@ -1016,10 +1108,6 @@ document.querySelectorAll('#layoutSeg button').forEach(btn=>{
   btn.onclick = ()=> setLayout(btn.dataset.layout);
 });
 document.getElementById('search').addEventListener('input', e=>{ searchQ = e.target.value.trim(); render(); });
-document.getElementById('btnAdd').onclick = ()=> startAdd(document.getElementById('urlInput').value);
-document.getElementById('urlInput').addEventListener('keydown', e=>{
-  if(e.key==='Enter'){ startAdd(e.target.value); e.target.value=''; }
-});
 
 /* ================= 選取 / 拖曳排序 / 批次 ================= */
 const gridEl = document.getElementById('grid');
@@ -1289,10 +1377,6 @@ if(isTouch){
 }
 
 /* ================= 貼上即加入（減少輸入） ================= */
-document.getElementById('urlInput').addEventListener('paste', e=>{
-  const t = (e.clipboardData || window.clipboardData).getData('text');
-  if(/^https?:\/\//i.test((t||'').trim())){ e.preventDefault(); startAdd(t.trim()); }
-});
 document.getElementById('fUrl').addEventListener('paste', e=>{
   const t = (e.clipboardData || window.clipboardData).getData('text');
   if(/^https?:\/\//i.test((t||'').trim())){ setTimeout(refetchFromUrl, 30); }
@@ -1677,15 +1761,13 @@ function openSheet(title, items){
 }
 sheetMask.addEventListener('click', e=>{ if(e.target===sheetMask) sheetMask.classList.remove('show'); });
 document.getElementById('bnAdd').onclick = ()=>{
-  const i = document.getElementById('urlInput');
-  i.scrollIntoView({behavior:'smooth', block:'center'});
-  i.focus();
+  let preset = '';
   if(isTouch && navigator.clipboard && navigator.clipboard.readText){
     navigator.clipboard.readText().then(t=>{
       const u = (t||'').trim();
-      if(/^https?:\/\//i.test(u)){ i.value = u; startAdd(u); }
-    }).catch(()=>{});
-  }
+      openBulkAdd(/^https?:\/\//i.test(u) ? u : '');
+    }).catch(()=> openBulkAdd(''));
+  } else { openBulkAdd(''); }
 };
 document.getElementById('bnLayout').onclick = ()=> openSheet('選擇佈局', [
   {label:'精簡卡片', icon:'▦', onClick:()=>setLayout('compact')},

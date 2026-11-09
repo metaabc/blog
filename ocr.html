@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
@@ -176,7 +176,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
 .pair .d.miss{color:#b04a3e;font-weight:500}
 .empty-note{padding:26px 14px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.9}
 
-/* ---------- 點讀 / 生字卡 ---------- */
+/* ---------- 點讀 ---------- */
 .mini{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
 .mini-sel{font-size:12px;padding:5px 7px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);cursor:pointer}
 .ttsinfo{font-size:11.5px;line-height:1.5;padding:7px 10px;border-radius:9px;margin-bottom:8px}
@@ -197,20 +197,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
 .tk:hover{background:#fbe9f1;color:var(--accent-2)}
 .tk.on{background:#c23b6a;color:#fff;transform:translateY(-1px)}
 
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;max-height:52vh;overflow:auto;padding:2px}
-.card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;
-  appearance:none;background:linear-gradient(180deg,#fff,#fbfbf7);border:1px solid var(--line);border-radius:14px;
-  padding:15px 6px 10px;cursor:pointer;font-family:inherit;color:inherit;transition:.15s;min-height:114px}
-.card:hover{border-color:#f4c9da;box-shadow:0 10px 20px -16px rgba(194,59,106,.9);transform:translateY(-1px)}
-.card.speaking{border-color:#dc5a8c;background:#fdeaf2;box-shadow:0 0 0 3px rgba(194,59,106,.14)}
-.card .zi{font-size:32px;font-weight:700;line-height:1.18;letter-spacing:2px;color:#15171b}
-.card .py{font-size:11.5px;font-weight:700;color:var(--accent-2);letter-spacing:.3px;text-align:center;line-height:1.5;max-width:100%;word-break:break-word}
-.card .mn{font-size:11px;color:var(--muted);line-height:1.45;text-align:center;margin-top:2px;max-width:100%;word-break:break-word}
-.card .idx{position:absolute;top:5px;left:8px;font-size:9.5px;color:#c3c7cd;font-weight:700}
-.editor{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
-.editor summary{cursor:pointer;font-size:12px;color:var(--muted);font-weight:600;outline:none;user-select:none}
-.editor summary:hover{color:var(--accent-2)}
-.txt-sm{min-height:110px;margin-top:8px;font-size:12.5px;line-height:1.7}
 
 .foot-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .note{font-size:11.5px;color:#9aa0a6;line-height:1.7;margin:12px 0 0}
@@ -443,7 +429,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
 
       <div class="tabs">
         <button class="tab on" data-tab="ocr" id="tabOcr">原文</button>
-        <button class="tab" data-tab="cards" id="tabCards">生字卡</button>
         <button class="tab" data-tab="trans" id="tabTrans">譯文</button>
         <button class="tab" data-tab="pairs" id="tabPairs">對照</button>
       </div>
@@ -471,33 +456,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
         <textarea class="txt" id="ocrText" hidden spellcheck="false" placeholder="辨識出的文字會出現在這裡，可直接編輯、複製。"></textarea>
       </div>
 
-      <div id="paneCards" hidden>
-        <div class="mini">
-          <select class="mini-sel" id="ttsLang" aria-label="發音語言">
-            <option value="zh-CN">普通話</option>
-            <option value="zh-HK">粵語</option>
-            <option value="zh-TW">台灣國語</option>
-            <option value="en-US">English</option>
-          </select>
-          <select class="mini-sel" id="rateSel" aria-label="語速">
-            <option value="0.7">慢速</option>
-            <option value="0.9" selected>正常</option>
-            <option value="1.15">快速</option>
-          </select>
-          <button class="btn btn-mini" id="btnReadCards">▶ 全部朗讀</button>
-          <button class="btn btn-mini" id="btnParse">重新解析</button>
-          <button class="btn btn-mini" id="btnCsv">匯出 CSV</button>
-        </div>
-        <div class="ttsinfo" id="ttsInfo"></div>
-        <div class="cards" id="cards">
-          <div class="empty-note">辨識完成後，會自動從「生字表」抽出 生字 / 拼音 / 中文，一字一卡。<br>點卡片即可發音。</div>
-        </div>
-        <details class="editor">
-          <summary>手動編輯生字表（每行：生字 | 拼音 | 中文）</summary>
-          <textarea class="txt txt-sm" id="vocabText" spellcheck="false" placeholder="花 | huā | 花朵&#10;草 | cǎo | 小草"></textarea>
-          <button class="btn btn-mini" id="btnApplyVocab" style="margin-top:8px">更新卡片</button>
-        </details>
-      </div>
 
       <div id="paneTrans" hidden>
         <div class="result" id="transText"><div class="empty-note">尚未翻譯。<br>按「翻譯並覆蓋」，譯文會疊回原圖對應位置。</div></div>
@@ -516,7 +474,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       <p class="note">
         辨識用 Tesseract（WebAssembly，在本機瀏覽器執行，首次需下載語言包 10–40MB）。
         翻譯用 Google 翻譯公開介面，<b>只送出文字</b>，圖片不會上傳。
-        生字卡的拼音優先取自圖中文字，缺少時由 pinyin-pro 自動標音；發音用系統內建語音（Edge / Chrome 效果最好）。
         若翻譯被攔截，可按「在 Google 翻譯開啟」手動處理。
       </p>
     </div>
@@ -566,7 +523,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
 <div id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
 <script>
 (function () {
   "use strict";
@@ -586,12 +542,10 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     srcLang: $("srcLang"), dstLang: $("dstLang"),
     btnOCR: $("btnOCR"), btnTranslate: $("btnTranslate"),
     ocrText: $("ocrText"), transText: $("transText"), pairs: $("pairs"),
-    paneOcr: $("paneOcr"), paneTrans: $("paneTrans"), panePairs: $("panePairs"), paneCards: $("paneCards"),
-    tabOcr: $("tabOcr"), tabTrans: $("tabTrans"), tabPairs: $("tabPairs"), tabCards: $("tabCards"),
-    reader: $("reader"), cards: $("cards"), vocabText: $("vocabText"),
+    paneOcr: $("paneOcr"), paneTrans: $("paneTrans"), panePairs: $("panePairs"),
+    tabOcr: $("tabOcr"), tabTrans: $("tabTrans"), tabPairs: $("tabPairs"),
+    reader: $("reader"),
     btnReadAll: $("btnReadAll"), btnEditText: $("btnEditText"),
-    btnReadCards: $("btnReadCards"), btnParse: $("btnParse"), btnCsv: $("btnCsv"), btnApplyVocab: $("btnApplyVocab"),
-    ttsLang: $("ttsLang"), rateSel: $("rateSel"),
     ttsLang2: $("ttsLang2"), rateSel2: $("rateSel2"),
     btnSaveCurrent: $("btnSaveCurrent"), btnSavedList: $("btnSavedList"), btnShare: $("btnShare"),
     saveCount: $("saveCount"), drawerMask: $("drawerMask"), savedList: $("savedList"),
@@ -675,12 +629,12 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     var p = S.pages[S.page];
     if (!p) return;
     p.src = S.src; p.name = S.name; p.rotation = S.rotation;
-    p.lines = S.lines; p.cache = S.cache; p.vocab = els.vocabText.value;
+    p.lines = S.lines; p.cache = S.cache;
   }
 
   function adoptSource(src, name) {
     saveCurrentPage();
-    S.pages.push({ src: src, name: name || "", rotation: 0, lines: [], cache: {}, vocab: "" });
+    S.pages.push({ src: src, name: name || "", rotation: 0, lines: [], cache: {} });
     S.page = S.pages.length - 1;
     S.src = src;
     S.name = name || "";
@@ -713,11 +667,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     renderCanvas();
     renderThumbs();
     clearResults();
-    if (p.vocab) {
-      els.vocabText.value = p.vocab;
-      VOCAB = parseVocabEdit(p.vocab);
-      renderCards();
-    }
     if (!fresh) {
       els.ocrText.value = S.lines.map(function (l) { return l.text; }).join("\n");
       if (els.ocrText.value.trim()) renderReader();
@@ -1193,7 +1142,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
   }
 
   function syncTtsSelects() {
-    if (els.ttsLang) els.ttsLang.value = TTS.lang;
     if (els.ttsLang2) els.ttsLang2.value = TTS.lang;
   }
 
@@ -1238,13 +1186,12 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
   function stopSpeak() {
     TTS.stopped = true;
     stopQueue();
-    var a = document.querySelectorAll(".seg.speaking, .card.speaking, .tk.on");
+    var a = document.querySelectorAll(".seg.speaking, .tk.on");
     for (var i = 0; i < a.length; i++) {
       a[i].classList.remove("speaking");
       a[i].classList.remove("on");
     }
     if (els.btnReadAll) els.btnReadAll.textContent = "▶ 朗讀全文";
-    if (els.btnReadCards) els.btnReadCards.textContent = "▶ 全部朗讀";
   }
 
   /* ---------------- 原文點讀 ---------------- */
@@ -1347,204 +1294,10 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     }
   });
 
-  /* ---------------- 生字卡 ---------------- */
-  var VOCAB = [];
-  var PY_RE = /[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜĀÁǍÀĒÉĚÈĪÍǏÌŌÓǑÒŪÚǓÙǕǗǙǛÜü]/;
-  var HEADER_RE = /^(生字表|生字|生詞|生詞表|詞語表|詞語|讀音|拼音|部首|筆順|課文|單元|練習|作業|工作紙|測驗|默書|姓名|日期|班別|年級|分數|成績)/;
-
-  function isPinyinToken(t) {
-    if (!t) return false;
-    if (/[\u3400-\u9fff]/.test(t)) return false;
-    if (!/^[A-Za-z·'’\s\u0100-\u01FF\u00C0-\u00FF]+$/.test(t)) return false;
-    if (PY_RE.test(t)) return true;
-    if (/\d/.test(t)) return true;
-    return /^[a-z]+$/.test(t) && t.length <= 24; // 無聲調拼音，如 "hua"
-  }
-
-  function guessPinyin(zi) {
-    try {
-      var P = window.pinyinPro;
-      if (P && typeof P.pinyin === "function") {
-        return P.pinyin(zi, { toneType: "symbol", type: "array" }).join(" ");
-      }
-    } catch (e) {}
-    return "";
-  }
-
-  function parseVocab(text) {
-    var rows = [], seen = {};
-    var lines = String(text || "").split(/\n+/);
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i].trim();
-      if (!line) continue;
-      line = line.replace(/^[\s(（[【]*\d+[\s)）\]】.、,，:：]*/, "")
-                 .replace(/^[•·\-–—*]+\s*/, "").trim();
-      if (!line) continue;
-
-      var parts = line.split(/[\t|｜]+|\s{2,}/).map(function (s) { return s.trim(); }).filter(Boolean);
-      if (parts.length < 2) parts = line.split(/\s+/).filter(Boolean);
-      if (!parts.length) continue;
-
-      var idx = -1;
-      for (var p = 0; p < parts.length; p++) {
-        if (/[\u3400-\u9fff]/.test(parts[p])) { idx = p; break; }
-      }
-      if (idx < 0) continue;
-
-      var m = parts[idx].match(/^([\u3400-\u9fff]{1,6})\s*(.*)$/);
-      if (!m) continue;
-      var zi = m[1];
-      var rest = [];
-      if (m[2] && m[2].trim()) rest.push(m[2].trim());
-      rest = rest.concat(parts.slice(idx + 1));
-
-      var ocrPy = "", mn = "";
-      for (var q = 0; q < rest.length; q++) {
-        var t = rest[q].replace(/^[（(\[]\s*/, "").replace(/\s*[)）\]]$/, "").trim();
-        if (!t) continue;
-        if (!ocrPy && isPinyinToken(t)) ocrPy = t;
-        else mn = mn ? mn + " " + t : t;
-      }
-
-      // 標題行（生字表、姓名…）不當卡片
-      if (!ocrPy && !mn && HEADER_RE.test(zi)) continue;
-
-      // 圖上有聲調就照用；只有無聲調拼音時，改用 pinyin-pro 重新標音
-      var py;
-      if (ocrPy && PY_RE.test(ocrPy)) py = ocrPy;
-      else py = guessPinyin(zi) || ocrPy;
-
-      if (seen[zi]) continue;
-      seen[zi] = 1;
-      rows.push({ zi: zi, py: py, mn: mn });
-    }
-    return rows;
-  }
-
-  function parseVocabEdit(text) {
-    var rows = [];
-    var lines = String(text || "").split(/\n/);
-    for (var i = 0; i < lines.length; i++) {
-      var l = lines[i].trim();
-      if (!l) continue;
-      var p = l.split(/\s*[|｜\t]\s*/);
-      var zi = (p[0] || "").trim();
-      if (!zi) continue;
-      var py = p.length > 1 ? (p[1] || "").trim() : "";
-      var mn = p.length > 2 ? p.slice(2).join(" ").trim() : "";
-      rows.push({ zi: zi, py: py || guessPinyin(zi), mn: mn });
-    }
-    return rows;
-  }
-
-  function fillVocabText() {
-    els.vocabText.value = VOCAB.map(function (r) {
-      return r.zi + " | " + (r.py || "") + (r.mn ? " | " + r.mn : "");
-    }).join("\n");
-  }
-
-  function renderCards() {
-    if (!VOCAB.length) {
-      els.cards.innerHTML = '<div class="empty-note">未抽到生字。<br>可展開「手動編輯生字表」，每行輸入：生字 | 拼音 | 中文</div>';
-      return;
-    }
-    var html = "";
-    for (var i = 0; i < VOCAB.length; i++) {
-      var r = VOCAB[i];
-      html += '<button type="button" class="card" data-i="' + i + '">' +
-        '<span class="idx">' + (i + 1) + "</span>" +
-        '<span class="zi">' + esc(r.zi) + "</span>" +
-        '<span class="py">' + (r.py ? esc(r.py) : "&nbsp;") + "</span>" +
-        '<span class="mn">' + (r.mn ? esc(r.mn) : "&nbsp;") + "</span>" +
-        "</button>";
-    }
-    els.cards.innerHTML = html;
-  }
-
-  function buildCards() {
-    VOCAB = parseVocab(els.ocrText.value);
-    fillVocabText();
-    renderCards();
-    return VOCAB.length;
-  }
-
-  els.cards.addEventListener("click", function (e) {
-    var c = e.target.closest ? e.target.closest(".card") : null;
-    if (!c) return;
-    var r = VOCAB[Number(c.getAttribute("data-i"))];
-    if (!r) return;
-    stopSpeak();
-    c.classList.add("speaking");
-    speak(r.zi, {
-      lang: runLang(isHan(r.zi)),
-      rate: Math.min(TTS.rate, 0.85),
-      onend: function () { c.classList.remove("speaking"); },
-      onerror: function () { c.classList.remove("speaking"); }
-    });
-  });
-
-  els.btnReadCards.addEventListener("click", function () {
-    if (!VOCAB.length) { toast("先辨識或輸入生字"); return; }
-    if (!TTS.stopped) { stopSpeak(); return; }
-    gaEvent("read_cards", { count: VOCAB.length, lang: TTS.lang });
-    TTS.stopped = false;
-    els.btnReadCards.textContent = "■ 停止";
-    var items = [];
-    for (var i = 0; i < VOCAB.length; i++) {
-      (function (idx) {
-        var zi = VOCAB[idx].zi;
-        var card = els.cards.querySelector('.card[data-i="' + idx + '"]');
-        items.push({
-          text: zi,
-          lang: isHan(zi) ? TTS.lang : "en-US",
-          onstart: function () { if (card) { card.classList.add("speaking"); try { card.scrollIntoView({ block: "nearest" }); } catch (err) {} } },
-          onend: function () { if (card) card.classList.remove("speaking"); }
-        });
-      })(i);
-    }
-    speakSequence(items, {
-      rate: Math.min(TTS.rate, 0.85),
-      onallend: function () { els.btnReadCards.textContent = "▶ 全部朗讀"; }
-    });
-  });
-
-  els.btnParse.addEventListener("click", function () {
-    if (!els.ocrText.value.trim()) { toast("請先辨識文字"); return; }
-    var n = buildCards();
-    setStatus(n ? "已抽出 " + n + " 個生字" : "未找到生字表，可手動輸入", n ? "ok" : "", null);
-    if (!n) els.vocabText.parentElement.open = true;
-    switchTab("cards");
-  });
-
-  els.btnApplyVocab.addEventListener("click", function () {
-    VOCAB = parseVocabEdit(els.vocabText.value);
-    renderCards();
-    toast("已更新 " + VOCAB.length + " 張生字卡");
-  });
-
-  els.btnCsv.addEventListener("click", function () {
-    if (!VOCAB.length) { toast("沒有生字可匯出"); return; }
-    var rows = [["生字", "拼音", "中文"]].concat(VOCAB.map(function (r) { return [r.zi, r.py, r.mn]; }));
-    var csv = "\ufeff" + rows.map(function (r) {
-      return r.map(function (c) {
-        c = String(c == null ? "" : c);
-        return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c;
-      }).join(",");
-    }).join("\r\n");
-    downloadBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), "生字卡_" + stamp() + ".csv");
-  });
-
-  els.ttsLang.addEventListener("change", function () { setTtsLang(els.ttsLang.value, true); });
   if (els.ttsLang2) els.ttsLang2.addEventListener("change", function () { setTtsLang(els.ttsLang2.value, true); });
-  els.rateSel.addEventListener("change", function () {
-    TTS.rate = parseFloat(els.rateSel.value) || 0.9;
-    try { localStorage.setItem("imgtr_rate", els.rateSel.value); } catch (e) {}
-    if (els.rateSel2) els.rateSel2.value = els.rateSel.value;
-  });
   if (els.rateSel2) els.rateSel2.addEventListener("change", function () {
     TTS.rate = parseFloat(els.rateSel2.value) || 0.9;
     try { localStorage.setItem("imgtr_rate", els.rateSel2.value); } catch (e) {}
-    els.rateSel.value = els.rateSel2.value;
   });
 
   function downloadBlob(blob, name) {
@@ -1558,18 +1311,16 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
   /* ---------------- 分頁 ---------------- */
   function switchTab(name) {
     els.tabOcr.classList.toggle("on", name === "ocr");
-    els.tabCards.classList.toggle("on", name === "cards");
     els.tabTrans.classList.toggle("on", name === "trans");
     els.tabPairs.classList.toggle("on", name === "pairs");
     els.paneOcr.hidden = name !== "ocr";
-    els.paneCards.hidden = name !== "cards";
     els.paneTrans.hidden = name !== "trans";
     els.panePairs.hidden = name !== "pairs";
   }
-  [els.tabOcr, els.tabCards, els.tabTrans, els.tabPairs].forEach(function (b) {
+  [els.tabOcr, els.tabTrans, els.tabPairs].forEach(function (b) {
     b.addEventListener("click", function () {
       switchTab(b.dataset.tab);
-      if (b.dataset.tab !== "ocr" && b.dataset.tab !== "cards") stopSpeak();
+      if (b.dataset.tab !== "ocr") stopSpeak();
     });
   });
 
@@ -1580,9 +1331,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     els.reader.hidden = false;
     els.btnEditText.textContent = "編輯文字";
     renderReader();
-    VOCAB = [];
-    els.vocabText.value = "";
-    renderCards();
     els.transText.innerHTML = '<div class="empty-note">尚未翻譯。<br>按「翻譯並覆蓋」，譯文會疊回原圖對應位置。</div>';
     els.pairs.innerHTML = '<div class="empty-note">尚未產生對照。<br>完成辨識與翻譯後，這裡會逐行對照原文與譯文。</div>';
     switchTab("ocr");
@@ -1700,9 +1448,8 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
         els.reader.hidden = false;
         els.btnEditText.textContent = "編輯文字";
         renderReader();
-        var nCards = buildCards();
-        gaEvent("ocr_done", { lines: S.lines.length, cards: nCards, lang: els.srcLang.value });
-        setStatus("辨識完成：" + S.lines.length + " 行文字" + (nCards ? "、" + nCards + " 張生字卡" : ""), "ok", 1);
+        gaEvent("ocr_done", { lines: S.lines.length, lang: els.srcLang.value });
+        setStatus("辨識完成：" + S.lines.length + " 行文字", "ok", 1);
         switchTab("ocr");
       }
       els.transText.innerHTML = '<div class="empty-note">尚未翻譯。<br>按「翻譯並覆蓋」，譯文會疊回原圖對應位置。</div>';
@@ -2048,7 +1795,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       ts: Date.now(),
       title: makeTitle(),
       ocr: els.ocrText.value,
-      vocab: VOCAB.map(function (v) { return [v.zi, v.py, v.mn]; }),
       lines: S.lines.map(function (l) {
         return { t: l.text, r: l.trans || "", b: l.bbox ? [l.bbox.x0, l.bbox.y0, l.bbox.x1, l.bbox.y1] : null };
       }),
@@ -2058,7 +1804,7 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     };
     saved.unshift(item);
     if (saved.length > 24) saved = saved.slice(0, 24);
-    gaEvent("save_result", { pages: S.pages.length, cards: item.vocab.length });
+    gaEvent("save_result", { pages: S.pages.length });
     if (persistSaved()) { renderSaved(); toast("已收藏：" + item.title); }
   }
 
@@ -2066,16 +1812,15 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     els.saveCount.textContent = saved.length;
     els.saveCount.classList.toggle("hot", saved.length > 0);
     if (!saved.length) {
-      els.savedList.innerHTML = '<div class="empty-note">還沒有收藏。<br><br>辨識或翻譯之後，按右上角「收藏」，<br>文字、生字卡與譯文都會存在這台裝置，<br>之後可隨時找回。</div>';
+      els.savedList.innerHTML = '<div class="empty-note">還沒有收藏。<br><br>辨識或翻譯之後，按右上角「收藏」，<br>文字與譯文都會存在這台裝置，<br>之後可隨時找回。</div>';
       return;
     }
     els.savedList.innerHTML = saved.map(function (it) {
-      var n = it.vocab ? it.vocab.length : 0;
       return '<div class="sitem" data-id="' + it.id + '">' +
         (it.img ? '<img class="sthumb" src="' + it.img + '" alt="">' : '<div class="sthumb none"></div>') +
         '<div class="sbody">' +
         '<div class="stitle">' + esc(it.title) + "</div>" +
-        '<div class="smeta">' + fmtDate(it.ts) + (n ? " · " + n + " 張生字卡" : "") + "</div>" +
+        '<div class="smeta">' + fmtDate(it.ts) + "</div>" +
         '<div class="ssnip">' + esc(String(it.ocr || "").replace(/\s+/g, " ").slice(0, 60)) + "</div>" +
         "</div>" +
         '<button class="sdel" data-del="' + it.id + '" title="刪除">×</button>' +
@@ -2094,10 +1839,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       els.btnEditText.textContent = "編輯文字";
       els.ocrText.value = it.ocr || "";
       renderReader();
-      VOCAB = (it.vocab || []).map(function (v) { return { zi: v[0], py: v[1], mn: v[2] }; });
-      if (!VOCAB.length && els.ocrText.value.trim()) VOCAB = parseVocab(els.ocrText.value);
-      fillVocabText();
-      renderCards();
       if (hasTranslation()) {
         renderResults();
       } else {
@@ -2183,11 +1924,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     if (!saved.length) { toast("收藏是空的"); return; }
     var out = saved.map(function (it) {
       var s = "=== " + it.title + "（" + fmtDate(it.ts) + "）===\n" + (it.ocr || "");
-      if (it.vocab && it.vocab.length) {
-        s += "\n\n[生字卡]\n" + it.vocab.map(function (v) {
-          return v[0] + "  " + (v[1] || "") + "  " + (v[2] || "");
-        }).join("\n");
-      }
       return s;
     }).join("\n\n");
     downloadBlob(new Blob([out], { type: "text/plain;charset=utf-8" }), "收藏清單_" + stamp() + ".txt");
@@ -2209,14 +1945,6 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
       out.push(els.ocrText.value.trim());
     }
 
-    if (VOCAB.length) {
-      out.push("");
-      out.push("▍生字卡（" + VOCAB.length + "）");
-      for (var j = 0; j < VOCAB.length; j++) {
-        var v = VOCAB[j];
-        out.push(v.zi + "　" + (v.py || "") + (v.mn ? "　" + v.mn : ""));
-      }
-    }
     return out.join("\n").trim();
   }
 
@@ -2298,10 +2026,10 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
     if (a1) els.srcLang.value = a1;
     if (a2) els.dstLang.value = a2;
     var a3 = localStorage.getItem("imgtr_tts"), a4 = localStorage.getItem("imgtr_rate");
-    if (a3) els.ttsLang.value = a3;
-    if (a4) els.rateSel.value = a4;
-    TTS.lang = els.ttsLang.value;
-    TTS.rate = parseFloat(els.rateSel.value) || 0.9;
+    if (a3) els.ttsLang2.value = a3;
+    if (a4) els.rateSel2.value = a4;
+    TTS.lang = els.ttsLang2.value;
+    TTS.rate = parseFloat(els.rateSel2.value) || 0.9;
   } catch (e) {}
 
   /* ---------------- 快捷鍵 ---------------- */

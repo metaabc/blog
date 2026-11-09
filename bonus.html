@@ -467,15 +467,8 @@ h1{
   letter-spacing:0;
 }
 .cell.used .tag{background:#eeeae4;color:#bbb5ad}
-.pay{position:relative;cursor:grab;touch-action:none}
+.pay{position:relative;cursor:pointer;touch-action:manipulation}
 .pay:active{background:#f1eee9;border-color:#d9d3ca}
-.row.drag{position:relative;z-index:6;filter:drop-shadow(0 5px 10px rgba(90,78,60,.22))}
-.row.drag .pay{
-  cursor:grabbing;
-  background:#f6f2ea;
-  border-color:#d5cec3;
-}
-.row.drag .cell{opacity:.86}
 .pay.has-full{
   background:#fdf7ee;
   border-color:#efd9b6;
@@ -609,17 +602,6 @@ h1{
   box-shadow:0 3px 12px rgba(63,106,91,.22);
 }
 .btn.ghost{background:var(--accent-soft);color:#a83258;border:1px solid #f7d7e3}
-/* 已消的格子改回未用（只在已消時出現） */
-.btn.unuse{
-  display:none;
-  width:100%;
-  margin-top:14px;
-  background:#f6f2ec;
-  color:var(--ink2);
-  font-size:13px;
-  padding:11px 14px;
-}
-.btn.unuse.show{display:block}
 .btn.small{padding:11px 15px;font-size:13px;background:var(--accent);color:#fff;flex:0 0 auto;border-radius:12px}
 .btn.danger{
   display:block;
@@ -883,85 +865,6 @@ h1{
 .switch.on .sw-r{background:#d19d68}
 .switch.on .sw-r::after{transform:translateX(20px)}
 
-/* 面額選擇：3 欄，滿減獨佔一行 */
-.opts{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-.opt{
-  padding:16px 2px;
-  border-radius:13px;
-  border:1.5px solid var(--line);
-  background:#fff;
-  color:var(--ink2);
-  font-size:16.5px;
-  font-weight:700;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:-.2px;
-  transition:background .13s,border-color .13s,color .13s,transform .1s;
-}
-.opt:active{transform:scale(.96)}
-.opt.on{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#fff;
-  box-shadow:0 3px 10px rgba(63,106,91,.22);
-}
-.opt.zero{
-  font-size:13px;
-  font-weight:600;
-  color:#a8a29a;
-  border-style:dashed;
-  border-color:#ded8d0;
-  background:#fcfbf9;
-}
-.opt.zero.on{
-  background:#aab8b1;
-  border-color:#aab8b1;
-  border-style:solid;
-  color:#fff;
-  box-shadow:none;
-}
-.opt.full{
-  flex:1;
-  font-size:13px;
-  font-weight:600;
-  color:#b3813f;
-  border-color:#efd9b6;
-  background:#fdf7ee;
-  padding:13px 2px;
-}
-/* 底部一行：待抽獎 ｜ 滿減 */
-.opt-row{
-  grid-column:1 / -1;
-  display:flex;
-  gap:8px;
-}
-.opt.pending{
-  flex:1;
-  font-size:13px;
-  font-weight:600;
-  color:#4d7c8b;
-  border-color:#c9dbe2;
-  border-style:dashed;
-  background:#f1f6f8;
-  padding:13px 2px;
-}
-.opt.pending.on{
-  background:#6d92a1;
-  border-color:#6d92a1;
-  border-style:solid;
-  color:#fff;
-  box-shadow:none;
-}
-.opt.full.on{
-  background:#dda868;
-  border-color:#dda868;
-  border-style:solid;
-  color:#fff;
-  box-shadow:none;
-}
 /* 支付快捷面板 */
 .qrows{display:flex;flex-direction:column;gap:8px}
 .qrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
@@ -1057,14 +960,6 @@ h1{
   font-weight:700;
 }
 .chip:active{transform:scale(.96)}
-.chip.dragging{
-  opacity:.9;
-  transform:scale(1.06);
-  box-shadow:0 5px 14px rgba(194,59,106,.22);
-  border-color:var(--accent);
-  transition:none;
-}
-.chips.dragmode .chip{transition:background .1s,border-color .1s}
 .chips-tip{
   margin-top:8px;
   font-size:10.5px;
@@ -1118,6 +1013,22 @@ h1{
 .pm-del[data-armed="1"]{background:#b56b62;color:#fff;border-color:#b56b62}
 .pm-swatch{flex:0 0 auto;width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer;position:relative;overflow:hidden;padding:0}
 .pm-swatch::after{content:"";position:absolute;right:3px;bottom:3px;width:0;border-top:7px solid rgba(0,0,0,.18);border-left:7px solid transparent;transform:rotate(0)}
+.pm-mv{flex:0 0 auto;width:34px;height:38px;border-radius:9px;border:1.5px solid var(--line);background:#fff;font-size:13px;color:#5b6066;cursor:pointer}
+.pm-mv:active{transform:scale(.94)}
+.pm-mv:disabled{opacity:.3}
+.amt-opt{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.amt-ob{flex:1 1 28%;min-width:62px;padding:12px 6px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:14px;font-weight:700;color:#3a3f45;cursor:pointer}
+.amt-ob:active{transform:scale(.96)}
+.amt-ob.big{background:#fdecea;border-color:#f6d4ce;color:#b34a3f}
+.amt-ob.pending{background:#fff7e6;border-color:#ffe0a3;color:#a9802b}
+.amt-ob.full{background:#eef6ff;border-color:#cfe3ff;color:#3a6ea5}
+.amt-sel{display:flex;gap:8px;margin-top:6px}
+.amt-slot{flex:1 1 0;min-width:0;padding:14px 4px;border-radius:12px;border:1.5px dashed #d7d2c8;background:#faf8f4;font-size:15px;font-weight:800;color:#9aa0a6;text-align:center;cursor:pointer;user-select:none}
+.amt-slot.filled{border-style:solid;border-color:var(--line);background:#fff;color:#3a3f45;cursor:pointer}
+.amt-slot.filled:active{transform:scale(.96)}
+.amt-slot.filled.big{background:#fdecea;border-color:#f6d4ce;color:#b34a3f}
+.amt-slot.filled.pending{background:#fff7e6;border-color:#ffe0a3;color:#a9802b}
+.amt-slot.filled.full{background:#eef6ff;border-color:#cfe3ff;color:#3a6ea5}
 .pay-color-pop{margin-top:12px;padding:12px;border:1.5px solid var(--line);border-radius:14px;background:#fff}
 .pay-color-pop .pc-title{font-size:13px;font-weight:700;color:#7a7f85;margin-bottom:10px}
 .pc-dots{display:flex;flex-wrap:wrap;gap:10px}
@@ -1309,7 +1220,7 @@ h1{
 
   <div class="grid" id="grid"></div>
 
-  <div class="hint">拖支付方式名＝排序　·　點格＝已消／再點改額　·　滑動換週</div>
+  <div class="hint">點支付名＝設三格券數　·　點有券格＝標已消　·　點空白／已消格＝設三格券數　·　滑動換週</div>
 
   <div class="weekdock" id="weekdock">
     <button class="wnav" id="wPrev" type="button" aria-label="上一週"><span class="ar">‹</span>上週</button>
@@ -1342,26 +1253,21 @@ h1{
 <div class="mask" id="mask"></div>
 
 <!-- 選金額 -->
-<div class="sheet" id="editSheet">
+<!-- 券數窗（批次設三格面額） -->
+<div class="sheet" id="amtSheet">
   <div class="sheet-head">
-    <h3 id="editTitle">中銀 · 第 1 次</h3>
+    <h3 id="amtTitle">支付方式 · 抽券</h3>
     <button class="x" data-close>✕</button>
   </div>
-  <div class="lbl">消費券金額（MOP$）</div>
-  <div class="opts" id="optAmt"></div>
-  <button class="btn unuse" id="unuseBtn" type="button">改回未用</button>
-  <div class="sheet-foot">點選即儲存　·　待抽獎＝記低但未抽，不計金額　·　滿減不計入金額</div>
-</div>
-
-<!-- 支付快捷 -->
-<div class="sheet" id="paySheet">
-  <div class="sheet-head">
-    <h3 id="payTitle">支付方式 · 快捷</h3>
-    <button class="x" data-close>✕</button>
+  <div class="lbl">輕點面額加入（同一面額可累點＝抽到同券），最多 3 張；點下方格子可移除</div>
+  <div class="amt-opt" id="amtOpts"></div>
+  <div class="lbl" style="margin-top:12px">已選 <span id="amtCount">0</span> / 3 張</div>
+  <div class="amt-sel" id="amtSel"></div>
+  <div class="btn-row" style="margin-top:12px">
+    <button class="btn ghost" id="amtClear" type="button">清除</button>
+    <button class="btn primary" id="amtConfirm" type="button">確認</button>
   </div>
-  <div class="lbl">三格狀態 · 點按鈕即時套用</div>
-  <div class="qrows" id="qrows"></div>
-  <div class="sheet-foot">點左邊格可改金額　·　待抽＝尚未抽　·　滿減不計入金額</div>
+  <div class="sheet-foot">按「確認」一次寫入三格（含待抽獎／滿減）</div>
 </div>
 
 <!-- 本週設定 -->
@@ -1376,7 +1282,7 @@ h1{
     <button class="btn ghost" id="payManageBtn" type="button">編輯支付方式</button>
   </div>
   <div class="chips" id="payChips"></div>
-  <div class="chips-tip">點一下隱藏／顯示　·　按住拖動可換次序<br>所有週共用；隱藏的資料仍計入統計</div>
+  <div class="chips-tip">點一下隱藏／顯示<br>所有週共用；隱藏的資料仍計入統計；次序請到「編輯支付方式」調整</div>
 
   <div class="lbl lbl-top">週數<span class="sec-tag">1–12</span></div>
   <div class="btn-row">
@@ -1386,7 +1292,7 @@ h1{
   </div>
   <div class="chips-tip" id="weekTip">目前共 10 週</div>
 
-  <div class="ver">版本 2026-10-31 · 可增刪週數、編輯支付方式與底色<br>綠＝未用　紅＝未用且 ≥50　灰＝已消</div>
+  <div class="ver">版本 2026-11-09 · 點支付名編輯三格券數　·　設定內可調次序<br>綠＝未用　紅＝未用且 ≥50　灰＝已消</div>
 </div>
 
 <!-- 編輯支付方式 -->
@@ -1395,7 +1301,7 @@ h1{
     <h3>編輯支付方式</h3>
     <button class="x" data-close>✕</button>
   </div>
-  <div class="lbl">點名稱可直接改名　·　左邊色塊設底色　·　🗑 刪除（至少留一個）</div>
+  <div class="lbl">▲▼ 調整次序　·　點名稱可改名　·　左邊色塊設底色　·　🗑 刪除（至少留一個）</div>
   <div id="payManageList"></div>
   <div class="pay-color-pop" id="payColorPop" style="display:none">
     <div class="pc-title">設定「<span id="pcName">—</span>」的底色</div>
@@ -1880,8 +1786,9 @@ function renderGrid(){
     }
     var pcol=S.payColors[pi]||'';
     nm.style.background=pcol||'';
+    nm.title='點一下設三格券數';
     row.appendChild(nm);
-    bindRowDrag(row,nm);
+    nm.addEventListener('click',function(){ openAmt(pi); });
 
     for(var i=0;i<PER;i++){
       var c=w.cells[pi*PER+i];
@@ -1921,134 +1828,14 @@ function renderGrid(){
   g.appendChild(frag);
 }
 
-/* ---------------- 拖拉支付名：調整支付順序 ---------------- */
-var payDragGuard=0,payDragging=false;
-
-function bindRowDrag(row,nm){
-  nm.addEventListener('pointerdown',function(e){
-    if(e.pointerType==='mouse'&&e.button!==0) return;
-    var g=$('grid'),pid=e.pointerId,startY=e.clientY,active=false,stop={done:false};
-    try{ nm.setPointerCapture(pid); }catch(err){}
-
-    function apply(ev){ row.style.transform='translateY('+(ev.clientY-startY)+'px)'; }
-
-    function onMove(ev){
-      if(ev.pointerId!==pid) return;
-      if(!active){
-        if(Math.abs(ev.clientY-startY)<8) return;
-        active=true;
-        payDragging=true;
-        row.classList.add('drag');
-        g.classList.add('dragmode');
-        if(navigator.vibrate){ try{ navigator.vibrate(8); }catch(err){} }
-      }
-      if(ev.cancelable) ev.preventDefault();
-      apply(ev);
-      /* 一次移動可跨越多行，才會跟手 */
-      var moved=false;
-      var guard=0;
-      while(guard++<20){
-        var next=row.nextElementSibling;
-        if(!next) break;
-        var nr=next.getBoundingClientRect();
-        if(ev.clientY<=nr.top+nr.height/2) break;
-        var t0=row.getBoundingClientRect().top;
-        g.insertBefore(next,row);
-        startY+=row.getBoundingClientRect().top-t0;
-        moved=true;
-      }
-      apply(ev);
-      guard=0;
-      while(guard++<20){
-        var prev=row.previousElementSibling;
-        if(!prev) break;
-        var pr=prev.getBoundingClientRect();
-        if(ev.clientY>=pr.top+pr.height/2) break;
-        var u0=row.getBoundingClientRect().top;
-        g.insertBefore(row,prev);
-        startY+=row.getBoundingClientRect().top-u0;
-        moved=true;
-      }
-      apply(ev);
-      /* 一改次序即刻存檔：即使 pointerup / pointercancel 沒收到，排序也不會白做 */
-      if(moved) commitOrder(true);
-    }
-
-    function onUp(){
-      if(stop.done) return;
-      stop.done=true;
-      nm.removeEventListener('pointermove',onMove);
-      nm.removeEventListener('pointerup',onUp);
-      nm.removeEventListener('pointercancel',onUp);
-      nm.removeEventListener('lostpointercapture',onUp);
-      window.removeEventListener('pointerup',onUp);
-      window.removeEventListener('pointercancel',onUp);
-      try{ nm.releasePointerCapture(pid); }catch(err){}
-      if(!active) return;                 /* 沒拖動＝當普通點擊，開快捷面板 */
-      row.classList.remove('drag');
-      row.style.transform='';
-      g.classList.remove('dragmode');
-      payDragging=false;
-      payDragGuard=Date.now();
-      syncPayOrder();
-    }
-
-    nm.addEventListener('pointermove',onMove);
-    nm.addEventListener('pointerup',onUp);
-    nm.addEventListener('pointercancel',onUp);
-    nm.addEventListener('lostpointercapture',onUp);
-    /* 保險：手指／滑鼠在畫面外放開時仍收得到 */
-    window.addEventListener('pointerup',onUp);
-    window.addEventListener('pointercancel',onUp);
-  });
-}
-
-/* 依畫面上的前後次序寫回全域次序；仍隱藏的支付保留原本的相對位置 */
-function domOrder(){
-  var g=$('grid'),vis=[];
-  if(!g) return vis;
-  [].forEach.call(g.children,function(el){
-    if(el.classList&&el.classList.contains('row')) vis.push(+el.dataset.pi);
-  });
-  return vis;
-}
-/* quiet=true：拖拉過程中即時存檔，不重繪、不提示 */
-function commitOrder(quiet){
-  var w=curW(),vis=domOrder();
-  if(!vis.length) return false;
-  var before=payOrder(w).join(',');
-  var out=[],vi=0;
-  payOrder(w).forEach(function(pi){
-    if(vis.indexOf(pi)>=0&&vi<vis.length) out.push(vis[vi++]);
-    else out.push(pi);
-  });
-  while(vi<vis.length) out.push(vis[vi++]);
-  var no=normOrder(out),key=no.join(',');
-  if(key===DEF_ORDER.join(',')){
-    delete S.order;          /* 回到預設次序＝不留資料 */
-  }else{
-    S.order=no.slice();      /* 全域次序：每週共用，新週自動沿用 */
-  }
-  if(w&&w.order) delete w.order;
-  save();
-  if(quiet) return true;
-  renderChips();
-  renderGrid();
-  if(key!==before) toast('支付順序已更新');
-  return true;
-}
-function syncPayOrder(){ return commitOrder(false); }
-
 /* ---------------- tap logic ---------------- */
-var lpTimer=null,lpFired=false;
-
-/* 點格子：空白＝改額　·　待抽獎＝改額　·　未用＝標記已消　·　已消再點＝改額 */
+/* 點格子：有券（未消）→標已消；空白格或已消券→開「一次過設三張券」窗（替代三券）；待抽獎不動 */
 function handleTap(pi,i){
   var w=curW(),c=w.cells[pi*PER+i];
-  if(!hasVal(c)){ openEdit(pi,i); return; }
-  if(c.p){ openEdit(pi,i); return; }
-  if(c.u){ openEdit(pi,i); return; }
-  c.u=true;
+  if(c && c.p) return;                     // 待抽獎：還沒抽，不動
+  if(!hasVal(c)){ openAmt(pi); return; }   // 空白格 → 開券數窗
+  if(c.u){ openAmt(pi); return; }          // 已消券 → 開券數窗（調整取代三券）
+  c.u=true;                                // 有券（未消）→ 標為已消
   save();
   renderSummary();
   renderGrid();
@@ -2056,32 +1843,10 @@ function handleTap(pi,i){
 
 $('grid').addEventListener('click',function(e){
   if(Date.now()-swipeGuard<420) return;
-  if(Date.now()-payDragGuard<420) return;
-  var p=e.target.closest?e.target.closest('.pay'):null;
-  if(p){
-    if(lpFired){ lpFired=false; return; }
-    openQuick(+p.dataset.pi);
-    return;
-  }
   var b=e.target.closest?e.target.closest('.cell'):null;
   if(!b) return;
-  if(lpFired){ lpFired=false; return; }
   handleTap(+b.dataset.pi,+b.dataset.i);
 });
-$('grid').addEventListener('touchstart',function(e){
-  var b=e.target.closest?e.target.closest('.cell'):null;
-  if(!b) return;
-  clearTimeout(lpTimer);
-  lpFired=false;
-  var pi=+b.dataset.pi,i=+b.dataset.i;
-  lpTimer=setTimeout(function(){
-    lpFired=true;
-    openEdit(pi,i);
-  },620);
-},{passive:true});
-$('grid').addEventListener('touchend',function(){clearTimeout(lpTimer);});
-$('grid').addEventListener('touchmove',function(){clearTimeout(lpTimer);});
-$('grid').addEventListener('touchcancel',function(){clearTimeout(lpTimer);});
 
 /* ---------------- swipe to change week ---------------- */
 var swX=0,swY=0,swOn=false,swMoved=false,swipeGuard=0;
@@ -2118,7 +1883,6 @@ appEl.addEventListener('touchmove',function(e){
 appEl.addEventListener('touchend',function(e){
   if(!swOn) return;
   swOn=false;
-  if(Date.now()-payDragGuard<420) return;   /* 剛拖完支付名，不要順便換週 */
   if(!swMoved) return;
   var t=e.changedTouches[0];
   var dx=t.clientX-swX, dy=t.clientY-swY;
@@ -2202,219 +1966,111 @@ function doReload(){
   },280);
 }
 
-/* ---------------- pay quick sheet ---------------- */
-var qPi=-1;
-var qFrom=false;
-
-function openQuick(pi){
-  qPi=pi;
-  $('payTitle').textContent=PAYS[pi];
-  renderQuick();
-  openSheet('paySheet');
+/* ---------------- 券數窗（批次設三格面額） ---------------- */
+var amtPi=-1;
+var amtSel=[];   /* 選中的券：[{a,f,p}]，長度 ≤3，可累點同一面額 */
+var AMT_ITEMS=[
+  {a:10,f:false,p:false},
+  {a:20,f:false,p:false},
+  {a:50,f:false,p:false},
+  {a:100,f:false,p:false},
+  {a:200,f:false,p:false},
+  {a:0,f:false,p:true},   /* 待抽獎 */
+  {a:0,f:true,p:false}    /* 滿減 */
+];
+function itemLabel(it){
+  if(it.p) return '待抽獎';
+  if(it.f) return '滿減';
+  return 'MOP$'+num(it.a);
+}
+function itemCls(it){
+  if(it.p) return 'pending';
+  if(it.f) return 'full';
+  return it.a>=TIME_MIN?'big':'';
 }
 
-function renderQuick(){
-  if(qPi<0) return;
+function openAmt(pi){
+  amtPi=pi;
   var w=curW();
-  var html='';
+  /* 以目前三格既有資料初始化選區（保留原資料，避免誤清） */
+  amtSel=[];
   for(var i=0;i<PER;i++){
-    var c=w.cells[qPi*PER+i];
-    var has=hasVal(c);
-    var pend=isPend(c);
-    var hasAmt=has&&!pend&&(((+c.a||0)>0)||!!c.f);
-    var a=has&&!pend?(+c.a||0):0;
-    var cls=pend?'is-pend':(has?(c.u?'is-used':(a>=TIME_MIN?'is-big':'is-fresh')):'is-blank');
-    var val=pend?'待抽獎':(has?(a>0?('MOP$'+num(a)):(c.f?'滿減':'—')):'未記錄');
-    html+='<div class="qrow">'+
-      '<button type="button" class="qv '+cls+'" data-i="'+i+'">'+
-        '<span class="qn">第 '+(i+1)+' 次</span>'+
-        '<span class="qa">'+val+'</span>'+
-      '</button>'+
-      '<div class="qops">'+
-        '<button type="button" class="qop'+(pend?' on':'')+'" data-i="'+i+'" data-act="pending"'+(hasAmt?' disabled':'')+'>待抽</button>'+
-        '<button type="button" class="qop'+(has&&!pend&&c.f?' on':'')+'" data-i="'+i+'" data-act="full"'+(pend?' disabled':'')+'>滿減</button>'+
-        '<button type="button" class="qop'+(has&&c.u?' on':'')+'" data-i="'+i+'" data-act="used"'+(has&&!pend?'':' disabled')+'>已消</button>'+
-        '<button type="button" class="qop" data-i="'+i+'" data-act="clear"'+(has?'':' disabled')+'>留空</button>'+
-      '</div>'+
-    '</div>';
+    var c=w.cells[pi*PER+i];
+    if(!hasVal(c)) continue;
+    if(c.p) amtSel.push({a:0,f:false,p:true});
+    else if(c.f) amtSel.push({a:0,f:true,p:false});
+    else amtSel.push({a:(+c.a)||0,f:false,p:false});
   }
-  $('qrows').innerHTML=html;
+  $('amtTitle').textContent=PAYS[pi]+' · 抽券';
+  renderAmt();
+  openSheet('amtSheet');
 }
 
-function quickAct(i,act){
-  if(qPi<0) return;
-  var w=curW(), idx=qPi*PER+i;
-  var c=w.cells[idx];
-  if(act==='clear'){
-    if(!hasVal(c)) return;
-    w.cells[idx]=null;
-  }else if(act==='pending'){
-    if(c&&c.p){ w.cells[idx]=null; }
-    else if(!hasVal(c)||!(((+c.a||0)>0)||c.f)){ w.cells[idx]={a:0,f:false,u:false,t:0,p:true}; }
-    else return;
-  }else if(act==='full'){
-    var a=(c&&!c.p&&+c.a)||0;
-    var f=!(c&&!c.p&&c.f);
-    if(a<=0&&!f){ w.cells[idx]=null; }
-    else{ w.cells[idx]={a:a,f:f,u:c?!!c.u:false,t:c?(+c.t||0):0,p:false}; }
-  }else if(act==='used'){
-    if(!hasVal(c)||c.p) return;
-    c.u=!c.u;
-  }else{
-    return;
-  }
-  save();
-  renderSummary();
-  renderGrid();
-  renderQuick();
-}
-
-$('qrows').addEventListener('click',function(e){
-  var t=e.target.closest?e.target.closest('button'):null;
-  if(!t||t.disabled) return;
-  if(t.classList.contains('qv')){ openEdit(qPi,+t.dataset.i,true); return; }
-  quickAct(+t.dataset.i,t.dataset.act);
-});
-
-/* ---------------- edit sheet ---------------- */
-var editing=null;
-
-function buildOpts(){
-  var box=$('optAmt');
-  box.innerHTML='';
-  var list=[{v:0,label:'留空',zero:true}];
-  AMTS.forEach(function(v){ list.push({v:v,label:String(v)}); });
-  list.forEach(function(o){
+function renderAmt(){
+  if(amtPi<0) return;
+  /* 面額按鈕（每次重繪） */
+  var opts=$('amtOpts');
+  opts.innerHTML='';
+  AMT_ITEMS.forEach(function(it){
     var b=document.createElement('button');
     b.type='button';
-    b.className='opt'+(o.zero?' zero':'');
-    b.textContent=o.label;
-    b.dataset.v=String(o.v);
-    b.addEventListener('click',function(){ pickAmount(o.v); });
-    box.appendChild(b);
+    var c=itemCls(it);
+    b.className='amt-ob'+(c?(' '+c):'');
+    b.textContent=itemLabel(it);
+    b.addEventListener('click',function(){ addAmt(it); });
+    opts.appendChild(b);
   });
-  /* 底部一行：待抽獎（未抽） ｜ 滿減 */
-  var row=document.createElement('div');
-  row.className='opt-row';
-  var bp=document.createElement('button');
-  bp.type='button';
-  bp.className='opt pending';
-  bp.textContent='待抽獎';
-  bp.dataset.v='pending';
-  bp.addEventListener('click',pickPending);
-  var bf=document.createElement('button');
-  bf.type='button';
-  bf.className='opt full';
-  bf.textContent='滿減';
-  bf.dataset.v='full';
-  bf.addEventListener('click',pickFull);
-  row.appendChild(bp);
-  row.appendChild(bf);
-  box.appendChild(row);
-}
-buildOpts();
-
-function syncEditUI(){
-  if(!editing) return;
-  var box=$('optAmt');
-  var pureFull=!!editing.f&&(+editing.a||0)<=0;
-  var purePend=!!editing.p;
-  [].forEach.call(box.querySelectorAll('.opt'),function(b){
-    if(b.dataset.v==='full'){
-      b.classList.toggle('on',!purePend&&pureFull);
-    }else if(b.dataset.v==='pending'){
-      b.classList.toggle('on',purePend);
+  /* 已選：固定 3 格，清楚顯示「一次過設定三張券」對應三格 */
+  var sel=$('amtSel');
+  sel.innerHTML='';
+  for(var s=0;s<PER;s++){
+    var it=amtSel[s];
+    var slot=document.createElement('div');
+    slot.className='amt-slot';
+    if(it){
+      var c=itemCls(it);
+      slot.className+=' filled'+(c?(' '+c):'');
+      slot.textContent=itemLabel(it);
+      slot.title='第 '+(s+1)+' 次 · 點一下移除';
+      (function(idx){ slot.addEventListener('click',function(){ amtSel.splice(idx,1); renderAmt(); }); })(s);
     }else{
-      b.classList.toggle('on',!purePend&&!pureFull&&(+b.dataset.v)===(+editing.a||0));
+      slot.className+=' empty';
+      slot.textContent='第 '+(s+1)+' 次';
     }
-  });
+    sel.appendChild(slot);
+  }
+  $('amtCount').textContent=amtSel.length;
 }
 
-function openEdit(pi,i,fromQuick){
-  var w=curW(),c=w.cells[pi*PER+i];
-  qFrom=!!fromQuick;
-  editing={pi:pi,i:i,a:(c&&+c.a)||0,f:!!(c&&c.f),p:!!(c&&c.p)};
-  $('editTitle').textContent=PAYS[pi]+'　·　第 '+(i+1)+' 次';
-  $('unuseBtn').classList.toggle('show',!!(c&&c.u));
-  syncEditUI();
-  openSheet('editSheet');
+function addAmt(it){
+  if(amtPi<0) return;
+  if(amtSel.length>=3){ toast('最多 3 張'); return; }
+  amtSel.push({a:it.a,f:it.f,p:it.p});
+  renderAmt();
 }
 
-function writeCell(touchTime,asUnused){
-  var w=curW(), idx=editing.pi*PER+editing.i;
-  var old=w.cells[idx];
-  var a=+editing.a||0;
-  if(a<=0 && !editing.f && !editing.p){
-    w.cells[idx]=null;
-  }else{
-    var t=old?(+old.t||0):0;
-    if(a<TIME_MIN) t=0;
-    else if(touchTime) t=Date.now();
-    /* 重新選金額＝重抽／改額，一律回到「未用」 */
-    var u=asUnused?false:(old?!!old.u:false);
-    w.cells[idx]={a:a,f:!!editing.f,u:editing.p?false:u,t:editing.p?0:t,p:!!editing.p};
+$('amtClear').addEventListener('click',function(){
+  amtSel=[];
+  renderAmt();
+});
+
+$('amtConfirm').addEventListener('click',function(){
+  if(amtPi<0) return;
+  var w=curW();
+  for(var i=0;i<PER;i++){
+    var idx=amtPi*PER+i;
+    var it=amtSel[i];
+    var old=w.cells[idx];
+    if(!it){ w.cells[idx]=null; continue; }
+    if(it.p){ w.cells[idx]={a:0,f:false,u:false,t:0,p:true}; }
+    else if(it.f){ w.cells[idx]={a:0,f:true,u:false,t:0,p:false}; }
+    else{ w.cells[idx]={a:it.a,f:false,u:old?!!old.u:false,t:Date.now(),p:false}; }
   }
   save();
   renderSummary();
   renderGrid();
-}
-
-function pickAmount(v){
-  if(!editing) return;
-  editing.a=v;
-  editing.p=false;
-  writeCell(true,true);   /* 改額後＝未用 */
-  afterPick();
-}
-
-/* 待抽獎：已記低但未抽（無金額，不計入總額與統計）；已標記則再點取消 */
-function pickPending(){
-  if(!editing) return;
-  var w=curW(), c=w.cells[editing.pi*PER+editing.i];
-  var isP=!!(c&&c.p);
-  editing.a=0;
-  editing.f=false;
-  editing.p=!isP;
-  writeCell(false);
-  if(!isP){ afterPick(); return; }
-  syncEditUI();
-}
-
-/* 最後一格：滿 12 減券（無金額，不計入統計）；已是滿減則再點取消 */
-function pickFull(){
-  if(!editing) return;
-  var w=curW(), c=w.cells[editing.pi*PER+editing.i];
-  var isFull=!!(c&&c.f&&(+c.a||0)<=0);
-  editing.a=0;
-  editing.p=false;
-  editing.f=!isFull;
-  writeCell(false);
-  if(!isFull){ afterPick(); return; }
-  syncEditUI();
-}
-function afterPick(){
-  if(qFrom){
-    qFrom=false;
-    renderQuick();
-    openSheet('paySheet');
-    return;
-  }
   closeSheet();
-}
-
-/* 已消 → 改回未用（點格子已改為「已消再點＝改額」，復原由此按鈕提供） */
-$('unuseBtn').addEventListener('click',function(){
-  if(!editing) return;
-  var w=curW(), idx=editing.pi*PER+editing.i;
-  var c=w.cells[idx];
-  if(hasVal(c)&&c.u){
-    c.u=false;
-    save();
-    renderSummary();
-    renderGrid();
-    toast('已改回未用');
-  }
-  closeSheet();
+  toast('已更新三格券數');
 });
 
 /* ---------------- 週管理 ---------------- */
@@ -2460,87 +2116,15 @@ function toggleHide(pi){
   renderAll();
 }
 
-/* 設定頁渠道：按住拖動＝調整支付次序（全域，十週共用） */
-(function bindChipDrag(){
-  var box=$('payChips');
-  var drag=null,pid=null,moved=false,sx=0,sy=0,lastEnd=0;
-
-  function chipAt(x,y,skip){
-    var kids=[].slice.call(box.children);
-    for(var i=0;i<kids.length;i++){
-      var el=kids[i];
-      if(el===skip) continue;
-      var r=el.getBoundingClientRect();
-      if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom) return el;
-    }
-    return null;
-  }
-  function reset(){
-    if(drag) drag.classList.remove('dragging');
-    box.classList.remove('dragmode');
-    drag=null; pid=null;
-  }
-  function finish(){
-    if(!drag) return;
-    if(moved){ lastEnd=Date.now(); applyChipOrder(); }
-    reset();
-  }
-
-  box.addEventListener('pointerdown',function(e){
-    if(e.pointerType==='mouse'&&e.button!==0) return;
-    var el=e.target.closest?e.target.closest('.chip'):null;
-    if(!el) return;
-    drag=el; pid=e.pointerId; moved=false; sx=e.clientX; sy=e.clientY;
-  });
-  box.addEventListener('pointermove',function(e){
-    if(!drag||e.pointerId!==pid) return;
-    if(!moved){
-      if(Math.abs(e.clientX-sx)<9&&Math.abs(e.clientY-sy)<9) return;
-      moved=true;
-      drag.classList.add('dragging');
-      box.classList.add('dragmode');
-      if(navigator.vibrate){ try{ navigator.vibrate(8); }catch(err){} }
-    }
-    if(e.cancelable) e.preventDefault();
-    var over=chipAt(e.clientX,e.clientY,drag);
-    if(over){
-      var r=over.getBoundingClientRect();
-      var after=(e.clientY>r.top+r.height*0.62)||
-                (Math.abs(e.clientY-(r.top+r.height/2))<r.height*0.3&&e.clientX>r.left+r.width/2);
-      box.insertBefore(drag,after?over.nextSibling:over);
-    }
-  },{passive:false});
-  box.addEventListener('pointerup',finish);
-  box.addEventListener('pointercancel',finish);
-  box.addEventListener('lostpointercapture',finish);
-  window.addEventListener('pointerup',function(e){ if(drag&&e.pointerId===pid) finish(); });
-  window.addEventListener('pointercancel',function(){ if(drag) finish(); });
-  /* 拖完不要誤觸「隱藏／顯示」 */
-  box.addEventListener('click',function(e){
-    if(Date.now()-lastEnd<350){ e.preventDefault(); e.stopPropagation(); }
-  },true);
-})();
-
-function chipOrder(){
-  var out=[];
-  [].forEach.call($('payChips').children,function(el){
-    if(el.dataset&&el.dataset.pi!=null&&el.dataset.pi!=='') out.push(+el.dataset.pi);
-  });
-  return out;
-}
-function applyChipOrder(){
-  var arr=chipOrder();
-  if(arr.length!==PAYS.length) return;
+/* 設定頁「編輯支付方式」內可用 ↑/↓ 調整次序（全域，所有週共用） */
+function setOrder(arr){
+  if(!Array.isArray(arr)||arr.length!==PAYS.length) return;
   var no=normOrder(arr);
   if(no.join(',')===DEF_ORDER.join(',')) delete S.order;
   else S.order=no.slice();
-  var w=curW();
-  if(w&&w.order) delete w.order;
   save();
   renderChips();
-  renderSummary();
   renderGrid();
-  toast('支付方式次序已更新，所有週共用');
 }
 
 /* ---------------- 支付方式（渠道）：新增／刪除／改名 ---------------- */
@@ -2615,23 +2199,35 @@ function renderPayManage(){
   var box=$('payManageList');
   if(!box) return;
   box.innerHTML='';
-  PAYS.forEach(function(name,pi){
+  var order=payOrder(curW());   /* 依顯示順序排列，▲▼ 才有意義 */
+  order.forEach(function(slot,pos){
+    var name=PAYS[slot];
     var row=document.createElement('div');
     row.className='pm-row';
+
+    var up=document.createElement('button');
+    up.type='button'; up.className='pm-mv'; up.textContent='▲';
+    up.title='上移'; up.disabled=(pos===0);
+    up.addEventListener('click',function(){ movePay(slot,-1); });
+    var dn=document.createElement('button');
+    dn.type='button'; dn.className='pm-mv'; dn.textContent='▼';
+    dn.title='下移'; dn.disabled=(pos===order.length-1);
+    dn.addEventListener('click',function(){ movePay(slot,1); });
+
     var sw=document.createElement('button');
     sw.type='button';
     sw.className='pm-swatch';
-    sw.style.background=S.payColors[pi]||'#fff';
+    sw.style.background=S.payColors[slot]||'#fff';
     sw.title='設定底色';
-    sw.addEventListener('click',function(){ openColorPop(pi); });
+    sw.addEventListener('click',function(){ openColorPop(slot); });
     var inp=document.createElement('input');
     inp.className='inp pm-inp';
     inp.type='text';
     inp.maxLength=12;
     inp.value=name;
     inp.placeholder='支付方式名稱';
-    inp.addEventListener('change',function(){ renameChannel(pi,this.value); });
-    inp.addEventListener('blur',function(){ renameChannel(pi,this.value); });
+    inp.addEventListener('change',function(){ renameChannel(slot,this.value); });
+    inp.addEventListener('blur',function(){ renameChannel(slot,this.value); });
     var del=document.createElement('button');
     del.type='button';
     del.className='pm-del';
@@ -2639,7 +2235,7 @@ function renderPayManage(){
     del.addEventListener('click',function(){
       if(PAYS.length<=1){ toast('至少要保留一個支付方式'); return; }
       if(del.dataset.armed==='1'){
-        deleteChannel(pi);
+        deleteChannel(slot);
         renderPayManage();
         toast('已刪除「'+name+'」');
       }else{
@@ -2648,11 +2244,25 @@ function renderPayManage(){
         setTimeout(function(){ if(del){ del.dataset.armed=''; del.textContent='🗑'; } },2600);
       }
     });
+    row.appendChild(up);
+    row.appendChild(dn);
     row.appendChild(sw);
     row.appendChild(inp);
     row.appendChild(del);
     box.appendChild(row);
   });
+}
+/* 在顯示順序中把某支付方式上移／下移一格 */
+function movePay(slot,dir){
+  var order=payOrder(curW());
+  var pos=order.indexOf(slot);
+  if(pos<0) return;
+  var j=pos+dir;
+  if(j<0||j>=order.length) return;
+  var tmp=order[pos]; order[pos]=order[j]; order[j]=tmp;
+  setOrder(order);
+  renderPayManage();
+  toast('已調整次序');
 }
 /* ---------------- 週數：填寫儲存 ---------------- */
 var weekSaveArmed=null;
@@ -3730,8 +3340,6 @@ function closeSheet(){
   $('mask').classList.remove('on');
   var sheets=document.querySelectorAll('.sheet');
   for(var k=0;k<sheets.length;k++) sheets[k].classList.remove('on');
-  editing=null;
-  qFrom=false;
   try{ document.activeElement.blur(); }catch(e){}
   document.documentElement.style.setProperty('--kb','0px');
 }
@@ -3774,10 +3382,8 @@ if(window.visualViewport){
 }
 window.addEventListener('resize',syncKB);
 
-/* 拖拉中若被系統打斷（切 App、鎖屏），先把目前畫面次序落地 */
-function flushDragOrder(){
-  if(payDragging){ try{ commitOrder(true); }catch(e){} }
-}
+/* 設定頁負責排序，首頁不再有拖動；保留佔位以相容舊綁定 */
+function flushDragOrder(){}
 window.addEventListener('pagehide',flushDragOrder);
 document.addEventListener('visibilitychange',function(){
   if(document.hidden) flushDragOrder();
