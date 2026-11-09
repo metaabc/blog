@@ -1877,10 +1877,41 @@ function handleTap(pi,i){
 
 $('grid').addEventListener('click',function(e){
   if(Date.now()-swipeGuard<420) return;
+  if(lpFired){ lpFired=false; return; }   // 長按已消券後，吞掉隨後的 click
   var b=e.target.closest?e.target.closest('.cell'):null;
   if(!b) return;
   handleTap(+b.dataset.pi,+b.dataset.i);
 });
+
+/* ---------------- 長按已消券 → 轉回未用 ---------------- */
+var lpTimer=null, lpCell=null, lpFired=false;
+var LP_MS=480;
+function cellOf(el){ return el&&el.closest?el.closest('.cell'):null; }
+function startLP(el){
+  cancelLP();          // 清掉上一次尚未觸發的計時器，避免誤觸其他格
+  lpFired=false;       // 新一次按下：重置長按標記
+  var cell=cellOf(el);
+  if(!cell||!cell.classList.contains('used')) return;  // 只對「已消券」生效
+  lpCell=cell;
+  lpTimer=setTimeout(function(){
+    if(!lpCell) return;
+    lpFired=true;
+    var pi=+lpCell.dataset.pi, i=+lpCell.dataset.i;
+    var w=curW(), c=w.cells[pi*PER+i];
+    if(c&&c.u){ c.u=false; save(); renderSummary(); renderGrid(); }
+    lpCell=null;
+  }, LP_MS);
+}
+function cancelLP(){
+  if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; }
+  lpCell=null;
+}
+$('grid').addEventListener('touchstart',function(e){ if(cellOf(e.target)) startLP(e.target); },{passive:true});
+$('grid').addEventListener('touchmove',function(){ if(lpTimer) cancelLP(); },{passive:true});
+$('grid').addEventListener('touchend',function(){ cancelLP(); },{passive:true});
+$('grid').addEventListener('touchcancel',function(){ cancelLP(); },{passive:true});
+$('grid').addEventListener('mousedown',function(e){ if(cellOf(e.target)) startLP(e.target); });
+document.addEventListener('mouseup',function(){ cancelLP(); });
 
 /* ---------------- swipe to change week ---------------- */
 var swX=0,swY=0,swOn=false,swMoved=false,swipeGuard=0;
