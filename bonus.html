@@ -37,6 +37,7 @@
   --red-bg:#fdecea;
   --red-line:#f6d4ce;
   --kb:0px;
+  --tabbar-h:80px;
 }
 html,body{height:100%;margin:0;padding:0}
 body{
@@ -516,8 +517,9 @@ h1{
 /* 底部菜單：四個 tab（收藏／統計／分享／設定），各自配色 */
 .tabbar{
   flex:0 0 auto;
+  min-height:var(--tabbar-h);
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:5px;
   margin:0 -12px calc(-8px - env(safe-area-inset-bottom,0px));
   padding:8px 9px calc(8px + env(safe-area-inset-bottom,0px));
@@ -556,6 +558,7 @@ h1{
 .tab.t-stats{--tc:#2b8b79;--tb:#e1f4ed}
 .tab.t-share{--tc:#c23b6a;--tb:#fde6ef}
 .tab.t-menu{--tc:#5578ad;--tb:#e8effa}
+.tab.t-home{--tc:#c23b6a;--tb:#fdeaf2}
 .tab.on{
   color:#fff;
   background:var(--tc);
@@ -774,6 +777,32 @@ h1{
   will-change:transform;
 }
 .sheet.on{transform:translateY(0)}
+/* ---------- 頁面（非彈窗，全螢幕檢視） ---------- */
+.page{
+  position:fixed;left:0;right:0;top:0;
+  bottom:calc(var(--tabbar-h) + var(--kb,0px));
+  background:var(--bg1);
+  z-index:30;
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 -2px 0 rgba(0,0,0,.03);
+}
+.page.on{display:flex}
+.page-head{
+  flex:0 0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 14px 11px;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+}
+.page-head h3{margin:0;font-size:15px;font-weight:700;letter-spacing:.5px}
+.page-body{
+  flex:1 1 auto;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px));
+}
 .sheet-head{
   display:flex;
   align-items:center;
@@ -1220,8 +1249,6 @@ h1{
 
   <div class="grid" id="grid"></div>
 
-  <div class="hint">點支付名＝設三格券數　·　點有券格＝標已消　·　點空白／已消格＝設三格券數　·　滑動換週</div>
-
   <div class="weekdock" id="weekdock">
     <button class="wnav" id="wPrev" type="button" aria-label="上一週"><span class="ar">‹</span>上週</button>
     <div class="wsel">
@@ -1231,6 +1258,10 @@ h1{
   </div>
 
   <nav class="tabbar" id="tabbar">
+    <button type="button" class="tab t-home on" id="homeBtn" aria-label="主頁">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9.5a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10"/></svg>
+      <span>主頁</span>
+    </button>
     <button type="button" class="tab t-fav" id="favBtn" aria-label="我的收藏">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4l2.7 5.5 6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.3 9.8l6-.9z"/></svg>
       <span>收藏</span>
@@ -1270,19 +1301,41 @@ h1{
   <div class="sheet-foot">按「確認」一次寫入三格（含待抽獎／滿減）</div>
 </div>
 
-<!-- 本週設定 -->
-<div class="sheet" id="menuSheet">
-  <div class="sheet-head">
+<!-- 本週設定（頁面，非彈窗） -->
+<div class="page" id="menuSheet">
+  <div class="page-head">
     <h3>設定</h3>
-    <button class="x" data-close>✕</button>
+    <button class="x" data-pageclose>✕</button>
   </div>
+  <div class="page-body">
 
   <div class="lbl-row">
     <div class="lbl lbl-top">顯示的支付方式<span class="sec-tag">套用所有週</span></div>
     <button class="btn ghost" id="payManageBtn" type="button">編輯支付方式</button>
   </div>
   <div class="chips" id="payChips"></div>
-  <div class="chips-tip">點一下隱藏／顯示<br>所有週共用；隱藏的資料仍計入統計；次序請到「編輯支付方式」調整</div>
+  <div class="chips-tip">點一下隱藏／顯示<br>所有週共用；隱藏的資料仍計入統計；次序請到下方「編輯支付方式」調整</div>
+
+  <div class="pm-wrap" id="payManageWrap" style="display:none">
+    <div class="lbl">▲▼ 調整次序　·　點名稱可改名　·　左邊色塊設底色　·　🗑 刪除（至少留一個）</div>
+    <div id="payManageList"></div>
+    <div class="pay-color-pop" id="payColorPop" style="display:none">
+      <div class="pc-title">設定「<span id="pcName">—</span>」的底色</div>
+      <div class="pc-dots" id="pcDots">
+        <div class="pc-dot sel" data-color="" title="無色"></div>
+        <div class="pc-dot" data-color="#ffe08a"></div>
+        <div class="pc-dot" data-color="#ffc9c9"></div>
+        <div class="pc-dot" data-color="#c9e7ff"></div>
+        <div class="pc-dot" data-color="#c9f0d0"></div>
+        <div class="pc-dot" data-color="#e3c9ff"></div>
+        <div class="pc-dot" data-color="#ffd6a5"></div>
+        <div class="pc-dot" data-color="#bdeee8"></div>
+        <div class="pc-dot" data-color="#d6d6d6"></div>
+      </div>
+      <button class="btn ghost" id="pcClose" type="button" style="margin-top:10px">完成</button>
+    </div>
+    <button class="btn primary wide" id="payAddBtn" type="button" style="margin-top:12px">＋ 新增支付方式</button>
+  </div>
 
   <div class="lbl lbl-top">週數<span class="sec-tag">1–12</span></div>
   <div class="btn-row">
@@ -1293,40 +1346,18 @@ h1{
   <div class="chips-tip" id="weekTip">目前共 10 週</div>
 
   <div class="ver">版本 2026-11-09 · 點支付名編輯三格券數　·　設定內可調次序<br>綠＝未用　紅＝未用且 ≥50　灰＝已消</div>
+  </div>
 </div>
 
-<!-- 編輯支付方式 -->
-<div class="sheet" id="payManageSheet">
-  <div class="sheet-head">
-    <h3>編輯支付方式</h3>
-    <button class="x" data-close>✕</button>
-  </div>
-  <div class="lbl">▲▼ 調整次序　·　點名稱可改名　·　左邊色塊設底色　·　🗑 刪除（至少留一個）</div>
-  <div id="payManageList"></div>
-  <div class="pay-color-pop" id="payColorPop" style="display:none">
-    <div class="pc-title">設定「<span id="pcName">—</span>」的底色</div>
-    <div class="pc-dots" id="pcDots">
-      <div class="pc-dot sel" data-color="" title="無色"></div>
-      <div class="pc-dot" data-color="#ffe08a"></div>
-      <div class="pc-dot" data-color="#ffc9c9"></div>
-      <div class="pc-dot" data-color="#c9e7ff"></div>
-      <div class="pc-dot" data-color="#c9f0d0"></div>
-      <div class="pc-dot" data-color="#e3c9ff"></div>
-      <div class="pc-dot" data-color="#ffd6a5"></div>
-      <div class="pc-dot" data-color="#bdeee8"></div>
-      <div class="pc-dot" data-color="#d6d6d6"></div>
-    </div>
-    <button class="btn ghost" id="pcClose" type="button" style="margin-top:10px">完成</button>
-  </div>
-  <button class="btn primary wide" id="payAddBtn" type="button" style="margin-top:12px">＋ 新增支付方式</button>
-</div>
+<!-- 編輯支付方式（已內聯至設定頁面內，見 payManageWrap） -->
 
-<!-- 統計 -->
-<div class="sheet" id="statsSheet">
-  <div class="sheet-head">
+<!-- 統計（頁面，非彈窗） -->
+<div class="page" id="statsSheet">
+  <div class="page-head">
     <h3>統計</h3>
-    <button class="x" data-close>✕</button>
+    <button class="x" data-pageclose>✕</button>
   </div>
+  <div class="page-body">
   <div class="stat4">
     <div class="st">
       <div class="l">抽到總額</div>
@@ -1355,6 +1386,7 @@ h1{
     <img id="statsPrevImg" alt="累計統計圖">
     <div class="fp-tip">長按圖片可儲存到相簿，或直接轉發</div>
   </div>
+  </div>
 </div>
 
 <!-- 分享 -->
@@ -1376,12 +1408,13 @@ h1{
 
 <div class="ptr" id="ptr"><span class="ptr-ico">↓</span><span id="ptrTxt">下拉更新</span></div>
 
-<!-- 收藏清單 -->
-<div class="sheet" id="favSheet">
-  <div class="sheet-head">
+<!-- 收藏清單（頁面，非彈窗） -->
+<div class="page" id="favSheet">
+  <div class="page-head">
     <h3>我的收藏</h3>
-    <button class="x" data-close>✕</button>
+    <button class="x" data-pageclose>✕</button>
   </div>
+  <div class="page-body">
   <div class="fav-add">
     <input class="inp" id="favInp" type="text" maxlength="90" enterkeyhint="done" autocomplete="off" placeholder="商家＋優惠">
     <button class="btn primary" id="favAddBtn" type="button">新增</button>
@@ -1409,6 +1442,7 @@ h1{
     <div class="fp-tip">長按圖片可儲存到相簿，或直接轉發</div>
   </div>
   <div class="sheet-foot">收藏只存在這部手機　·　可選長圖或文字清單分享</div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1905,7 +1939,7 @@ function ptrReset(){
 
 appEl.addEventListener('touchstart',function(e){
   if(ptrBusy||e.touches.length!==1) return;
-  if(document.querySelector('.sheet.on')) return;
+  if(document.querySelector('.sheet.on, .page.on')) return;
   var t=e.target;
   var g=t.closest?t.closest('.grid'):null;
   if(g&&g.scrollTop>0) return;
@@ -2078,7 +2112,7 @@ $('menuBtn').addEventListener('click',function(){
   var wi=$('weekInput'); if(wi) wi.value=S.weeks.length;
   renderChips();
   updateWeekTip();
-  openSheet('menuSheet');
+  openPage('menuSheet');
 });
 
 function renderChips(){
@@ -2312,7 +2346,20 @@ function onWeekSave(){
   resetWeekSaveBtn();
 }
 
-$('payManageBtn').addEventListener('click',function(){ renderPayManage(); openSheet('payManageSheet'); });
+$('payManageBtn').addEventListener('click',function(){
+  var wrap=$('payManageWrap');
+  if(!wrap) return;
+  if(wrap.style.display==='none'){
+    wrap.style.display='';
+    renderPayManage();
+    this.textContent='收起編輯';
+  }else{
+    wrap.style.display='none';
+    var p=$('payColorPop'); if(p) p.style.display='none';
+    colorTarget=-1;
+    this.textContent='編輯支付方式';
+  }
+});
 $('payAddBtn').addEventListener('click',function(){
   addChannel('');
   renderPayManage();
@@ -3013,7 +3060,7 @@ $('expCsvBtn').addEventListener('click',function(){
 $('statsBtn').addEventListener('click',function(){
   renderStats();
   $('statsPrev').classList.remove('on');
-  openSheet('statsSheet');
+  openPage('statsSheet');
 });
 
 /* 累計頁：一鍵出圖分享 */
@@ -3237,7 +3284,7 @@ $('favBtn').addEventListener('click',function(){
   favSel={};
   $('favInp').value='';
   renderFavs();
-  openSheet('favSheet');
+  openPage('favSheet');
 });
 
 $('favAddBtn').addEventListener('click',addFav);
@@ -3318,13 +3365,29 @@ $('favWays').addEventListener('click',function(e){
   else favShareText();
 });
 
-/* ---------------- sheet control ---------------- */
+/* ---------------- 頁面（非彈窗）與 sheet 控制 ---------------- */
 var openedAt=0;
+var TAB_HOME='homeBtn';
 var TAB_OF={favSheet:'favBtn',statsSheet:'statsBtn',expSheet:'shareBtn',menuSheet:'menuBtn'};
-function markTab(id){
-  var tabs=document.querySelectorAll('.tabbar .tab');
-  for(var k=0;k<tabs.length;k++) tabs[k].classList.remove('on');
-  if(id&&TAB_OF[id]) $(TAB_OF[id]).classList.add('on');
+function setActiveTab(tabId){
+  document.querySelectorAll('.tabbar .tab').forEach(function(t){ t.classList.remove('on'); });
+  if(tabId){ var el=$(tabId); if(el) el.classList.add('on'); }
+}
+function refreshTabs(){
+  var page=document.querySelector('.page.on');
+  if(page && TAB_OF[page.id]){ setActiveTab(TAB_OF[page.id]); return; }
+  setActiveTab(TAB_HOME);
+}
+function openPage(id){
+  document.querySelectorAll('.page.on').forEach(function(p){ p.classList.remove('on'); });
+  var el=$(id); if(!el) return;
+  el.classList.add('on');
+  var b=el.querySelector('.page-body'); if(b) b.scrollTop=0;
+  setActiveTab(TAB_OF[id]||null);
+}
+function closePage(){
+  document.querySelectorAll('.page.on').forEach(function(p){ p.classList.remove('on'); });
+  setActiveTab(TAB_HOME);
 }
 function openSheet(id){
   openedAt=Date.now();
@@ -3333,15 +3396,14 @@ function openSheet(id){
   for(var k=0;k<sheets.length;k++) sheets[k].classList.remove('on');
   $(id).classList.add('on');
   $(id).scrollTop=0;
-  markTab(id);
 }
 function closeSheet(){
-  markTab(null);
   $('mask').classList.remove('on');
   var sheets=document.querySelectorAll('.sheet');
   for(var k=0;k<sheets.length;k++) sheets[k].classList.remove('on');
   try{ document.activeElement.blur(); }catch(e){}
   document.documentElement.style.setProperty('--kb','0px');
+  refreshTabs();
 }
 $('mask').addEventListener('click',function(){
   if(Date.now()-openedAt<700) return;
@@ -3350,6 +3412,10 @@ $('mask').addEventListener('click',function(){
 document.querySelectorAll('[data-close]').forEach(function(b){
   b.addEventListener('click',closeSheet);
 });
+document.querySelectorAll('[data-pageclose]').forEach(function(b){
+  b.addEventListener('click',closePage);
+});
+$('homeBtn').addEventListener('click',closePage);
 
 /* ---------------- toast ---------------- */
 var toastT=null;
@@ -3363,7 +3429,7 @@ function toast(msg){
 
 /* ---------------- keyboard offset ---------------- */
 function syncKB(){
-  var anyOpen=document.querySelector('.sheet.on');
+  var anyOpen=document.querySelector('.sheet.on, .page.on');
   if(!anyOpen){
     document.documentElement.style.setProperty('--kb','0px');
     return;
