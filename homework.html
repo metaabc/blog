@@ -100,9 +100,8 @@
     35%{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 55%, transparent), var(--shadow)}
     100%{box-shadow:var(--shadow)}}
 
-  /* 卡片 / 科目群組 右下角的分享鈕 */
-  .dfoot,.sg-foot{display:flex;justify-content:flex-end;margin-top:9px}
-  .sg-foot{margin-top:7px}
+  /* 卡片右下角的分享鈕 */
+  .dfoot{display:flex;justify-content:flex-end;margin-top:9px}
   .share-btn{display:inline-flex;align-items:center;gap:5px;
     padding:5px 12px;border-radius:999px;cursor:pointer;
     font-size:12.5px;font-weight:700;letter-spacing:.02em;
@@ -113,15 +112,7 @@
   .share-btn:active{transform:scale(.96)}
   .share-btn svg{flex:0 0 auto}
 
-  /* ---------- 科目分組佈局（整週功課按科目歸類） ---------- */
-  .subj-group{background:var(--card);border:1px solid var(--line);border-radius:16px;
-    box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
-  .sg-head{display:flex;align-items:center;gap:8px;padding:11px 16px 10px;border-bottom:1px solid var(--line)}
-  .sg-count{font-size:12px;color:var(--muted);font-weight:600;margin-left:auto}
-  .sg-items{padding:9px 16px 12px}
-  .sg-items li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline}
-  .dtag{font-size:11.5px;font-weight:700;color:var(--muted);background:#f1ece2;
-    border-radius:6px;padding:1px 7px;white-space:nowrap}
+  /* ---------- 卡片佈局 ---------- */
   .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
   .hd h2{font-size:17px;margin:0;font-weight:700;letter-spacing:.01em}
   .chip{font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;line-height:1.6;
@@ -240,10 +231,11 @@
   .tb-btn:active .ico{transform:scale(.93)}
   .tb-btn .lbl{font-size:11px;font-weight:600;color:#6d6459;line-height:1.25;letter-spacing:.02em}
 
-  /* 已設定班級（右）：可橫向滑動 */
-  .cstrip{flex:0 1 auto;min-width:0;margin-left:auto;display:flex;align-items:center;gap:6px;padding:1px 0;
+  /* 已設定班級（置中；超出寬度時退回起點、可橫向滑動） */
+  .cstrip{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:6px;padding:1px 0;
     overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
     scroll-snap-type:x proximity;overscroll-behavior-x:contain}
+  .cstrip::before,.cstrip::after{content:"";flex:1 1 0}   /* 佔位撐出置中；溢出時縮為 0 */
   .cstrip::-webkit-scrollbar{display:none}
   .cchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;cursor:pointer;
     font-family:inherit;font-size:15px;font-weight:800;color:#6d6459;background:#fff;
@@ -307,7 +299,7 @@
   @media print{
     body{background:#fff;padding:0}
     .srcbar,.mbar,.toast,.sheet-wrap,.fab,.signfilter,.lightbox,.tk-sub{display:none}
-    .day,.subj-group{break-inside:avoid;box-shadow:none;page-break-inside:avoid}
+    .day{break-inside:avoid;box-shadow:none;page-break-inside:avoid}
   }
 
   /* 字型大小：以 --fz 倍率縮放主要閱讀文字 */
@@ -325,8 +317,6 @@
   .cal-list-h{font-size:calc(13px * var(--fz))}
   .cal-li{font-size:calc(13px * var(--fz))}
   .cl-d{font-size:calc(12.5px * var(--fz))}
-  .dtag{font-size:calc(11.5px * var(--fz))}
-  .sg-count{font-size:calc(12px * var(--fz))}
   .empty{font-size:calc(14px * var(--fz))}
   .law{font-size:calc(12.5px * var(--fz))}
   .srcbar-links a{font-size:calc(12px * var(--fz))}
@@ -508,7 +498,6 @@
       <div class="layswitch" id="laySwitch" role="group" aria-label="呈現方式">
         <button type="button" data-lay="card" class="on">作業</button>
         <button type="button" data-lay="tests">測驗</button>
-        <button type="button" data-lay="subject">科目</button>
         <button type="button" data-lay="task">任務</button>
       </div>
     </div>
@@ -530,6 +519,7 @@
       </span>
       <span class="lbl">設定</span>
       </button>
+      <div class="cstrip" id="classStrip" role="tablist" aria-label="已設定的班級"></div>
       <button class="tb-btn" id="openTasks" aria-label="任務">
       <span class="ico">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -541,7 +531,6 @@
       <span class="lbl">任務</span>
       <span class="tk-badge" id="tkBadge"></span>
       </button>
-      <div class="cstrip" id="classStrip" role="tablist" aria-label="已設定的班級"></div>
     </div>
   </div>
 </nav>
@@ -557,7 +546,7 @@
       <h3 id="sheetTitle">選擇班級</h3>
       <button class="done" data-close>完成</button>
     </div>
-    <p class="tip">可選多個班級，選好的會排在下方班級條；內容上<b>單指左右滑</b>切換「作業／測驗／科目／任務」呈現，點班級條切換班級。功課項目按「＋」可加入<b>任務</b>（任務清單按班級顯示）；「用戶數據」可把任務與設定<b>備份／恢復</b>。選擇會記住，抓取時自動換上對應的 classcode。</p>
+    <p class="tip">可選多個班級，選好的會排在下方班級條；內容上<b>單指左右滑</b>切換「作業／測驗／任務」呈現，點班級條切換班級。功課項目按「＋」可加入<b>任務</b>（任務清單按班級顯示）；「用戶數據」可把任務與設定<b>備份／恢復</b>。選擇會記住，抓取時自動換上對應的 classcode。</p>
     <div id="classGroups"></div>
     <div class="foot" id="sheetFoot"></div>
   </div>
@@ -601,7 +590,6 @@ const DEFAULT_SEL = ["s3C", "s1A"];
 const LAYOUTS = [
   { k:"card", t:"作業" },
   { k:"tests", t:"測驗" },
-  { k:"subject", t:"科目" },
   { k:"task", t:"任務" }
 ];
 const LS_LAYOUT = "hw_layout_v1";
@@ -1165,47 +1153,7 @@ function renderList(){
     return;
   }
 
-  if (state.layout === "subject"){
-    /* 科目分組：把整週功課按科目歸類 */
-    const map = new Map();
-    days.forEach(d => d.shown.forEach(it => {
-      const key = it.subject || "（說明）";
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push({ ...it, date:d.date });
-    }));
-    const keys = [...map.keys()].sort((a, b) => a.localeCompare(b, "zh-Hant"));
-    keys.forEach((key, gi) => {
-      const arr = map.get(key);
-      let sN = 0, tN = 0, eN = 0;
-      const items = arr.map(it => {
-        const mr = markup(it.text);
-        if (mr.flags.sign) sN++;
-        if (mr.flags.test) tN++;
-        if (mr.flags.exam) eN++;
-        const body = markupText(it);
-        const addBtn = `<button class="add-task" type="button" data-text="${esc(it.text)}" data-due="${esc(it.date)}" aria-label="加入任務" title="加入任務">＋</button>`;
-        return `<li><span class="dtag">${mmdd(it.date)}</span><span class="txt">${body}${addBtn}</span></li>`;
-      }).join("");
-      const col = key === "（說明）" ? "#8b8274" : subjColor(key);
-      html += `<section class="subj-group" style="animation-delay:${Math.min(gi * 18, 220)}ms">
-        <div class="sg-head">
-          <span class="subj" style="color:${col};border-color:${col}55;background:${col}12">${esc(key)}</span>
-          ${sN ? `<span class="chip sign">簽改 ${sN}</span>` : ""}
-          ${tN ? `<span class="chip test">測驗 ${tN}</span>` : ""}
-          ${eN ? `<span class="chip exam">考試 ${eN}</span>` : ""}
-          <span class="sg-count">${arr.length} 項</span>
-        </div>
-        <ul class="items sg-items">${items}</ul>
-        <div class="sg-foot">
-          <button class="share-btn share-subj" data-subject="${esc(key)}" type="button" aria-label="分享此科功課圖片">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>
-            分享
-          </button>
-        </div>
-      </section>`;
-    });
-  } else {
-    days.forEach((d, idx) => {
+  days.forEach((d, idx) => {
       const dt = parseD(d.date);
       const due = idx === 0 ? dueInfo(d.due) : null;    // 交期只在最近一日顯示
       const r = itemsHtml(d.shown, d);
@@ -1232,7 +1180,6 @@ function renderList(){
         </div>
       </article>`;
     });
-  }
   list.innerHTML = html;
 }
 
@@ -1515,15 +1462,6 @@ async function shareImage(filter){
     const dt = parseD(filter.date);
     if (dt && !isNaN(dt.getTime())) title += ` · ${dt.getMonth() + 1}月${dt.getDate()}日`;
     if (!days.length){ toast("該日沒有作業", true); return; }
-  } else if (filter && filter.subject != null){
-    const subj = filter.subject;
-    days = days.map(d => ({ ...d, shown: d.shown.filter(it => {
-      const s = it.subject || "";
-      return subj === "（說明）" ? !s : s === subj;
-    }) }))
-    .filter(d => d.shown.length > 0);
-    title += ` · ${subj}`;
-    if (!days.length){ toast("該科目沒有作業", true); return; }
   }
 
   const W = 720, pad = 28, cW = W - pad * 2;
@@ -1793,7 +1731,7 @@ function closeSheet(){
    - 新增：單筆表單 或 批量貼上多行；主題含日期自動解析為到期日並自主題移除（不重複）
    - 排序：手動（拖動）/ 到期日 / 主題；可置頂；向右拉露出刪除
    - 分享：勾選一筆或全部（只含未完成），輸出文字或圖片
-   - 備份／恢復在「設定」面板（用戶數據：任務＋設定）；作業、科目、測驗項目可「＋」直接加入
+   - 備份／恢復在「設定」面板（用戶數據：任務＋設定）；作業、測驗項目可「＋」直接加入
    ========================================================= */
 const LS_TASKS = "hw_tasks_v1";
 const LS_TASK_SORT = "hw_task_sort_v1";
@@ -2608,7 +2546,7 @@ function persistDragOrder(){
   saveTasks(); toast("順序已更新");
 }
 
-/* ---------- 作業 / 科目 / 測驗清單項目 → 加入任務 ---------- */
+/* ---------- 作業 / 測驗清單項目 → 加入任務 ---------- */
 function addTaskFromItem(text, due, btn){
   const raw = String(text || "").trim();
   if (!raw) return;
@@ -2654,10 +2592,10 @@ function addTaskFromItem(text, due, btn){
 })();
 
 /* =========================================================
-   手勢：單指左右滑＝切「作業/測驗/科目/任務」呈現（班級用底部班級條點選）
+   手勢：單指左右滑＝切「作業/測驗/任務」呈現（班級用底部班級條點選）
    ========================================================= */
 const SWIPE_MIN = 54;
-let sw = null;     // 單指（作業/測驗/科目 呈現）
+let sw = null;     // 單指（作業/測驗 呈現）
 
 function bindSwipe(){
   const area = document.querySelector("main.wrap");
@@ -2725,7 +2663,7 @@ function bindSwipe(){
   area.addEventListener("touchcancel", end);
 }
 
-/* 向左 / 向右滑動切換「呈現方式」（作業 / 測驗 / 科目 / 任務），循環切換 */
+/* 向左 / 向右滑動切換「呈現方式」（作業 / 測驗 / 任務），循環切換 */
 function cycleLayout(dir){
   const i = LAYOUTS.findIndex(l => l.k === state.layout);
   const n = (i + (dir > 0 ? 1 : -1) + LAYOUTS.length) % LAYOUTS.length;
@@ -2759,7 +2697,7 @@ function cycleLayout(dir){
     b.onclick = () => setLayout(b.dataset.lay);
   });
 
-  // 測驗清單點項目 → 跳到對應日期功課；分享為圖片：卡片、科目群組右下角的分享鈕
+  // 測驗清單點項目 → 跳到對應日期功課；分享為圖片：卡片右下角、測驗清單的分享鈕
   const listEl = document.getElementById("list");
   if (listEl) listEl.addEventListener("click", (e) => {
     const add = e.target.closest(".add-task");
@@ -2770,10 +2708,9 @@ function cycleLayout(dir){
     if (rest){ restoreTests(currentCode()); return; }                // 一次還原全部
     const tap = e.target.closest(".cal-tap");
     if (tap){ gotoDay(tap.dataset.date); return; }
-    const b = e.target.closest(".share-day, .share-subj, .share-tests");
+    const b = e.target.closest(".share-day, .share-tests");
     if (!b) return;
     if (b.classList.contains("share-day")) shareImage({ date: b.dataset.date });
-    else if (b.classList.contains("share-subj")) shareImage({ subject: b.dataset.subject });
     else shareTestsImage();
   });
 
