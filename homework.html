@@ -26,6 +26,7 @@
   body[data-fz="s"]{ --fz:.88 }
   body[data-fz="l"]{ --fz:1.16 }
   *{box-sizing:border-box}
+  button,label,select,input,a,.cchip{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   html,body{margin:0}
   body{
     background:
@@ -33,7 +34,9 @@
       radial-gradient(900px 420px at 92% 4%, #eef5f4 0%, rgba(238,245,244,0) 58%),
       var(--bg);
     color:var(--ink); font-family:var(--font); -webkit-font-smoothing:antialiased; line-height:1.6;
-    padding-bottom:calc(158px + env(safe-area-inset-bottom));
+    padding-bottom:calc(var(--mbar-h, 86px) + 34px + env(safe-area-inset-bottom));
+    overscroll-behavior-y:contain;       /* 避免底部回彈干擾操作 */
+    -webkit-text-size-adjust:100%;text-size-adjust:100%;
   }
 
   /* ---------- 開關（簽改/測） ---------- */
@@ -255,6 +258,8 @@
      讓單指水平滑（切呈現）與雙指滑（切班級）完全由 JS 控制；垂直仍可原生捲動 */
   main.wrap{will-change:transform;touch-action:pan-y}
   body.dragging{user-select:none;-webkit-user-select:none}
+  /* 任務長按拖動中：鎖定頁面捲動，避免跟手時整頁上移 */
+  body.tk-sort{overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
 
   /* ---------- 班級選單（底部彈出） ---------- */
   .sheet-wrap{position:fixed;inset:0;z-index:60;display:none}
@@ -287,14 +292,23 @@
     main.wrap{padding:0 12px}
     .toggle{font-size:12px;padding:5px 9px;gap:6px}
     .srcbar{margin:10px 0;padding:8px 11px;gap:7px}
+    .srcbar-top{flex-wrap:wrap}            /* 過窄時呈現切換換行，不再擠壓 */
     .srcbar .law{margin-left:0;flex:1 1 auto;white-space:normal;font-size:12px}
-    .srcbar-links{gap:6px}
+    .srcbar-links{gap:6px;flex:1 1 100%;order:3}
     .srcbar-links a{padding:2px 9px;font-size:12px}
-    .layswitch button{padding:8px 13px;font-size:14px}
+    .layswitch button{padding:9px 13px;font-size:14px}
     .body{padding:13px}
-    .txt{font-size:15px}
+    .txt{font-size:15.5px;line-height:1.75}     /* 手機行距放寬，提升可讀性 */
     .mbar{padding:6px 10px calc(6px + env(safe-area-inset-bottom))}
-    .cchip{font-size:15px;padding:9px 14px}
+    .cchip{font-size:15px;padding:10px 14px}    /* 班級條方塊加大好按 */
+    .tk-row{min-height:60px;padding:11px 12px}
+    .tk-subj{font-size:calc(16px * var(--fz))}
+    .tk-main{gap:3px}
+  }
+  @media (max-width:360px){              /* 極窄螢幕再降邊距，避免橫向擠壓 */
+    main.wrap{padding:0 9px}
+    .srcbar{padding:7px 9px}
+    .layswitch button{padding:8px 10px}
   }
   @media print{
     body{background:#fff;padding:0}
@@ -303,7 +317,7 @@
   }
 
   /* 字型大小：以 --fz 倍率縮放主要閱讀文字 */
-  .txt{font-size:calc(15.5px * var(--fz))}
+  .txt{font-size:calc(15.5px * var(--fz));line-height:1.78}
   li.note{font-size:calc(13.5px * var(--fz))}
   .hd h2{font-size:calc(17px * var(--fz))}
   .subj{font-size:calc(12.5px * var(--fz))}
@@ -371,8 +385,10 @@
   .tk-rows{display:flex;flex-direction:column;gap:8px}
   .tk-row-outer{position:relative;border-radius:13px;overflow:hidden;touch-action:pan-y;
     -webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-  .tk-row-outer.dragging{opacity:.6;pointer-events:none}
-  .tk-row-outer.dragging .tk-row{box-shadow:0 6px 16px rgba(0,0,0,.13);border:1px solid var(--line)}
+  .tk-row-outer.dragging{z-index:5;pointer-events:none}
+  .tk-row-outer.dragging .tk-row{box-shadow:0 12px 28px -6px rgba(40,32,22,.4);
+    border-color:color-mix(in srgb,var(--accent) 55%, var(--line));
+    transform:scale(1.035);transition:transform .12s ease,box-shadow .12s ease}
   .tk-del{position:absolute;left:0;top:0;bottom:0;width:88px;border:0;background:#a8244a;color:#fff;
     font-family:inherit;font-size:calc(13px * var(--fz));font-weight:800;cursor:pointer}
   .tk-row{position:relative;display:flex;align-items:center;gap:7px;min-height:56px;
@@ -2501,6 +2517,7 @@ function beginRowDrag(g){
   }
   g.mode = "drag"; g.moved = false; g.suppress = true;
   g.out.classList.add("dragging");
+  document.body.classList.add("tk-sort");   // 鎖定頁面捲動，跟手更穩
   try{ if (navigator.vibrate) navigator.vibrate(15); }catch(err){}
 }
 function onTaskPointerMove(e){
@@ -2546,6 +2563,7 @@ function onTaskPointerUp(){
     TK_G = g.moved ? g : null;
     if (g.moved) setTimeout(() => { if (TK_G && TK_G.suppress) TK_G = null; }, 380);
   }else{
+    document.body.classList.remove("tk-sort");
     g.out.classList.remove("dragging");
     if (g.moved) persistDragOrder(g.sortSwitched);
     TK_G = g;

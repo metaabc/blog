@@ -242,6 +242,12 @@ select.sel{padding:8px 9px;border:1px solid var(--line2);border-radius:9px;backg
 .cp:hover{opacity:1;background:#fff}
 .fc-front,.fc-back,.li .a,.li .b,.tbl-w .c-a,.tbl-w .c-b,.focus-v .q,.focus-v .a{position:relative}
 .fc-front,.li .a,.tbl-w .c-a,.focus-v .q{padding-right:30px}
+/* 反面／表格／聚焦的複製鈕：內文避開按鈕，不再被遮住 */
+.li .b,.tbl-w .c-b,.focus-v .a{padding-right:30px}
+/* 網格卡的反面：標籤與複製鈕同一行，內文獨佔整行 */
+.fc-back .lb-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.fc-back .lb-row .lb{margin-bottom:0}
+.fc-back .lb-row .cp{position:static;flex:0 0 auto;width:24px;height:24px;margin-left:auto;box-shadow:none;background:transparent;opacity:.6}
 .op{width:27px;height:27px;border-radius:8px;border:1px solid transparent;display:grid;place-items:center;font-size:13px;color:var(--muted);background:transparent}
 .op:hover{background:var(--bg2);border-color:var(--line);color:var(--acc)}
 .op.on{color:var(--gold)}
@@ -257,7 +263,7 @@ select.sel{padding:8px 9px;border:1px solid var(--line2);border-radius:9px;backg
 .imgbtn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line2);background:var(--bg2);color:var(--acc);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer}
 .imgbtn:hover{border-color:var(--acc-line)}
 .imgbtn .ic{font-size:14px}
-.imgbar .note{font-size:11px;color:var(--muted)}
+.imgbar .note{font-size:11px;color:var(--muted);background:none;border:none;padding:0;line-height:1.4}
 /* 編輯器圖片預覽縮圖 */
 .imgprev{display:none;flex-wrap:wrap;gap:8px;margin-top:8px}
 .imgprev .th{position:relative;width:84px;height:84px;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--bg2);box-shadow:var(--sh)}
@@ -285,6 +291,7 @@ td.c-no{color:var(--muted);font-size:10.5px;width:38px}
 td.c-a{font-weight:800;width:34%;color:var(--ink)}
 td.c-b{color:var(--content);width:44%}
 td.c-op{white-space:nowrap;width:110px}
+td.c-op .ops{display:flex;align-items:center;gap:2px;justify-content:flex-end}
 
 /* focus view */
 .focus-v{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:22px;text-align:center}
@@ -305,13 +312,13 @@ td.c-op{white-space:nowrap;width:110px}
 .modal.full{max-width:820px}
 /* 匯出／分享格式選擇：手機底部上滑清單，桌面置中卡片 */
 .mask.sheet{align-items:flex-end;padding:0}
-.actsheet{width:100%;max-width:480px;background:var(--panel);border:1px solid var(--line2);border-bottom:none;border-radius:20px 20px 0 0;box-shadow:0 -14px 44px rgba(30,25,18,.30);padding:14px 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:9px;animation:su .22s ease}
+.actsheet{width:100%;max-width:480px;background:var(--panel);border:1px solid var(--line2);border-bottom:none;border-radius:20px 20px 0 0;box-shadow:0 -14px 44px rgba(30,25,18,.30);padding:14px 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:9px;animation:su .22s ease;max-height:92dvh}
 @keyframes su{from{transform:translateY(110%)}to{transform:translateY(0)}}
 @media(min-width:560px){ .mask.sheet{align-items:center;padding:16px} .actsheet{border-radius:18px;border-bottom:1px solid var(--line2);max-width:420px} }
-.as-head{display:flex;flex-direction:column;gap:2px;padding:2px 6px 5px}
+.as-head{display:flex;flex-direction:column;gap:2px;padding:2px 6px 5px;flex:0 0 auto}
 .as-head b{font-size:16px;color:var(--ink)}
 .as-head .sub{font-size:12px;color:var(--muted)}
-.as-list{display:flex;flex-direction:column;gap:8px}
+.as-list{display:flex;flex-direction:column;gap:8px;overflow:auto;min-height:0;flex:1 1 auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .as-opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:1px solid var(--line2);background:var(--card);border-radius:13px;padding:14px;min-height:50px;font-size:15px;color:var(--ink);cursor:pointer}
 .as-opt:hover{background:var(--bg2)}
 .as-opt .ic{font-size:19px;width:22px;text-align:center}
@@ -555,6 +562,203 @@ td.c-op{white-space:nowrap;width:110px}
   .footnote{padding-bottom:16px}
 }
 @media(max-width:380px){ .botnav button{font-size:10px} .botnav button .ic{font-size:17px} }
+
+/* =====================================================================
+   手機 UX 強化：頂欄單行、工具列單行＋檢視面板、卡片可讀性、播放全屏
+   ===================================================================== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body.lock{overflow:hidden}
+.mask{overscroll-behavior:contain}
+#mView{display:none}
+.side-acts{display:none}
+#menuScrim{display:none}
+.more-lbl{display:none}
+.lb-short{display:none}
+
+/* 檢視面板（手機底部） */
+.vs-body{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:13px;padding:2px 2px 6px}
+.vs-grp{display:flex;flex-direction:column;gap:7px}
+.vs-lb{font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.4px}
+.vs-chips{display:flex;gap:6px;flex-wrap:wrap}
+.vs-chips button{border:1px solid var(--line2);background:var(--card);border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;color:var(--sub);min-height:42px}
+.vs-chips button:active{transform:scale(.97)}
+.vs-chips button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+
+@media(max-width:900px){
+  /* ---- 頂欄：單行、安全區 ---- */
+  header.top{padding:max(8px,env(safe-area-inset-top)) 12px 8px;gap:8px;flex-wrap:nowrap}
+  .brand{flex:1 1 auto;min-width:0;gap:8px}
+  .brand .logo{width:32px;height:32px;border-radius:9px}
+  .brand .logo svg{width:20px;height:20px}
+  .brand h1{font-size:15px;overflow:hidden;text-overflow:ellipsis}
+  .top-actions{width:auto;margin-left:0;flex-wrap:nowrap;gap:6px;flex:0 0 auto}
+  #btnNewList,#btnImportTop{display:none}   /* 移入抽屜與設定面板 */
+  .top-actions .btn.icon{width:40px;height:40px;min-height:40px;font-size:16px}
+  #btnHelp{order:2}
+  .hamb{order:3}
+
+  /* ---- 抽屜：快速操作 ---- */
+  .side-acts{display:flex;gap:7px;margin-bottom:9px}
+  .side-acts .btn{flex:1;min-height:44px;justify-content:center;font-size:13px}
+  .nav-it{min-height:46px}
+  .side-foot{font-size:10.5px}
+
+  /* ---- toast 升到導覽列之上 ---- */
+  #toast{bottom:calc(78px + env(safe-area-inset-bottom));max-width:calc(100vw - 26px);font-size:13px;line-height:1.65}
+
+  /* ---- 底部導覽 ---- */
+  .botnav button{font-size:11.5px}
+  body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+
+  /* ---- 底部面板高度與滾動 ---- */
+  .actsheet{max-height:88dvh}
+  .as-list{overflow:auto;flex:1;min-height:0;-webkit-overflow-scrolling:touch}
+  .as-opt{min-height:52px;font-size:15px}
+  .as-opt .lb{font-size:15px}
+}
+
+@media(max-width:760px){
+  /* ---- 工具列：只剩一行（搜尋＋檢視） ---- */
+  .toolbar{flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  .seg,#sortSel,#filterSel,.toolbar .chk,#btnReorder{display:none}
+  .search{flex:1 1 0;min-width:0}
+  .search input{height:46px;font-size:16px;border-radius:11px;padding-left:36px}
+  .search svg{width:16px;height:16px;left:12px}
+  #mView{display:inline-flex;flex:0 0 auto;height:46px;padding:0 14px;font-size:13.5px;border-radius:11px;gap:6px}
+  #mView .mic{font-size:15px;line-height:1}
+  .count{order:9;flex:1 1 100%;text-align:right;margin:0;font-size:10.5px}
+
+  /* ---- 卡片：字級與觸控 ---- */
+  .grid-v,.grid-v.sm,.grid-v.lg{grid-template-columns:repeat(2,1fr);gap:10px}
+  .fc{min-height:0;border-radius:13px}
+  .fc:hover{transform:none;box-shadow:var(--sh);border-color:var(--line2)}
+  .fc-top{padding:13px 12px 10px;gap:6px}
+  .fc-front{font-size:15px;line-height:1.56;padding-right:28px}
+  .fc-back{font-size:13px;line-height:1.66;padding:11px 12px}
+  .fc-back .lb{font-size:10px}
+  .fc-ops{gap:2px;padding:5px 5px}
+  .op{width:34px;height:34px;font-size:14px;border-radius:9px}
+  .fc-ops .op[data-act="density"]{display:none}
+  .op:active{background:var(--acc-soft);border-color:var(--acc-line)}
+  .cp{width:28px;height:28px;font-size:13px;top:4px;right:4px}
+
+  /* ---- 列表：底面顯示在下方（不再隱藏） ---- */
+  .li{flex-wrap:wrap;align-items:flex-start;padding:11px 12px;gap:4px 8px}
+  .li .cdrag{order:0}
+  .li .no{order:1;width:22px}
+  .li .a{order:2;flex:1 1 50%;font-size:14px;line-height:1.56;padding-right:26px}
+  .li .ops{order:3;margin-left:auto}
+  .li .b{display:block;order:5;flex:1 1 100%;border-left:none;border-top:1px dashed var(--line2);padding:7px 0 0;margin-top:2px;font-size:13px;line-height:1.62;color:var(--content)}
+  .li .weak-inline{margin-left:0}
+
+  /* ---- 表格：隱藏狀態欄，加大字級 ---- */
+  .tbl-w{-webkit-overflow-scrolling:touch}
+  .tbl-w th:nth-child(1),.tbl-w td:nth-child(1),
+  .tbl-w th:nth-child(4),.tbl-w td:nth-child(4){display:none}
+  .tbl-w table{font-size:13px}
+  .tbl-w th{padding:9px 10px}
+  .tbl-w td{padding:9px 10px;line-height:1.6}
+  .tbl-w td.c-a{width:42%;padding-right:8px}
+  .tbl-w td.c-b{padding-right:8px}
+  .tbl-w .cp{display:none}
+  .tbl-w td.c-op{width:112px;padding:6px 4px}
+  .tbl-w .op{width:26px;height:26px;font-size:12.5px}
+
+  /* ---- 聚焦 ---- */
+  .focus-v{padding:16px 14px}
+  .focus-v .big{min-height:190px;gap:12px}
+  .focus-v .q{font-size:clamp(21px,6vw,28px)}
+  .focus-v .a{font-size:clamp(16px,4.6vw,20px);padding:12px}
+  .focus-v .nav{gap:7px}
+  .focus-v .nav .btn{flex:1 1 44%;min-height:48px;font-size:14px}
+  .pill{font-size:10.5px}
+
+  /* ---- 其他觸控目標 ---- */
+  .imgbtn{min-height:42px;padding:0 12px;font-size:13px}
+  .imgprev .th{width:76px;height:76px}
+  .imgprev .th .rm{width:24px;height:24px;line-height:22px}
+  .pop button{min-height:44px;font-size:14px}
+  .menu button{min-height:46px;font-size:14px}
+  /* 更多選單 → 手機底部面板 */
+  .menu{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom));top:auto;max-height:78dvh;overflow:auto;border-radius:16px;padding:8px;z-index:200;box-shadow:0 -12px 44px rgba(0,0,0,.30)}
+  #menuScrim.on{display:block;position:fixed;inset:0;background:rgba(20,16,10,.40);z-index:190;backdrop-filter:blur(2px)}
+  .footnote{padding:16px 10px 20px}
+  /* 清單列：2 行按鈕（主動作 + 4 個小動作），省下近 100px */
+  .lb-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;width:100%}
+  .lb-btns .btn{min-height:46px;font-size:12.5px;padding:0 6px;gap:4px;justify-content:center}
+  #btnPlayList,#btnQuiz{grid-column:span 2;font-size:13.5px}
+  .lb-btns .menu-wrap{display:block;grid-column:span 1}
+  .lb-btns #btnMore{width:100%;height:46px;font-size:13px;gap:4px}
+  .lb-long{display:none}
+  .lb-short{display:inline}
+  .lb-btns .menu-wrap #btnMore .more-lbl{display:inline}
+  .listbar{padding:12px;gap:10px;margin-bottom:10px}
+
+  /* ---- 播放：全螢幕，卡片自適應 ---- */
+  #playMask{padding:0;align-items:stretch}
+  #playMask .play-wrap{border-radius:0;border:none;height:100dvh;max-height:none;width:100%;max-width:none;padding:max(8px,env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom));gap:10px}
+  .play-wrap .phead{flex:0 0 auto;font-size:12px}
+  .pbar{flex:0 0 auto}
+  .pcard{flex:1 1 auto;min-height:150px;max-height:none;border-radius:16px}
+  .pcard.both{max-height:none}
+  .pside{padding:22px 16px}
+  .pside .txt{font-size:clamp(22px,6.4vw,30px)}
+  .pside.pback .txt{font-size:clamp(19px,5.4vw,26px)}
+  .pctl{flex:0 0 auto;gap:8px}
+  .pctl .btn{min-height:52px;font-size:15px;min-width:0;padding:0 8px;flex:1 1 auto}
+  /* 控制列分兩行：⏮ 暫停 ⏭ ／ 翻面 重讀，拇指更易按 */
+  #plPrev,#plPause,#plNext{order:1;flex:1 1 30%}
+  #plFlip,#plReplay{order:2;flex:1 1 46%}
+  #plContinue{order:3;flex:1 1 100%}
+  .pset{flex:0 0 auto;padding:10px}
+  /* 播放設定收合 */
+  .pset-head{display:flex;align-items:center;gap:8px;width:100%;border:none;background:transparent;padding:2px;font-size:12.5px;font-weight:800;color:var(--sub);text-align:left}
+  .pset-head .ic{font-size:14px}
+  .pset-head .sum{flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+  .pset-head .chev{color:var(--muted);font-size:12px;transition:transform .18s}
+  .pset.open .pset-head .chev{transform:rotate(180deg)}
+  .pset:not(.open) > *:not(.pset-head){display:none}
+  .pset:not(.open){padding:9px 11px}
+}
+@media(min-width:761px){ .pset-head{display:none} }
+
+/* ---- 小螢幕：對話框改為底部全寬 sheet ---- */
+@media(max-width:560px){
+  .mask{padding:0;align-items:flex-end}
+  .modal{max-height:96dvh;border-radius:16px 16px 0 0;max-width:100%}
+  .mhead{padding:13px 15px;gap:8px}
+  .mhead b{font-size:15.5px}
+  .mhead .sub{display:none}
+  .mhead .x{width:36px;height:36px;font-size:18px;flex:0 0 auto}
+  .mbody{padding:14px 15px}
+  .mbody textarea,.mbody input[type=text],.mbody input[type=number],.mbody select{font-size:16px;min-height:44px}
+  .mbody textarea{min-height:96px;padding:11px 12px;line-height:1.65}
+  .mfoot{padding:10px 15px calc(10px + env(safe-area-inset-bottom));gap:8px}
+  .mfoot .btn{min-height:47px;font-size:14px}
+  /* 卡片編輯器：儲存類在上、管理類在下 */
+  #edSaveAdd,#edSave{order:1;flex:1 1 44%}
+  #edDel,#edUp,#edDown{order:2;flex:1 1 auto}
+  #cardMask .mfoot .sp{display:none}
+  .row{gap:10px}
+  .frow{font-size:12.5px;margin-bottom:10px}
+  .frow select,.frow input[type=number]{font-size:15px;min-height:38px;max-width:150px}
+  .frow input[type=number]{width:74px}
+  .pdf-opts{max-height:46vh}
+  .pdf-grid{height:auto;gap:12px}
+  .pages{max-height:40vh}
+  .qpanel{padding:15px 14px}
+  .qcard{padding:22px 16px}
+  .actsheet{padding:12px 12px calc(14px + env(safe-area-inset-bottom))}
+  /* 使用說明：手機字級放大，長時間閱讀較舒服 */
+  #helpMask .mbody{font-size:14.5px !important;line-height:2 !important}
+  #helpMask .mbody p{margin:12px 0}
+}
+@media(min-width:360px) and (max-width:380px){
+  .grid-v,.grid-v.sm,.grid-v.lg{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:359px){
+  .grid-v,.grid-v.sm,.grid-v.lg{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -575,6 +779,10 @@ td.c-op{white-space:nowrap;width:110px}
 <div class="shell">
   <aside class="side" id="side">
     <div class="side-h"><b>我的清單</b><span id="listCount">0</span></div>
+    <div class="side-acts">
+      <button class="btn pri" id="btnNewList2" type="button">＋ 新增清單</button>
+      <button class="btn" id="btnImportTop2" type="button">⬆ 匯入</button>
+    </div>
     <div class="side-search"><input id="listSearch" type="text" placeholder="🔍 搜尋清單…" autocomplete="off" value=""></div>
     <div id="listNav" class="lnav"></div>
     <div class="arc-wrap" id="arcWrap" style="display:none">
@@ -614,9 +822,9 @@ td.c-op{white-space:nowrap;width:110px}
         <button class="btn" id="btnQuiz">📝 測驗</button>
         <button class="btn" id="btnExport">📤 匯出</button>
         <button class="btn" id="btnShare">↗ 分享</button>
-        <button class="btn" id="btnAddCard">＋ 新增卡片</button>
+        <button class="btn" id="btnAddCard">＋ <span class="lb-long">新增卡片</span><span class="lb-short">新增</span></button>
         <div class="menu-wrap">
-          <button class="btn icon" id="btnMore">⋯</button>
+          <button class="btn icon" id="btnMore">⋯<span class="more-lbl">更多</span></button>
           <div class="menu" id="moreMenu">
             <button data-m="settings">⚙ 設定</button>
             <hr>
@@ -640,6 +848,7 @@ td.c-op{white-space:nowrap;width:110px}
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
         <input id="search" type="text" placeholder="搜尋正面／反面內容…" autocomplete="off">
       </div>
+      <button class="btn" id="mView" type="button" title="檢視、排序與篩選"><span class="mic">▦</span><span id="mViewTxt">網格</span></button>
       <div class="seg" id="layoutSeg">
         <button data-l="grid" class="on">網格</button>
         <button data-l="list">列表</button>
@@ -802,6 +1011,7 @@ td.c-op{white-space:nowrap;width:110px}
   </div>
   <div class="pswipe" id="pswipeHint">← 左右滑動切換卡片　·　點一下顯示底面／下一張 →</div>
   <div class="pset">
+    <button type="button" class="pset-head" id="psetToggle"><span class="ic">⚙</span><span>播放設定</span><span class="sum" id="psetSum">朗讀開 · 正→反 · 1×</span><span class="chev">▾</span></button>
     <div class="lang-seg" id="playLangSeg" title="只影響目前這份清單，切換後立即以此語音重讀">
       <span class="lb-label">🔊 中文</span>
       <button data-v="putonghua" class="on">普通話</button>
@@ -910,7 +1120,7 @@ td.c-op{white-space:nowrap;width:110px}
   <div class="mbody" style="font-size:12.5px;line-height:1.9;color:var(--sub)">
     <p style="margin-top:0"><b style="color:var(--ink)">① 建立清單與卡片</b><br>左側可新增多個清單（例如不同課次、不同單元）。每張卡只有兩個欄位：<b>正面</b>、<b>反面</b>。可標星、標記已熟練、上移下移調整順序（順序即列印順序）。<br><b>正面／反面都支援內嵌圖片</b>：編輯卡片時按「🖼 插入圖片」選本機圖片，或直接把圖片<b>貼上</b>到文字框；圖會自動縮圖並隨卡一起顯示、列印與匯出 HTML。</p>
     <p><b style="color:var(--ink)">② Excel 匯入／匯出</b><br>每個清單都可獨立匯出 .xlsx（欄位：正面、反面）或 CSV；匯入可選「附加／取代／建立新清單」，也能直接從 Excel 複製兩欄貼上。全程離線，不需外掛程式。<br><b>圖片不會進 Excel／CSV</b>（這兩者是純文字）；要保留含圖片的卡片，請用「📤 匯出 → JSON」備份，還原時圖片會一併回來。</p>
-    <p><b style="color:var(--ink)">③ 四種檢視佈局與排序</b><br>網格、列表、表格、聚焦。可搜尋、排序（原順序／正面 A→Z／最近新增／未熟練優先）、篩選（未熟練／已加星／有底面／缺底面／<b>錯題</b>）。在「原順序」且無搜尋／篩選時，可用卡片左上角的 ⠿ 把手<b>拖動排序</b>；亦可按工具列的「⇅ 整理順序」勾選多張<b>批量上移／下移</b>、全選或單張上下移。勾「遮蔽反面」可自測，點一下才揭示答案。</p>
+    <p><b style="color:var(--ink)">③ 四種檢視佈局與排序</b><br>網格、列表、表格、聚焦。可搜尋、排序（原順序／正面 A→Z／最近新增／未熟練優先）、篩選（未熟練／已加星／有底面／缺底面／<b>錯題</b>）。<b>手機上這些選項都收在工具列的「▦ 檢視」按鈕裏</b>，桌面版則直接排在同一個工具列。在「原順序」且無搜尋／篩選時，可用卡片左上角的 ⠿ 把手<b>拖動排序</b>；亦可按「⇅ 整理順序」勾選多張<b>批量上移／下移</b>、全選或單張上下移。勾「遮蔽反面」可自測，點一下才揭示答案。</p>
     <p><b style="color:var(--ink)">④ 播放與朗讀</b><br>點單張卡即播放該卡；按「▶ 播放清單」逐張朗讀，可調<b>語速、間隔、循環、隨機</b>；單張播放後可「續播整份」。<br><b>「顯示」有兩種模式</b>：<br>· <b>分面</b>：先顯示正面，讀完後自動（或點一下／按 →）才顯示反面。<br>· <b>正反同時顯示</b>：正面與反面同時列在同一張卡上，<b>不用翻面</b>；先讀第一面、稍停再讀第二面，然後直接下一張，適合純聽讀。<br>換卡與換面都是直接換字，<b>沒有翻轉／縮放動畫</b>，不會閃，長時間看較舒服。<b>「順序」</b>可選正→反或反→正（反→正時先讀反面）。<br><b>底面一定會先顯示才前進</b>（分面模式）：只要該卡有底面，都會先顯示／朗讀底面才去下一張，不會跳過。<b>「自動連續」</b>開啟＝全自動連續播放；關閉＝每讀完一面停一停，點一下（或按 →）繼續。<br><b>鍵盤</b>：← 上一張、→ 下一張、↑ ↓ 或 F 翻面（同時顯示模式下無效）、空白鍵（自動＝暫停／繼續，手動＝繼續下一面）、Esc 結束。<b>手機</b>：左右滑動切換、點一下下一張。<br><b>所有播放設定會自動記住</b>（顯示模式、順序、語速、間隔、循環、隨機、朗讀開關），下次進入沿用上一次的設定。每份清單另外各自記住「普通話／粵語」。<br><b>電腦與手機都可朗讀</b>：使用瀏覽器內建的 Web Speech（Chrome、Edge、Safari、Android 版 Chrome 均支援）。中英混合的卡面會自動分段，中文用所選語音、英文用英語語音。面板上有 <b>🔊 測試朗讀</b> 按鈕可即時確認這部機能否發聲；狀態列會顯示目前使用的語音。若顯示「未安裝語音」，請到系統的「文字轉語音／朗讀內容」下載中文語音（Windows：時間與語言 → 語音；Android：語言與輸入 → 文字轉語音；iPhone：輔助使用 → 朗讀內容 → 聲音）。若系統完全沒有語音引擎，工具會自動改用無聲計時，翻卡流程照常運作。<br><b>離開播放即停止朗讀</b>：按「✕ 結束」、Esc、點播放面板外，或切換分頁／手機切換 App／關閉視窗，都會立即停止發聲並暫停播放，回來後按「▶ 繼續」才會再讀。</p>
     <p><b style="color:var(--ink)">⑤ PDF：單面／雙面</b><br>匯出 PDF 可選兩種版式（對話框頂部「輸出方式」）：<br>· <b>單面（每格正面＋背面）</b>：每張小卡上半印正面、下半印背面（細虛線分隔），單面列印即可對照背誦，適合自製學習卡／溫習紙。<br>· <b>雙面（正／背分兩面）</b>：PDF 頁次為「第1張正面、第1張背面、第2張正面…」，背面卡的位置依翻面方式鏡射對調；印表機選「雙面・長邊裝訂」後，正反內容落在同一張小卡的兩面，沿裁切線剪開即成可翻面的背誦記憶卡。<br><b>雙面首次使用強烈建議勾「加入校準頁」</b>：先印一張，看「正面1」背後是否為「背面1」，若不對就換一個翻面方式或用 mm 微調。<br><b>內容不會被裁掉</b>：文字與圖片一律限制在卡框內並預留安全留白，字級會自動縮到完全容納（單面模式的正／背高度亦按內容多寡分配），頁邊距最少 5mm。列印請選「100% 實際大小」、關閉瀏覽器頁首頁尾。</p>
     <div class="note">列印設定：縮放 <b>100%</b>／實際大小，<b>不要</b>勾「配合頁面大小」，關閉頁首頁尾與自動置中，紙張尺寸與此處選擇一致。</div>
@@ -918,8 +1128,8 @@ td.c-op{white-space:nowrap;width:110px}
     <p><b style="color:var(--ink)">⑦ 清單管理</b><br>左側可有多份清單，並支援：<b>🔍 搜尋清單</b>（側欄頂部輸入名稱過濾）；<b>📌 置頂</b>（點清單上的 📌 或「⋯」選單，置頂的清單恆排最前）；<b>⠿ 拖動排序</b>（按住清單左側的 ⠿ 把手上下拖移調整順序）；<b>📦 歸檔</b>（收進「已歸檔」區，預設收起，點一下「📦 已歸檔」才展開選取；歸檔清單不會干擾日常，需要時再點開）。每份清單也可複製、重新命名、刪除。</p>
     <p><b style="color:var(--ink)">⑧ 自測／測驗與成績</b><br>按「📝 測驗」可自測：先選「看正面答反面」或「看反面答正面」；作答方式可選「輸入答案」（自動忽略空白與標點比對），或「選擇題」（從同清單其他卡的答案中隨機混入干擾項，選出正確）。可設定出題範圍與題目順序。完成後會列出每題的✓／✗ 與正確答案，可<b>「重測全部」</b>或<b>「只重測錯題」</b>；並能立即<b>「↗ 分享成績」</b>或<b>「↗ 分享錯題」</b>（叫起系統分享，或降級為複製文字／下載 .txt）。每次測驗成績會自動保存，按設定面板的<b>「📊 歷史成績」</b>可回看歷次分數、查看明細、再次分享。</p>
     <p><b style="color:var(--ink)">資料保存</b><br>資料存於本機瀏覽器。換電腦或清除瀏覽器資料前，請到「⚙ 設定 → 💾 備份」下載 JSON，再到新環境「⚙ 設定 → ↩ 還原」。清單的語音設定一併保存在備份內。</p>
-    <p><b style="color:var(--ink)">⑩ 複製卡片內容</b><br>在網格／列表／表格／聚焦任一檢視，每張卡的正面與反面右上角都有一個 📋 小鈕，點一下即可把該面的<b>純文字</b>（不含圖片標記）複製到剪貼簿，方便貼到聊天、筆記或其他工具。file:// 離線環境會自動改用內建複製方式。</p>
-    <p><b style="color:var(--ink)">⑨ 錯題標記與手機操作</b><br>測驗中答錯（含未作答）的卡片會自動標上 🔴 錯題 記號（數字為答錯次數），並可在篩選選單選「錯題」只看重點復習；「⋯ → 清除錯題標記」或設定裡的「清除錯題標記」可一併重置。手機版底部會出現導覽列：📚 清單、▶ 播放、↗ 分享、⚙ 設定，方便單手切換；清單管理（☰ 或側欄）負責切換／新增清單。</p>
+    <p><b style="color:var(--ink)">⑨ 複製卡片內容</b><br>在網格／列表／表格／聚焦任一檢視，每張卡的正面與反面右上角都有一個 📋 小鈕，點一下即可把該面的<b>純文字</b>（不含圖片標記）複製到剪貼簿，方便貼到聊天、筆記或其他工具。file:// 離線環境會自動改用內建複製方式。</p>
+    <p><b style="color:var(--ink)">⑩ 錯題標記與手機操作</b><br>測驗中答錯（含未作答）的卡片會自動標上 🔴 錯題 記號（數字為答錯次數）；在「檢視」面板選「錯題」可只看需要復習的卡，「⋯ → 清除錯題標記」或設定裡可一併重置。<br><b>手機介面（已為單手操作重新編排）</b>：<br>· <b>頂欄</b>只有標題與 ☰／?；「新增清單／匯入」移到 ☰ 抽屜最上方，單手即可按到。<br>· <b>工具列</b>只剩「搜尋 ＋ 檢視」一行：按「▦ 網格」開啟底部面板，可切換<b>版面、排序、篩選、卡片大小、遮蔽反面、整理順序</b>，不再層層堆疊。<br>· <b>底部導覽</b>：📚 清單（切換清單）、▶ 播放、↗ 分享、⚙ 設定，隨時可達。<br>· <b>播放頁全螢幕</b>：卡片自動填滿畫面、按鈕加大成兩行（⏮ 暫停 ⏭／翻面 重讀）；最下方「⚙ 播放設定」預設收起，需要時點一下展開。<br>· <b>對話框由底部滑出、全寬顯示</b>，輸入框大字（16px）不會被手機自動放大；卡片編輯的「儲存」在上一行、「刪除／上移／下移」在下一行。<br>· 列表檢視在手機把<b>反面內容接在正面下方</b>（虛線分隔），不再隱藏；表格檢視隱藏次要欄位，只留正面／反面／操作。<br>· 操作按鈕、選單項目與輸入框都加大到手指好按的尺寸，有對話框開啟時背景不會跟著滑動。</p>
     <p style="margin-bottom:0"><b style="color:var(--ink)">匿名使用統計</b><br>以網頁方式（http／https）開啟時，會透過 Google Analytics（G-G7H3M2VW8T）記錄<b>匿名的功能使用次數</b>，例如匯出、分享、播放，用來改善工具。<b>卡片內容、清單名稱及任何個人資料都不會上傳</b>。直接以本機檔案（file://）開啟、沒有網路、瀏覽器啟用「不追蹤」或在下方關閉時，都不會連線。<br><label class="chk" style="margin-top:6px"><input type="checkbox" id="gaOptOut"> 關閉匿名使用統計</label></p>
   </div>
   <div class="mfoot"><span class="sp"></span><button class="btn pri" data-close="helpMask">知道了</button></div>
@@ -952,6 +1162,9 @@ td.c-op{white-space:nowrap;width:110px}
   <div class="actsheet">
     <div class="as-head"><b>設定</b><span class="sub">這份清單的語音與管理</span></div>
     <div class="as-list" id="settingsList">
+      <button class="as-opt" data-s="s_newlist"><span class="ic">＋</span><span class="lb">新增清單</span></button>
+      <button class="as-opt" data-s="s_import"><span class="ic">⬆</span><span class="lb">匯入 Excel／CSV</span></button>
+      <hr class="as-sep">
       <button class="as-opt" data-s="s_lang_pk"><span class="ic">🔊</span><span class="lb">普通話朗讀</span></button>
       <button class="as-opt" data-s="s_lang_yue"><span class="ic">🗣</span><span class="lb">粵語朗讀</span></button>
       <button class="as-opt" data-s="s_pin"><span class="ic">📌</span><span class="lb">置頂／取消置頂</span></button>
@@ -987,6 +1200,55 @@ td.c-op{white-space:nowrap;width:110px}
   </div>
 </div>
 
+<!-- ===== 檢視與篩選（手機底部面板） ===== -->
+<div class="mask sheet" id="viewSheet">
+  <div class="actsheet">
+    <div class="as-head"><b>檢視與篩選</b><span class="sub">版面、排序、篩選與卡片大小</span></div>
+    <div class="vs-body">
+      <div class="vs-grp"><span class="vs-lb">版面</span>
+        <div class="vs-chips" id="vsLayout">
+          <button data-v="grid" type="button">▦ 網格</button>
+          <button data-v="list" type="button">☰ 列表</button>
+          <button data-v="table" type="button">▤ 表格</button>
+          <button data-v="focus" type="button">◎ 聚焦</button>
+        </div>
+      </div>
+      <div class="vs-grp"><span class="vs-lb">排序</span>
+        <div class="vs-chips" id="vsSort">
+          <button data-v="seq" type="button">原順序</button>
+          <button data-v="az" type="button">正面 A→Z</button>
+          <button data-v="new" type="button">最近新增</button>
+          <button data-v="undone" type="button">未熟練優先</button>
+        </div>
+      </div>
+      <div class="vs-grp"><span class="vs-lb">篩選</span>
+        <div class="vs-chips" id="vsFilter">
+          <button data-v="all" type="button">全部</button>
+          <button data-v="undone" type="button">未熟練</button>
+          <button data-v="star" type="button">已加星</button>
+          <button data-v="hasback" type="button">有底面</button>
+          <button data-v="noback" type="button">缺底面</button>
+          <button data-v="weak" type="button">🔴 錯題</button>
+        </div>
+      </div>
+      <div class="vs-grp"><span class="vs-lb">卡片大小（網格）</span>
+        <div class="vs-chips" id="vsDensity">
+          <button data-v="sm" type="button">小</button>
+          <button data-v="md" type="button">中</button>
+          <button data-v="lg" type="button">大</button>
+        </div>
+      </div>
+      <label class="as-opt" style="gap:11px">
+        <span class="ic">🙈</span><span class="lb">遮蔽反面（自測）</span>
+        <span class="chk"><input type="checkbox" id="vsHideBack" style="width:20px;height:20px;accent-color:var(--acc)"></span>
+      </label>
+      <button class="as-opt" data-vs="reorder" type="button"><span class="ic">⇅</span><span class="lb">整理卡片順序</span></button>
+    </div>
+    <button class="btn as-cancel" data-close="viewSheet">完成</button>
+  </div>
+</div>
+
+<div id="menuScrim"></div>
 <div id="toast"></div>
 <input type="file" id="restoreInput" accept=".json" style="display:none">
 
@@ -1395,7 +1657,7 @@ function renderHead(){
   $('#listMeta').textContent=l.cards.length+' 張卡 · '+backs+' 張有底面 · '+done+' 張已熟練'+(weak?' · '+weak+' 張錯題':'')+(storageOK?'':' · ⚠ 本機儲存不可用');
   $$('#layoutSeg button').forEach(b=>b.classList.toggle('on',b.dataset.l===S.ui.layout));
   $('#sortSel').value=S.ui.sort; $('#filterSel').value=S.ui.filter; $('#hideBack').checked=S.ui.hideBack;
-  renderLangSeg();
+  renderLangSeg(); renderViewSheet();
 }
 /* 每份清單獨立的中文朗讀語音（普通話／粵語） */
 function renderLangSeg(){
@@ -1443,7 +1705,7 @@ function renderCards(){
       const masked=S.ui.hideBack && !revealed.has(c.id);
       const back=String(c.back||'').trim();
       const backHTML = back
-        ? '<div class="fc-back">'+(masked?'<span class="peek"><button data-act="peek" data-id="'+c.id+'">👁 顯示答案</button></span>':'')+'<span class="lb">反面 BACK</span><span class="txt">'+cardHTML(c.back, c.imgs)+'</span>'+cpHTML('back',c.id)+'</div>'
+        ? '<div class="fc-back">'+(masked?'<span class="peek"><button data-act="peek" data-id="'+c.id+'">👁 顯示答案</button></span>':'')+'<div class="lb-row"><span class="lb">反面 BACK</span>'+cpHTML('back',c.id)+'</div><span class="txt">'+cardHTML(c.back, c.imgs)+'</span></div>'
         : '';
       return '<div class="fc'+(c.star?' starred':'')+(c.done?' done':'')+(masked&&back?' masked':'')+(c.weak?' weak':'')+'" data-card="'+c.id+'">'+
         '<span class="cdrag" title="按住拖動調整順序（「原順序」且無篩選時）">⠿</span>'+weakBadge(c)+
@@ -1461,7 +1723,7 @@ function renderCards(){
   } else if(layout==='table'){
     area.innerHTML='<div class="tbl-w"><table><thead><tr><th>#</th><th>正面</th><th>反面</th><th>狀態</th><th>操作</th></tr></thead><tbody>'+
       a.map((c,i)=>'<tr><td class="c-no">'+(i+1)+'</td><td class="c-a">'+cpHTML('front',c.id)+cardHTML(c.front||'（空白）', c.imgs)+'</td><td class="c-b">'+cpHTML('back',c.id)+cardHTML(c.back||'—', c.imgs)+'</td>'+
-        '<td>'+(c.star?'⭐ ':'')+(c.done?'✔ 熟練':'')+(c.weak?' · 🔴錯題'+(c.weak>1?c.weak:''):'')+'</td><td class="c-op">'+opsHTML(c,true)+'</td></tr>').join('')+
+        '<td>'+(c.star?'⭐ ':'')+(c.done?'✔ 熟練':'')+(c.weak?' · 🔴錯題'+(c.weak>1?c.weak:''):'')+'</td><td class="c-op"><span class="ops">'+opsHTML(c,true)+'</span></td></tr>').join('')+
       '</tbody></table></div>';
   } else {
     if(focusIdx>=a.length)focusIdx=0;
@@ -1491,7 +1753,7 @@ function openCard(id){
   renderEditorPreview();
   $('#edDel').style.display=c?'':'none';
   $('#edUp').style.display=c?'':'none'; $('#edDown').style.display=c?'':'none';
-  $('#cardMask').classList.add('on');
+  $('#cardMask').classList.add('on'); syncLock();
   setTimeout(()=>$('#edFront').focus(),60);
 }
 function readCardForm(){
@@ -1599,12 +1861,15 @@ function clearWeak(){
   if(!confirm('清除這份清單 '+n+' 張卡片的「錯題」標記？'))return;
   l.cards.forEach(c=>c.weak=0); touch(); render(); toast('已清除錯題標記');
 }
-function closeMenus(){ $('#moreMenu').classList.remove('on'); }
-function maskOpen(id){ $(id).classList.add('on'); }
+function closeMenus(){ $('#moreMenu').classList.remove('on'); $('#menuScrim').classList.remove('on'); }
+/* 有對話框開啟時鎖住背景滾動（手機防誤滑） */
+function syncLock(){ document.body.classList.toggle('lock', !!document.querySelector('.mask.on')); }
+function maskOpen(id){ $(id).classList.add('on'); syncLock(); }
 function maskClose(id){
   $(id).classList.remove('on');
   /* id 傳入的是選擇器（含 #），先前比對字串少了 #，導致關閉播放時從未停止朗讀 */
   if(String(id).replace(/^#/,'')==='playMask')stopPlay();
+  syncLock();
 }
 
 /* ---------------- events ---------------- */
@@ -1616,6 +1881,9 @@ document.addEventListener('click',e=>{
 });
 $('#btnNewList').onclick=newList;
 $('#btnImportTop').onclick=()=>openImport();
+/* 手機：抽屜內的快速操作（頂欄按鈕已收起） */
+$('#btnNewList2').onclick=()=>{ closeSide(); newList(); };
+$('#btnImportTop2').onclick=()=>{ closeSide(); openImport(); };
 function doBackup(){ dlText(JSON.stringify(S,null,2),'記憶卡備份_'+stamp()+'.json','application/json'); toast('已下載全部清單備份'); gaTrack('backup',{list_count:bucket(S.lists.length)}); }
 $('#restoreInput').onchange=e=>{
   const f=e.target.files[0]; if(!f)return;
@@ -1657,7 +1925,13 @@ document.addEventListener('click',e=>{ if(!e.target.closest('#listMenu') && !e.t
 $('#listName').onchange=e=>{ cur().name=e.target.value.trim()||'未命名'; touch(); render(); };
 $('#btnAddCard').onclick=()=>openCard(null);
 $('#btnPlayList').onclick=()=>startPlay(null);
-$('#btnMore').onclick=e=>{ e.stopPropagation(); $('#moreMenu').classList.toggle('on'); };
+$('#btnMore').onclick=e=>{
+  e.stopPropagation();
+  const open=$('#moreMenu').classList.contains('on');
+  closeMenus();
+  if(!open){ $('#moreMenu').classList.add('on'); $('#menuScrim').classList.add('on'); }
+};
+$('#menuScrim').onclick=closeMenus;
 $('#moreMenu').addEventListener('click',e=>{
   const b=e.target.closest('[data-m]'); if(!b)return; closeMenus();
   const l=cur(), m=b.dataset.m;
@@ -1678,7 +1952,7 @@ $('#moreMenu').addEventListener('click',e=>{
 });
 document.addEventListener('click',e=>{ if(!e.target.closest('.menu-wrap'))closeMenus(); });
 
-$('#search').oninput=e=>{ S.ui.q=e.target.value; focusIdx=0; renderCards(); };
+$('#search').oninput=e=>{ S.ui.q=e.target.value; focusIdx=0; renderCards(); renderViewSheet(); };
 $('#sortSel').onchange=e=>{ S.ui.sort=e.target.value; save(); renderCards(); };
 $('#filterSel').onchange=e=>{ S.ui.filter=e.target.value; focusIdx=0; save(); renderCards(); };
 $('#hideBack').onchange=e=>{ S.ui.hideBack=e.target.checked; revealed.clear(); save(); renderCards(); };
@@ -2714,6 +2988,7 @@ function startPlay(id){
   $('#plContinue').style.display=id?'':'none';
   $('#playTitle').textContent=id?'單張播放':'播放清單 · '+esc(cur().name);
   maskOpen('#playMask');
+  applyPset(); updatePsetSummary();
   TTS_BLOCKED=false; /* 每次開始播放重新試一次語音引擎 */
   refreshVoices(); renderLangSeg(); updateVoiceHint(); startKeepAlive();
   renderPlay(); runStep();
@@ -2729,6 +3004,7 @@ function stopPlay(){
   t.mode=($('#plMode').value==='both'?'both':'split');
   t.langF=$('#plLangF').value; t.langB=$('#plLangB').value; t.rate=+$('#plRate').value; t.gap=+$('#plGap').value;
   save();
+  $$('#botNav button').forEach(x=>x.classList.toggle('on',x.dataset.bn==='list'));
 }
 function playBoth(){ const el=$('#plMode'); return !!(el && el.value==='both'); }
 function renderPlay(){
@@ -2748,7 +3024,29 @@ function renderPlay(){
   const b=$('#plPause'); b.textContent=P.paused?'▶ 繼續':'⏸ 暫停';
   b.classList.toggle('pri',!P.paused);
   autoAlign($('#playFront')); autoAlign($('#playBack'));
+  updatePsetSummary();
 }
+/* 播放設定：手機預設收起，讓卡片與控制列完整可見；桌面永遠展開 */
+let PSET_PREF=null;
+function applyPset(){
+  const p=document.querySelector('.pset'); if(!p)return;
+  const narrow=window.matchMedia('(max-width:760px)').matches;
+  p.classList.toggle('open', narrow ? PSET_PREF===true : true);
+}
+function updatePsetSummary(){
+  const el=$('#psetSum'); if(!el)return;
+  const on=$('#plTts')?$('#plTts').checked:true;
+  const dir=($('#plDir')&&$('#plDir').value==='bf')?'反→正':'正→反';
+  const rate=$('#plRate')?$('#plRate').value:'1';
+  const both=$('#plMode')&&$('#plMode').value==='both';
+  el.textContent=(on?'朗讀開':'朗讀關')+' · '+dir+' · '+rate+'× · '+(both?'正反同顯':'分面');
+}
+$('#psetToggle').onclick=()=>{
+  const p=document.querySelector('.pset'); if(!p)return;
+  const open=!p.classList.contains('open');
+  p.classList.toggle('open',open); PSET_PREF=open;
+};
+window.addEventListener('resize',()=>{ if($('#playMask').classList.contains('on'))applyPset(); });
 function runStep(){
   clearTimeout(P.timer);
   if(!P.active||P.paused)return;
@@ -2950,7 +3248,7 @@ $$('#playMask input,#playMask select').forEach(el=>{
     t.dir=($('#plDir').value==='bf'?'bf':'fb');
     t.mode=($('#plMode').value==='both'?'both':'split');
     t.langF=$('#plLangF').value; t.langB=$('#plLangB').value; t.rate=+$('#plRate').value; t.gap=+$('#plGap').value;
-    save();
+    save(); updatePsetSummary();
     if(el.id==='plMode'){
       if(P.active&&P.ids.length){ setFirstSide(cardById(P.ids[P.idx])); clearTimeout(P.timer); stopSpeech(); renderPlay(); if(!P.paused)runStep(); }
       return;
@@ -3193,6 +3491,33 @@ $('#qShareWrong').onclick=()=>shareWrong(S.quizHistory[0]);
 
 /* ---------------- 整理順序 UI ---------------- */
 $('#btnReorder').onclick=openReorder;
+
+/* ---------------- 手機：檢視與篩選面板（工具列單行化） ---------------- */
+const LAYOUT_TXT={grid:'網格',list:'列表',table:'表格',focus:'聚焦'};
+function renderViewSheet(){
+  const u=S.ui;
+  $$('#vsLayout button').forEach(b=>b.classList.toggle('on',b.dataset.v===u.layout));
+  $$('#vsSort button').forEach(b=>b.classList.toggle('on',b.dataset.v===u.sort));
+  $$('#vsFilter button').forEach(b=>b.classList.toggle('on',b.dataset.v===u.filter));
+  $$('#vsDensity button').forEach(b=>b.classList.toggle('on',b.dataset.v===u.density));
+  const hb=$('#vsHideBack'); if(hb)hb.checked=!!u.hideBack;
+  const t=$('#mViewTxt'); if(t)t.textContent=LAYOUT_TXT[u.layout]||'檢視';
+  const mv=$('#mView');
+  if(mv)mv.classList.toggle('pri', u.filter!=='all' || !!(u.q||'').trim());
+}
+$('#mView').onclick=()=>{ renderViewSheet(); maskOpen('#viewSheet'); };
+$('#viewSheet').addEventListener('click',e=>{
+  const ro=e.target.closest('[data-vs="reorder"]');
+  if(ro){ maskClose('#viewSheet'); openReorder(); return; }
+  const b=e.target.closest('[data-v]'); if(!b)return;
+  const grp=b.parentElement.id;
+  if(grp==='vsLayout'){ S.ui.layout=b.dataset.v; focusIdx=0; focusShow=false; save(); render(); }
+  else if(grp==='vsSort'){ S.ui.sort=b.dataset.v; save(); render(); }
+  else if(grp==='vsFilter'){ S.ui.filter=b.dataset.v; focusIdx=0; save(); render(); }
+  else if(grp==='vsDensity'){ S.ui.density=b.dataset.v; save(); render(); }
+  renderViewSheet();
+});
+$('#vsHideBack').onchange=e=>{ S.ui.hideBack=e.target.checked; revealed.clear(); save(); renderCards(); renderHead(); };
 $('#reorderList').addEventListener('click',e=>{
   const row=e.target.closest('.ro-row'); if(!row)return;
   const id=row.dataset.id;
@@ -3248,6 +3573,8 @@ $('#settingsSheet').addEventListener('click',e=>{
   const b=e.target.closest('[data-s]'); if(!b)return;
   maskClose('#settingsSheet');
   const act=b.dataset.s, l=cur();
+  if(act==='s_newlist'){ newList(); return; }
+  if(act==='s_import'){ openImport(); return; }
   if(act==='s_lang_pk') setListLang('putonghua');
   else if(act==='s_lang_yue') setListLang('cantonese');
   else if(act==='s_pin') togglePin(l.id);

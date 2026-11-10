@@ -35,6 +35,9 @@ header h1{font-size:calc(18px * var(--fs-scale,1));margin-right:8px}
 .search-wrap{flex:1;min-width:220px;position:relative}
 .search-wrap input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--line-2);border-radius:8px;font-size:calc(14px * var(--fs-scale,1));background:var(--bg)}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--sub)}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:26px;height:26px;display:none;align-items:center;justify-content:center;border-radius:50%;color:var(--sub);cursor:pointer;font-size:calc(13px * var(--fs-scale,1));background:transparent;z-index:2}
+.search-clear:hover{background:var(--bg)}
+.search-wrap.has-text .search-clear{display:flex}
 .btn{border:1px solid var(--line-2);background:var(--card);color:var(--txt);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:calc(14px * var(--fs-scale,1));transition:.15s}
 .btn:hover{border-color:var(--pri);color:var(--pri)}
 .btn.pri{background:linear-gradient(180deg,var(--pri),var(--pri-d));border-color:transparent;color:#fff}
@@ -249,6 +252,7 @@ html{ -webkit-text-size-adjust:100%; }
 /* 手機 / 窄螢幕 */
 @media (max-width:760px){
   header .btn#btnSettings, header label#btnImport, header .btn#btnExport{display:none}
+  header h1{display:none}
   main.layout{padding-bottom:66px}
   .bottomnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:80;background:rgba(255,253,251,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:7px 4px calc(env(safe-area-inset-bottom,0) + 7px);justify-content:space-around;align-items:stretch}
   .bottomnav .bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--sub);font-size:calc(11px * var(--fs-scale,1));font-family:inherit;padding:3px 0}
@@ -256,50 +260,53 @@ html{ -webkit-text-size-adjust:100%; }
   .bottomnav .bn:active{color:var(--pri)}
   body.selmode .bottomnav{display:none}
   header{flex-wrap:wrap;padding:9px 12px;gap:8px}
-  header h1{font-size:calc(16px * var(--fs-scale,1));margin:0 6px 0 0}
   .search-wrap{order:5;flex:1 1 100%;min-width:0}
-  .search-wrap input{padding:9px 11px 9px 32px;font-size:calc(14px * var(--fs-scale,1))}
-  .btn{padding:7px 11px;font-size:calc(13px * var(--fs-scale,1))}
+  .search-wrap input{padding:11px 34px 11px 32px;font-size:calc(15px * var(--fs-scale,1))}
+  .btn{padding:9px 14px;font-size:calc(14px * var(--fs-scale,1));min-height:42px;display:inline-flex;align-items:center;justify-content:center}
   .add-bar{flex-direction:column;gap:8px;margin-bottom:12px}
-  .add-bar input{font-size:calc(14px * var(--fs-scale,1));padding:10px 12px}
+  .add-bar .btn{width:100%}
+  .add-hint{display:none}
   .layout{flex-direction:column;align-items:stretch;gap:12px}
-  .content{width:100%}
-  .sidebar{flex:none;width:auto;position:static;max-height:none;overflow:visible;border:none;background:transparent;padding:0}
+  .content{width:100%;min-width:0}
+  .sidebar{flex:none;width:100%;min-width:0;position:static;max-height:none;overflow:hidden;border:none;background:transparent;padding:0}
   .side-title{display:none}
-  .side-list{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-  .side-item{flex:0 0 auto;padding:4px 12px;border:1px solid var(--line);border-radius:99px;white-space:nowrap}
+  .side-list{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scroll-snap-type:x proximity}
+  .side-item{flex:0 0 auto;padding:6px 14px;border:1px solid var(--line);border-radius:99px;white-space:nowrap;font-size:calc(13px * var(--fs-scale,1));min-height:34px;display:inline-flex;align-items:center;scroll-snap-align:start}
   .side-item.active{background:var(--pri);color:#fff}
   .side-item.active .badge{background:rgba(255,255,255,.3);color:#fff}
-  .toolbar{flex-direction:column;align-items:stretch;gap:8px}
+  .toolbar{flex-direction:row;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+  .seg{display:none}
   .stats{font-size:calc(12px * var(--fs-scale,1))}
-  .seg{align-self:stretch;overflow-x:auto}
-  .seg button{flex:1 0 auto}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-  .card .thumb{height:88px}
-  .card .body{padding:8px 9px;gap:4px}
-  .card .title{font-size:calc(12.5px * var(--fs-scale,1));-webkit-line-clamp:2}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .card .thumb{height:96px}
+  .card .body{padding:10px 11px;gap:5px}
+  .card .title{font-size:calc(13.5px * var(--fs-scale,1));line-height:1.45;-webkit-line-clamp:2}
   .card .desc,.card .url{display:none}
-  .card .foot{padding:4px 7px;justify-content:flex-end}
+  .card .foot{padding:6px 9px;justify-content:flex-end}
   .card .foot .time{display:none}
   .iconbtn{padding:6px 4px;font-size:calc(15px * var(--fs-scale,1))}
-  body.touch .iconbtn.more{padding:8px 12px;font-size:calc(19px * var(--fs-scale,1));color:var(--pri)}
-  .cgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
-  .cgrid .row{padding:6px 8px;gap:8px}
-  .cgrid .rthumb{width:32px;height:32px;flex:0 0 32px}
-  .cgrid .iconbtn{opacity:.8}
-  .row .rthumb{width:38px;height:38px;flex:0 0 38px}
-  .list.dense .rthumb{width:24px;height:24px;flex:0 0 24px}
-  .cgrid .ctitle,.row .rtitle{font-size:calc(12.5px * var(--fs-scale,1))}
+  body.touch .iconbtn.more{padding:8px 12px;font-size:calc(20px * var(--fs-scale,1));color:var(--pri);min-width:42px;min-height:38px}
+  .cgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .cgrid .row{padding:8px 10px;gap:10px}
+  .cgrid .rthumb{width:36px;height:36px;flex:0 0 36px}
+  .cgrid .ctitle{font-size:calc(13.5px * var(--fs-scale,1));line-height:1.4;-webkit-line-clamp:2;white-space:normal}
+  .cgrid .iconbtn{opacity:.85}
+  .row .rthumb{width:42px;height:42px;flex:0 0 42px}
+  .list .row .rdesc{display:none}
+  .row .rtitle{font-size:calc(14px * var(--fs-scale,1));line-height:1.4}
+  .list.dense .rthumb{width:26px;height:26px;flex:0 0 26px}
   .modal-mask{padding:14px 10px}
   .modal{padding:18px 16px;border-radius:12px;max-height:calc(100vh - 20px)}
   .modal label{font-size:calc(12px * var(--fs-scale,1))}
+  .modal-actions{flex-wrap:wrap;gap:10px;margin-top:18px}
+  .modal-actions .btn{flex:1 1 140px}
   .tag-row input.tname{flex:0 0 96px}
   .empty{padding:46px 0}
   #toast{bottom:16px;font-size:calc(13px * var(--fs-scale,1));padding:9px 16px}
+  .batchbar{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:90;margin-top:0}
 }
-/* 小手機：隱藏標題、卡片固定兩欄 */
+/* 小手機：卡片固定兩欄 */
 @media (max-width:480px){
-  header h1{display:none}
   .grid{grid-template-columns:repeat(2,1fr)}
   .cgrid{grid-template-columns:repeat(2,1fr)}
   .cgrid .chost,.cgrid .ctags{display:none}
@@ -307,7 +314,7 @@ html{ -webkit-text-size-adjust:100%; }
 @media (max-width:360px){
   .grid,.cgrid{grid-template-columns:repeat(2,1fr);gap:6px}
   .card .thumb{height:74px}
-  .card .title{font-size:calc(12px * var(--fs-scale,1))}
+  .card .title{font-size:calc(12.5px * var(--fs-scale,1))}
   .btn{padding:6px 9px;font-size:calc(12px * var(--fs-scale,1))}
 }
 /* 大螢幕：拉寬容器、略增欄數 */
@@ -325,6 +332,8 @@ html{ -webkit-text-size-adjust:100%; }
 .tab.active{color:var(--pri);font-weight:600;border-color:var(--line-2);border-bottom:2px solid var(--pri);background:var(--card)}
 .tab .badge{display:inline-block;margin-left:5px;font-size:calc(10px * var(--fs-scale,1));background:var(--line);color:var(--sub);border-radius:99px;padding:0 6px;line-height:1.5}
 .tab.active .badge{background:var(--pri-bg);color:var(--pri)}
+.tabs{scroll-snap-type:x proximity}
+.tab{scroll-snap-align:start}
 /* ============ 選取模式 ============ */
 body.selmode .racts{display:none}
 .selbox{position:absolute;top:6px;left:6px;width:18px;height:18px;border-radius:5px;background:rgba(255,255,255,.85);border:1px solid var(--line);display:none;align-items:center;justify-content:center;z-index:3;pointer-events:none}
@@ -361,6 +370,7 @@ body.selmode .card,body.selmode .row{cursor:pointer;touch-action:none}
   <div class="search-wrap">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
     <input id="search" type="text" placeholder="搜尋標題、網址或標籤…">
+    <span class="search-clear" id="searchClear" title="清除搜尋" aria-label="清除搜尋">✕</span>
   </div>
   <button class="btn" id="btnSettings" title="設定標籤清單">⚙️ 設定</button>
   <button class="btn" id="btnExport" title="匯出 Excel">📤 匯出</button>
@@ -964,7 +974,7 @@ document.getElementById('bmSave').onclick = ()=>{
 let searchQ = '', activeTag = '', activeCat = '';
 let selectMode = false, selected = new Set();
 let _suppressClick = false;
-let layout = db.layout || 'compact';
+let layout = db.layout || (isTouch ? 'list' : 'compact');
 const LAYOUT_CLASS = {compact:'cgrid', grid:'grid', list:'list', dense:'list dense'};
 
 function avatar(b){
@@ -1027,7 +1037,9 @@ function render(){
   // 分類 Tab
   const ct = document.getElementById('catTabs');
   ct.innerHTML = '';
-  const catCount = name => name==='__none__'
+  const catCount = name => name===''
+    ? db.bookmarks.length
+    : name==='__none__'
     ? db.bookmarks.filter(b=>(b.cats||[]).length===0).length
     : db.bookmarks.filter(b=>(b.cats||[]).includes(name)).length;
   const mkTab = (label, val)=>{
@@ -1107,7 +1119,12 @@ function setLayout(l){ layout=l; db.layout=l; save(); render(); }
 document.querySelectorAll('#layoutSeg button').forEach(btn=>{
   btn.onclick = ()=> setLayout(btn.dataset.layout);
 });
-document.getElementById('search').addEventListener('input', e=>{ searchQ = e.target.value.trim(); render(); });
+const searchInput = document.getElementById('search');
+const searchClear = document.getElementById('searchClear');
+const searchWrap = document.querySelector('.search-wrap');
+function syncSearchClear(){ searchWrap.classList.toggle('has-text', !!searchInput.value); }
+searchInput.addEventListener('input', e=>{ searchQ = e.target.value.trim(); syncSearchClear(); render(); });
+searchClear.addEventListener('click', ()=>{ searchInput.value=''; searchQ=''; syncSearchClear(); render(); searchInput.focus(); });
 
 /* ================= 選取 / 拖曳排序 / 批次 ================= */
 const gridEl = document.getElementById('grid');
@@ -1769,12 +1786,16 @@ document.getElementById('bnAdd').onclick = ()=>{
     }).catch(()=> openBulkAdd(''));
   } else { openBulkAdd(''); }
 };
-document.getElementById('bnLayout').onclick = ()=> openSheet('選擇佈局', [
-  {label:'精簡卡片', icon:'▦', onClick:()=>setLayout('compact')},
-  {label:'標準卡片', icon:'▤', onClick:()=>setLayout('grid')},
-  {label:'列表', icon:'☰', onClick:()=>setLayout('list')},
-  {label:'密集列表', icon:'≣', onClick:()=>setLayout('dense')}
-]);
+document.getElementById('bnLayout').onclick = ()=>{
+  const labels = {compact:'精簡卡片', grid:'標準卡片', list:'列表', dense:'密集列表'};
+  const icons = {compact:'▦', grid:'▤', list:'☰', dense:'≣'};
+  const items = Object.keys(labels).map(k=>({
+    label: labels[k] + (k===layout ? '（目前）' : ''),
+    icon: icons[k],
+    onClick:()=>setLayout(k)
+  }));
+  openSheet('選擇佈局', items);
+};
 document.getElementById('bnSettings').onclick = ()=> document.getElementById('btnSettings').click();
 document.getElementById('bnMore').onclick = ()=> openSheet('更多', [
   {label:'匯出 Excel', icon:'📤', onClick:()=>document.getElementById('btnExport').click()},
@@ -1789,6 +1810,14 @@ window.addEventListener('resize', updateHH);
 
 render();
 applySettings();
+
+/* 首次進入手機：提示手勢操作，提升可操作性 */
+if(isTouch && !localStorage.getItem(LS_KEY + '_tip')){
+  try{ localStorage.setItem(LS_KEY + '_tip', '1'); }catch(e){}
+  setTimeout(()=>{
+    toast('💡 手機操作：左右滑動卡片可「置頂／刪除」，長按或點「⋯」開選單；分類列亦可左右滑動切換', 6500);
+  }, 700);
+}
 </script>
 </body>
 </html>

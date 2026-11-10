@@ -263,6 +263,71 @@ canvas#canvas{display:block;max-width:100%;max-height:min(68vh,760px);width:auto
 .cam-actions{display:flex;gap:8px;justify-content:center;padding:12px;background:#16181d}
 .cam-actions .btn{background:#23262d;border-color:#33373f;color:#e9eaec}
 .cam-actions .btn-primary{background:linear-gradient(180deg,#b8335f,#c23b6a);border-color:#c23b6a;color:#fff}
+
+/* ============ 行動端優化 ============ */
+/* 中、小螢幕：改用動態視窗高度(dvh)，避免手機網址列造成的高度跳動 */
+@media (max-width:960px){
+  .stage{min-height:250px}
+  canvas#canvas{max-height:min(58vh,760px);max-height:min(58dvh,760px)}
+  .reader,.result,.pairs{max-height:54vh;max-height:54dvh}
+}
+@media (max-width:600px){
+  .app{padding:10px 10px 34px;gap:12px}
+  .panel-body{padding:10px 11px 12px}
+  .panel-head{padding:10px 12px}
+  .topbar-in{padding:9px 11px;gap:8px}
+  .topbar-in .pill{display:none}            /* 手機空間有限，隱藏說明小標 */
+  .brand{font-size:14px}
+  .brand small{font-size:10.5px}
+  /* 放大可點擊區，符合手指觸控 */
+  .btn{padding:11px 14px;font-size:14px;min-height:42px}
+  .btn-mini{padding:9px 11px;font-size:13px;min-height:38px}
+  .drop{padding:18px 12px}
+  .drop h2{font-size:16px}
+  .drop-btns{flex-direction:column}          /* 三個入口按鈕改直排，更好點 */
+  .drop-btns .btn{width:100%;justify-content:center}
+  .langrow{margin-bottom:9px}
+  .sel select{padding:11px 30px 11px 11px;font-size:16px}
+  .actions{gap:8px}
+  .actions .btn{min-height:46px;font-size:15px}
+  .tabs{margin-bottom:9px}
+  .tab{padding:9px 4px;font-size:13.5px}
+  .mini{gap:6px}
+  .mini-sel{padding:8px 22px 8px 9px;font-size:16px}
+  /* 結果文字放大、行高放寬，提升可讀性 */
+  .reader,.result,.pairs{font-size:15px;line-height:1.9;max-height:52vh;max-height:52dvh}
+  .txt{font-size:16px;line-height:1.8;min-height:240px}
+  .tk{padding:2px 2px}                       /* 點讀單字更大點擊區 */
+  .foot-actions{gap:6px}
+  .foot-actions .btn-mini{flex:1 1 auto;justify-content:center;min-width:0;min-height:42px}
+  .note{font-size:11px;margin-top:10px}
+  .stage{min-height:230px}
+  .thumbs{margin-top:8px}
+  .thumb{width:64px}
+  .drawer{width:100%}                         /* 收藏抽屜改全螢幕，更好操作 */
+  #btnPasteTip{display:none}                  /* 手機無 Ctrl+V，隱藏桌面專用按鈕 */
+}
+@media (max-width:380px){
+  .app{padding:8px 8px 28px}
+  .topbar-in{padding:8px 9px}
+  .brand small{display:none}
+  .btn{font-size:13.5px;padding:10px 12px;min-height:40px}
+  .btn-mini{font-size:12.5px;padding:8px 10px;min-height:36px}
+  .actions .btn{font-size:14px;min-height:44px}
+  .foot-actions{flex-wrap:wrap}
+  .foot-actions .btn-mini{flex:1 1 42%}
+  .drop h2{font-size:15px}
+  .sel select{padding:10px 28px 10px 10px}
+}
+
+/* 瀏海 / 底部操作列安全區 (iPhone 等全面屏) */
+@supports (padding:env(safe-area-inset-top)){
+  .topbar{padding-top:env(safe-area-inset-top)}
+  #toast{bottom:calc(22px + env(safe-area-inset-bottom))}
+  .drawer-head{padding-top:calc(14px + env(safe-area-inset-top))}
+  .drawer-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .modal{padding-top:calc(18px + env(safe-area-inset-top));padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+}
 </style>
 
 <!-- Google Analytics (GA4) -->

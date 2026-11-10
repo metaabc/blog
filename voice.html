@@ -50,8 +50,9 @@ body{
   overflow:hidden;
 }
 button,input,textarea,select{font-family:inherit}
-button{-webkit-tap-highlight-color:transparent;cursor:pointer;border:none;background:none;color:inherit}
+button{-webkit-tap-highlight-color:transparent;cursor:pointer;border:none;background:none;color:inherit;touch-action:manipulation}
 button:disabled{opacity:.45;cursor:default}
+.tab,.sqbtn,.btn,.mini,.x,.mgr-del,.rec-btn,.note-idx{touch-action:manipulation}
 
 .app{
   height:100vh;height:100dvh;
@@ -142,21 +143,29 @@ h1{font-size:clamp(15px,4.7vw,19px);line-height:1.2;margin:0;letter-spacing:.6px
 .note-meta{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
 .note-meta b{font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .note-meta span{font-size:10.5px;color:var(--muted);letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.note.live{border-color:#f3c9d8;box-shadow:0 2px 12px rgba(194,59,106,.13)}
 .note-audio{display:block;width:100%;height:36px;margin-top:9px}
+.live-line{
+  display:flex;align-items:center;gap:7px;margin-top:9px;padding:9px 11px;
+  border-radius:11px;background:var(--accent-soft);border:1.5px solid #f7d7e3;
+  color:#a83258;font-size:11.5px;font-weight:700;line-height:1.5;
+}
+.live-line::before{content:'●';font-size:9px;animation:livePulse 1s ease-in-out infinite alternate}
+@keyframes livePulse{to{opacity:.25}}
 .note-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .mini{
-  border:1.5px solid var(--line);background:#fbfaf8;border-radius:10px;
-  padding:6px 10px;font-size:11.5px;font-weight:700;color:var(--ink2);letter-spacing:.2px;
-  transition:background .13s,transform .1s;
+  border:1.5px solid var(--line);background:#fbfaf8;border-radius:11px;
+  padding:9px 13px;font-size:13px;font-weight:700;color:var(--ink2);letter-spacing:.2px;
+  transition:background .13s,transform .1s;touch-action:manipulation;min-height:38px;
 }
 .mini:active{transform:scale(.96);background:var(--accent-soft)}
 .mini.pink{background:var(--accent-soft);border-color:#f7d7e3;color:#a83258}
 .mini.green{background:var(--green-bg);border-color:var(--green-line);color:var(--green)}
-.mini.del{margin-left:auto;color:#b56b62;border-color:#f0dbd8;background:#fff;padding:6px 9px}
+.mini.del{margin-left:auto;color:#b56b62;border-color:#f0dbd8;background:#fff;padding:9px 11px}
 .note-text{
   width:100%;min-height:76px;resize:vertical;display:block;margin-top:8px;
   border:1.5px solid var(--line);background:#fbfaf8;border-radius:12px;
-  padding:10px 11px;font-size:13.5px;line-height:1.65;color:var(--ink);outline:none;
+  padding:12px 13px;font-size:15px;line-height:1.72;color:var(--ink);outline:none;
 }
 .note-text:focus{border-color:#e9b6cd;background:#fff}
 .note-foot{margin-top:6px;font-size:10px;color:#b0b7bb;letter-spacing:.2px}
@@ -168,13 +177,15 @@ h1{font-size:clamp(15px,4.7vw,19px);line-height:1.2;margin:0;letter-spacing:.6px
   background:linear-gradient(180deg,#fffdfb 0%,#fff6ee 100%);
 }
 .rec-btn{
-  flex:0 0 auto;width:46px;height:46px;border-radius:50%;
+  flex:0 0 auto;width:56px;height:56px;border-radius:50%;
   background:linear-gradient(180deg,var(--accent2),var(--accent));color:#fff;
-  font-size:19px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 12px rgba(194,59,106,.28);transition:transform .12s,background .15s;
+  font-size:23px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(194,59,106,.30);transition:transform .12s,background .15s;
+  touch-action:manipulation;
 }
-.rec-btn:active{transform:scale(.94)}
-.rec-btn.rec{background:linear-gradient(180deg,#e07a72,var(--red));box-shadow:0 4px 12px rgba(207,90,76,.3)}
+.rec-btn:active{transform:scale(.92)}
+.rec-btn.rec{background:linear-gradient(180deg,#e07a72,var(--red));animation:recPulse 1.4s ease-in-out infinite}
+@keyframes recPulse{0%,100%{box-shadow:0 4px 14px rgba(207,90,76,.32)}50%{box-shadow:0 4px 24px rgba(207,90,76,.58)}}
 .rec-mid{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
 .rec-main{font-size:13px;font-weight:800;color:var(--ink);letter-spacing:.3px;font-variant-numeric:tabular-nums}
 .rec-hint{font-size:10.5px;color:var(--muted);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -187,6 +198,30 @@ h1{font-size:clamp(15px,4.7vw,19px);line-height:1.2;margin:0;letter-spacing:.6px
 .rec-wave i:nth-child(4){height:20px;animation-delay:.45s}
 .rec-wave i:nth-child(5){height:9px;animation-delay:.6s}
 @keyframes wv{to{height:4px;opacity:.5}}
+
+/* ---------- 錄音中即時字幕浮層（手機視線附近即時出字） ---------- */
+.livecap{
+  flex:0 0 auto;display:none;flex-direction:column;max-height:32vh;
+  background:linear-gradient(180deg,#ffffff 0%,#fff7fb 100%);
+  border:1.5px solid #f3c9d8;border-radius:16px;overflow:hidden;
+  box-shadow:0 2px 14px rgba(194,59,106,.14);
+}
+.livecap.show{display:flex;animation:capIn .22s ease}
+@keyframes capIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.livecap-bar{display:flex;align-items:center;gap:7px;padding:8px 12px;background:#fdeaf2;border-bottom:1px solid #f7e3ec}
+.livecap-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);animation:livePulse 1s ease-in-out infinite alternate;flex:0 0 auto}
+.livecap-title{font-size:12px;font-weight:800;color:#a83258;letter-spacing:.4px}
+.livecap-count{margin-left:auto;font-size:11px;font-weight:700;color:#c23b6a;opacity:.7;font-variant-numeric:tabular-nums}
+.livecap-body{overflow-y:auto;padding:9px 12px 11px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.livecap-body::-webkit-scrollbar{display:none}
+.livecap-body .lc{display:flex;gap:8px;align-items:baseline;font-size:15px;line-height:1.55;color:var(--ink);animation:capLine .2s ease}
+.livecap-body .lc:last-child{color:#7a2545}
+.livecap-body .lc .t{flex:0 0 auto;font-size:11px;font-weight:800;color:#c23b6a;font-variant-numeric:tabular-nums;padding-top:2px}
+.livecap-body .lc .x{flex:1 1 auto;word-break:break-word}
+.livecap-msg{padding:8px 12px;font-size:12.5px;color:#b06;line-height:1.5}
+.livecap.hint .livecap-count{display:none}
+@keyframes capLine{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes livePulse{to{opacity:.25}}
 
 /* ---------- tabbar ---------- */
 .tabbar{
@@ -357,6 +392,15 @@ select.inp{font-size:14px}
 
   <main class="notes" id="notes"></main>
 
+  <div class="livecap" id="liveCap" role="status" aria-live="polite">
+    <div class="livecap-bar">
+      <span class="livecap-dot"></span>
+      <span class="livecap-title">即時字幕 · 本機生成</span>
+      <span class="livecap-count" id="liveCapCount">0 行</span>
+    </div>
+    <div class="livecap-body" id="liveCapBody"></div>
+  </div>
+
   <div class="recbar">
     <button class="rec-btn" id="recBtn" type="button" aria-label="開始錄音">●</button>
     <div class="rec-mid">
@@ -427,18 +471,23 @@ select.inp{font-size:14px}
 <div class="sheet" id="asrSheet">
   <div class="sheet-head"><h3>錄音轉文字</h3><button class="x" data-close type="button">✕</button></div>
   <div class="priv-box" style="margin-bottom:12px">
-    <b>兩種做法，音訊都不會離開這部裝置：</b>
+    <b>三種做法，音訊都不會離開這部裝置：</b>
     <ul>
       <li><span class="good">手動聽打</span>：按播放，邊聽邊在逐字稿輸入；可插入時間點。完全離線、零網路請求。</li>
-      <li><span class="warn">本機 AI 轉寫</span>：預設關閉。啟用後，首次會從白名單網域下載模型檔（約 40–80 MB，<b>不含你的任何資料</b>），之後由瀏覽器在本機運算並快取，可離線使用。</li>
+      <li><span class="warn">本機 AI 轉寫</span>：錄完後整段轉寫，品質最好。首次會從白名單網域下載模型檔（約 40–80 MB，<b>不含你的任何資料</b>），之後本機運算並快取。</li>
+      <li><span class="warn">邊錄邊出字</span>：錄音時每約 5 秒把新音訊切片交給同一個本機模型，逐字稿會陸續出現；延遲數秒、句子可能被切斷，錄完會自動再做一次完整校正。</li>
     </ul>
   </div>
   <button class="switch" id="asrEnable" type="button" aria-pressed="false">
     <span class="sl">啟用本機 AI 轉寫<span class="sd">關閉時，這頁完全不會發出任何網路請求</span></span>
     <span class="sr"></span>
   </button>
+  <button class="switch" id="asrLive" type="button" aria-pressed="false">
+    <span class="sl">邊錄邊出字（即時字幕）<span class="sd">需先啟用本機 AI；每約 5 秒更新一次逐字稿，錄完自動完整校正</span></span>
+    <span class="sr"></span>
+  </button>
   <button class="switch" id="asrAuto" type="button" aria-pressed="false">
-    <span class="sl">錄音後自動轉寫<span class="sd">需先啟用本機 AI；長錄音會較慢</span></span>
+    <span class="sl">錄音後自動轉寫<span class="sd">未開即時字幕時才會作用；長錄音會較慢</span></span>
     <span class="sr"></span>
   </button>
   <div class="lbl">模型（中文適用）</div>
@@ -453,7 +502,7 @@ select.inp{font-size:14px}
   </select>
   <button class="btn green wide" id="asrBatchBtn" type="button">批次轉寫本清單中沒有逐字稿的錄音</button>
   <div class="status" id="asrStatus">尚未載入模型</div>
-  <div class="sheet-foot">也可在每則錄音卡片按「AI 轉文字」單獨處理<br>Whisper 輸出可能為簡體，逐字稿可直接修改<br>本頁刻意不使用瀏覽器內建語音辨識（Chrome／Edge 會把音訊送到雲端）<br>若狀態顯示 WASM／CSP 被封鎖，改用「邊聽邊打」即可，其餘功能不受影響</div>
+  <div class="sheet-foot">也可在每則錄音卡片按「AI 轉文字」單獨處理<br>即時字幕屬草稿，期間可直接編輯；編輯過就不會被完整校正覆蓋<br>Whisper 輸出可能為簡體，逐字稿可直接修改<br>本頁刻意不使用瀏覽器內建語音辨識（Chrome／Edge 會把音訊送到雲端）<br>若狀態顯示 WASM／CSP 被封鎖，改用「邊聽邊打」即可，其餘功能不受影響</div>
 </div>
 
 <!-- 私隱 -->
@@ -467,7 +516,7 @@ select.inp{font-size:14px}
       <li>清單與逐字稿存於瀏覽器 <b>localStorage</b>；錄音檔存於 <b>IndexedDB</b>。兩者都只在本機。</li>
       <li>內建 <b>Content-Security-Policy</b>：只放行白名單網域，其餘對外連線一律由瀏覽器封鎖；程式碼預設不發出任何請求，只有你主動啟用「本機 AI 轉寫」時才會下載模型檔。</li>
       <li>麥克風只在你按「開始錄音」時開啟，停止後立即關閉。</li>
-      <li>音訊絕不上傳：AI 轉寫是在瀏覽器內用 WASM 執行，不是雲端辨識。</li>
+      <li>音訊絕不上傳：AI 轉寫（含邊錄邊出字）是在瀏覽器內用 WASM 執行，不是雲端辨識；即時字幕只把麥克風原始音訊留在記憶體中切片運算。</li>
       <li>所有輸入都以文字節點或跳脫處理，避免腳本注入；檔案下載全部由 Blob 在本機產生。</li>
     </ul>
   </div>
@@ -477,10 +526,11 @@ select.inp{font-size:14px}
       <li>資料存在「這個瀏覽器」：清除網站資料、換瀏覽器或換裝置就會不見，請定期用「資料備份」留存。</li>
       <li>建議用 Chrome／Edge 開啟；用 <b>file://</b> 直接開檔通常可用，若麥克風或本機儲存被瀏覽器擋下，改放到 localhost 或 HTTPS 即可。</li>
       <li>本機 AI 首次下載模型會向第三方網域發出<span class="warn">下載請求</span>（不含個資）；若你希望連這個請求都不要有，保持關閉即可。</li>
+      <li>「邊錄邊出字」是<span class="warn">延遲數秒的字幕</span>，不是逐字同步；要真正零延遲只能用瀏覽器內建語音辨識，但那會把音訊送到雲端，本頁不提供。</li>
     </ul>
   </div>
   <button class="btn danger wide" id="clearBtn" type="button" data-armed="0">清除本機全部資料</button>
-  <div class="ver">版本 2026-11-08 · 純前端單檔 · 離線可用（AI 模型首次需下載）<br>視覺沿用「消費券簡易記」配色</div>
+  <div class="ver">版本 2026-11-08 v1.1 · 純前端單檔 · 離線可用（AI 模型首次需下載）<br>視覺沿用「消費券簡易記」配色</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -499,7 +549,7 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function defState(){
   var id=uid();
   return {v:1,cur:id,lists:[{id:id,name:'清單 1',created:Date.now(),notes:[]}],
-    settings:{asr:false,auto:false,model:'Xenova/whisper-tiny',host:'https://huggingface.co/'}};
+    settings:{asr:false,auto:false,live:false,model:'Xenova/whisper-tiny',host:'https://huggingface.co/'}};
 }
 function load(){
   try{
@@ -509,12 +559,12 @@ function load(){
     if(!d||!Array.isArray(d.lists)||!d.lists.length) return defState();
     d.lists=d.lists.map(function(l){
       return {id:String(l.id||uid()),name:String(l.name||'未命名').slice(0,60),
-        created:+l.created||Date.now(),notes:Array.isArray(l.notes)?l.notes.filter(function(n){return n&&n.id;}).map(function(n){
+        created:+l.created||Date.now(),notes:Array.isArray(l.notes)?l.notes.filter(function(n){return n&&n.id&&!n.tmp;}).map(function(n){
           return {id:String(n.id),t:+n.t||Date.now(),dur:+n.dur||0,size:+n.size||0,
-            mime:String(n.mime||'audio/webm').slice(0,80),text:String(n.text||''),src:String(n.src||'')};
+            mime:String(n.mime||'audio/webm').slice(0,80),text:String(n.text||''),src:String(n.src||''),edited:!!n.edited};
         }):[]};
     });
-    d.settings=Object.assign({asr:false,auto:false,model:'Xenova/whisper-tiny',host:'https://huggingface.co/'},d.settings||{});
+    d.settings=Object.assign({asr:false,auto:false,live:false,model:'Xenova/whisper-tiny',host:'https://huggingface.co/'},d.settings||{});
     var ok=d.lists.some(function(l){return l.id===d.cur;});
     if(!ok) d.cur=d.lists[0].id;
     return d;
@@ -651,13 +701,13 @@ function renderNotes(){
   l.notes.forEach(function(note,idx){ box.appendChild(buildNote(note,idx,token,l.notes.length)); });
 }
 function buildNote(note,idx,token,count){
-  var card=document.createElement('div'); card.className='note'; card.setAttribute('data-id',note.id);
+  var card=document.createElement('div'); card.className='note'+(note.tmp?' live':''); card.setAttribute('data-id',note.id);
   var head=document.createElement('div'); head.className='note-head';
   var no=document.createElement('span'); no.className='note-idx'; no.textContent=two(count-idx);
   var meta=document.createElement('div'); meta.className='note-meta';
   var b=document.createElement('b'); b.textContent=fmtDate(note.t);
   var sp=document.createElement('span');
-  sp.textContent=fmtDur(note.dur)+' · '+fmtSize(note.size)+' · '+(note.text.trim()?(note.src||'手動聽打'):'尚無逐字稿');
+  sp.textContent=note.tmp?'● 錄音中 · 等待即時字幕':(fmtDur(note.dur)+' · '+fmtSize(note.size)+' · '+(note.text.trim()?(note.src||'手動聽打'):'尚無逐字稿'));
   meta.appendChild(b); meta.appendChild(sp); head.appendChild(no); head.appendChild(meta);
   var del=document.createElement('button'); del.className='mini del'; del.type='button'; del.textContent='✕'; del.title='刪除這則錄音（按兩次）';
   del.setAttribute('data-armed','0');
@@ -674,40 +724,53 @@ function buildNote(note,idx,token,count){
   });
   head.appendChild(del); card.appendChild(head);
 
-  var audio=document.createElement('audio'); audio.className='note-audio'; audio.controls=true; audio.preload='metadata';
-  getAudio(note.id).then(function(blob){
-    if(token!==renderToken||!blob) return;
-    var u=URL.createObjectURL(blob); objUrls.push(u); audio.src=u;
-  }).catch(function(){ /* 音檔遺失時仍保留逐字稿 */ });
-  card.appendChild(audio);
+  var audio=null;
+  if(note.tmp){
+    var liveLine=document.createElement('div'); liveLine.className='live-line';
+    liveLine.textContent='正在收音…文字會陸續出現在下方（約每 5 秒）';
+    card.appendChild(liveLine);
+  }else{
+    audio=document.createElement('audio'); audio.className='note-audio'; audio.controls=true; audio.preload='metadata';
+    getAudio(note.id).then(function(blob){
+      if(token!==renderToken||!blob) return;
+      var u=URL.createObjectURL(blob); objUrls.push(u); audio.src=u;
+    }).catch(function(){ /* 音檔遺失時仍保留逐字稿 */ });
+    card.appendChild(audio);
+  }
 
   var tools=document.createElement('div'); tools.className='note-tools';
   function mk(text,cls,fn){ var x=document.createElement('button'); x.className='mini'+(cls?' '+cls:''); x.type='button'; x.textContent=text; x.addEventListener('click',fn); tools.appendChild(x); return x; }
-  mk('插入時間點','',function(){
-    var t=audio.currentTime||0, tag='['+two(Math.floor(t/60))+':'+two(Math.floor(t%60))+'] ';
-    var p=ta.selectionStart==null?ta.value.length:ta.selectionStart;
-    ta.value=ta.value.slice(0,p)+tag+ta.value.slice(p);
-    ta.focus(); ta.selectionStart=ta.selectionEnd=p+tag.length;
-    note.text=ta.value; note.src=note.src||'手動聽打'; save(); renderStats();
-  });
-  var aiBtn=mk('AI 轉文字','green',function(){ transcribeNote(note.id,aiBtn); });
-  mk('下載音檔','pink',function(){
-    getAudio(note.id).then(function(blob){
-      if(!blob){ toast('找不到音檔'); return; }
-      var ext=(note.mime.indexOf('mp4')>=0)?'m4a':((note.mime.indexOf('ogg')>=0)?'ogg':'webm');
-      download(blob,cleanName(curList().name)+'_'+fmtDate(note.t).replace(/[: ]/g,'-')+'.'+ext);
-    }).catch(function(){ toast('讀取音檔失敗'); });
-  });
+  if(!note.tmp){
+    mk('插入時間點','',function(){
+      var t=(audio&&audio.currentTime)||0, tag='['+two(Math.floor(t/60))+':'+two(Math.floor(t%60))+'] ';
+      var p=ta.selectionStart==null?ta.value.length:ta.selectionStart;
+      ta.value=ta.value.slice(0,p)+tag+ta.value.slice(p);
+      ta.focus(); ta.selectionStart=ta.selectionEnd=p+tag.length;
+      note.text=ta.value; note.src=note.src||'手動聽打'; note.edited=true; save(); renderStats();
+    });
+    var aiBtn=mk('AI 轉文字','green',function(){ transcribeNote(note.id,aiBtn); });
+    mk('下載音檔','pink',function(){
+      getAudio(note.id).then(function(blob){
+        if(!blob){ toast('找不到音檔'); return; }
+        var ext=(note.mime.indexOf('mp4')>=0)?'m4a':((note.mime.indexOf('ogg')>=0)?'ogg':'webm');
+        download(blob,cleanName(curList().name)+'_'+fmtDate(note.t).replace(/[: ]/g,'-')+'.'+ext);
+      }).catch(function(){ toast('讀取音檔失敗'); });
+    });
+  }else{
+    var ltag=document.createElement('span'); ltag.className='mini green'; ltag.textContent='● 即時字幕產生中'; tools.appendChild(ltag);
+  }
   card.appendChild(tools);
 
   var ta=document.createElement('textarea'); ta.className='note-text'; ta.value=note.text;
-  ta.placeholder='逐字稿：邊聽邊打，或按「AI 轉文字」在本機轉寫…';
+  ta.placeholder=note.tmp?'即時字幕會出現在這裡（可直接修改，錄完會自動校正）…':'逐字稿：邊聽邊打，或按「AI 轉文字」在本機轉寫…';
   var uiTimer=null;
   ta.addEventListener('input',function(){
     note.text=ta.value; if(!note.src&&ta.value.trim()) note.src='手動聽打';
+    note.edited=true;
     save();   /* 立即寫入本機，避免中途切換清單或關閉頁面掉了最後幾個字 */
     clearTimeout(uiTimer); uiTimer=setTimeout(function(){
-      renderStats(); sp.textContent=fmtDur(note.dur)+' · '+fmtSize(note.size)+' · '+(note.text.trim()?(note.src||'手動聽打'):'尚無逐字稿');
+      renderStats();
+      sp.textContent=note.tmp?'● 錄音中 · 即時字幕':(fmtDur(note.dur)+' · '+fmtSize(note.size)+' · '+(note.text.trim()?(note.src||'手動聽打'):'尚無逐字稿'));
     },300);
   });
   card.appendChild(ta);
@@ -725,51 +788,231 @@ function renderAll(){ renderNotes(); }
 
 /* ================= 錄音 ================= */
 var stream=null,rec=null,chunks=[],recStart=0,tick=null;
+var recNoteId=null,recListId=null,liveOn=false,starting=false,cancelRequested=false;
 function pickMime(){
   var a=['audio/webm;codecs=opus','audio/webm','audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/ogg;codecs=opus'];
   for(var i=0;i<a.length;i++){ try{ if(window.MediaRecorder&&MediaRecorder.isTypeSupported(a[i])) return a[i]; }catch(e){} }
   return '';
 }
-function setRecUI(on){
+function setRecUI(on,withLive){
   $('recBtn').classList.toggle('rec',on);
   $('recBtn').textContent=on?'■':'●';
   $('recBtn').setAttribute('aria-label',on?'停止錄音':'開始錄音');
   $('recMain').textContent=on?'錄音中 · 按 ■ 停止':'開始錄音';
-  $('recHint').textContent=on?'正在使用麥克風 · 停止後立即關閉':'音檔只存這部裝置 · 不會上傳';
+  $('recHint').textContent=on?(withLive?'● 即時字幕：約每 5 秒更新 · 音訊只在本機':'正在使用麥克風 · 停止後立即關閉'):'音檔只存這部裝置 · 不會上傳';
   $('recWave').classList.toggle('on',on);
 }
-function startRec(){
-  if(rec) return;
+function setRecHint(t){ $('recHint').textContent=t; }
+function showLiveCap(){ var el=$('liveCap'); el.classList.remove('hint'); el.classList.add('show'); $('liveCapBody').textContent=''; var c=$('liveCapCount'); if(c) c.textContent='0 行'; }
+function showLiveHint(){
+  var el=$('liveCap'); el.classList.remove('show'); el.classList.add('show','hint');
+  $('liveCapBody').innerHTML='<div class="livecap-msg">即時字幕未開啟 · 在「轉寫」開啟後，錄音時可邊錄邊出字（本機處理，音訊不上傳）</div>';
+}
+function hideLiveCap(){ var el=$('liveCap'); el.classList.remove('show','hint'); $('liveCapBody').textContent=''; }
+function liveCapPush(atSec,text){
+  var el=$('liveCap'); el.classList.remove('hint');
+  var body=$('liveCapBody'); if(!body) return;
+  var tag='['+two(Math.floor(atSec/60))+':'+two(Math.floor(atSec%60))+']';
+  var line=document.createElement('div'); line.className='lc';
+  var t=document.createElement('span'); t.className='t'; t.textContent=tag;
+  var x=document.createElement('span'); x.className='x'; x.textContent=text;
+  line.appendChild(t); line.appendChild(x); body.appendChild(line);
+  body.scrollTop=body.scrollHeight;
+  var c=$('liveCapCount'); if(c) c.textContent=live.count+' 行';
+}
+async function startRec(){
+  if(rec||starting) return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){
     toast('此瀏覽器不支援錄音，建議用 Chrome／Edge'); return;
   }
-  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}).then(function(s){
+  starting=true; cancelRequested=false;
+  var wantLive=!!(S.settings.asr&&S.settings.live);
+  try{
+    if(wantLive){
+      $('recMain').textContent='準備本機語音模型…';
+      setRecHint('首次需下載模型，進度會顯示在這裡');
+      try{ await loadASR(); }
+      catch(e){ wantLive=false; toast('模型載入失敗，改為純錄音（可稍後按 AI 轉文字）'); }
+    }
+    var s;
+    try{ s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}); }
+    catch(e){
+      toast('無法取得麥克風：'+(e&&e.name==='NotAllowedError'?'請允許權限':'請改用 Chrome／Edge 或 localhost'));
+      return;
+    }
+    if(cancelRequested){
+      s.getTracks().forEach(function(t){t.stop();});
+      setRecUI(false,false); toast('已取消錄音'); return;
+    }
     stream=s; var mime=pickMime();
     try{ rec=mime?new MediaRecorder(s,{mimeType:mime}):new MediaRecorder(s); }
     catch(e){ s.getTracks().forEach(function(t){t.stop();}); stream=null; toast('無法啟動錄音：'+e.message); return; }
+
+    /* 一開始就建立暫存筆記，讓即時字幕有地方可寫；中途中斷會在下次載入時清掉 */
+    var noteId=uid();
+    recNoteId=noteId; recListId=S.cur; liveOn=wantLive; recStart=Date.now();
+    var tmp={id:noteId,t:recStart,dur:0,size:0,mime:mime||'audio/webm',text:'',src:'',tmp:true,edited:false};
+    curList().notes.unshift(tmp); save(); renderNotes();
+
     chunks=[];
     rec.ondataavailable=function(e){ if(e.data&&e.data.size) chunks.push(e.data); };
-    rec.onerror=function(e){ toast('錄音發生錯誤'); };
+    rec.onerror=function(){ toast('錄音發生錯誤'); };
     rec.onstop=function(){
-      var dur=Date.now()-recStart, type=rec.mimeType||mime||'audio/webm';
-      var blob=new Blob(chunks,{type:type});
+      var id=noteId, dur=Date.now()-recStart, type=rec.mimeType||mime||'audio/webm';
+      var blob=new Blob(chunks,{type:type}), wasLive=liveOn;
+      if(wasLive) stopLiveCapture();
       if(stream){ stream.getTracks().forEach(function(t){t.stop();}); stream=null; }
-      rec=null; clearInterval(tick); setRecUI(false);
-      if(!blob.size){ toast('沒有錄到聲音'); return; }
-      var id=uid();
+      rec=null; clearInterval(tick); tick=null; setRecUI(false,false); liveOn=false; hideLiveCap();
+      if(!blob.size){
+        var orphan=findNote(id);
+        if(orphan){ orphan.list.notes=orphan.list.notes.filter(function(x){return x.id!==id;}); save(); renderNotes(); }
+        toast('沒有錄到聲音'); return;
+      }
       putAudio(id,blob).then(function(){
-        var n={id:id,t:recStart,dur:dur,size:blob.size,mime:type,text:'',src:''};
-        curList().notes.unshift(n); save(); renderNotes(); toast('錄音已儲存（只在本機）');
-        if(S.settings.asr&&S.settings.auto) transcribeNote(id,null);
-      }).catch(function(e){ toast('無法儲存錄音：'+(e&&e.message?e.message:'本機儲存被封鎖')); });
+        var f=findNote(id);
+        if(!f){
+          var l=S.lists.filter(function(x){return x.id===recListId;})[0]||S.lists[0];
+          var nn={id:id,t:recStart,dur:dur,size:blob.size,mime:type,text:'',src:'',edited:false};
+          l.notes.unshift(nn); f={list:l,note:nn};
+        }
+        var n=f.note;
+        n.dur=dur; n.size=blob.size; n.mime=type; delete n.tmp;
+        save(); renderNotes();
+        toast(wasLive?'錄音已儲存 · 正在本機做完整校正':'錄音已儲存（只在本機）');
+        if(wasLive) finalizeNote(id);
+        else if(S.settings.asr&&S.settings.auto) transcribeNote(id,null);
+      }).catch(function(e){
+        /* 音檔存不下來時，至少保住即時字幕／逐字稿，不要讓整筆資料在重載後被清掉 */
+        var f=findNote(id);
+        if(f){ delete f.note.tmp; f.note.dur=dur; f.note.size=0; save(); renderNotes(); }
+        toast('音檔無法儲存，逐字稿已保留：'+(e&&e.message?e.message:'本機儲存被封鎖'));
+      });
     };
-    rec.start(250); recStart=Date.now(); setRecUI(true);
+    rec.start(250);
+    var liveStarted=wantLive;
+    if(wantLive&&!startLiveCapture(s,noteId)){
+      liveOn=false; liveStarted=false;
+      toast('即時字幕不可用，錄音仍正常進行');
+    }
+    setRecUI(true,liveStarted);
+    if(liveStarted){ showLiveCap(); } else { showLiveHint(); }
+    $('notes').scrollTop=0;   /* 錄音開始捲到即時卡片，方便邊錄邊看 */
     tick=setInterval(function(){ $('recMain').textContent='錄音中 '+fmtDur(Date.now()-recStart)+' · 按 ■ 停止'; },500);
-  }).catch(function(e){
-    toast('無法取得麥克風：'+(e&&e.name==='NotAllowedError'?'請允許權限':'請改用 Chrome／Edge 或 localhost'));
-  });
+  }catch(e){
+    toast('錄音啟動失敗：'+(e&&e.message?e.message:'未知錯誤'));
+  }finally{ starting=false; cancelRequested=false; }
 }
 function stopRec(){ if(rec&&rec.state!=='inactive') rec.stop(); }
+
+/* ================= 本機即時字幕（邊錄邊出字） =================
+   直接從麥克風 stream 抓原始 PCM（不經雲端、不經 MediaRecorder 檔），
+   每約 5 秒切片交給已載入的本機 Whisper，結果逐行寫入該則錄音的逐字稿。 */
+var LIVE_TICK_MS=5000, LIVE_MIN_SEC=2.5;
+var live={active:false,busy:false,ac:null,src:null,proc:null,mute:null,timer:null,
+  buf:null,len:0,rate:16000,lastPos:0,noteId:null,count:0};
+function resampleChunk(input,rate){
+  if(rate===16000) return input;
+  var ratio=rate/16000,outLen=Math.max(1,Math.floor(input.length/ratio)),out=new Float32Array(outLen),i;
+  for(i=0;i<outLen;i++){
+    var pos=i*ratio,i0=Math.floor(pos),i1=Math.min(i0+1,input.length-1),f=pos-i0;
+    out[i]=input[i0]*(1-f)+input[i1]*f;
+  }
+  return out;
+}
+function liveAppend(u8){
+  if(live.len+u8.length>live.buf.length){
+    var cap=live.buf.length; while(cap<live.len+u8.length) cap*=2;
+    var nb=new Float32Array(cap); nb.set(live.buf.subarray(0,live.len)); live.buf=nb;
+  }
+  live.buf.set(u8,live.len); live.len+=u8.length;
+}
+function startLiveCapture(mediaStream,noteId){
+  var AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC){ toast('此瀏覽器不支援即時收音，錄音仍會正常儲存'); return false; }
+  try{
+    var ac=null;
+    try{ ac=new AC({sampleRate:16000}); }catch(e){}
+    if(!ac) ac=new AC();
+    /* 模型可能下載很久，使用者點擊的授權時效已過，明確 resume 避免 context 停在 suspended */
+    if(ac.state==='suspended'&&ac.resume) ac.resume().catch(function(){});
+    var make=ac.createScriptProcessor||ac.createJavaScriptNode;
+    if(!make){ try{ ac.close(); }catch(e){} return false; }
+    var src=ac.createMediaStreamSource(mediaStream);
+    var proc=make.call(ac,4096,1,1);
+    var mute=ac.createGain(); mute.gain.value=0;   /* 接到 destination 才會驅動，但音量歸零避免回授 */
+    live.active=true; live.busy=false; live.ac=ac; live.src=src; live.proc=proc; live.mute=mute;
+    live.noteId=noteId; live.rate=ac.sampleRate||16000;
+    live.buf=new Float32Array(16000*30); live.len=0; live.lastPos=0; live.count=0;
+    proc.onaudioprocess=function(e){
+      if(!live.active) return;
+      try{
+        var d=e.inputBuffer.getChannelData(0);
+        liveAppend(resampleChunk(new Float32Array(d),live.rate));
+      }catch(err){}
+    };
+    src.connect(proc); proc.connect(mute); mute.connect(ac.destination);
+    live.timer=setInterval(liveTick,LIVE_TICK_MS);
+    setStatus('即時字幕啟動 · 音訊只在本機','ok');
+    return true;
+  }catch(e){
+    stopLiveCapture();
+    toast('即時字幕啟動失敗，錄音仍會正常儲存');
+    return false;
+  }
+}
+function stopLiveCapture(){
+  live.active=false;
+  if(live.timer){ clearInterval(live.timer); live.timer=null; }
+  try{ if(live.proc){ live.proc.onaudioprocess=null; live.proc.disconnect(); } }catch(e){}
+  try{ if(live.src) live.src.disconnect(); }catch(e){}
+  try{ if(live.mute) live.mute.disconnect(); }catch(e){}
+  try{ if(live.ac) live.ac.close(); }catch(e){}
+  live.ac=live.src=live.proc=live.mute=null;
+}
+async function liveTick(){
+  if(!live.active||live.busy) return;
+  if(live.len===0){ setStatus('尚未收到麥克風音訊，請確認瀏覽器允許音訊播放','err'); return; }
+  var end=live.len;
+  if((end-live.lastPos)/16000<LIVE_MIN_SEC) return;
+  live.busy=true;
+  var from=live.lastPos, atSec=from/16000;
+  live.lastPos=end;
+  try{
+    var pipe=await loadASR();
+    var pcm=live.buf.slice(from,end);
+    var out=await pipe(pcm,{language:'chinese',task:'transcribe',chunk_length_s:30,stride_length_s:5});
+    var text=String(out&&out.text?out.text:'').trim();
+    /* 過濾 Whisper 在極短／靜音片段常見的幻覺字幕 */
+    if(text&&!/^(字幕由|請不吝|點贊|点赞|訂閱|轉發|謝謝觀看|Thank you for watching|音樂|音乐)/.test(text)) appendLiveLine(atSec,text);
+  }catch(e){ /* 單一段失敗不中斷錄音 */ }
+  finally{ live.busy=false; }
+}
+function appendLiveLine(atSec,text){
+  if(!live.active) return;      /* 錄音已停止，進行中的推論不要再寫入 */
+  var f=findNote(live.noteId); if(!f) return;
+  var tag='['+two(Math.floor(atSec/60))+':'+two(Math.floor(atSec%60))+'] ';
+  var n=f.note;
+  n.text=(n.text?n.text.replace(/\s+$/,'')+'\n':'')+tag+text;
+  n.src='本機即時';
+  save(); live.count++;
+  liveCapPush(atSec,text);   /* 同步顯示在手機視線附近的浮層 */
+  var card=noteCard(live.noteId);
+  if(card&&card._text){
+    var ta=card._text, atEnd=(ta.selectionStart==null||ta.selectionStart>=ta.value.length-2);
+    ta.value=n.text;
+    if(atEnd){ ta.selectionStart=ta.selectionEnd=ta.value.length; ta.scrollTop=ta.scrollHeight; }
+    if(card._meta) card._meta.textContent='● 錄音中 · 即時字幕 '+live.count+' 行';
+  }
+  renderStats();
+  setStatus('即時字幕：已寫入 '+live.count+' 行（本機運算）','ok');
+}
+async function finalizeNote(id){
+  var f=findNote(id); if(!f) return;
+  var replace=!f.note.edited, guard=0;
+  while((live.busy||asrBusy||batchRunning)&&guard<80){ await new Promise(function(r){ setTimeout(r,250); }); guard++; }
+  await new Promise(function(r){ setTimeout(r,250); });
+  try{ await transcribeNote(id,null,{replace:replace,quiet:true}); }catch(e){}
+}
 
 /* ================= 本機 AI 轉寫 ================= */
 var asrPipe=null,asrPromise=null,asrBusy=false,batchRunning=false;
@@ -777,6 +1020,7 @@ var LIB_URL='https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
 function setStatus(msg,kind){
   var el=$('asrStatus'); if(!el) return;
   el.textContent=msg; el.className='status'+(kind?' '+kind:'');
+  if(starting) setRecHint(msg);   /* 準備模型時，把下載進度直接顯示在錄音列 */
 }
 function loadASR(){
   if(asrPipe) return Promise.resolve(asrPipe);
@@ -829,7 +1073,8 @@ async function decodePCM(blob){
   } finally { try{ await ac.close(); }catch(e){} }
   return toMono16k(buf);
 }
-async function transcribeNote(id,btn){
+async function transcribeNote(id,btn,opts){
+  opts=opts||{};
   var f=findNote(id);
   if(!f){ toast('找不到錄音'); return; }
   if(!S.settings.asr){ if(btn){ openSheet('asrSheet'); toast('請先在「轉寫」頁啟用本機 AI'); } return; }
@@ -840,7 +1085,7 @@ async function transcribeNote(id,btn){
   try{
     var blob=await getAudio(id);
     if(!blob) throw new Error('找不到音檔');
-    setStatus('解碼錄音（本機）…'); toast('正在本機轉寫，請稍候');
+    setStatus('解碼錄音（本機）…'); if(!opts.quiet) toast('正在本機轉寫，請稍候');
     var pcm=await decodePCM(blob);
     var pipe=await loadASR();
     setStatus('轉寫中（音訊沒有離開這部裝置）…');
@@ -848,17 +1093,19 @@ async function transcribeNote(id,btn){
     var text=String(out&&out.text?out.text:'').trim();
     if(!text) throw new Error('沒有辨識到語音，請試較清晰的錄音或改用聽打');
     var n=f.note;
-    n.text=n.text.trim()?(n.text.replace(/\s+$/,'')+'\n\n'+text):text;
+    var mark=opts.quiet?'【完整轉寫】\n':'';
+    n.text=opts.replace?text:(n.text.trim()?(n.text.replace(/\s+$/,'')+'\n\n'+mark+text):text);
     n.src='本機 AI';
+    if(opts.replace) n.edited=false;
     save();
     var card=noteCard(id);
     if(card&&card._text){ card._text.value=n.text; if(card._meta) card._meta.textContent=fmtDur(n.dur)+' · '+fmtSize(n.size)+' · 本機 AI'; }
     renderStats();
-    setStatus('完成：這則錄音已轉為文字（全程本機運算）','ok');
-    toast('轉寫完成');
+    setStatus(opts.quiet?(opts.replace?'即時字幕已由完整轉寫校正（全程本機運算）':'完整轉寫已附加在逐字稿後'):'完成：這則錄音已轉為文字（全程本機運算）','ok');
+    if(!opts.quiet) toast('轉寫完成');
   }catch(e){
-    setStatus('轉寫失敗：'+(e&&e.message?e.message:'未知錯誤')+'　可改用「邊聽邊打」','err');
-    toast('轉寫失敗，可改用邊聽邊打');
+    setStatus((opts.quiet?'完整校正失敗，已保留原本逐字稿：':'轉寫失敗：')+(e&&e.message?e.message:'未知錯誤')+(opts.quiet?'':'　可改用「邊聽邊打」'),'err');
+    if(!opts.quiet) toast('轉寫失敗，可改用邊聽邊打');
   }finally{
     asrBusy=false;
     if(btn){ btn.disabled=false; btn.textContent=old||'AI 轉文字'; }
@@ -1101,6 +1348,8 @@ async function importBackup(file){
 function syncSettingsUI(){
   $('asrEnable').classList.toggle('on',!!S.settings.asr);
   $('asrEnable').setAttribute('aria-pressed',S.settings.asr?'true':'false');
+  $('asrLive').classList.toggle('on',!!S.settings.live);
+  $('asrLive').setAttribute('aria-pressed',S.settings.live?'true':'false');
   $('asrAuto').classList.toggle('on',!!S.settings.auto);
   $('asrAuto').setAttribute('aria-pressed',S.settings.auto?'true':'false');
   $('asrModel').value=S.settings.model;
@@ -1132,7 +1381,10 @@ function bind(){
   $('newListBtn').addEventListener('click',addList);
   $('newListInp').addEventListener('keydown',function(e){ if(e.key==='Enter') addList(); });
 
-  $('recBtn').addEventListener('click',function(){ if(rec) stopRec(); else startRec(); });
+  $('recBtn').addEventListener('click',function(){
+    if(starting){ cancelRequested=true; toast('正在取消錄音準備…'); return; }
+    if(rec) stopRec(); else startRec();
+  });
   window.addEventListener('beforeunload',function(){ try{ save(); }catch(e){} if(rec){ try{ rec.stop(); }catch(e){} } });
 
   var scopeBtns=$('expScope').querySelectorAll('button');
@@ -1163,12 +1415,21 @@ function bind(){
     if(!S.settings.asr){
       if(!window.confirm('啟用後，首次轉寫會向白名單網域下載語音模型檔（約 40–80 MB）。\n\n瀏覽器會發出「下載請求」，但不會傳送你的錄音、逐字稿或清單內容。模型下載後由本機運算並快取。\n\n確定啟用？')) return;
       S.settings.asr=true; setStatus('已啟用 · 按「AI 轉文字」時才會下載模型','ok');
-    }else{ S.settings.asr=false; S.settings.auto=false; setStatus('已關閉 · 這頁回復零對外連線','ok'); }
+    }else{ S.settings.asr=false; S.settings.auto=false; S.settings.live=false; setStatus('已關閉 · 這頁回復零對外連線','ok'); }
     save(); syncSettingsUI();
+  });
+  $('asrLive').addEventListener('click',function(){
+    if(!S.settings.asr){ toast('請先啟用本機 AI 轉寫'); return; }
+    S.settings.live=!S.settings.live;
+    if(S.settings.live) S.settings.auto=false;
+    save(); syncSettingsUI();
+    toast(S.settings.live?'已開啟邊錄邊出字（下次錄音生效）':'已關閉邊錄邊出字');
   });
   $('asrAuto').addEventListener('click',function(){
     if(!S.settings.asr){ toast('請先啟用本機 AI 轉寫'); return; }
-    S.settings.auto=!S.settings.auto; save(); syncSettingsUI();
+    S.settings.auto=!S.settings.auto;
+    if(S.settings.auto) S.settings.live=false;
+    save(); syncSettingsUI();
     toast(S.settings.auto?'錄音後會自動轉寫':'已關閉自動轉寫');
   });
   $('asrModel').addEventListener('change',function(){

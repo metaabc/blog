@@ -30,12 +30,12 @@ html[data-fs="l"]{--fs:1.16}
 :root{
   --bg1:#fffaf3; --bg2:#fdf0e6;
   --card:#ffffff;
-  --ink:#3b2530; --ink2:#5f4b55; --muted:#967f89;
+  --ink:#3b2530; --ink2:#5f4b55; --muted:#7c6470;
   --line:#f0e2d8; --line2:#f8efe7;
   --accent:#c23b6a; --accent2:#dc5a8c; --accent-soft:#fdeaf2; --accent-line:#f4c9da;
   --gold:#e0a63a; --gold-bg:#fdf4dc; --gold-tx:#8a5f10; --gold-line:#efd9a2;
   --green:#2e8f7e; --green-bg:#e7f5f0; --green-line:#bfe4d9;
-  --gray-bg:#f6f2ec; --gray-tx:#aaa39b;
+  --gray-bg:#f6f2ec; --gray-tx:#8d8189;
   --red:#cf5a4c; --red-bg:#fdecea; --red-line:#f6d4ce;
 }
 html,body{margin:0;padding:0}
@@ -70,7 +70,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .empty{text-align:center;color:var(--muted);font-size:calc(12.5px * var(--fs));line-height:1.9;padding:26px 14px;border:1px dashed var(--line);border-radius:16px;background:#fffdfb}
 .empty b{color:var(--ink2)}
 .empty .go{display:inline-block;margin-top:12px;padding:11px 18px;border-radius:12px;background:var(--accent);color:#fff;font-size:calc(12.5px * var(--fs));font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.24)}
-.ver{margin-top:16px;text-align:center;font-size:calc(10px * var(--fs));color:#c3bcb3;line-height:1.8}
+.ver{margin-top:16px;text-align:center;font-size:calc(10px * var(--fs));color:#a99f97;line-height:1.8}
 
 /* ---------- 今日總覽 ---------- */
 .hero{padding:14px;margin-top:10px}
@@ -111,7 +111,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .hrow2{font-size:calc(10.5px * var(--fs));font-weight:600;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .hrow2 b{color:var(--accent);font-size:calc(12px * var(--fs));font-variant-numeric:tabular-nums}
 .hrow2 .ok{font-size:calc(9.5px * var(--fs));font-weight:800;color:var(--green);background:var(--green-bg);border-radius:99px;padding:2px 7px}
-.hmore{position:absolute;right:6px;top:6px;width:34px;height:34px;border-radius:10px;color:#b9ada5;font-size:calc(20px * var(--fs));line-height:1;display:flex;align-items:center;justify-content:center;background:var(--gray-bg)}
+.hmore{position:absolute;right:7px;top:7px;width:38px;height:38px;border-radius:11px;color:#8a7d83;font-size:calc(22px * var(--fs));line-height:1;display:flex;align-items:center;justify-content:center;background:var(--gray-bg);border:1px solid var(--line)}
 .hmore:hover{background:var(--gray-bg)}
 /* v3.4：本週七日共用一條（唔再喺每張習慣卡重複） */
 .wkd{display:flex;gap:5px;margin:0 0 7px}
@@ -138,15 +138,15 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .day-row .dn{font-size:calc(15px * var(--fs));font-weight:800;color:var(--ink);word-break:break-all;line-height:1.25}
 .day-row .dst{font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--muted);margin-top:3px}
 .day-row.on .dst{color:var(--green)}
-.day-toggle{flex:0 0 auto;width:40px;height:40px;border-radius:12px;border:1.5px solid var(--line);background:var(--gray-bg);
-  color:var(--muted);font-size:calc(21px * var(--fs));font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center}
+.day-toggle{flex:0 0 auto;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--gray-bg);
+  color:var(--muted);font-size:calc(22px * var(--fs));font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center}
 .day-row.on .day-toggle{background:var(--green);border-color:var(--green);color:#fff}
 /* 週數切換列 */
 .weekbar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(190,120,90,.06);padding:8px 9px;margin-bottom:10px}
-.weekbar>button{width:34px;height:34px;flex:0 0 auto;border:1.5px solid var(--line);background:var(--gray-bg);color:var(--ink);border-radius:10px;font-size:calc(20px * var(--fs));font-weight:800;line-height:1;cursor:pointer}
+.weekbar>button{width:38px;height:38px;flex:0 0 auto;border:1.5px solid var(--line);background:var(--gray-bg);color:var(--ink);border-radius:10px;font-size:calc(21px * var(--fs));font-weight:800;line-height:1;cursor:pointer}
 .weekbar>button:active{transform:scale(.94)}
 .weekbar>button:disabled{opacity:.32;cursor:default;transform:none}
-.weekbar>button.jump{width:auto;padding:0 9px;font-size:calc(10px * var(--fs));font-weight:800;color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line);white-space:nowrap}
+.weekbar>button.jump{width:auto;padding:0 11px;font-size:calc(11px * var(--fs));font-weight:800;color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line);white-space:nowrap}
 .weekbar .wmid{flex:1;min-width:0;display:flex;align-items:baseline;justify-content:center;gap:6px;flex-wrap:nowrap}
 .weekbar .wmid b{font-size:calc(12.5px * var(--fs));font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .weekbar .wmid small{font-size:calc(9.5px * var(--fs));color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
@@ -194,7 +194,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .add-bar input{flex:1;min-width:0;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 10px;font-size:calc(14px * var(--fs));font-weight:600;color:var(--ink);outline:none}
 .add-bar input:focus{border-color:var(--accent-line);background:#fff}
 .add-bar select{width:58px;flex:0 0 auto;border:1.4px solid var(--line);background:#fbfaf8;border-radius:11px;padding:9px 2px;font-size:calc(11px * var(--fs));font-weight:700;color:var(--ink2);outline:none;text-align:center}
-.add-bar .go{flex:0 0 auto;padding:0 13px;height:38px;border-radius:11px;background:var(--accent);color:#fff;font-size:calc(12.5px * var(--fs));font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.22)}
+.add-bar .go{flex:0 0 auto;padding:0 15px;height:42px;border-radius:11px;background:var(--accent);color:#fff;font-size:calc(13px * var(--fs));font-weight:700;box-shadow:0 3px 10px rgba(194,59,106,.22)}
 .add-tip{font-size:calc(10px * var(--fs));color:var(--muted);margin:0 3px 10px;line-height:1.6}
 .emo-quick{display:none;flex-wrap:wrap;gap:5px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px;margin-bottom:9px}
 .emo-quick.on{display:flex}
@@ -205,7 +205,7 @@ h1{margin:0;font-size:clamp(17px,5vw,21px);font-weight:800;letter-spacing:.5px;c
 .hrow input{flex:1;min-width:0;border:1.2px solid transparent;background:transparent;border-radius:9px;padding:8px 7px;font-size:calc(13.5px * var(--fs));font-weight:700;color:var(--ink);outline:none}
 .hrow input:focus{border-color:var(--accent-line);background:#fff}
 .hrow select{flex:0 0 auto;width:52px;border:1.2px solid var(--line);background:#fbfaf8;border-radius:9px;padding:7px 1px;font-size:calc(10.5px * var(--fs));font-weight:700;color:var(--ink2);outline:none;text-align:center}
-.hrow .mv,.hrow .del{flex:0 0 auto;width:26px;height:30px;border-radius:8px;font-size:calc(12px * var(--fs));font-weight:800;color:var(--muted)}
+.hrow .mv,.hrow .del{flex:0 0 auto;width:34px;height:34px;border-radius:9px;font-size:calc(14px * var(--fs));font-weight:800;color:var(--muted)}
 .hrow .mv{background:var(--gray-bg)}
 .hrow .mv:disabled{opacity:.3}
 .hrow .del{background:var(--red-bg);color:var(--red);font-size:calc(13px * var(--fs))}
@@ -374,8 +374,8 @@ body.sheet-open .toast.on{transform:translate(-50%,0)}
 /* ---------- v3.2：今日頁壓縮，一屏睇到四個打卡習慣 ---------- */
 header{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:5px}
 h1{font-size:calc(17px * var(--fs))}
-.h-stat{font-size:calc(10px * var(--fs));gap:9px}
-.h-stat b{font-size:calc(13px * var(--fs))}
+.h-stat{font-size:calc(10.5px * var(--fs));gap:9px}
+.h-stat b{font-size:calc(14px * var(--fs))}
 .wrap{padding-bottom:calc(160px + env(safe-area-inset-bottom,0px))}
 #pageToday .hero{padding:8px 10px;margin-top:4px;margin-bottom:6px}
 #pageToday .hero-date{font-size:calc(10px * var(--fs));margin-bottom:5px}
@@ -384,20 +384,20 @@ h1{font-size:calc(17px * var(--fs))}
 #pageToday .ring .pct span{font-size:calc(8px * var(--fs))}
 #pageToday .hero-main{gap:10px}
 #pageToday .hero-title{font-size:calc(13.5px * var(--fs))}
-#pageToday .hero-sub{font-size:calc(10px * var(--fs));margin-top:2px;line-height:1.35}
+#pageToday .hero-sub{font-size:calc(11px * var(--fs));margin-top:2px;line-height:1.4;color:var(--ink2)}
 #pageToday .sec{margin:6px 2px 5px}
 #pageToday .sec h2{font-size:calc(12px * var(--fs))}
 #pageToday .sec .cnt{font-size:calc(10px * var(--fs));padding:1px 7px}
 #pageToday .weekbar{padding:5px 7px;margin-bottom:5px;gap:6px}
-#pageToday .weekbar>button{width:28px;height:28px;font-size:calc(17px * var(--fs));border-radius:8px}
-#pageToday .weekbar>button.jump{font-size:calc(9.5px * var(--fs));padding:0 7px}
+#pageToday .weekbar>button{width:38px;height:38px;font-size:calc(21px * var(--fs));border-radius:10px}
+#pageToday .weekbar>button.jump{font-size:calc(11px * var(--fs));padding:0 11px}
 #pageToday .weekbar .wmid b{font-size:calc(14px * var(--fs))}
 #pageToday .weekbar .wmid small{font-size:calc(10.5px * var(--fs))}
 #pageToday .card.hcard{padding:8px 10px;gap:9px;grid-template-columns:52px minmax(0,1fr);border-radius:14px;margin-bottom:6px}
 #pageToday .hcheck{width:52px;height:52px;border-radius:14px}
 #pageToday .hcheck svg{width:28px;height:28px}
 #pageToday .hcard:not(.is-done) .hcheck::after{font-size:calc(28px * var(--fs))}
-#pageToday .hrow1{gap:6px;padding-right:42px}
+#pageToday .hrow1{gap:6px;padding-right:46px}
 #pageToday .hemo{font-size:calc(18px * var(--fs))}
 #pageToday .hname{font-size:calc(16px * var(--fs));line-height:1.25}
 #pageToday .hbadge{font-size:calc(10.5px * var(--fs));padding:2px 7px}
@@ -412,7 +412,7 @@ h1{font-size:calc(17px * var(--fs))}
 #pageToday .wkd{margin-bottom:8px}
 #pageToday .wkd button{padding:5px 0 4px;border-radius:10px}
 #pageToday .wkd .dm{font-size:calc(15.5px * var(--fs))}
-#pageToday .wkd .dd{font-size:calc(9px * var(--fs))}
+#pageToday .wkd .dd{font-size:calc(10.5px * var(--fs));color:#66514f}
 /* 矮屏幕：分享掣收埋喺卡片同選單之間，唔好遮住第四張卡 */
 @media (max-height:884px){
   .fab-share{bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:9px 13px}
@@ -520,7 +520,7 @@ h1{font-size:calc(17px * var(--fs))}
     <div id="metricList"></div>
   </div>
 
-  <div class="ver">單檔網頁 · 資料只存本機 · 版本 2026-11-08 v3.8</div>
+  <div class="ver">單檔網頁 · 資料只存本機 · 版本 2026-11-08 v3.9</div>
 </div>
 
 <!-- v3：浮動分享鈕（底部選單上兩行、靠右） -->
@@ -1962,6 +1962,7 @@ $('todayList').addEventListener('click',function(e){
 });
 /* v3.6：長按習慣卡開編輯（短撳開熱力圖；長撳開編輯，減少點擊） */
 /* v3.8：新增親子／長者習慣模板（共五類）；新增習慣預設循環 12（由新增鈕／Enter 傳入，編輯可改）；修復切換週「回本週」掣被文字擠到睇唔全（wmid 子項加 min-width:0 令文字可收縮省略號，掣保留完整） */
+/* v3.9：手機呈現／可操作性／可讀性優化——(1) 點擊範圍：週切換箭嘴 28→38px、三點 34→38px（加邊框更似掣）、新增鈕 38→42px、補打開關 40→44px、名單頁移動／刪除掣 26×30→34×34；(2) 對比度：--muted #967f89→#7c6470、--gray-tx #aaa39b→#8d8189、頁腳 #c3bcb3→#a99f97，週日期數 9→10.5px 轉深色；(3) 字級：今日 hero-sub 10→11px 轉 --ink2、標題統計 10→10.5px／13→14px。未動 v3.7 已撤回項（進度條粗度、週標籤字大、仲差句）。 */
 var lpTimer=null, lpFiredAt=0, lpId=null, lpX=0, lpY=0;
 $('todayList').addEventListener('pointerdown',function(e){
   var card=e.target.closest('.hcard');

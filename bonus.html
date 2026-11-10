@@ -16,7 +16,7 @@
   --card:#ffffff;
   --ink:#3b2530;
   --ink2:#5f4b55;
-  --muted:#967f89;
+  --muted:#8b7380;
   --line:#f0e2d8;
   --line2:#f8efe7;
   --accent:#c23b6a;
@@ -30,7 +30,7 @@
   --green-bg:#e7f5f0;
   --green-line:#bfe4d9;
   --gray-bg:#f6f2ec;
-  --gray-tx:#aaa39b;
+  --gray-tx:#9a938b;
   --orange:#b8792f;
   --orange-bg:#fdf2e2;
   --red:#cf5a4c;
@@ -38,6 +38,7 @@
   --red-line:#f6d4ce;
   --kb:0px;
   --tabbar-h:80px;
+  --paycol:70px;
 }
 html,body{height:100%;margin:0;padding:0}
 body{
@@ -299,6 +300,9 @@ h1{
 }
 .sum-sub:empty{display:none}
 .sum-sub b{color:var(--ink2);font-weight:800}
+/* 金額單位（MOP$）前綴：與數字同基線、字級較小，提升清晰但不搶眼 */
+.sum-val .cur{font-size:13px;font-weight:700;color:var(--muted);margin-right:1px;letter-spacing:0}
+.hcur{font-size:.72em;font-weight:700;color:#b07d96;margin-right:1px}
 /* 超窄機（≤340）再收一級，確保兩組金額不擠壓 */
 @media (max-width:340px){
   .sum-row{gap:8px}
@@ -364,7 +368,7 @@ h1{
   flex:1 1 auto;
   min-height:0;
   display:grid;
-  grid-template-rows:repeat(8,minmax(33px,1fr));
+  grid-template-rows:repeat(8,minmax(40px,1fr));
   gap:6px;
   overflow-y:auto;
   padding-bottom:1px;
@@ -385,11 +389,11 @@ h1{
   text-align:center;
   line-height:1.8;
 }
-.empty-tip span{font-size:11px;font-weight:400;color:#b0b7bb}
+.empty-tip span{font-size:11px;font-weight:400;color:#949ba0}
 
 .row{
   display:grid;
-  grid-template-columns:62px 1fr 1fr 1fr;
+  grid-template-columns:var(--paycol) 1fr 1fr 1fr;
   gap:6px;
   min-height:0;
 }
@@ -397,7 +401,7 @@ h1{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:13px;
+  font-size:13.5px;
   font-weight:700;
   color:#6f7a80;
   background:#fbfaf8;
@@ -408,6 +412,9 @@ h1{
   text-align:center;
   line-height:1.15;
   overflow:hidden;
+  min-width:0;
+  white-space:nowrap;
+  text-overflow:ellipsis;
 }
 .cell{
   position:relative;
@@ -419,15 +426,16 @@ h1{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:clamp(14px,4.3vw,17px);
+  font-size:clamp(15px,4.6vw,18px);
   font-weight:700;
   font-variant-numeric:tabular-nums;
   touch-action:manipulation;
   transition:background .15s ease,border-color .15s ease,transform .1s ease,color .15s;
   overflow:hidden;
+  min-width:0;
 }
 .cell:active{transform:scale(.96)}
-.cell .plus{font-size:13px;font-weight:400;opacity:.85}
+.cell .plus{font-size:15px;font-weight:700;opacity:.9;color:#ad9f93}
 .cell .v.word{font-size:clamp(12px,3.5vw,14px);letter-spacing:.4px}
 .cell.fresh{
   background:var(--green-bg);
@@ -510,7 +518,7 @@ h1{
   flex:0 0 auto;
   text-align:center;
   font-size:10.5px;
-  color:#b0b7bb;
+  color:#949ba0;
   letter-spacing:.3px;
   margin-top:-2px;
 }
@@ -744,7 +752,7 @@ h1{
   margin-top:7px;
   text-align:center;
   font-size:10.5px;
-  color:#b0b7bb;
+  color:#949ba0;
   letter-spacing:.3px;
 }
 
@@ -954,7 +962,7 @@ h1{
   margin-top:11px;
   text-align:center;
   font-size:10.5px;
-  color:#b0b7bb;
+  color:#949ba0;
   letter-spacing:.3px;
 }
 .ver{
@@ -969,7 +977,7 @@ h1{
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chip{
   border:1.5px solid var(--line);
   background:#fff;
-  color:#b0b7bb;
+  color:#949ba0;
   border-radius:11px;
   padding:8px 11px;
   font-size:12.5px;
@@ -992,7 +1000,7 @@ h1{
 .chips-tip{
   margin-top:8px;
   font-size:10.5px;
-  color:#b0b7bb;
+  color:#949ba0;
   line-height:1.7;
 }
 .sec{
@@ -1045,14 +1053,14 @@ h1{
 .pm-mv{flex:0 0 auto;width:34px;height:38px;border-radius:9px;border:1.5px solid var(--line);background:#fff;font-size:13px;color:#5b6066;cursor:pointer}
 .pm-mv:active{transform:scale(.94)}
 .pm-mv:disabled{opacity:.3}
-.amt-opt{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.amt-ob{flex:1 1 28%;min-width:62px;padding:12px 6px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:14px;font-weight:700;color:#3a3f45;cursor:pointer}
+.amt-opt{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.amt-ob{flex:1 1 28%;min-width:62px;padding:15px 6px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:15px;font-weight:700;color:#3a3f45;cursor:pointer}
 .amt-ob:active{transform:scale(.96)}
 .amt-ob.big{background:#fdecea;border-color:#f6d4ce;color:#b34a3f}
 .amt-ob.pending{background:#fff7e6;border-color:#ffe0a3;color:#a9802b}
 .amt-ob.full{background:#eef6ff;border-color:#cfe3ff;color:#3a6ea5}
 .amt-sel{display:flex;gap:8px;margin-top:6px}
-.amt-slot{flex:1 1 0;min-width:0;padding:14px 4px;border-radius:12px;border:1.5px dashed #d7d2c8;background:#faf8f4;font-size:15px;font-weight:800;color:#9aa0a6;text-align:center;cursor:pointer;user-select:none}
+.amt-slot{flex:1 1 0;min-width:0;padding:17px 6px;border-radius:12px;border:1.5px dashed #d7d2c8;background:#faf8f4;font-size:16px;font-weight:800;color:#9aa0a6;text-align:center;cursor:pointer;user-select:none}
 .amt-slot.filled{border-style:solid;border-color:var(--line);background:#fff;color:#3a3f45;cursor:pointer}
 .amt-slot.filled:active{transform:scale(.96)}
 .amt-slot.filled.big{background:#fdecea;border-color:#f6d4ce;color:#b34a3f}
@@ -1120,7 +1128,7 @@ h1{
 .foot-note{
   margin-top:12px;
   font-size:10.5px;
-  color:#b0b7bb;
+  color:#949ba0;
   text-align:center;
   letter-spacing:.2px;
 }
@@ -1193,7 +1201,7 @@ h1{
 
 @media (max-height:680px){
   .sum-val b{font-size:22px}
-  .row{grid-template-columns:58px 1fr 1fr 1fr}
+  .row{grid-template-columns:64px 1fr 1fr 1fr}
   .grid{gap:5px}
   .row{gap:5px}
   h1{font-size:17px}
@@ -1218,9 +1226,9 @@ h1{
     <h1>消費連環賞</h1>
     <div class="hstat" id="hStat">
       <span class="hs-k">累計</span>
-      <span class="hs-u">已消 <b id="vAllUsed">0</b></span>
+      <span class="hs-u">已消 <span class="hcur">MOP$</span><b id="vAllUsed">0</b></span>
       <span class="hs-sep">/</span>
-      <span class="hs-t">抽到 <b id="vAllTotal">0</b></span>
+      <span class="hs-t">抽到 <span class="hcur">MOP$</span><b id="vAllTotal">0</b></span>
     </div>
   </header>
 
@@ -1228,11 +1236,11 @@ h1{
     <div class="sum-row">
       <div class="sum-item remain">
         <span class="sum-label">未用券額</span>
-        <span class="sum-val"><b id="vRemain">0</b></span>
+        <span class="sum-val"><span class="cur">MOP$</span><b id="vRemain">0</b></span>
       </div>
       <div class="sum-item total">
         <span class="sum-label">抽到總額</span>
-        <span class="sum-val"><b id="vTotal">0</b></span>
+        <span class="sum-val"><span class="cur">MOP$</span><b id="vTotal">0</b></span>
       </div>
     </div>
     <div class="sum-foot">
@@ -2809,7 +2817,7 @@ function buildImage(){
 
   /* 底部 */
   ctx.textAlign='center';
-  ctx.fillStyle='#b0b7bb';
+  ctx.fillStyle='#949ba0';
   ctx.font='11px '+IMG_FONT;
   ctx.fillText('綠＝未用　紅＝未用且≥50　灰＝已消　藍＝待抽獎　·　滿減 '+g.f+' 張'+(luckyN?'　·　神助 ×'+luckyN:'')+'　·　消費連環賞',W/2,H-24);
 
@@ -2899,7 +2907,7 @@ function buildFavImage(){
     y+=it.h+GAP;
   });
 
-  ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
+  ctx.textAlign='center'; ctx.fillStyle='#949ba0'; ctx.font='10.5px '+IMG_FONT;
   ctx.fillText('收藏清單　·　消費連環賞',W/2,startY+HEAD+cardsH+30);
 
   return cv;
@@ -3006,7 +3014,7 @@ function buildStatsImage(){
     yy+=ROW+GAP;
   });
 
-  ctx.textAlign='center'; ctx.fillStyle='#b0b7bb'; ctx.font='10.5px '+IMG_FONT;
+  ctx.textAlign='center'; ctx.fillStyle='#949ba0'; ctx.font='10.5px '+IMG_FONT;
   ctx.fillText('深色＝已消　淺色＝未用　·　滿減 '+agg.f+' 張　·　消費連環賞',W/2,startY+blockH-18);
 
   return cv;
@@ -3488,6 +3496,15 @@ document.addEventListener('visibilitychange',function(){
 
 /* ---------------- boot ---------------- */
 renderAll();
+/* 首用提示：長按「已消券」可還原（只顯示一次，不擾民） */
+try{
+  if(!localStorage.getItem('coupon_lp_hint')){
+    setTimeout(function(){
+      try{ localStorage.setItem('coupon_lp_hint','1'); }catch(e){}
+      toast('長按灰色券＝還原未用');
+    }, 900);
+  }
+}catch(e){}
 })();
 </script>
 </body>
