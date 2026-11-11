@@ -377,6 +377,7 @@
   .tk-tool:hover{background:#f5f0e7}
   .tk-tool:active{transform:scale(.96)}
   .tk-tool.pri{background:var(--accent);color:#fff;border-color:transparent}
+  .tk-tool.on{background:var(--accent);color:#fff;border-color:transparent}
   .tk-tool select{border:0;background:transparent;font-family:inherit;font-weight:700;
     font-size:calc(12.5px * var(--fz));color:inherit;cursor:pointer;outline:none}
   .tk-sec-h{display:flex;align-items:center;gap:8px;font-size:calc(12.5px * var(--fz));
@@ -395,6 +396,13 @@
     padding:9px 11px;background:var(--card);border:1px solid var(--line);border-radius:13px;
     box-shadow:var(--shadow);will-change:transform}
   .tk-row.snap{transition:transform .18s ease}
+  /* 排序模式：左側出現把手，整列可即拖 */
+  .tk-grip{flex:0 0 auto;width:18px;height:22px;display:flex;align-items:center;justify-content:center;
+    color:var(--faint);font-size:16px;line-height:1;cursor:grab;touch-action:none;user-select:none}
+  .tk-row.reorder{cursor:grab;touch-action:none;
+    background:linear-gradient(90deg, color-mix(in srgb,var(--accent) 7%, var(--card)), var(--card));
+    border-style:dashed;border-color:color-mix(in srgb,var(--accent) 45%, var(--line))}
+  .tk-row.reorder:active{cursor:grabbing}
   .tk-check{flex:0 0 auto;width:23px;height:23px;border-radius:50%;border:1.8px solid #cfc6b6;
     background:#fff;color:#fff;font-family:inherit;font-size:12px;line-height:1;cursor:pointer;padding:0}
   .tk-check.done{background:#3f7a45;border-color:#3f7a45}
@@ -1413,6 +1421,7 @@ function setLayout(k){
   if (!LAYOUTS.some(l => l.k === k) || state.layout === k) return;
   state.layout = k;
   try{ localStorage.setItem(LS_LAYOUT, k); }catch(e){}
+  if (TK_REORDER){ TK_REORDER = false; document.body.classList.remove("tk-sort"); }
   renderSheet(); renderList(); syncLaySwitch();
 }
 
@@ -1756,6 +1765,7 @@ let TASK_SORT = loadTaskSort();
 let TASK_VIEW = { mode:"list", id:null };
 let TASK_EDIT = null;          // 單筆表單暫存（含附件）
 let TASK_SUB = null;           // 子面板種類
+let TK_REORDER = false;        // 排序模式：開啟後任務列可直接拖動調整順序（取代長按）
 
 function uid(){ return "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
@@ -1898,9 +1908,11 @@ function dueLabel(due){
 }
 function taskRowHtml(t, done){
   const dl = dueLabel(t.due);
+  const grip = TK_REORDER ? '<span class="tk-grip" aria-hidden="true">⠿</span>' : "";
   return `<div class="tk-row-outer" data-id="${esc(t.id)}">
       <button class="tk-del" type="button" data-act="del" aria-label="刪除此任務">刪除</button>
-      <div class="tk-row${done ? " is-done" : ""}">
+      <div class="tk-row${done ? " is-done" : ""}${TK_REORDER ? " reorder" : ""}">
+        ${grip}
         <button class="tk-check${done ? " done" : ""}" type="button" data-act="check" aria-label="切換完成狀態">${done ? "✓" : ""}</button>
         <button class="tk-main" type="button" data-act="open">
           <span class="tk-due ${dl.cls}">${dl.txt}</span>
@@ -1913,11 +1925,12 @@ function taskRowHtml(t, done){
 function listToolsHtml(n){
   return `<button class="tk-tool pri" type="button" data-tk-act="add">＋ 新增</button>
     <button class="tk-tool" type="button" data-tk-act="bulk"${n ? "" : " disabled"}>批量編輯</button>
-    <label class="tk-tool">排序 <select id="tkSort" data-tk-act="sort">
+    <label class="tk-tool">排序 <select id="tkSort" data-tk-act="sort"${TK_REORDER ? " disabled" : ""}>
       <option value="manual"${TASK_SORT === "manual" ? " selected" : ""}>手動</option>
       <option value="due"${TASK_SORT === "due" ? " selected" : ""}>到期日</option>
       <option value="subject"${TASK_SORT === "subject" ? " selected" : ""}>主題</option>
     </select></label>
+    <button class="tk-tool${TK_REORDER ? " on" : ""}" type="button" data-tk-act="reorder" aria-pressed="${TK_REORDER}">${TK_REORDER ? "完成排序" : "⇅ 排序"}</button>
     <span class="sp"></span>
     <button class="tk-tool" type="button" data-tk-act="share"${n ? "" : " disabled"}>分享</button>`;
 }
@@ -1932,13 +1945,13 @@ function taskListHtml(){
       <span class="cal-ref">僅供參考</span>
     </div>`;
   h += `<div class="tk-tools">${listToolsHtml(open.length)}</div>`;
-  h += `<div class="tk-sec-h">未完成 <b>${open.length}</b> · 長按可拖動排序、向右拉可刪除</div>`;
+  h += `<div class="tk-sec-h">未完成 <b>${open.length}</b>${TK_REORDER ? " · 按住任務上下拖動即可排序" : " · 向左滑可刪除；點「⇅ 排序」可拖動調整"}</div>`;
   h += open.length
-    ? `<div class="tk-rows" id="tkOpenRows">${open.map(t => taskRowHtml(t, false)).join("")}</div>`
+    ? `<div class="tk-rows${TK_REORDER ? " reorder" : ""}" id="tkOpenRows">${open.map(t => taskRowHtml(t, false)).join("")}</div>`
     : `<div class="tk-empty">這個班沒有未完成的任務<br>點「＋ 新增」或由作業／測驗項目按「＋」加入</div>`;
   if (done.length){
     h += `<details class="tk-done"><summary>已完成 ${done.length} 筆</summary>
-      <div class="tk-rows">${done.map(t => taskRowHtml(t, true)).join("")}</div></details>`;
+      <div class="tk-rows${TK_REORDER ? " reorder" : ""}">${done.map(t => taskRowHtml(t, true)).join("")}</div></details>`;
   }
   return h;
 }
@@ -2061,6 +2074,16 @@ function handleTaskTool(k){
   else if (k === "shareone") openSharePanel(TASK_VIEW.id);
   else if (k === "toggle") toggleTaskStatus(TASK_VIEW.id);
   else if (k === "delone") deleteTask(TASK_VIEW.id, true);
+  else if (k === "reorder"){
+    TK_REORDER = !TK_REORDER;
+    if (TK_REORDER){
+      if (TASK_SORT !== "manual"){ TASK_SORT = "manual"; saveTaskSort(); }
+      toast("排序模式：按住任務上下拖動即可調整順序");
+    }else{
+      document.body.classList.remove("tk-sort");
+    }
+    renderList();
+  }
 }
 
 /* ---------- 新增 / 編輯表單（單筆 ＋ 批量貼上） ---------- */
@@ -2477,9 +2500,8 @@ function bindTaskSubEvents(){
   });
 }
 
-/* ---------- 手勢：長按任務拖動排序 · 向右拉露出刪除（在 #list 任務呈現內） ---------- */
+/* ---------- 手勢：排序模式（按住即拖）· 右拉露出刪除（在 #list 任務呈現內） ---------- */
 let TK_G = null;
-const TK_HOLD_MS = 320;      // 長按判定時間
 function bindTaskGestures(){
   const body = document.getElementById("list");
   body.addEventListener("pointerdown", e => {
@@ -2488,14 +2510,20 @@ function bindTaskGestures(){
     if (e.target.closest("button:not(.tk-main)")) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
     const opened = out.classList.contains("opened");
-    const g = TK_G = { mode:"wait", out, row:out.querySelector(".tk-row"),
-      x:e.clientX, y:e.clientY, base:opened ? 88 : 0, tx:opened ? 88 : 0, moved:false, suppress:false,
-      timer:0 };
-    /* 先按住不動 → 進入拖動；先滑動 → 右拉刪除；先垂直滑 → 取消（讓頁面捲動） */
-    g.timer = setTimeout(() => { if (TK_G === g && g.mode === "wait") beginRowDrag(g); }, TK_HOLD_MS);
+    const g = TK_G = { out, row:out.querySelector(".tk-row"),
+      x:e.clientX, y:e.clientY, base:opened ? 88 : 0, tx:opened ? 88 : 0,
+      moved:false, suppress:false, reorder:TK_REORDER, sortSwitched:false };
+    if (TK_REORDER){
+      /* 排序模式：按住任務列即進入拖動（無長按等待），上下移動即重排 */
+      g.suppress = true;
+      if (TASK_SORT !== "manual"){ TASK_SORT = "manual"; saveTaskSort(); g.sortSwitched = true; }
+      out.classList.add("dragging");
+      document.body.classList.add("tk-sort");     // 鎖定頁面捲動，跟手更穩
+      try{ if (navigator.vibrate) navigator.vibrate(12); }catch(err){}
+    }
   });
-  /* 長按不彈系統選單／放大鏡 */
-  body.addEventListener("contextmenu", e => { if (e.target.closest(".tk-row-outer")) e.preventDefault(); });
+  /* 排序模式不彈系統選單／放大鏡 */
+  body.addEventListener("contextmenu", e => { if (TK_REORDER && e.target.closest(".tk-row-outer")) e.preventDefault(); });
   document.addEventListener("pointermove", onTaskPointerMove, { passive:false });
   document.addEventListener("pointerup", onTaskPointerUp);
   document.addEventListener("pointercancel", onTaskPointerUp);
@@ -2505,42 +2533,10 @@ function bindTaskGestures(){
     }
   }, true);
 }
-/* 長按成立 → 進入拖動；非手動排序時自動切回手動（以目前視覺順序為基準） */
-function beginRowDrag(g){
-  clearTimeout(g.timer);
-  g.sortSwitched = false;
-  if (TASK_SORT !== "manual"){
-    TASK_SORT = "manual"; saveTaskSort();
-    g.sortSwitched = true;
-    toast("已切換為手動排序");
-    const sel = document.getElementById("tkSort"); if (sel) sel.value = "manual";
-  }
-  g.mode = "drag"; g.moved = false; g.suppress = true;
-  g.out.classList.add("dragging");
-  document.body.classList.add("tk-sort");   // 鎖定頁面捲動，跟手更穩
-  try{ if (navigator.vibrate) navigator.vibrate(15); }catch(err){}
-}
 function onTaskPointerMove(e){
   const g = TK_G; if (!g) return;
-  if (g.mode === "wait"){
-    const dx = e.clientX - g.x, dy = e.clientY - g.y;
-    if (Math.abs(dy) > Math.abs(dx) * 1.15 && Math.abs(dy) > 6){ clearTimeout(g.timer); TK_G = null; return; }
-    if (Math.abs(dx) < 6) return;
-    clearTimeout(g.timer);
-    g.mode = "swipe";        // 先滑動 → 走右拉
-  }
-  if (g.mode === "swipe"){
-    const dx = e.clientX - g.x, dy = e.clientY - g.y;
-    if (!g.moved){
-      if (Math.abs(dy) > Math.abs(dx) * 1.15 && Math.abs(dy) > 6){ TK_G = null; return; }
-      if (Math.abs(dx) < 6) return;
-    }
-    g.moved = true;
-    if (e.cancelable) e.preventDefault();
-    g.tx = Math.max(0, Math.min(88, g.base + dx));
-    g.row.classList.remove("snap");
-    g.row.style.transform = "translateX(" + g.tx + "px)";
-  }else if (g.mode === "drag"){
+  const dx = e.clientX - g.x, dy = e.clientY - g.y;
+  if (g.reorder){
     if (e.cancelable) e.preventDefault();
     g.moved = true;
     const el = document.elementFromPoint(e.clientX, e.clientY);
@@ -2549,26 +2545,36 @@ function onTaskPointerMove(e){
     if (!under || !rows || under === g.out || under.parentNode !== rows) return;
     const r = under.getBoundingClientRect();
     rows.insertBefore(g.out, e.clientY < r.top + r.height / 2 ? under : under.nextSibling);
+    return;
   }
+  /* 非排序模式：向右拉露出刪除（先垂直滑動則放行，讓頁面捲動） */
+  if (!g.moved){
+    if (Math.abs(dy) > Math.abs(dx) * 1.15 && Math.abs(dy) > 6){ TK_G = null; return; }
+    if (Math.abs(dx) < 6) return;
+  }
+  g.moved = true;
+  if (e.cancelable) e.preventDefault();
+  g.tx = Math.max(0, Math.min(88, g.base + dx));
+  g.row.classList.remove("snap");
+  g.row.style.transform = "translateX(" + g.tx + "px)";
 }
 function onTaskPointerUp(){
   const g = TK_G; if (!g) return;
-  if (g.mode === "wait"){ clearTimeout(g.timer); TK_G = null; return; }   // 單純點擊 → 照常開詳情
-  if (g.mode === "swipe"){
-    const open = g.tx > 44;
-    g.row.classList.add("snap");
-    g.row.style.transform = "translateX(" + (open ? 88 : 0) + "px)";
-    g.out.classList.toggle("opened", open);
-    g.suppress = g.moved;
-    TK_G = g.moved ? g : null;
-    if (g.moved) setTimeout(() => { if (TK_G && TK_G.suppress) TK_G = null; }, 380);
-  }else{
+  if (g.reorder){
     document.body.classList.remove("tk-sort");
     g.out.classList.remove("dragging");
     if (g.moved) persistDragOrder(g.sortSwitched);
     TK_G = g;
     setTimeout(() => { if (TK_G && TK_G.suppress) TK_G = null; }, 380);
+    return;
   }
+  const open = g.tx > 44;
+  g.row.classList.add("snap");
+  g.row.style.transform = "translateX(" + (open ? 88 : 0) + "px)";
+  g.out.classList.toggle("opened", open);
+  g.suppress = g.moved;
+  TK_G = g.moved ? g : null;
+  if (g.moved) setTimeout(() => { if (TK_G && TK_G.suppress) TK_G = null; }, 380);
 }
 function persistDragOrder(rerender){
   const rows = document.getElementById("tkOpenRows");
@@ -2578,7 +2584,7 @@ function persistDragOrder(rerender){
   ids.forEach(id => { const t = TASKS.find(x => x.id === id); if (t) t.order = n++; });
   TASKS.filter(t => ids.indexOf(t.id) < 0).forEach(t => { t.order = n++; });
   saveTasks(); toast("順序已更新");
-  if (rerender) rerenderTasks();   // 由其他排序切來手動時，重繪出現 ⋮⋮ 把手與提示
+  if (rerender) rerenderTasks();   // 由其他排序切來手動時，重繪以反映新順序
 }
 
 /* ---------- 作業 / 測驗清單項目 → 加入任務 ---------- */
