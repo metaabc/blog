@@ -1,3 +1,3 @@
 # blog
 
-https://fastdevops.github.io/blog/
+https://metaabc.github.io/blog/
